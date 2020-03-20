@@ -218,6 +218,22 @@ public enum Protocol
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.PLAYER_ABILITIES)
             );
             TO_CLIENT.registerPacket(
+                    EntityTeleport.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_TELEPORT)
+            );
+            TO_CLIENT.registerPacket(
+                    SpawnGlobalEntity.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.GLOBAL_ENTITY_SPAWN)
+            );
+            TO_CLIENT.registerPacket(
+                    SpawnObject.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_OBJECT)
+            );
+            TO_CLIENT.registerPacket(
+                    SpawnMob.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_MOB)
+            );
+            TO_CLIENT.registerPacket(
                     JoinGame.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 1)
             );

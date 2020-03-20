@@ -7,8 +7,10 @@ public interface PacketConstants {
     int BLOCK_UPDATE = 35;
     int MULTI_BLOCK_UPDATE = 34;
     int SPAWN_PLAYER = 12;
-    int ENTITY_SPAWN = 4;
-    int ENTITY_POSITION = 0x29;
+    int GLOBAL_ENTITY_SPAWN = 44;
+    int SPAWN_OBJECT = 14;
+    int SPAWN_MOB = 15;
+    int ENTITY_TELEPORT = 24;
     int DESTROY_ENTITIES = 19;
     int ENTITY_EQUIPMENT = 9;
     int SET_SLOT = 47;

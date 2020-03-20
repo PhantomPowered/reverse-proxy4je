@@ -8,56 +8,59 @@ import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class SpawnPlayer extends DefinedPacket implements PositionedPacket {
+@ToString
+public class SpawnObject extends DefinedPacket implements PositionedPacket {
 
     private int entityId;
-    private UUID playerId;
     private int x;
     private int y;
     private int z;
-    private byte yaw;
+    private int speedX;
+    private int speedY;
+    private int speedZ;
     private byte pitch;
-    private short currentItem;
-    private List<DataWatcher.WatchableObject> watchableObjects;
+    private byte yaw;
+    private int type;
+    private int field_149020_k;
 
     @Override
     public void read(ByteBuf buf) {
         this.entityId = readVarInt(buf);
-        this.playerId = readUUID(buf);
+        this.type = buf.readByte();
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
-        this.yaw = buf.readByte();
         this.pitch = buf.readByte();
-        this.currentItem = buf.readShort();
-        try {
-            this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(buf);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        this.yaw = buf.readByte();
+        this.field_149020_k = buf.readInt();
+
+        if (this.field_149020_k > 0) {
+            this.speedX = buf.readShort();
+            this.speedY = buf.readShort();
+            this.speedZ = buf.readShort();
         }
     }
 
     @Override
     public void write(ByteBuf buf) {
         writeVarInt(this.entityId, buf);
-        writeUUID(this.playerId, buf);
+        buf.writeByte(this.type);
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.z);
-        buf.writeByte(this.yaw);
         buf.writeByte(this.pitch);
-        buf.writeShort(this.currentItem);
-        try {
-            DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, buf);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        buf.writeByte(this.yaw);
+        buf.writeInt(this.field_149020_k);
+
+        if (this.field_149020_k > 0) {
+            buf.writeShort(this.speedX);
+            buf.writeShort(this.speedY);
+            buf.writeShort(this.speedZ);
         }
     }
 

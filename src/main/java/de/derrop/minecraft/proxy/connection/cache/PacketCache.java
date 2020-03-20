@@ -21,7 +21,7 @@ public class PacketCache {
             new PlayerInfoCache(),
             new EntityCache()
     );
-    // todo scoreboards
+    // todo scoreboards, resource pack, keep alive proxy <-> client, time
 
     public void handlePacket(ByteBuf packet) {
         packet.markReaderIndex();

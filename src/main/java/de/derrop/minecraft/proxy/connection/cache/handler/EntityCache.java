@@ -4,8 +4,7 @@ import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
-import de.derrop.minecraft.proxy.connection.cache.SpawnedEntity;
-import de.derrop.minecraft.proxy.connection.cache.packet.SpawnPlayer;
+import de.derrop.minecraft.proxy.connection.cache.packet.*;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -15,11 +14,11 @@ import java.util.Map;
 
 public class EntityCache implements PacketCacheHandler {
 
-    private Map<Integer, SpawnedEntity> entities = new HashMap<>();
+    private Map<Integer, PositionedPacket> entities = new HashMap<>();
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.SPAWN_PLAYER, PacketConstants.ENTITY_SPAWN, PacketConstants.DESTROY_ENTITIES, PacketConstants.ENTITY_POSITION, PacketConstants.ENTITY_EQUIPMENT};
+        return new int[]{PacketConstants.SPAWN_PLAYER, PacketConstants.GLOBAL_ENTITY_SPAWN, PacketConstants.DESTROY_ENTITIES, PacketConstants.ENTITY_TELEPORT, PacketConstants.ENTITY_EQUIPMENT};
     }
 
     @Override
@@ -32,7 +31,18 @@ public class EntityCache implements PacketCacheHandler {
                 }
                 break;
 
-            case PacketConstants.ENTITY_POSITION:
+            case PacketConstants.ENTITY_TELEPORT:
+                EntityTeleport entityTeleport = new EntityTeleport();
+                entityTeleport.read(newPacket.getPacketData());
+
+                if (this.entities.containsKey(entityTeleport.getEntityId())) {
+                    PositionedPacket entity = this.entities.get(entityTeleport.getEntityId());
+                    entity.setX(entityTeleport.getX());
+                    entity.setY(entityTeleport.getY());
+                    entity.setZ(entityTeleport.getZ());
+                    entity.setYaw(entityTeleport.getYaw());
+                    entity.setPitch(entityTeleport.getPitch());
+                }
 
                 break;
 
@@ -40,12 +50,31 @@ public class EntityCache implements PacketCacheHandler {
                 SpawnPlayer spawnPlayer = new SpawnPlayer();
                 spawnPlayer.read(newPacket.getPacketData());
 
-                this.entities.put(spawnPlayer.getEntityId(), new SpawnedEntity(
-                        spawnPlayer.getEntityId(), spawnPlayer.getPlayerId(),
-                        spawnPlayer.getX(), spawnPlayer.getY(), spawnPlayer.getZ(),
-                        spawnPlayer.getYaw(), spawnPlayer.getPitch(),
-                        spawnPlayer.getCurrentItem(), spawnPlayer.getWatchableObjects()
-                ));
+                this.entities.put(spawnPlayer.getEntityId(), spawnPlayer);
+
+                break;
+
+            case PacketConstants.GLOBAL_ENTITY_SPAWN:
+                SpawnGlobalEntity spawnGlobalEntity = new SpawnGlobalEntity();
+                spawnGlobalEntity.read(newPacket.getPacketData());
+
+                this.entities.put(spawnGlobalEntity.getEntityId(), spawnGlobalEntity);
+
+                break;
+
+            case PacketConstants.SPAWN_OBJECT:
+                SpawnObject spawnObject = new SpawnObject();
+                spawnObject.read(newPacket.getPacketData());
+
+                this.entities.put(spawnObject.getEntityId(), spawnObject);
+
+                break;
+
+            case PacketConstants.SPAWN_MOB:
+                SpawnMob spawnMob = new SpawnMob();
+                spawnMob.read(newPacket.getPacketData());
+
+                this.entities.put(spawnMob.getEntityId(), spawnMob);
 
                 break;
         }
@@ -53,12 +82,8 @@ public class EntityCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(ChannelWrapper ch) {
-        for (SpawnedEntity value : new ArrayList<>(this.entities.values())) {
-            if (value.isPlayer()) {
-                ch.write(new SpawnPlayer(value.getEntityId(), value.getPlayerId(), value.getX(), value.getY(), value.getZ(), value.getYaw(), value.getPitch(), value.getCurrentItem(), value.getWatchableObjects()));
-            } else {
-                // todo
-            }
+        for (PositionedPacket packet : new ArrayList<>(this.entities.values())) {
+            ch.write(packet);
         }
     }
 }
