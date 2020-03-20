@@ -1,35 +1,45 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
+import de.derrop.minecraft.proxy.util.DataWatcher;
 import io.netty.buffer.ByteBuf;
+
+import java.util.List;
+import java.util.UUID;
 
 public class SpawnedEntity {
 
-    private int targetPacketId;
     private int entityId;
+    private UUID playerId; // optional - only if this is a player
     private int x;
     private int y;
     private int z;
     private byte yaw;
     private byte pitch;
-    private ByteBuf extraData;
+    private short currentItem; // optional - only if this is a player
+    private List<DataWatcher.WatchableObject> watchableObjects;
 
-    public SpawnedEntity(int targetPacketId, int entityId, int x, int y, int z, byte yaw, byte pitch, ByteBuf extraData) {
-        this.targetPacketId = targetPacketId;
+    public SpawnedEntity(int entityId, UUID playerId, int x, int y, int z, byte yaw, byte pitch, short currentItem, List<DataWatcher.WatchableObject> watchableObjects) {
         this.entityId = entityId;
+        this.playerId = playerId;
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.extraData = extraData;
-    }
-
-    public int getTargetPacketId() {
-        return targetPacketId;
+        this.currentItem = currentItem;
+        this.watchableObjects = watchableObjects;
     }
 
     public int getEntityId() {
         return entityId;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public boolean isPlayer() {
+        return this.playerId != null;
     }
 
     public int getX() {
@@ -52,16 +62,12 @@ public class SpawnedEntity {
         return pitch;
     }
 
-    public ByteBuf getExtraData() {
-        return extraData;
+    public short getCurrentItem() {
+        return currentItem;
     }
 
-    public void setTargetPacketId(int targetPacketId) {
-        this.targetPacketId = targetPacketId;
-    }
-
-    public void setEntityId(int entityId) {
-        this.entityId = entityId;
+    public List<DataWatcher.WatchableObject> getWatchableObjects() {
+        return watchableObjects;
     }
 
     public void setX(int x) {
@@ -84,7 +90,8 @@ public class SpawnedEntity {
         this.pitch = pitch;
     }
 
-    public void setExtraData(ByteBuf extraData) {
-        this.extraData = extraData;
+    public void setCurrentItem(short currentItem) {
+        this.currentItem = currentItem;
     }
+
 }

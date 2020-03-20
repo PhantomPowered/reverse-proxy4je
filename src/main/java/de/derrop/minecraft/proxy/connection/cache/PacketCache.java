@@ -1,9 +1,6 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
-import de.derrop.minecraft.proxy.connection.cache.handler.ChunkCache;
-import de.derrop.minecraft.proxy.connection.cache.handler.JoinGameCache;
-import de.derrop.minecraft.proxy.connection.cache.handler.PlayerInfoCache;
-import de.derrop.minecraft.proxy.connection.cache.handler.PlayerInventoryCache;
+import de.derrop.minecraft.proxy.connection.cache.handler.*;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -17,7 +14,8 @@ public class PacketCache {
             new JoinGameCache(),
             new PlayerInventoryCache(),
             new ChunkCache(),
-            new PlayerInfoCache()
+            new PlayerInfoCache(),
+            new EntityCache()
     );
 
     public void handlePacket(ByteBuf packet) {

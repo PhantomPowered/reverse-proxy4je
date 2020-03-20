@@ -63,8 +63,9 @@ public class MCProxy {
     public static void main(String[] args) throws Exception {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
-        //System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), MCCredentials.parse("kealicie@gmail.com:flylikeaG6")));
-        System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), MCCredentials.parse("kealicie@gmail.com:flylikeaG6")));
+        MCCredentials credentials = MCCredentials.parse("kealicie@gmail.com:flylikeaG6");
+        System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), credentials));
+        //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), credentials));
 
         new Thread(() -> {
             while (!Thread.interrupted()) {

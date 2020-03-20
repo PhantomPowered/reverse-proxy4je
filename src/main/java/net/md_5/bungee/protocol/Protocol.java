@@ -4,10 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.JoinGame;
-import de.derrop.minecraft.proxy.connection.cache.packet.ChunkBulk;
-import de.derrop.minecraft.proxy.connection.cache.packet.ChunkData;
-import de.derrop.minecraft.proxy.connection.cache.packet.SetSlot;
-import de.derrop.minecraft.proxy.connection.cache.packet.WindowItems;
+import de.derrop.minecraft.proxy.connection.cache.packet.*;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -203,6 +200,18 @@ public enum Protocol
             TO_CLIENT.registerPacket(
                     SetSlot.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SET_SLOT)
+            );
+            TO_CLIENT.registerPacket(
+                    SpawnPlayer.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_PLAYER)
+            );
+            TO_CLIENT.registerPacket(
+                    BlockUpdate.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.BLOCK_UPDATE)
+            );
+            TO_CLIENT.registerPacket(
+                    MultiBlockUpdate.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.MULTI_BLOCK_UPDATE)
             );
             TO_CLIENT.registerPacket(
                     JoinGame.class,
