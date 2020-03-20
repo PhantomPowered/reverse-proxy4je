@@ -1,13 +1,11 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
-import com.google.common.base.Charsets;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.SpawnedEntity;
 import de.derrop.minecraft.proxy.connection.cache.packet.SpawnPlayer;
-import io.netty.buffer.Unpooled;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -28,10 +26,10 @@ public class EntityCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         switch (newPacket.getPacketId()) {
             case PacketConstants.DESTROY_ENTITIES:
-                /*int count = DefinedPacket.readVarInt(newPacket.getPacketData());
+                int count = DefinedPacket.readVarInt(newPacket.getPacketData());
                 for (int i = 0; i < count; i++) {
                     this.entities.remove(DefinedPacket.readVarInt(newPacket.getPacketData()));
-                }*/
+                }
                 break;
 
             case PacketConstants.ENTITY_POSITION:
