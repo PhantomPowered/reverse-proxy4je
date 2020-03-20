@@ -1,6 +1,9 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
+import de.derrop.minecraft.proxy.connection.JoinGame;
+import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
+import de.derrop.minecraft.proxy.connection.cache.packet.PlayerAbilities;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -11,12 +14,14 @@ import java.util.Collection;
 public class PacketCache {
 
     private final Collection<PacketCacheHandler> handlers = Arrays.asList(
-            new JoinGameCache(),
+            new SimplePacketCache(1, JoinGame::new),
+            new SimplePacketCache(PacketConstants.PLAYER_ABILITIES, PlayerAbilities::new),
             new PlayerInventoryCache(),
             new ChunkCache(),
             new PlayerInfoCache(),
             new EntityCache()
     );
+    // todo scoreboards
 
     public void handlePacket(ByteBuf packet) {
         packet.markReaderIndex();

@@ -54,6 +54,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     @Override
     public void handle(Kick kick) throws Exception {
         System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAuthentication().getSelectedProfile().getName() + "): " + kick.getMessage());
+        this.proxyClient.connectionFailed();
     }
 
     @Override

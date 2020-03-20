@@ -216,4 +216,11 @@ public class ConnectedProxyClient {
         }
     }
 
+    public void connectionFailed() {
+        if (this.connectionHandler != null) {
+            this.connectionHandler.complete(false);
+            this.connectionHandler = null;
+        }
+    }
+
 }

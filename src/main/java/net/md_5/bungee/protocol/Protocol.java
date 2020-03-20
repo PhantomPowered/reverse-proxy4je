@@ -214,6 +214,10 @@ public enum Protocol
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.MULTI_BLOCK_UPDATE)
             );
             TO_CLIENT.registerPacket(
+                    PlayerAbilities.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.PLAYER_ABILITIES)
+            );
+            TO_CLIENT.registerPacket(
                     JoinGame.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 1)
             );
