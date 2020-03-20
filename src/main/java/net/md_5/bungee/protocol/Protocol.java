@@ -2,6 +2,12 @@ package net.md_5.bungee.protocol;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import de.derrop.minecraft.proxy.connection.PacketConstants;
+import de.derrop.minecraft.proxy.connection.JoinGame;
+import de.derrop.minecraft.proxy.connection.cache.packet.ChunkBulk;
+import de.derrop.minecraft.proxy.connection.cache.packet.ChunkData;
+import de.derrop.minecraft.proxy.connection.cache.packet.SetSlot;
+import de.derrop.minecraft.proxy.connection.cache.packet.WindowItems;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -181,6 +187,26 @@ public enum Protocol
                     ViewDistance.class,
                     map( ProtocolConstants.MINECRAFT_1_14, 0x41 ),
                     map( ProtocolConstants.MINECRAFT_1_15, 0x42 )
+            );
+            TO_CLIENT.registerPacket(
+                    ChunkData.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.CHUNK_DATA)
+            );
+            TO_CLIENT.registerPacket(
+                    ChunkBulk.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.CHUNK_BULK)
+            );
+            TO_CLIENT.registerPacket(
+                    WindowItems.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.WINDOW_ITEMS)
+            );
+            TO_CLIENT.registerPacket(
+                    SetSlot.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SET_SLOT)
+            );
+            TO_CLIENT.registerPacket(
+                    JoinGame.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 1)
             );
 
             TO_SERVER.registerPacket(

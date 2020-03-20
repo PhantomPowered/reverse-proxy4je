@@ -1,6 +1,7 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
 import de.derrop.minecraft.proxy.connection.cache.handler.ChunkCache;
+import de.derrop.minecraft.proxy.connection.cache.handler.JoinGameCache;
 import de.derrop.minecraft.proxy.connection.cache.handler.PlayerInventoryCache;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -12,6 +13,7 @@ import java.util.Collection;
 public class PacketCache {
 
     private final Collection<PacketCacheHandler> handlers = Arrays.asList(
+            new JoinGameCache(),
             new PlayerInventoryCache(),
             new ChunkCache()
     );

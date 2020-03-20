@@ -41,6 +41,11 @@ public abstract class DefinedPacket {
         buf.writeBytes(b);
     }
 
+    public static void writeArrayNoLimit(byte[] b, ByteBuf buf) {
+        writeVarInt(b.length, buf);
+        buf.writeBytes(b);
+    }
+
     public static byte[] toArray(ByteBuf buf) {
         byte[] ret = new byte[buf.readableBytes()];
         buf.readBytes(ret);

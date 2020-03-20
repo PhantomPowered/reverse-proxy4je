@@ -1,36 +1,36 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
-import com.flowpowered.nbt.CompoundTag;
+import de.derrop.minecraft.proxy.util.nbt.NBTTagCompound;
 
 public class InventoryItem {
 
-    public static final InventoryItem NONE = new InventoryItem(false, -1, (byte) -1, null);
+    public static final InventoryItem NONE = new InventoryItem(0, 0, 0, null);
 
-    private boolean present;
     private int itemId;
-    private byte count;
-    private CompoundTag nbt;
+    private int amount;
+    private int meta;
+    private NBTTagCompound nbt;
 
-    public InventoryItem(boolean present, int itemId, byte count, CompoundTag nbt) {
-        this.present = present;
+    public InventoryItem(int itemId, int amount, int meta, NBTTagCompound nbt) {
         this.itemId = itemId;
-        this.count = count;
+        this.amount = amount;
+        this.meta = meta;
         this.nbt = nbt;
-    }
-
-    public boolean isPresent() {
-        return present;
     }
 
     public int getItemId() {
         return itemId;
     }
 
-    public byte getCount() {
-        return count;
+    public int getAmount() {
+        return amount;
     }
 
-    public CompoundTag getNbt() {
+    public int getMeta() {
+        return meta;
+    }
+
+    public NBTTagCompound getNbt() {
         return nbt;
     }
 }

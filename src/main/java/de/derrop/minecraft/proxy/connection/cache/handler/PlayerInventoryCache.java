@@ -1,10 +1,11 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
-import de.derrop.minecraft.proxy.PacketConstants;
+import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.InventoryItem;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
+import de.derrop.minecraft.proxy.connection.cache.packet.SetSlot;
 import de.derrop.minecraft.proxy.connection.cache.packet.WindowItems;
 import net.md_5.bungee.netty.ChannelWrapper;
 
@@ -19,31 +20,47 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.WINDOW_ITEMS};
+        return new int[]{PacketConstants.WINDOW_ITEMS, PacketConstants.SET_SLOT};
     }
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        WindowItems items = new WindowItems();
-        items.read(newPacket.getPacketData());
+        switch (newPacket.getPacketId()) {
+            case PacketConstants.WINDOW_ITEMS:
+                WindowItems items = new WindowItems();
+                items.read(newPacket.getPacketData());
 
-        if (items.getWindowId() != WINDOW_ID) {
-            return;
-        }
-        for (int slot = 0; slot < items.getItems().length; slot++) {
-            InventoryItem item = items.getItems()[slot];
-            if (item.isPresent()) {
-                this.itemsBySlot.put(slot, item);
-            } else {
-                this.itemsBySlot.remove(slot);
-            }
+                if (items.getWindowId() != WINDOW_ID) {
+                    return;
+                }
+                for (int slot = 0; slot < items.getItems().length; slot++) {
+                    InventoryItem item = items.getItems()[slot];
+                    if (item.getItemId() > 0) {
+                        this.itemsBySlot.put(slot, item);
+                    } else {
+                        this.itemsBySlot.remove(slot);
+                    }
+                }
+                break;
+
+            case PacketConstants.SET_SLOT:
+                SetSlot setSlot = new SetSlot();
+                setSlot.read(newPacket.getPacketData());
+                InventoryItem item = setSlot.getItem();
+
+                if (item.getItemId() > 0) {
+                    this.itemsBySlot.put(setSlot.getSlot(), item);
+                } else {
+                    this.itemsBySlot.remove(setSlot.getSlot());
+                }
+                break;
         }
     }
 
     @Override
     public void sendCached(ChannelWrapper ch) {
         this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
-            InventoryItem[] items = new InventoryItem[count];
+            InventoryItem[] items = new InventoryItem[count + 1];
             for (int slot = 0; slot < items.length; slot++) {
                 items[slot] = this.itemsBySlot.getOrDefault(slot, InventoryItem.NONE);
             }

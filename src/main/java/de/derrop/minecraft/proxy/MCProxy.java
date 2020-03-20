@@ -8,8 +8,10 @@ import net.md_5.bungee.protocol.packet.KeepAlive;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MCProxy {
@@ -62,7 +64,7 @@ public class MCProxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
         //System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), MCCredentials.parse("kealicie@gmail.com:flylikeaG6")));
-        System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse("kealicie@gmail.com:flylikeaG6")));
+        System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), MCCredentials.parse("kealicie@gmail.com:flylikeaG6")));
 
         new Thread(() -> {
             while (!Thread.interrupted()) {
@@ -84,5 +86,7 @@ public class MCProxy {
             Thread.sleep(Long.MAX_VALUE);
         }
     }
+
+    // todo we could put information like "CPS (autoclicker)" into the action bar
 
 }

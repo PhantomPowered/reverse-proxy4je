@@ -20,6 +20,7 @@ import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
+import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.MinecraftDecoder;
 import net.md_5.bungee.protocol.MinecraftEncoder;
 import net.md_5.bungee.protocol.Protocol;
@@ -152,7 +153,22 @@ public class ConnectedProxyClient {
     }
 
     public void redirectPacket(ByteBuf packet) {
+        if (this.channelWrapper.getProtocol() != Protocol.GAME) {
+            return;
+        }
+        if (packet == null) {
+            return;
+        }
+
         this.packetCache.handlePacket(packet);
+
+        if (this.redirector != null) {
+            this.redirector.getCh().write(packet);
+
+            if (!this.redirector.isConnected()) {
+                this.redirector = null;
+            }
+        }
     }
 
     public void redirectPackets(UserConnection con) {

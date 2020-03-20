@@ -16,24 +16,35 @@ public class ChunkData extends DefinedPacket {
 
     private int x;
     private int z;
-    private ByteBuf additionalData;
+    private boolean b;
+    private Extracted extracted;
 
     @Override
     public void read(ByteBuf buf) {
         this.x = buf.readInt();
         this.z = buf.readInt();
-        this.additionalData = buf.copy();
+        this.b = buf.readBoolean();
+        this.extracted = new Extracted();
+        this.extracted.dataLength = buf.readShort();
+        this.extracted.data = readArray(buf);
     }
 
     @Override
     public void write(ByteBuf buf) {
         buf.writeInt(this.x);
         buf.writeInt(this.z);
-        buf.writeBytes(this.additionalData);
+        buf.writeBoolean(this.b);
+        buf.writeShort((short)(this.extracted.dataLength & 65535));
+        writeArrayNoLimit(this.extracted.data, buf);
     }
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
+    }
+
+    public static class Extracted {
+        public byte[] data;
+        public int dataLength;
     }
 
 }
