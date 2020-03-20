@@ -149,6 +149,9 @@ public class ConnectedProxyClient {
     }
 
     public void free() {
+        if (this.redirector != null) {
+            this.packetCache.handleFree(this.redirector.getCh());
+        }
         this.redirector = null;
     }
 

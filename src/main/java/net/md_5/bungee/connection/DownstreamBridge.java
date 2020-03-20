@@ -68,14 +68,6 @@ public class DownstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PlayerListItem playerList) throws Exception {
-        playerList = TabList.rewrite(playerList);
-        //this.proxyClient.redirectPacket(playerList);
-        UserConnection con = this.con();
-        if (con != null) {
-            con.unsafe().sendPacket(playerList); // todo this should also be redirected
-            con.getTabListHandler().onUpdate(playerList);
-        }
-        throw CancelSendSignal.INSTANCE; // Always throw because of profile rewriting
     }
 
     @Override

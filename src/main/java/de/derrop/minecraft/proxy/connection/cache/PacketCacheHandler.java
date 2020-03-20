@@ -10,4 +10,7 @@ public interface PacketCacheHandler {
 
     void sendCached(ChannelWrapper ch);
 
+    default void onClientSwitch(ChannelWrapper ch) {
+    }
+
 }
