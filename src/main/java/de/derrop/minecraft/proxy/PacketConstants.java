@@ -2,8 +2,8 @@ package de.derrop.minecraft.proxy;
 
 public interface PacketConstants {
 
-    int CHUNK = 1;
-    int CHUNK_UNLOAD = 2;
+    int CHUNK_DATA = 0x22;
+    int CHUNK_UNLOAD = 0x1E;
     int NAMED_ENTITY_SPAWN = 3;
     int ENTITY_SPAWN = 4;
     int BLOCK_CHANGE = 5;

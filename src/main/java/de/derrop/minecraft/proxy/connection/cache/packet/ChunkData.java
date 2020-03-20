@@ -12,21 +12,24 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class UnloadChunk extends DefinedPacket {
+public class ChunkData extends DefinedPacket {
 
     private int x;
     private int z;
+    private ByteBuf additionalData;
 
     @Override
     public void read(ByteBuf buf) {
         this.x = buf.readInt();
         this.z = buf.readInt();
+        this.additionalData = buf.copy();
     }
 
     @Override
     public void write(ByteBuf buf) {
         buf.writeInt(this.x);
         buf.writeInt(this.z);
+        buf.writeBytes(this.additionalData);
     }
 
     @Override

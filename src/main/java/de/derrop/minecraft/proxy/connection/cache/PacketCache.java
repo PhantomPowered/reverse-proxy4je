@@ -1,20 +1,20 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
+import de.derrop.minecraft.proxy.connection.cache.handler.ChunkCache;
 import de.derrop.minecraft.proxy.connection.cache.handler.PlayerInventoryCache;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class PacketCache {
 
-    private final Collection<PacketCacheHandler> handlers = new ArrayList<>();
-
-    {
-        this.handlers.add(new PlayerInventoryCache());
-    }
+    private final Collection<PacketCacheHandler> handlers = Arrays.asList(
+            new PlayerInventoryCache(),
+            new ChunkCache()
+    );
 
     public void handlePacket(ByteBuf packet) {
         packet.markReaderIndex();
