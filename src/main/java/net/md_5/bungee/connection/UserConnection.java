@@ -13,6 +13,8 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.score.Objective;
+import net.md_5.bungee.api.score.Score;
 import net.md_5.bungee.api.score.Scoreboard;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.entitymap.EntityMap;
@@ -122,10 +124,18 @@ public final class UserConnection implements ProxiedPlayer
 
         if (this.proxyClient != null) {
             this.proxyClient.free();
+            this.proxyClient.getScoreboard().writeClear(this);
+
+            /* todo for (UUID bossbar : user.getSentBossBars()) {
+                // Send remove bossbar packet
+                user.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.BossBar(bossbar, 1));
+            }
+            user.getSentBossBars().clear();*/
         }
         this.tabListHandler.onServerChange();
 
         proxyClient.redirectPackets(this);
+        proxyClient.getScoreboard().write(this);
 
         this.sendMessage("§7Your name: §e" + proxyClient.getAuthentication().getSelectedProfile().getName());
 

@@ -3,6 +3,11 @@ package net.md_5.bungee.api.score;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.md_5.bungee.connection.UserConnection;
+import net.md_5.bungee.netty.ChannelWrapper;
+import net.md_5.bungee.protocol.packet.ScoreboardDisplay;
+import net.md_5.bungee.protocol.packet.ScoreboardObjective;
+import net.md_5.bungee.protocol.packet.ScoreboardScore;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -98,6 +103,36 @@ public class Scoreboard
     public void removeTeam(String teamName)
     {
         teams.remove( teamName );
+    }
+
+    public void write(UserConnection con) {
+        for (Objective objective : this.objectives.values()) {
+            con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), objective.getValue(), ScoreboardObjective.HealthDisplay.fromString(objective.getType()), (byte) 0)); // 0 -> add; 1 -> remove; 2 -> update value and type
+        }
+        con.unsafe().sendPacket(new ScoreboardDisplay((byte) this.position.ordinal(), this.name));
+        for (Score score : this.scores.values()) {
+            con.unsafe().sendPacket(new ScoreboardScore(score.getItemName(), (byte) 0, score.getScoreName(), score.getValue())); // 0 -> add; 1 -> remove
+        }
+        for (Team team : this.teams.values()) {
+            con.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.Team(
+                    team.getName(), (byte) 0, team.getDisplayName(),
+                    team.getPrefix(), team.getSuffix(), team.getNameTagVisibility(),
+                    team.getCollisionRule(), team.getColor(), team.getFriendlyFire(),
+                    team.getPlayers().toArray(new String[0])
+            )); // 0 -> add whole team; 1 -> remove; 2 -> update value and type; 3 -> add only players; 4 -> remove only players
+        }
+    }
+
+    public void writeClear(UserConnection con) {
+        for (Objective objective : this.objectives.values()) {
+            con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), "", null, (byte) 1));
+        }
+        for (Team team : this.teams.values()) {
+            con.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.Team(team.getName()));
+        }
+        for (Score score : this.scores.values()) {
+            con.unsafe().sendPacket(new ScoreboardScore(score.getItemName(), (byte) 1, score.getScoreName(), -1));
+        }
     }
 
     public void clear()

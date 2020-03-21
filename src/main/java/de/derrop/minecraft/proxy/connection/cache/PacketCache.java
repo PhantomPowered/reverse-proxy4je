@@ -12,14 +12,15 @@ import java.util.Collection;
 public class PacketCache {
 
     private final Collection<PacketCacheHandler> handlers = Arrays.asList(
-            new SimplePacketCache(1),
+            new SimplePacketCache(1), // join game
             new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
+            new SimplePacketCache(71), // header/footer
             new PlayerInventoryCache(),
             new ChunkCache(),
             new PlayerInfoCache(),
             new EntityCache()
     );
-    // todo scoreboards, (resource pack), keep alive proxy <-> client, signs
+    // todo scoreboards, (resource pack), keep alive proxy <-> client, signs, tab header/footer
 
     public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
         packet.markReaderIndex();

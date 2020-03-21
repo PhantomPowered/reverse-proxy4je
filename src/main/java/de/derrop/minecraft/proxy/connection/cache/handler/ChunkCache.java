@@ -87,6 +87,7 @@ public class ChunkCache implements PacketCacheHandler {
     public void sendCached(ChannelWrapper ch) {
         for (ChunkData chunk : new ArrayList<>(this.chunks)) {
             ch.write(chunk);
+            ch.write(new BlockUpdate(new BlockPos(chunk.getX(), 255, chunk.getZ()), 0));
         }
 
         for (Map.Entry<BlockPos, Integer> entry : new ArrayList<>(this.blockUpdates.entrySet())) {

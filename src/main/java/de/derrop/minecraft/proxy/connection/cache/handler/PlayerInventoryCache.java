@@ -25,6 +25,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+        // todo this doesn't work properly when opening a chest or something like that
         if (newPacket.getDeserializedPacket() instanceof WindowItems) {
             WindowItems items = (WindowItems) newPacket.getDeserializedPacket();
 
