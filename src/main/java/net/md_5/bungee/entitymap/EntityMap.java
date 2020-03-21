@@ -1,6 +1,7 @@
 package net.md_5.bungee.entitymap;
 
-import com.flowpowered.nbt.stream.NBTInputStream;
+import de.derrop.minecraft.proxy.util.nbt.CompressedStreamTools;
+import de.derrop.minecraft.proxy.util.nbt.NBTSizeTracker;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import lombok.AccessLevel;
@@ -189,7 +190,7 @@ public abstract class EntityMap {
                     break;
                 case 13:
                     try {
-                        new NBTInputStream(new ByteBufInputStream(packet), false).readTag();
+                        CompressedStreamTools.read(new ByteBufInputStream(packet), new NBTSizeTracker(Integer.MAX_VALUE));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -230,7 +231,7 @@ public abstract class EntityMap {
                 packet.readerIndex(position);
 
                 try {
-                    new NBTInputStream(new ByteBufInputStream(packet), false).readTag();
+                    CompressedStreamTools.read(new ByteBufInputStream(packet), new NBTSizeTracker(Integer.MAX_VALUE));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

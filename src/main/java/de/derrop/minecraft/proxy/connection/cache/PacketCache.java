@@ -67,6 +67,7 @@ public class PacketCache {
                 new PlayerInfoCache(),
                 new EntityCache()
         ));
+        // todo chunks are not loaded until they are received from the server again
         // todo (resource pack), keep alive proxy <-> client, signs, effects
         // todo scoreboards are not displayed properly
     }
