@@ -1,8 +1,10 @@
 package de.derrop.minecraft.proxy.command;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CommandMap {
 
@@ -14,6 +16,10 @@ public class CommandMap {
         for (String name : command.getNames()) {
             this.commands.put(name.toLowerCase(), command);
         }
+    }
+
+    public Collection<Command> getCommands() {
+        return this.commands.values().stream().distinct().collect(Collectors.toList());
     }
 
     public boolean dispatchCommand(CommandSender sender, String line) {

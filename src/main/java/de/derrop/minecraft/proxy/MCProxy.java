@@ -23,6 +23,7 @@ public class MCProxy {
     private CommandMap commandMap = new CommandMap();
 
     private MCProxy() {
+        this.commandMap.registerCommand(new CommandHelp(this.commandMap));
         this.commandMap.registerCommand(new CommandInfo());
         this.commandMap.registerCommand(new CommandSwitch());
         this.commandMap.registerCommand(new CommandList());

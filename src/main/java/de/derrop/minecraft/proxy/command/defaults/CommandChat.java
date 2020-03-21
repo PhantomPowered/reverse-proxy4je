@@ -19,7 +19,7 @@ public class CommandChat extends Command {
     @Override
     public void execute(CommandSender sender, String input, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage("chat <account> <message> | send a message as a specific user");
+            sender.sendMessage("chat <ALL|name> <message> | send a message as a specific user");
             sender.sendMessage("Available clients:");
             for (ConnectedProxyClient freeClient : MCProxy.getInstance().getFreeClients()) {
                 sender.sendMessage("- " + freeClient.getAccountName());
