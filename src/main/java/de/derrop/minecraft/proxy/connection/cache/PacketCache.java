@@ -15,6 +15,7 @@ public class PacketCache {
     private final Collection<PacketCacheHandler> handlers = Arrays.asList(
             new SimplePacketCache(1, false), // join game
             new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
+            new SimplePacketCache(5), // spawn position
             new SimplePacketCache(71), // header/footer
             new PlayerInventoryCache(),
             new ChunkCache(),
