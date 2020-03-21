@@ -75,12 +75,10 @@ public final class UserConnection implements ProxiedPlayer
     private EntityMap entityRewrite;
     private int compressionThreshold = -1;
     /*========================================================================*/
-    private final Unsafe unsafe = new Unsafe()
-    {
+    private final Unsafe unsafe = new Unsafe() {
         @Override
-        public void sendPacket(DefinedPacket packet)
-        {
-            ch.write( packet );
+        public void sendPacket(DefinedPacket packet) {
+            ch.write(packet);
         }
     };
 
@@ -140,11 +138,11 @@ public final class UserConnection implements ProxiedPlayer
             this.proxyClient.free();
             this.proxyClient.getScoreboard().writeClear(this);
 
-            /* todo for (UUID bossbar : user.getSentBossBars()) {
+            for (UUID bossbarId : this.sentBossBars) {
                 // Send remove bossbar packet
-                user.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.BossBar(bossbar, 1));
+                this.unsafe.sendPacket(new net.md_5.bungee.protocol.packet.BossBar(bossbarId, 1));
             }
-            user.getSentBossBars().clear();*/
+            this.sentBossBars.clear();
         }
         this.tabListHandler.onServerChange();
 
