@@ -1,9 +1,7 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
-import de.derrop.minecraft.proxy.connection.JoinGame;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
-import de.derrop.minecraft.proxy.connection.cache.packet.PlayerAbilities;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -14,8 +12,8 @@ import java.util.Collection;
 public class PacketCache {
 
     private final Collection<PacketCacheHandler> handlers = Arrays.asList(
-            new SimplePacketCache(1, JoinGame::new),
-            new SimplePacketCache(PacketConstants.PLAYER_ABILITIES, PlayerAbilities::new),
+            new SimplePacketCache(1),
+            new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
             new PlayerInventoryCache(),
             new ChunkCache(),
             new PlayerInfoCache(),
@@ -23,7 +21,7 @@ public class PacketCache {
     );
     // todo scoreboards, resource pack, keep alive proxy <-> client, time
 
-    public void handlePacket(ByteBuf packet) {
+    public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
         packet.markReaderIndex();
 
         int receivedPacketId = DefinedPacket.readVarInt(packet);
@@ -31,7 +29,7 @@ public class PacketCache {
         for (PacketCacheHandler handler : this.handlers) {
             for (int packetId : handler.getPacketIDs()) {
                 if (packetId == receivedPacketId) {
-                    handler.cachePacket(this, new CachedPacket(packetId, packet));
+                    handler.cachePacket(this, new CachedPacket(packetId, deserialized, packet));
                     break;
                 }
             }

@@ -155,7 +155,7 @@ public class ConnectedProxyClient {
         this.redirector = null;
     }
 
-    public void redirectPacket(ByteBuf packet) {
+    public void redirectPacket(ByteBuf packet, DefinedPacket deserialized) {
         if (this.channelWrapper.getProtocol() != Protocol.GAME) {
             return;
         }
@@ -163,7 +163,7 @@ public class ConnectedProxyClient {
             return;
         }
 
-        this.packetCache.handlePacket(packet);
+        this.packetCache.handlePacket(packet, deserialized);
 
         if (this.redirector != null) {
             this.redirector.getCh().write(packet);

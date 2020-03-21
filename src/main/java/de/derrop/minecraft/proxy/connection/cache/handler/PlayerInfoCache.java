@@ -21,8 +21,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        PlayerListItem playerListItem = new PlayerListItem();
-        playerListItem.read(newPacket.getPacketData(), ProtocolConstants.Direction.TO_CLIENT, 47);
+        PlayerListItem playerListItem = (PlayerListItem) newPacket.getDeserializedPacket();
 
         if (playerListItem.getAction() == PlayerListItem.Action.REMOVE_PLAYER) {
             this.items.removeIf(item -> Arrays.stream(playerListItem.getItems()).anyMatch(item1 -> item1.getUuid().equals(item.getUuid())));

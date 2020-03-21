@@ -234,6 +234,10 @@ public enum Protocol
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_MOB)
             );
             TO_CLIENT.registerPacket(
+                    EntityMetadata.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_METADATA)
+            );
+            TO_CLIENT.registerPacket(
                     JoinGame.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 1)
             );

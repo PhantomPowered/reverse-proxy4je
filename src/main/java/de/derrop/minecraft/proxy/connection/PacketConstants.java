@@ -13,6 +13,7 @@ public interface PacketConstants {
     int ENTITY_TELEPORT = 24;
     int DESTROY_ENTITIES = 19;
     int ENTITY_EQUIPMENT = 9;
+    int ENTITY_METADATA = 28;
     int SET_SLOT = 47;
     int WINDOW_ITEMS = 48;
     int PLAYER_ABILITIES = 57;

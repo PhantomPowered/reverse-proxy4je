@@ -15,68 +15,71 @@ import java.util.Map;
 public class EntityCache implements PacketCacheHandler {
 
     private Map<Integer, PositionedPacket> entities = new HashMap<>();
+    private Map<Integer, EntityMetadata> metadata = new HashMap<>();
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.SPAWN_PLAYER, PacketConstants.GLOBAL_ENTITY_SPAWN, PacketConstants.DESTROY_ENTITIES, PacketConstants.ENTITY_TELEPORT, PacketConstants.ENTITY_EQUIPMENT};
+        return new int[]{
+                PacketConstants.SPAWN_PLAYER, PacketConstants.GLOBAL_ENTITY_SPAWN, PacketConstants.DESTROY_ENTITIES,
+                PacketConstants.ENTITY_TELEPORT, PacketConstants.ENTITY_EQUIPMENT, PacketConstants.SPAWN_MOB,
+                PacketConstants.SPAWN_OBJECT, PacketConstants.ENTITY_METADATA
+        };
     }
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        switch (newPacket.getPacketId()) {
-            case PacketConstants.DESTROY_ENTITIES:
-                int count = DefinedPacket.readVarInt(newPacket.getPacketData());
-                for (int i = 0; i < count; i++) {
-                    this.entities.remove(DefinedPacket.readVarInt(newPacket.getPacketData()));
-                }
-                break;
+        DefinedPacket packet = newPacket.getDeserializedPacket();
 
-            case PacketConstants.ENTITY_TELEPORT:
-                EntityTeleport entityTeleport = new EntityTeleport();
-                entityTeleport.read(newPacket.getPacketData());
+        if (packet instanceof EntityTeleport) {
 
-                if (this.entities.containsKey(entityTeleport.getEntityId())) {
-                    PositionedPacket entity = this.entities.get(entityTeleport.getEntityId());
-                    entity.setX(entityTeleport.getX());
-                    entity.setY(entityTeleport.getY());
-                    entity.setZ(entityTeleport.getZ());
-                    entity.setYaw(entityTeleport.getYaw());
-                    entity.setPitch(entityTeleport.getPitch());
-                }
+            EntityTeleport entityTeleport = (EntityTeleport) packet;
 
-                break;
+            if (this.entities.containsKey(entityTeleport.getEntityId())) {
+                PositionedPacket entity = this.entities.get(entityTeleport.getEntityId());
+                entity.setX(entityTeleport.getX());
+                entity.setY(entityTeleport.getY());
+                entity.setZ(entityTeleport.getZ());
+                entity.setYaw(entityTeleport.getYaw());
+                entity.setPitch(entityTeleport.getPitch());
+            }
 
-            case PacketConstants.SPAWN_PLAYER:
-                SpawnPlayer spawnPlayer = new SpawnPlayer();
-                spawnPlayer.read(newPacket.getPacketData());
+        } else if (packet instanceof SpawnPlayer) {
 
-                this.entities.put(spawnPlayer.getEntityId(), spawnPlayer);
+            SpawnPlayer spawnPlayer = (SpawnPlayer) packet;
 
-                break;
+            this.entities.put(spawnPlayer.getEntityId(), spawnPlayer);
 
-            case PacketConstants.GLOBAL_ENTITY_SPAWN:
-                SpawnGlobalEntity spawnGlobalEntity = new SpawnGlobalEntity();
-                spawnGlobalEntity.read(newPacket.getPacketData());
+        } else if (packet instanceof SpawnMob) {
 
-                this.entities.put(spawnGlobalEntity.getEntityId(), spawnGlobalEntity);
+            SpawnMob spawnMob = (SpawnMob) packet;
 
-                break;
+            this.entities.put(spawnMob.getEntityId(), spawnMob);
 
-            case PacketConstants.SPAWN_OBJECT:
-                SpawnObject spawnObject = new SpawnObject();
-                spawnObject.read(newPacket.getPacketData());
+        } else if (packet instanceof SpawnObject) {
 
-                this.entities.put(spawnObject.getEntityId(), spawnObject);
+            SpawnObject spawnObject = (SpawnObject) packet;
 
-                break;
+            this.entities.put(spawnObject.getEntityId(), spawnObject);
 
-            case PacketConstants.SPAWN_MOB:
-                SpawnMob spawnMob = new SpawnMob();
-                spawnMob.read(newPacket.getPacketData());
+        } else if (packet instanceof SpawnGlobalEntity) {
 
-                this.entities.put(spawnMob.getEntityId(), spawnMob);
+            SpawnGlobalEntity spawnGlobalEntity = (SpawnGlobalEntity) packet;
 
-                break;
+            this.entities.put(spawnGlobalEntity.getEntityId(), spawnGlobalEntity);
+
+        } else if (packet instanceof EntityMetadata) {
+
+            this.metadata.put(((EntityMetadata) packet).getEntityId(), (EntityMetadata) packet);
+
+        } else if (newPacket.getPacketId() == PacketConstants.DESTROY_ENTITIES) {
+
+            int count = DefinedPacket.readVarInt(newPacket.getPacketData());
+            for (int i = 0; i < count; i++) {
+                int entityId = DefinedPacket.readVarInt(newPacket.getPacketData());
+                this.entities.remove(entityId);
+                this.metadata.remove(entityId);
+            }
+
         }
     }
 
@@ -84,6 +87,9 @@ public class EntityCache implements PacketCacheHandler {
     public void sendCached(ChannelWrapper ch) {
         for (PositionedPacket packet : new ArrayList<>(this.entities.values())) {
             ch.write(packet);
+        }
+        for (EntityMetadata metadata : new ArrayList<>(this.metadata.values())) {
+            ch.write(metadata);
         }
     }
 }

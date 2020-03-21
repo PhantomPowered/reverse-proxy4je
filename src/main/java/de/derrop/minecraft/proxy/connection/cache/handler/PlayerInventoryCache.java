@@ -25,22 +25,26 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+        if (newPacket.getDeserializedPacket() instanceof WindowItems) {
+            WindowItems items = (WindowItems) newPacket.getDeserializedPacket();
+            items.read(newPacket.getPacketData());
+
+            if (items.getWindowId() != WINDOW_ID) {
+                return;
+            }
+            for (int slot = 0; slot < items.getItems().length; slot++) {
+                InventoryItem item = items.getItems()[slot];
+                if (item.getItemId() > 0) {
+                    this.itemsBySlot.put(slot, item);
+                } else {
+                    this.itemsBySlot.remove(slot);
+                }
+            }
+        }
+
         switch (newPacket.getPacketId()) {
             case PacketConstants.WINDOW_ITEMS:
-                WindowItems items = new WindowItems();
-                items.read(newPacket.getPacketData());
 
-                if (items.getWindowId() != WINDOW_ID) {
-                    return;
-                }
-                for (int slot = 0; slot < items.getItems().length; slot++) {
-                    InventoryItem item = items.getItems()[slot];
-                    if (item.getItemId() > 0) {
-                        this.itemsBySlot.put(slot, item);
-                    } else {
-                        this.itemsBySlot.remove(slot);
-                    }
-                }
                 break;
 
             case PacketConstants.SET_SLOT:

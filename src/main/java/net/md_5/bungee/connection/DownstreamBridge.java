@@ -56,7 +56,7 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(PacketWrapper packet) throws Exception {
         //this.proxyClient.getEntityMap().rewriteClientbound(packet.buf, this.proxyClient.getEntityId(), this.proxyClient.getEntityId(), 47);
-        this.proxyClient.redirectPacket(packet.buf);
+        this.proxyClient.redirectPacket(packet.buf, packet.packet);
         //this.proxyClient.redirectPacket(packet.buf);
     }
 

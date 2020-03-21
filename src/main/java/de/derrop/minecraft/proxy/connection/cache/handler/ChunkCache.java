@@ -10,6 +10,7 @@ import de.derrop.minecraft.proxy.connection.cache.packet.ChunkData;
 import de.derrop.minecraft.proxy.connection.cache.packet.MultiBlockUpdate;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import net.md_5.bungee.netty.ChannelWrapper;
+import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,42 +30,35 @@ public class ChunkCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         ChunkData[] data = null;
+        DefinedPacket packet = newPacket.getDeserializedPacket();
 
-        switch (newPacket.getPacketId()) {
-            case PacketConstants.CHUNK_DATA:
-                ChunkData chunkData = new ChunkData();
-                chunkData.read(newPacket.getPacketData());
-                data = new ChunkData[]{chunkData};
-                break;
+        if (packet instanceof ChunkData) {
 
-            case PacketConstants.CHUNK_BULK:
-                ChunkBulk chunkBulk = new ChunkBulk();
-                chunkBulk.read(newPacket.getPacketData());
+            data = new ChunkData[]{(ChunkData) packet};
 
-                data = new ChunkData[chunkBulk.getX().length];
-                for (int i = 0; i < data.length; i++) {
-                    data[i] = new ChunkData(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
-                }
+        } else if (packet instanceof ChunkBulk) {
 
-                break;
+            ChunkBulk chunkBulk = (ChunkBulk) packet;
 
-            case PacketConstants.BLOCK_UPDATE:
-                BlockUpdate blockUpdate = new BlockUpdate();
-                blockUpdate.read(newPacket.getPacketData());
+            data = new ChunkData[chunkBulk.getX().length];
+            for (int i = 0; i < data.length; i++) {
+                data[i] = new ChunkData(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
+            }
 
-                this.blockUpdates.put(blockUpdate.getPos(), blockUpdate.getBlockState());
+        } else if (packet instanceof BlockUpdate) {
 
-                break;
+            BlockUpdate blockUpdate = (BlockUpdate) packet;
 
-            case PacketConstants.MULTI_BLOCK_UPDATE:
-                MultiBlockUpdate multiBlockUpdate = new MultiBlockUpdate();
-                multiBlockUpdate.read(newPacket.getPacketData());
+            this.blockUpdates.put(blockUpdate.getPos(), blockUpdate.getBlockState());
 
-                for (MultiBlockUpdate.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
-                    this.blockUpdates.put(updateData.getPos(), updateData.getBlockState());
-                }
+        } else if (packet instanceof MultiBlockUpdate) {
 
-                break;
+            MultiBlockUpdate multiBlockUpdate = (MultiBlockUpdate) packet;
+
+            for (MultiBlockUpdate.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
+                this.blockUpdates.put(updateData.getPos(), updateData.getBlockState());
+            }
+
         }
 
         if (data == null) {
