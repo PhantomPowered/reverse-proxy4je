@@ -2,6 +2,7 @@ package de.derrop.minecraft.proxy.connection;
 
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.minecraft.SessionUtils;
@@ -243,6 +244,8 @@ public class ConnectedProxyClient {
         if (this.connectionHandler != null) {
             this.connectionHandler.complete(true);
             this.connectionHandler = null;
+
+            MCProxy.getInstance().getOnlineClients().add(this);
         }
     }
 

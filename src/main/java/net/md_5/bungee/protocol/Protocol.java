@@ -238,7 +238,7 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, 1)
             );
             TO_CLIENT.registerPacket(
-                    Disconect.class,
+                    Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );
 

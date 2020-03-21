@@ -30,7 +30,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandChat());
         this.commandMap.registerCommand(new CommandAlert());
         this.commandMap.registerCommand(new CommandForEach());
-        //this.commandMap.registerCommand(new CommandConnect()); todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
+        this.commandMap.registerCommand(new CommandConnect());// todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
 
         // todo help command?
     }
@@ -47,12 +47,7 @@ public class MCProxy {
             return false;
         }
 
-        boolean success = proxyClient.connect(address).get();
-        if (success) {
-            this.onlineClients.add(proxyClient);
-        }
-
-        return success;
+        return proxyClient.connect(address).get();
     }
 
     public void removeProxyClient(ConnectedProxyClient proxyClient) {
@@ -91,12 +86,12 @@ public class MCProxy {
                         "stephskiii:stephskinoosh@gmail.com:chloemax1\n" +
                         "vickysurf:vickysurf11@gmail.com:50sombras\n" +
                         "Staticfrowizzdra:kealicie@gmail.com:flylikeaG6\n" +
-                        "jessixameow:xjessicamero@gmail.com:jessica123";
+                        "a:86baby86a@gmail.com:donald86";
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
             String s1 = split[1] + ":" + split[2];
             System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25577), MCCredentials.parse(s1)));
-            //System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25565), MCCredentials.parse(s1)));
+            //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));
             Thread.sleep(1000);
         }
         MCCredentials credentials = MCCredentials.parse("superfini@gmx.net:lilli02");

@@ -65,6 +65,7 @@ public final class UserConnection implements ProxiedPlayer {
     private final Scoreboard serverSentScoreboard = new Scoreboard();
     @Getter
     private final Collection<UUID> sentBossBars = new HashSet<>();
+    private boolean autoReconnect = true;
     /*========================================================================*/
     @Getter
     private String displayName;
@@ -107,6 +108,10 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     public void handleDisconnected(ConnectedProxyClient proxyClient, BaseComponent[] reason) {
+        if (!this.autoReconnect) {
+            return;
+        }
+
         ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient();
         if (nextClient == null || nextClient.equals(proxyClient)) {
             this.disconnect("No client found");
@@ -123,7 +128,13 @@ public final class UserConnection implements ProxiedPlayer {
 
     @Override
     public void useClient(ConnectedProxyClient proxyClient) {
-        Preconditions.checkNotNull(proxyClient, "proxyClient");
+        if (proxyClient == null) {
+            if (this.proxyClient != null) {
+                this.proxyClient.free();
+                this.proxyClient.getScoreboard().writeClear(this);
+            }
+            return;
+        }
 
         if (this.proxyClient != null && this.proxyClient.getCredentials().equals(proxyClient.getCredentials())) {
             this.sendMessage("already connected with this client");
@@ -154,6 +165,16 @@ public final class UserConnection implements ProxiedPlayer {
     @Override
     public ConnectedProxyClient getConnectedClient() {
         return this.proxyClient;
+    }
+
+    @Override
+    public void disableAutoReconnect() {
+        this.autoReconnect = false;
+    }
+
+    @Override
+    public void enableAutoReconnect() {
+        this.autoReconnect = true;
     }
 
     @Override

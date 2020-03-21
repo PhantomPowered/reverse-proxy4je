@@ -2,12 +2,13 @@ package net.md_5.bungee.connection;
 
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
-import de.derrop.minecraft.proxy.connection.cache.packet.Disconect;
+import de.derrop.minecraft.proxy.connection.cache.packet.Disconnect;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import lombok.AllArgsConstructor;
 import net.md_5.bungee.Util;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.score.Team;
@@ -44,12 +45,13 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(Disconect disconect) throws Exception {
+    public void handle(Disconnect disconnect) throws Exception {
         MCProxy.getInstance().removeProxyClient(this.proxyClient);
-        this.disconnectReceiver(disconect.getReason());
+        this.disconnectReceiver(disconnect.getReason());
     }
 
     private void disconnectReceiver(BaseComponent[] reason) {
+        System.out.println("Disconnected " + this.proxyClient.getAccountName() + " with " + ChatColor.stripColor(TextComponent.toLegacyText(reason)));
         if (this.proxyClient.getRedirector() != null) {
             UserConnection con = this.proxyClient.getRedirector();
             this.proxyClient.free();

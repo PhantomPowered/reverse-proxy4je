@@ -88,6 +88,10 @@ public interface ProxiedPlayer extends Connection, CommandSender {
 
     ConnectedProxyClient getConnectedClient();
 
+    void disableAutoReconnect();
+
+    void enableAutoReconnect();
+
     String getName();
 
     /**

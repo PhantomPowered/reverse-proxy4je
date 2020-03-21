@@ -12,7 +12,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class Disconect extends DefinedPacket {
+public class Disconnect extends DefinedPacket {
 
     private BaseComponent[] reason;
 
