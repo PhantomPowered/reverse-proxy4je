@@ -103,6 +103,9 @@ public class Scoreboard
     }
 
     public void write(UserConnection con) {
+        if (this.position == null || this.name == null) {
+            return;
+        }
         for (Objective objective : new ArrayList<>(this.objectives.values())) {
             con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), objective.getValue(), ScoreboardObjective.HealthDisplay.fromString(objective.getType()), (byte) 0)); // 0 -> add; 1 -> remove; 2 -> update value and type
         }
