@@ -17,12 +17,14 @@ public class PacketCache {
             new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
             new SimplePacketCache(5), // spawn position
             new SimplePacketCache(71), // header/footer
+            new ListPacketCache(2, 30), // chat
             new PlayerInventoryCache(),
             new ChunkCache(),
             new PlayerInfoCache(),
             new EntityCache()
     );
-    // todo scoreboards, (resource pack), keep alive proxy <-> client, signs, tab header/footer
+    // todo (resource pack), keep alive proxy <-> client, signs, effects
+    // todo scoreboards are not cleared when switching account
 
     public PacketCacheHandler getHandler(Predicate<PacketCacheHandler> filter) {
         return this.handlers.stream().filter(filter).findFirst().orElse(null);

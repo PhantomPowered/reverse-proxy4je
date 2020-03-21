@@ -9,10 +9,7 @@ import net.md_5.bungee.protocol.packet.ScoreboardDisplay;
 import net.md_5.bungee.protocol.packet.ScoreboardObjective;
 import net.md_5.bungee.protocol.packet.ScoreboardScore;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -106,14 +103,14 @@ public class Scoreboard
     }
 
     public void write(UserConnection con) {
-        for (Objective objective : this.objectives.values()) {
+        for (Objective objective : new ArrayList<>(this.objectives.values())) {
             con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), objective.getValue(), ScoreboardObjective.HealthDisplay.fromString(objective.getType()), (byte) 0)); // 0 -> add; 1 -> remove; 2 -> update value and type
         }
         con.unsafe().sendPacket(new ScoreboardDisplay((byte) this.position.ordinal(), this.name));
-        for (Score score : this.scores.values()) {
+        for (Score score : new ArrayList<>(this.scores.values())) {
             con.unsafe().sendPacket(new ScoreboardScore(score.getItemName(), (byte) 0, score.getScoreName(), score.getValue())); // 0 -> add; 1 -> remove
         }
-        for (Team team : this.teams.values()) {
+        for (Team team : new ArrayList<>(this.teams.values())) {
             con.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.Team(
                     team.getName(), (byte) 0, team.getDisplayName(),
                     team.getPrefix(), team.getSuffix(), team.getNameTagVisibility(),
@@ -124,14 +121,14 @@ public class Scoreboard
     }
 
     public void writeClear(UserConnection con) {
-        for (Objective objective : this.objectives.values()) {
-            con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), "", null, (byte) 1));
+        for (Objective objective : new ArrayList<>(this.objectives.values())) {
+            con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), objective.getValue(), ScoreboardObjective.HealthDisplay.fromString(objective.getType()), (byte) 1));
         }
-        for (Team team : this.teams.values()) {
+        for (Score score : new ArrayList<>(this.scores.values())) {
+            con.unsafe().sendPacket(new ScoreboardScore(score.getItemName(), (byte) 1, score.getScoreName(), score.getValue()));
+        }
+        for (Team team : new ArrayList<>(this.teams.values())) {
             con.unsafe().sendPacket(new net.md_5.bungee.protocol.packet.Team(team.getName()));
-        }
-        for (Score score : this.scores.values()) {
-            con.unsafe().sendPacket(new ScoreboardScore(score.getItemName(), (byte) 1, score.getScoreName(), -1));
         }
     }
 
