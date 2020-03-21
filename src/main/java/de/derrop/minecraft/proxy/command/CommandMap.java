@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class CommandMap {
 
-    private static final String PREFIX = "/p ";
+    private static final String PREFIX = "/proxy ";
 
     private Map<String, Command> commands = new HashMap<>();
 
