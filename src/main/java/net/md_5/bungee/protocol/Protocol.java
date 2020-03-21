@@ -237,6 +237,10 @@ public enum Protocol {
                     JoinGame.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 1)
             );
+            TO_CLIENT.registerPacket(
+                    Disconect.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
+            );
 
             TO_SERVER.registerPacket(
                     KeepAlive.class,

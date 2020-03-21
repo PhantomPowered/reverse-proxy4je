@@ -2,10 +2,14 @@ package net.md_5.bungee.connection;
 
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
+import de.derrop.minecraft.proxy.connection.cache.packet.Disconect;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import lombok.AllArgsConstructor;
+import net.md_5.bungee.Util;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.score.Team;
 import net.md_5.bungee.api.score.*;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -27,24 +31,30 @@ public class DownstreamBridge extends PacketHandler {
     public void exception(Throwable t) throws Exception {
         System.err.println("Exception on proxy client " + this.proxyClient.getAccountName() + "!");
         t.printStackTrace();
-        if (this.proxyClient.getRedirector() != null) {
-            UserConnection con = this.proxyClient.getRedirector();
-            this.proxyClient.free();
-            con.handleDisconnected(this.proxyClient);
-        }
-        proxyClient.getChannelWrapper().close();
         MCProxy.getInstance().removeProxyClient(this.proxyClient);
+        this.disconnectReceiver(TextComponent.fromLegacyText("§c" + Util.exception(t)));
+        proxyClient.getChannelWrapper().close();
     }
 
     @Override
     public void disconnected(ChannelWrapper channel) throws Exception {
         // We lost connection to the server
+        MCProxy.getInstance().removeProxyClient(this.proxyClient);
+        this.disconnectReceiver(TextComponent.fromLegacyText("§cNo reason given"));
+    }
+
+    @Override
+    public void handle(Disconect disconect) throws Exception {
+        MCProxy.getInstance().removeProxyClient(this.proxyClient);
+        this.disconnectReceiver(disconect.getReason());
+    }
+
+    private void disconnectReceiver(BaseComponent[] reason) {
         if (this.proxyClient.getRedirector() != null) {
             UserConnection con = this.proxyClient.getRedirector();
             this.proxyClient.free();
-            con.handleDisconnected(this.proxyClient);
+            con.handleDisconnected(this.proxyClient, reason);
         }
-        MCProxy.getInstance().removeProxyClient(this.proxyClient);
     }
 
     @Override
@@ -62,6 +72,7 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(KeepAlive alive) throws Exception {
         this.proxyClient.getChannelWrapper().write(alive);
+        this.proxyClient.setLastAlivePacket(System.currentTimeMillis());
         throw CancelSendSignal.INSTANCE;
     }
 

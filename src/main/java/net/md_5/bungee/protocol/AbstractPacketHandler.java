@@ -1,8 +1,12 @@
 package net.md_5.bungee.protocol;
 
+import de.derrop.minecraft.proxy.connection.cache.packet.Disconect;
 import net.md_5.bungee.protocol.packet.*;
 
 public abstract class AbstractPacketHandler {
+
+    public void handle(Disconect disconect) throws Exception {
+    }
 
     public void handle(LegacyPing ping) throws Exception {
     }

@@ -46,6 +46,8 @@ public class ConnectedProxyClient {
     private int entityId;
     private int dimension;
 
+    private long lastAlivePacket = -1;
+
     private CompletableFuture<Boolean> connectionHandler;
 
     public boolean performMojangLogin(MCCredentials credentials) {
@@ -160,11 +162,27 @@ public class ConnectedProxyClient {
         this.dimension = dimension;
     }
 
+    public long getLastAlivePacket() {
+        return lastAlivePacket;
+    }
+
+    public void setLastAlivePacket(long lastAlivePacket) {
+        this.lastAlivePacket = lastAlivePacket;
+    }
+
     public void free() {
         if (this.redirector != null) {
             this.packetCache.handleFree(this.redirector.getCh());
         }
         this.redirector = null;
+    }
+
+    public void keepAliveTick() {
+        if (this.lastAlivePacket == -1) {
+            return;
+        }
+
+        // todo implement this?
     }
 
     public void redirectPacket(ByteBuf packet, DefinedPacket deserialized) {

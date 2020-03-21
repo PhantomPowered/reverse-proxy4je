@@ -17,5 +17,6 @@ public interface PacketConstants {
     int SET_SLOT = 47;
     int WINDOW_ITEMS = 48;
     int PLAYER_ABILITIES = 57;
+    int DISCONNECT = 64;
 
 }

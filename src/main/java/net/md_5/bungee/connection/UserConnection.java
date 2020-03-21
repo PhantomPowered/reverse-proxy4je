@@ -106,14 +106,17 @@ public final class UserConnection implements ProxiedPlayer {
         displayName = name;
     }
 
-    public void handleDisconnected(ConnectedProxyClient proxyClient) {
+    public void handleDisconnected(ConnectedProxyClient proxyClient, BaseComponent[] reason) {
         ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient();
         if (nextClient == null || nextClient.equals(proxyClient)) {
             this.disconnect("No client found");
             return;
         }
+        if (reason != null) {
+            this.sendMessage(ChatMessageType.CHAT, reason);
+        }
 
-        this.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§cDisconnected")).fadeIn(10).stay(20).fadeOut(10));
+        this.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§cDisconnected")).fadeIn(20).stay(100).fadeOut(20));
 
         this.useClient(nextClient);
     }
@@ -130,13 +133,14 @@ public final class UserConnection implements ProxiedPlayer {
         if (this.proxyClient != null) {
             this.proxyClient.free();
             this.proxyClient.getScoreboard().writeClear(this);
-
-            for (UUID bossbarId : this.sentBossBars) {
-                // Send remove bossbar packet
-                this.unsafe.sendPacket(new net.md_5.bungee.protocol.packet.BossBar(bossbarId, 1));
-            }
-            this.sentBossBars.clear();
         }
+
+        for (UUID bossbarId : this.sentBossBars) {
+            // Send remove bossbar packet
+            this.unsafe.sendPacket(new net.md_5.bungee.protocol.packet.BossBar(bossbarId, 1));
+        }
+        this.sentBossBars.clear();
+
         this.tabListHandler.onServerChange();
 
         proxyClient.redirectPackets(this, this.proxyClient != null);
