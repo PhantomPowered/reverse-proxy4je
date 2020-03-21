@@ -3,6 +3,7 @@ package net.md_5.bungee.connection;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import lombok.Getter;
@@ -362,13 +363,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
     }
 
     @Override
-    public void disconnect(String reason)
-    {
-        if ( canSendKickMessage() )
-        {
-            disconnect( TextComponent.fromLegacyText( reason ) );
-        } else
-        {
+    public void disconnect(String reason) {
+        if (canSendKickMessage()) {
+            disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + reason));
+        } else {
             ch.close();
         }
     }

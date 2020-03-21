@@ -85,6 +85,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(ChannelWrapper ch) {
+        // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible)
         for (ChunkData chunk : new ArrayList<>(this.chunks)) {
             ch.write(chunk);
         }
