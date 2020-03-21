@@ -28,6 +28,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandSwitch());
         this.commandMap.registerCommand(new CommandList());
         this.commandMap.registerCommand(new CommandChat());
+        this.commandMap.registerCommand(new CommandAlert());
         //this.commandMap.registerCommand(new CommandConnect()); todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
 
         // todo help command?
