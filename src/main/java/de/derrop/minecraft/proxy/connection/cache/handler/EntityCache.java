@@ -16,7 +16,7 @@ public class EntityCache implements PacketCacheHandler {
 
     private Map<Integer, PositionedPacket> entities = new HashMap<>();
     private Map<Integer, EntityMetadata> metadata = new HashMap<>();
-
+ // todo (fake?) players are not spawned properly
     @Override
     public int[] getPacketIDs() {
         return new int[]{

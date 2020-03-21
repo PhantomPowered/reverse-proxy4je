@@ -14,9 +14,6 @@ import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
-import net.md_5.bungee.tab.TabList;
-
-import java.nio.charset.StandardCharsets;
 
 @AllArgsConstructor
 public class DownstreamBridge extends PacketHandler {
@@ -55,7 +52,7 @@ public class DownstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PacketWrapper packet) throws Exception {
-        //this.proxyClient.getEntityMap().rewriteClientbound(packet.buf, this.proxyClient.getEntityId(), this.proxyClient.getEntityId(), 47);
+        this.proxyClient.getEntityMap().rewriteClientbound(packet.buf, this.proxyClient.getEntityId(), this.proxyClient.getEntityId(), 47);
         this.proxyClient.redirectPacket(packet.buf, packet.packet);
         //this.proxyClient.redirectPacket(packet.buf);
     }

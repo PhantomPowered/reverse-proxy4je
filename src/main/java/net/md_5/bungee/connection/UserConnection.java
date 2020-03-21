@@ -1,6 +1,7 @@
 package net.md_5.bungee.connection;
 
 import com.google.common.base.Preconditions;
+import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.PlayerUniqueTabList;
 import lombok.Getter;
@@ -115,7 +116,7 @@ public final class UserConnection implements ProxiedPlayer
         Preconditions.checkNotNull(proxyClient, "proxyClient");
 
         if (this.proxyClient != null && this.proxyClient.getCredentials().equals(proxyClient.getCredentials())) {
-            //this.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText("already connected with this client"));
+            this.sendMessage("already connected with this client");
             return;
         }
 
@@ -126,9 +127,14 @@ public final class UserConnection implements ProxiedPlayer
 
         proxyClient.redirectPackets(this);
 
-        this.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText("§7Your name: §e" + proxyClient.getAuthentication().getSelectedProfile().getName()));
+        this.sendMessage("§7Your name: §e" + proxyClient.getAuthentication().getSelectedProfile().getName());
 
         this.proxyClient = proxyClient;
+    }
+
+    @Override
+    public ConnectedProxyClient getConnectedClient() {
+        return this.proxyClient;
     }
 
     @Override
@@ -249,6 +255,23 @@ public final class UserConnection implements ProxiedPlayer
     public String getUUID()
     {
         return getPendingConnection().getUUID();
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        this.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + message));
+    }
+
+    @Override
+    public void sendMessages(String... messages) {
+        for (String message : messages) {
+            this.sendMessage(message);
+        }
+    }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return true; // todo
     }
 
     @Override

@@ -1,5 +1,7 @@
 package de.derrop.minecraft.proxy;
 
+import de.derrop.minecraft.proxy.command.CommandMap;
+import de.derrop.minecraft.proxy.command.defaults.CommandInfo;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
@@ -8,10 +10,8 @@ import net.md_5.bungee.protocol.packet.KeepAlive;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MCProxy {
@@ -20,9 +20,12 @@ public class MCProxy {
 
     private ProxyServer proxyServer = new ProxyServer();
     private Collection<ConnectedProxyClient> onlineClients = new ArrayList<>();
+    private CommandMap commandMap = new CommandMap();
 
     private MCProxy() {
-
+        this.commandMap.registerCommand(new CommandInfo());
+        // todo help command?
+        // TODO Maybe we could add ingame commands like "/list accounts", "/switch account", "/showname"
     }
 
     public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException {
@@ -54,6 +57,10 @@ public class MCProxy {
 
     public Collection<ConnectedProxyClient> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getRedirector() == null).collect(Collectors.toList());
+    }
+
+    public CommandMap getCommandMap() {
+        return commandMap;
     }
 
     public static MCProxy getInstance() {
@@ -95,8 +102,8 @@ public class MCProxy {
             Thread.sleep(1000);
         }*/
         MCCredentials credentials = MCCredentials.parse("kealicie@gmail.com:flylikeaG6");
-        System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), credentials));
-        //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), credentials));
+        //System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), credentials));
+        System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), credentials));
 
         new Thread(() -> {
             while (!Thread.interrupted()) {

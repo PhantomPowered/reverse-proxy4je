@@ -1,5 +1,6 @@
 package net.md_5.bungee.connection;
 
+import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * Represents a player who's connection is being connected to somewhere else,
  * whether it be a remote or embedded server.
  */
-public interface ProxiedPlayer extends Connection
+public interface ProxiedPlayer extends Connection, CommandSender
 {
 
     /**
@@ -87,6 +88,8 @@ public interface ProxiedPlayer extends Connection
     void sendData(String channel, byte[] data);
 
     void useClient(ConnectedProxyClient proxyClient);
+
+    ConnectedProxyClient getConnectedClient();
 
     String getName();
 

@@ -1,6 +1,7 @@
 package net.md_5.bungee.connection;
 
 import com.google.common.base.Preconditions;
+import de.derrop.minecraft.proxy.MCProxy;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
@@ -48,7 +49,7 @@ public class UpstreamBridge extends PacketHandler
     @Override
     public void handle(PacketWrapper packet) throws Exception {
         if (con.getProxyClient() != null) {
-            //con.getEntityRewrite().rewriteServerbound(packet.buf, con.getClientEntityId(), con.getServerEntityId(), con.getPendingConnection().getVersion());
+            con.getEntityRewrite().rewriteServerbound(packet.buf, con.getClientEntityId(), con.getServerEntityId(), con.getPendingConnection().getVersion());
             con.getProxyClient().getChannelWrapper().write(packet);
         }
     }
@@ -59,18 +60,13 @@ public class UpstreamBridge extends PacketHandler
     }
 
     @Override
-    public void handle(Chat chat) throws Exception
-    {
-        int maxLength = ( con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11 ) ? 256 : 100;
-        Preconditions.checkArgument( chat.getMessage().length() <= maxLength, "Chat message too long" ); // Mojang limit, check on updates
+    public void handle(Chat chat) throws Exception {
+        int maxLength = (con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
+        Preconditions.checkArgument(chat.getMessage().length() <= maxLength, "Chat message too long"); // Mojang limit, check on updates
 
-        // TODO Maybe we could add ingame commands like "/list accounts", "/switch account", "/showname"
-        /*chat.setMessage( chatEvent.getMessage() );
-        if ( !chatEvent.isCommand() || !bungee.getPluginManager().dispatchCommand( con, chat.getMessage().substring( 1 ) ) )
-        {
-            con.getServer().unsafe().sendPacket( chat );
+        if (MCProxy.getInstance().getCommandMap().dispatchCommand(con, chat.getMessage())) {
+            throw CancelSendSignal.INSTANCE;
         }
-        throw CancelSendSignal.INSTANCE;*/
     }
 
     @Override

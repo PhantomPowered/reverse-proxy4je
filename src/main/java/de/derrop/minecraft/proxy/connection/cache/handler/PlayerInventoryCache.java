@@ -25,9 +25,9 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+        // todo this causes issues when a player opens a chest with content or something and reconnects
         if (newPacket.getDeserializedPacket() instanceof WindowItems) {
             WindowItems items = (WindowItems) newPacket.getDeserializedPacket();
-            items.read(newPacket.getPacketData());
 
             if (items.getWindowId() != WINDOW_ID) {
                 return;
@@ -40,24 +40,15 @@ public class PlayerInventoryCache implements PacketCacheHandler {
                     this.itemsBySlot.remove(slot);
                 }
             }
-        }
+        } else if (newPacket.getDeserializedPacket() instanceof SetSlot) {
+            SetSlot setSlot = (SetSlot) newPacket.getDeserializedPacket();
+            InventoryItem item = setSlot.getItem();
 
-        switch (newPacket.getPacketId()) {
-            case PacketConstants.WINDOW_ITEMS:
-
-                break;
-
-            case PacketConstants.SET_SLOT:
-                SetSlot setSlot = new SetSlot();
-                setSlot.read(newPacket.getPacketData());
-                InventoryItem item = setSlot.getItem();
-
-                if (item.getItemId() > 0) {
-                    this.itemsBySlot.put(setSlot.getSlot(), item);
-                } else {
-                    this.itemsBySlot.remove(setSlot.getSlot());
-                }
-                break;
+            if (item.getItemId() > 0) {
+                this.itemsBySlot.put(setSlot.getSlot(), item);
+            } else {
+                this.itemsBySlot.remove(setSlot.getSlot());
+            }
         }
     }
 
