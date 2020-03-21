@@ -49,8 +49,10 @@ public class ConnectedProxyClient {
     private CompletableFuture<Boolean> connectionHandler;
 
     public boolean performMojangLogin(MCCredentials credentials) {
+        System.out.println("Logging in " + credentials.getEmail() + "...");
         boolean success = (this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword())) != null;
         if (success) {
+            System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
             this.credentials = credentials;
         }
         return success;

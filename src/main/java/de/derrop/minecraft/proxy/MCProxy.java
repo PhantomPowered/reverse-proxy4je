@@ -37,7 +37,12 @@ public class MCProxy {
     public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException {
         ConnectedProxyClient proxyClient = new ConnectedProxyClient();
 
-        if (!proxyClient.performMojangLogin(credentials)) {
+        try {
+            if (!proxyClient.performMojangLogin(credentials)) {
+                return false;
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return false;
         }
 
@@ -77,9 +82,9 @@ public class MCProxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
         String creds =
-                "MirLulu:yasmine.fleurbaaij@kpnmail.nl:Sarah123\n" +
+                // "MirLulu:yasmine.fleurbaaij@kpnmail.nl:Sarah123\n" + Gomme PERMANENT banned
                         "NotJxey:karty09@gmail.com:puppy1125\n" +
-                /*// "TvdAddicted:elisablair251@gmail.com:turgeon77\n" + -> Gomme PERMANENT banned
+                // "TvdAddicted:elisablair251@gmail.com:turgeon77\n" + -> Gomme PERMANENT banned
                 "kayleighblueeyes:mindy86@hotmail.co.uk:kayleigh2004\n" +
                 "Aftdarksummer:aftdarksummer@gmail.com:Moneymaker123\n" +
                 "DxNicolexD:nicole.nterekas@hotmail.com:jhutch1992\n" +
@@ -97,14 +102,14 @@ public class MCProxy {
                 "rockinruru:ruthieru1@aol.com:MochaDog1\n" +
                 "nomocker:noriane-mcr@hotmail.fr:twilight33\n" +
                 "abbbiii2711:saxkb@yahoo.co.uk:maxjosh1d123\n" +
-                "hackhornet1:npickl@me.com:2smart4u\n" +*/
-                        "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +
-                        "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +
-                        "SeaShel:slb224@live.com:96pisces";
+                "hackhornet1:npickl@me.com:2smart4u\n";
+                                //         "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +Gomme PERMANENT banned
+                                // "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +Gomme PERMANENT banned
+        // "SeaShel:slb224@live.com:96pisces";Gomme PERMANENT banned
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
             String s1 = split[1] + ":" + split[2];
-            System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));
+            System.out.println(instance.startClient(new NetworkAddress("rewinside.tv", 25565), MCCredentials.parse(s1)));
             //System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25565), MCCredentials.parse(s1)));
             Thread.sleep(1000);
         }
