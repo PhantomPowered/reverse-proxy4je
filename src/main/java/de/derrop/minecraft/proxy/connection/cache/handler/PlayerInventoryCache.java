@@ -25,7 +25,6 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        // todo this causes issues when a player opens a chest with content or something and reconnects
         if (newPacket.getDeserializedPacket() instanceof WindowItems) {
             WindowItems items = (WindowItems) newPacket.getDeserializedPacket();
 

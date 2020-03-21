@@ -19,7 +19,7 @@ public class PacketCache {
             new PlayerInfoCache(),
             new EntityCache()
     );
-    // todo scoreboards, (resource pack), keep alive proxy <-> client
+    // todo scoreboards, (resource pack), keep alive proxy <-> client, signs
 
     public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
         packet.markReaderIndex();
