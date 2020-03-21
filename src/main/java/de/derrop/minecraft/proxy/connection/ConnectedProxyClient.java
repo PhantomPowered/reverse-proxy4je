@@ -27,6 +27,7 @@ import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class ConnectedProxyClient {
@@ -111,6 +112,10 @@ public class ConnectedProxyClient {
 
     public String getAccountName() {
         return this.authentication.getSelectedProfile().getName();
+    }
+
+    public UUID getAccountUUID() {
+        return this.authentication.getSelectedProfile().getId();
     }
 
     public MinecraftSessionService getSessionService() {
