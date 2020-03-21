@@ -9,8 +9,7 @@ import java.security.GeneralSecurityException;
 /**
  * Class to expose cipher methods from either native or fallback Java cipher.
  */
-public interface BungeeCipher
-{
+public interface BungeeCipher {
 
     void init(boolean forEncryption, SecretKey key) throws GeneralSecurityException;
 

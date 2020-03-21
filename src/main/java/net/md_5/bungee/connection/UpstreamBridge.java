@@ -9,40 +9,34 @@ import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
 
-public class UpstreamBridge extends PacketHandler
-{
+public class UpstreamBridge extends PacketHandler {
 
     private final UserConnection con;
 
-    public UpstreamBridge(UserConnection con)
-    {
+    public UpstreamBridge(UserConnection con) {
         this.con = con;
 
         con.getTabListHandler().onConnect();
     }
 
     @Override
-    public void exception(Throwable t) throws Exception
-    {
+    public void exception(Throwable t) throws Exception {
         t.printStackTrace();
-        con.disconnect( Util.exception( t ) );
+        con.disconnect(Util.exception(t));
     }
 
     @Override
-    public void disconnected(ChannelWrapper channel) throws Exception
-    {
+    public void disconnected(ChannelWrapper channel) throws Exception {
         // We lost connection to the client
         con.getTabListHandler().onDisconnect();
     }
 
     @Override
-    public void writabilityChanged(ChannelWrapper channel) throws Exception
-    {
+    public void writabilityChanged(ChannelWrapper channel) throws Exception {
     }
 
     @Override
-    public boolean shouldHandle(PacketWrapper packet) throws Exception
-    {
+    public boolean shouldHandle(PacketWrapper packet) throws Exception {
         return packet.id != 27; // disconnect packet from the client, the proxy should stay connected
     }
 
@@ -55,8 +49,7 @@ public class UpstreamBridge extends PacketHandler
     }
 
     @Override
-    public void handle(KeepAlive alive) throws Exception
-    {
+    public void handle(KeepAlive alive) throws Exception {
     }
 
     @Override
@@ -70,8 +63,7 @@ public class UpstreamBridge extends PacketHandler
     }
 
     @Override
-    public void handle(TabCompleteRequest tabComplete) throws Exception
-    {
+    public void handle(TabCompleteRequest tabComplete) throws Exception {
         /*List<String> suggestions = new ArrayList<>();
 
         if ( tabComplete.getCursor().startsWith( "/" ) )
@@ -114,27 +106,22 @@ public class UpstreamBridge extends PacketHandler
     }
 
     @Override
-    public void handle(ClientSettings settings) throws Exception
-    {
+    public void handle(ClientSettings settings) throws Exception {
     }
 
     @Override
-    public void handle(PluginMessage pluginMessage) throws Exception
-    {
-        if ( pluginMessage.getTag().equals( "BungeeCord" ) )
-        {
+    public void handle(PluginMessage pluginMessage) throws Exception {
+        if (pluginMessage.getTag().equals("BungeeCord")) {
             throw CancelSendSignal.INSTANCE;
         }
 
-        if ( PluginMessage.SHOULD_RELAY.apply( pluginMessage ) )
-        {
-            con.getPendingConnection().getRelayMessages().add( pluginMessage );
+        if (PluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
+            con.getPendingConnection().getRelayMessages().add(pluginMessage);
         }
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "[" + con.getName() + "] -> UpstreamBridge";
     }
 }

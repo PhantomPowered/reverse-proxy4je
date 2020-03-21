@@ -9,7 +9,6 @@ import de.derrop.minecraft.proxy.util.NetworkAddress;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -79,7 +78,7 @@ public class MCProxy {
         instance.proxyServer.start(new InetSocketAddress(25565));
         String creds =
                 "MirLulu:yasmine.fleurbaaij@kpnmail.nl:Sarah123\n" +
-                "NotJxey:karty09@gmail.com:puppy1125\n" +
+                        "NotJxey:karty09@gmail.com:puppy1125\n" +
                 /*// "TvdAddicted:elisablair251@gmail.com:turgeon77\n" + -> Gomme PERMANENT banned
                 "kayleighblueeyes:mindy86@hotmail.co.uk:kayleigh2004\n" +
                 "Aftdarksummer:aftdarksummer@gmail.com:Moneymaker123\n" +
@@ -99,9 +98,9 @@ public class MCProxy {
                 "nomocker:noriane-mcr@hotmail.fr:twilight33\n" +
                 "abbbiii2711:saxkb@yahoo.co.uk:maxjosh1d123\n" +
                 "hackhornet1:npickl@me.com:2smart4u\n" +*/
-                "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +
-                "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +
-                "SeaShel:slb224@live.com:96pisces";
+                        "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +
+                        "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +
+                        "SeaShel:slb224@live.com:96pisces";
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
             String s1 = split[1] + ":" + split[2];

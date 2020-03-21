@@ -11,8 +11,7 @@ import java.net.SocketAddress;
  * It should expose information about the remote peer, however not be specific
  * to a type of connection, whether server or player.
  */
-public interface Connection
-{
+public interface Connection {
 
     /**
      * Gets the remote address of this connection.
@@ -36,7 +35,7 @@ public interface Connection
      * closed too.
      *
      * @param reason the reason shown to the player / sent to the server on
-     * disconnect
+     *               disconnect
      */
     @Deprecated
     void disconnect(String reason);
@@ -47,7 +46,7 @@ public interface Connection
      * closed too.
      *
      * @param reason the reason shown to the player / sent to the server on
-     * disconnect
+     *               disconnect
      */
     void disconnect(BaseComponent... reason);
 
@@ -57,7 +56,7 @@ public interface Connection
      * closed too.
      *
      * @param reason the reason shown to the player / sent to the server on
-     * disconnect
+     *               disconnect
      */
     void disconnect(BaseComponent reason);
 
@@ -76,8 +75,7 @@ public interface Connection
      */
     Unsafe unsafe();
 
-    interface Unsafe
-    {
+    interface Unsafe {
 
         /**
          * Send a packet to this connection.

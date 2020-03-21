@@ -3,8 +3,7 @@ package net.md_5.bungee.api.score;
 /**
  * Represents locations for a scoreboard to be displayed.
  */
-public enum Position
-{
+public enum Position {
 
     LIST,
     SIDEBAR,
@@ -24,5 +23,5 @@ public enum Position
     SIDEBAR_RED,
     SIDEBAR_LIGHT_PURPLE,
     SIDEBAR_YELLOW,
-    SIDEBAR_WHITE;
+    SIDEBAR_WHITE
 }

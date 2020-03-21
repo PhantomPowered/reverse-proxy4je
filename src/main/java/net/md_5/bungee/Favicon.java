@@ -19,27 +19,22 @@ import java.io.IOException;
  * Favicon shown in the server list.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Favicon
-{
+public class Favicon {
 
-    private static final TypeAdapter<Favicon> FAVICON_TYPE_ADAPTER = new TypeAdapter<Favicon>()
-    {
+    private static final TypeAdapter<Favicon> FAVICON_TYPE_ADAPTER = new TypeAdapter<Favicon>() {
         @Override
-        public void write(JsonWriter out, Favicon value) throws IOException
-        {
-            TypeAdapters.STRING.write( out, value == null ? null : value.getEncoded() );
+        public void write(JsonWriter out, Favicon value) throws IOException {
+            TypeAdapters.STRING.write(out, value == null ? null : value.getEncoded());
         }
 
         @Override
-        public Favicon read(JsonReader in) throws IOException
-        {
-            String enc = TypeAdapters.STRING.read( in );
-            return enc == null ? null : create( enc );
+        public Favicon read(JsonReader in) throws IOException {
+            String enc = TypeAdapters.STRING.read(in);
+            return enc == null ? null : create(enc);
         }
     };
 
-    public static TypeAdapter<Favicon> getFaviconTypeAdapter()
-    {
+    public static TypeAdapter<Favicon> getFaviconTypeAdapter() {
         return FAVICON_TYPE_ADAPTER;
     }
 
@@ -56,40 +51,35 @@ public class Favicon
      * @param image the image to create on
      * @return the created favicon instance
      * @throws IllegalArgumentException if the favicon is larger than
-     * {@link Short#MAX_VALUE} or not of dimensions 64x64 pixels.
+     *                                  {@link Short#MAX_VALUE} or not of dimensions 64x64 pixels.
      */
-    public static Favicon create(BufferedImage image)
-    {
+    public static Favicon create(BufferedImage image) {
         // check size
-        if ( image.getWidth() != 64 || image.getHeight() != 64 )
-        {
-            throw new IllegalArgumentException( "Server icon must be exactly 64x64 pixels" );
+        if (image.getWidth() != 64 || image.getHeight() != 64) {
+            throw new IllegalArgumentException("Server icon must be exactly 64x64 pixels");
         }
 
         // dump image PNG
         byte[] imageBytes;
-        try
-        {
+        try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ImageIO.write( image, "PNG", stream );
+            ImageIO.write(image, "PNG", stream);
             imageBytes = stream.toByteArray();
-        } catch ( IOException e )
-        {
+        } catch (IOException e) {
             // ByteArrayOutputStream should never throw this
-            throw new AssertionError( e );
+            throw new AssertionError(e);
         }
 
         // encode with header
-        String encoded = "data:image/png;base64," + BaseEncoding.base64().encode( imageBytes );
+        String encoded = "data:image/png;base64," + BaseEncoding.base64().encode(imageBytes);
 
         // check encoded image size
-        if ( encoded.length() > Short.MAX_VALUE )
-        {
-            throw new IllegalArgumentException( "Favicon file too large for server to process" );
+        if (encoded.length() > Short.MAX_VALUE) {
+            throw new IllegalArgumentException("Favicon file too large for server to process");
         }
 
         // create
-        return new Favicon( encoded );
+        return new Favicon(encoded);
     }
 
     /**
@@ -100,8 +90,7 @@ public class Favicon
      * @deprecated Use #create(java.awt.image.BufferedImage) instead
      */
     @Deprecated
-    public static Favicon create(String encodedString)
-    {
-        return new Favicon( encodedString );
+    public static Favicon create(String encodedString) {
+        return new Favicon(encodedString);
     }
 }

@@ -13,8 +13,7 @@ import net.md_5.bungee.protocol.ProtocolConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Login extends DefinedPacket
-{
+public class Login extends DefinedPacket {
 
     private int entityId;
     private short gameMode;
@@ -28,80 +27,63 @@ public class Login extends DefinedPacket
     private boolean normalRespawn;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
+    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
         entityId = buf.readInt();
         gameMode = buf.readUnsignedByte();
-        if ( protocolVersion > ProtocolConstants.MINECRAFT_1_9 )
-        {
+        if (protocolVersion > ProtocolConstants.MINECRAFT_1_9) {
             dimension = buf.readInt();
-        } else
-        {
+        } else {
             dimension = buf.readByte();
         }
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_15 )
-        {
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
             seed = buf.readLong();
         }
-        if ( protocolVersion < ProtocolConstants.MINECRAFT_1_14 )
-        {
+        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
             difficulty = buf.readUnsignedByte();
         }
         maxPlayers = buf.readUnsignedByte();
-        levelType = readString( buf );
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_14 )
-        {
-            viewDistance = readVarInt( buf );
+        levelType = readString(buf);
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_14) {
+            viewDistance = readVarInt(buf);
         }
-        if ( protocolVersion >= 29 )
-        {
+        if (protocolVersion >= 29) {
             reducedDebugInfo = buf.readBoolean();
         }
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_15 )
-        {
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
             normalRespawn = buf.readBoolean();
         }
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        buf.writeInt( entityId );
-        buf.writeByte( gameMode );
-        if ( protocolVersion > ProtocolConstants.MINECRAFT_1_9 )
-        {
-            buf.writeInt( dimension );
-        } else
-        {
-            buf.writeByte( dimension );
+    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        buf.writeInt(entityId);
+        buf.writeByte(gameMode);
+        if (protocolVersion > ProtocolConstants.MINECRAFT_1_9) {
+            buf.writeInt(dimension);
+        } else {
+            buf.writeByte(dimension);
         }
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_15 )
-        {
-            buf.writeLong( seed );
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
+            buf.writeLong(seed);
         }
-        if ( protocolVersion < ProtocolConstants.MINECRAFT_1_14 )
-        {
-            buf.writeByte( difficulty );
+        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
+            buf.writeByte(difficulty);
         }
-        buf.writeByte( maxPlayers );
-        writeString( levelType, buf );
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_14 )
-        {
-            writeVarInt( viewDistance, buf );
+        buf.writeByte(maxPlayers);
+        writeString(levelType, buf);
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_14) {
+            writeVarInt(viewDistance, buf);
         }
-        if ( protocolVersion >= 29 )
-        {
-            buf.writeBoolean( reducedDebugInfo );
+        if (protocolVersion >= 29) {
+            buf.writeBoolean(reducedDebugInfo);
         }
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_15 )
-        {
-            buf.writeBoolean( normalRespawn );
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
+            buf.writeBoolean(normalRespawn);
         }
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

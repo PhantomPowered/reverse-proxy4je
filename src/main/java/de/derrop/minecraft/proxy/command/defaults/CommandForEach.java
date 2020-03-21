@@ -21,7 +21,7 @@ public class CommandForEach extends Command {
             return;
         }
         if (args.length < 2) {
-            sender.sendMessage("foreach <execute> <message> | execute a command for every player on the proxy (§e{name} §7for the name of the player)");
+            sender.sendMessage("foreach EXECUTE <message> | execute a command for every player on the proxy (§e{name} §7for the name of the player)");
             return;
         }
 

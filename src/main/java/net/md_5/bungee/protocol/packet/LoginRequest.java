@@ -16,26 +16,22 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class LoginRequest extends DefinedPacket
-{
+public class LoginRequest extends DefinedPacket {
 
     private String data;
 
     @Override
-    public void read(ByteBuf buf)
-    {
-        data = readString( buf );
+    public void read(ByteBuf buf) {
+        data = readString(buf);
     }
 
     @Override
-    public void write(ByteBuf buf)
-    {
-        writeString( data, buf );
+    public void write(ByteBuf buf) {
+        writeString(data, buf);
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

@@ -9,32 +9,27 @@ import net.md_5.bungee.protocol.packet.LegacyPing;
 
 import java.util.List;
 
-public class LegacyDecoder extends ByteToMessageDecoder
-{
+public class LegacyDecoder extends ByteToMessageDecoder {
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
-    {
-        if ( !in.isReadable() )
-        {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        if (!in.isReadable()) {
             return;
         }
 
         in.markReaderIndex();
         short packetID = in.readUnsignedByte();
 
-        if ( packetID == 0xFE )
-        {
-            out.add( new PacketWrapper( new LegacyPing( in.isReadable() && in.readUnsignedByte() == 0x01 ), packetID, Unpooled.EMPTY_BUFFER ) );
+        if (packetID == 0xFE) {
+            out.add(new PacketWrapper(new LegacyPing(in.isReadable() && in.readUnsignedByte() == 0x01), packetID, Unpooled.EMPTY_BUFFER));
             return;
-        } else if ( packetID == 0x02 && in.isReadable() )
-        {
-            in.skipBytes( in.readableBytes() );
-            out.add( new PacketWrapper( new LegacyHandshake(), packetID, Unpooled.EMPTY_BUFFER ) );
+        } else if (packetID == 0x02 && in.isReadable()) {
+            in.skipBytes(in.readableBytes());
+            out.add(new PacketWrapper(new LegacyHandshake(), packetID, Unpooled.EMPTY_BUFFER));
             return;
         }
 
         in.resetReaderIndex();
-        ctx.pipeline().remove( this );
+        ctx.pipeline().remove(this);
     }
 }

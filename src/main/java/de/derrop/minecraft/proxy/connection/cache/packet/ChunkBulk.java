@@ -32,8 +32,8 @@ public class ChunkBulk extends DefinedPacket {
             this.z[i] = buf.readInt();
             this.extracted[i] = new ChunkData.Extracted();
             this.extracted[i].dataLength = buf.readShort() & 65535;
-            
-            
+
+
             this.extracted[i].data = new byte[getArraySize(Integer.bitCount(this.extracted[i].dataLength), this.b, true)];
         }
 

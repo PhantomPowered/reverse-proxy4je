@@ -9,8 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class Team
-{
+public class Team {
 
     @NonNull
     private final String name;
@@ -23,18 +22,15 @@ public class Team
     private int color;
     private Set<String> players = new HashSet<>();
 
-    public Collection<String> getPlayers()
-    {
-        return Collections.unmodifiableSet( players );
+    public Collection<String> getPlayers() {
+        return Collections.unmodifiableSet(players);
     }
 
-    public void addPlayer(String name)
-    {
-        players.add( name );
+    public void addPlayer(String name) {
+        players.add(name);
     }
 
-    public void removePlayer(String name)
-    {
-        players.remove( name );
+    public void removePlayer(String name) {
+        players.remove(name);
     }
 }

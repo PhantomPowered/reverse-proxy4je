@@ -1,13 +1,9 @@
 package de.derrop.minecraft.proxy.connection.cache.packet;
 
-import de.derrop.minecraft.proxy.util.DataWatcher;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
-
-import java.io.IOException;
-import java.util.List;
 
 @Data
 @NoArgsConstructor

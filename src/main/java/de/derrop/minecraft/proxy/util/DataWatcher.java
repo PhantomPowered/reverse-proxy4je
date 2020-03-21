@@ -2,17 +2,17 @@ package de.derrop.minecraft.proxy.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import de.derrop.minecraft.proxy.connection.PacketUtil;
 import de.derrop.minecraft.proxy.connection.cache.InventoryItem;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.apache.commons.lang3.ObjectUtils;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DataWatcher {
 
@@ -20,8 +20,8 @@ public class DataWatcher {
      * When isBlank is true the DataWatcher is not watching any objects
      */
     private boolean isBlank = true;
-    private static final Map<Class<?>, Integer> dataTypes = Maps.<Class<?>, Integer>newHashMap();
-    private final Map<Integer, DataWatcher.WatchableObject> watchedObjects = Maps.<Integer, DataWatcher.WatchableObject>newHashMap();
+    private static final Map<Class<?>, Integer> dataTypes = Maps.newHashMap();
+    private final Map<Integer, DataWatcher.WatchableObject> watchedObjects = Maps.newHashMap();
 
     /**
      * true if one or more object was changed
@@ -30,7 +30,7 @@ public class DataWatcher {
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public <T> void addObject(int id, T object) {
-        Integer integer = (Integer) dataTypes.get(object.getClass());
+        Integer integer = dataTypes.get(object.getClass());
 
         if (integer == null) {
             throw new IllegalArgumentException("Unknown data type: " + object.getClass());
@@ -51,7 +51,7 @@ public class DataWatcher {
      * Add a new object for the DataWatcher to watch, using the specified data type.
      */
     public void addObjectByDataType(int id, int type) {
-        DataWatcher.WatchableObject datawatcher$watchableobject = new DataWatcher.WatchableObject(type, id, (Object) null);
+        DataWatcher.WatchableObject datawatcher$watchableobject = new DataWatcher.WatchableObject(type, id, null);
         this.lock.writeLock().lock();
         this.watchedObjects.put(Integer.valueOf(id), datawatcher$watchableobject);
         this.lock.writeLock().unlock();
@@ -102,7 +102,7 @@ public class DataWatcher {
         DataWatcher.WatchableObject datawatcher$watchableobject;
 
         try {
-            datawatcher$watchableobject = (DataWatcher.WatchableObject) this.watchedObjects.get(Integer.valueOf(id));
+            datawatcher$watchableobject = this.watchedObjects.get(Integer.valueOf(id));
         } catch (Throwable throwable) {
             throw new Error(throwable);
         }
@@ -162,7 +162,7 @@ public class DataWatcher {
                     datawatcher$watchableobject.setWatched(false);
 
                     if (list == null) {
-                        list = Lists.<DataWatcher.WatchableObject>newArrayList();
+                        list = Lists.newArrayList();
                     }
 
                     list.add(datawatcher$watchableobject);
@@ -193,7 +193,7 @@ public class DataWatcher {
 
         for (DataWatcher.WatchableObject datawatcher$watchableobject : this.watchedObjects.values()) {
             if (list == null) {
-                list = Lists.<DataWatcher.WatchableObject>newArrayList();
+                list = Lists.newArrayList();
             }
 
             list.add(datawatcher$watchableobject);
@@ -257,7 +257,7 @@ public class DataWatcher {
 
         for (int i = buffer.readByte(); i != 127; i = buffer.readByte()) {
             if (list == null) {
-                list = Lists.<DataWatcher.WatchableObject>newArrayList();
+                list = Lists.newArrayList();
             }
 
             int j = (i & 224) >> 5;

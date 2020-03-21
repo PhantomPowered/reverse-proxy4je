@@ -3,8 +3,7 @@ package net.md_5.bungee.protocol;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProtocolConstants
-{
+public class ProtocolConstants {
 
     public static final int MINECRAFT_1_8 = 47;
     public static final int MINECRAFT_1_9 = 107;
@@ -63,9 +62,8 @@ public class ProtocolConstants
             ProtocolConstants.MINECRAFT_1_15_2
     );
 
-    public enum Direction
-    {
+    public enum Direction {
 
-        TO_CLIENT, TO_SERVER;
+        TO_CLIENT, TO_SERVER
     }
 }

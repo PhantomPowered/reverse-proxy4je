@@ -4,8 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.zip.DataFormatException;
 
-public interface BungeeZlib
-{
+public interface BungeeZlib {
 
     void init(boolean compress, int level);
 

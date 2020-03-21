@@ -12,26 +12,22 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Kick extends DefinedPacket
-{
+public class Kick extends DefinedPacket {
 
     private String message;
 
     @Override
-    public void read(ByteBuf buf)
-    {
-        message = readString( buf );
+    public void read(ByteBuf buf) {
+        message = readString(buf);
     }
 
     @Override
-    public void write(ByteBuf buf)
-    {
-        writeString( message, buf );
+    public void write(ByteBuf buf) {
+        writeString(message, buf);
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

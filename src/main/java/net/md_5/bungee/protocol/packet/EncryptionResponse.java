@@ -13,29 +13,25 @@ import net.md_5.bungee.protocol.ProtocolConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class EncryptionResponse extends DefinedPacket
-{
+public class EncryptionResponse extends DefinedPacket {
 
     private byte[] sharedSecret;
     private byte[] verifyToken;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        sharedSecret = readArray( buf, 128 );
-        verifyToken = readArray( buf, 128 );
+    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        sharedSecret = readArray(buf, 128);
+        verifyToken = readArray(buf, 128);
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        writeArray( sharedSecret, buf );
-        writeArray( verifyToken, buf );
+    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        writeArray(sharedSecret, buf);
+        writeArray(verifyToken, buf);
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

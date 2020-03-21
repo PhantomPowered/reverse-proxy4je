@@ -2,14 +2,9 @@ package de.derrop.minecraft.proxy.connection;
 
 import de.derrop.minecraft.proxy.util.NettyUtils;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import net.md_5.bungee.netty.PipelineUtils;
-import net.md_5.bungee.protocol.MinecraftDecoder;
-import net.md_5.bungee.protocol.MinecraftEncoder;
-import net.md_5.bungee.protocol.Protocol;
 
 import java.net.SocketAddress;
 

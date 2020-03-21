@@ -1,11 +1,8 @@
 package de.derrop.minecraft.proxy.connection;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.minecraft.CryptManager;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.connection.DownstreamBridge;

@@ -1,12 +1,8 @@
 package net.md_5.bungee.tab;
 
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.connection.LoginResult;
-import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.PlayerListItem;
 
-public abstract class TabList
-{
+public abstract class TabList {
 
     public abstract void onUpdate(PlayerListItem playerListItem);
 
@@ -18,8 +14,7 @@ public abstract class TabList
 
     public abstract void onDisconnect();
 
-    public static PlayerListItem rewrite(PlayerListItem playerListItem)
-    {
+    public static PlayerListItem rewrite(PlayerListItem playerListItem) {
         /*for ( PlayerListItem.Item item : playerListItem.getItems() )
         {
             if ( item.getUuid() == null ) // Old style ping

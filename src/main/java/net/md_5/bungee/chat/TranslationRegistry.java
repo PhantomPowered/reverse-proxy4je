@@ -15,50 +15,38 @@ import java.util.*;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TranslationRegistry
-{
+public final class TranslationRegistry {
 
     public static final TranslationRegistry INSTANCE = new TranslationRegistry();
     //
     private final List<TranslationProvider> providers = new LinkedList<>();
 
-    static
-    {
-        try
-        {
-            INSTANCE.addProvider( new JsonProvider( "/assets/minecraft/lang/en_us.json" ) );
-        } catch ( Exception ex )
-        {
+    static {
+        try {
+            INSTANCE.addProvider(new JsonProvider("/assets/minecraft/lang/en_us.json"));
+        } catch (Exception ex) {
         }
 
-        try
-        {
-            INSTANCE.addProvider( new JsonProvider( "/mojang-translations/en_us.json" ) );
-        } catch ( Exception ex )
-        {
+        try {
+            INSTANCE.addProvider(new JsonProvider("/mojang-translations/en_us.json"));
+        } catch (Exception ex) {
         }
 
-        try
-        {
-            INSTANCE.addProvider( new ResourceBundleProvider( "mojang-translations/en_US" ) );
-        } catch ( Exception ex )
-        {
+        try {
+            INSTANCE.addProvider(new ResourceBundleProvider("mojang-translations/en_US"));
+        } catch (Exception ex) {
         }
     }
 
-    private void addProvider(TranslationProvider provider)
-    {
-        providers.add( provider );
+    private void addProvider(TranslationProvider provider) {
+        providers.add(provider);
     }
 
-    public String translate(String s)
-    {
-        for ( TranslationProvider provider : providers )
-        {
-            String translation = provider.translate( s );
+    public String translate(String s) {
+        for (TranslationProvider provider : providers) {
+            String translation = provider.translate(s);
 
-            if ( translation != null )
-            {
+            if (translation != null) {
                 return translation;
             }
         }
@@ -66,53 +54,44 @@ public final class TranslationRegistry
         return s;
     }
 
-    private interface TranslationProvider
-    {
+    private interface TranslationProvider {
 
         String translate(String s);
     }
 
     @Data
-    private static class ResourceBundleProvider implements TranslationProvider
-    {
+    private static class ResourceBundleProvider implements TranslationProvider {
 
         private final ResourceBundle bundle;
 
-        public ResourceBundleProvider(String bundlePath)
-        {
-            this.bundle = ResourceBundle.getBundle( bundlePath );
+        public ResourceBundleProvider(String bundlePath) {
+            this.bundle = ResourceBundle.getBundle(bundlePath);
         }
 
         @Override
-        public String translate(String s)
-        {
-            return ( bundle.containsKey( s ) ) ? bundle.getString( s ) : null;
+        public String translate(String s) {
+            return (bundle.containsKey(s)) ? bundle.getString(s) : null;
         }
     }
 
     @Data
     @ToString(exclude = "translations")
-    private static class JsonProvider implements TranslationProvider
-    {
+    private static class JsonProvider implements TranslationProvider {
 
         private final Map<String, String> translations = new HashMap<>();
 
-        public JsonProvider(String resourcePath) throws IOException
-        {
-            try ( InputStreamReader rd = new InputStreamReader( JsonProvider.class.getResourceAsStream( resourcePath ), Charsets.UTF_8 ) )
-            {
-                JsonObject obj = new Gson().fromJson( rd, JsonObject.class );
-                for ( Map.Entry<String, JsonElement> entries : obj.entrySet() )
-                {
-                    translations.put( entries.getKey(), entries.getValue().getAsString() );
+        public JsonProvider(String resourcePath) throws IOException {
+            try (InputStreamReader rd = new InputStreamReader(JsonProvider.class.getResourceAsStream(resourcePath), Charsets.UTF_8)) {
+                JsonObject obj = new Gson().fromJson(rd, JsonObject.class);
+                for (Map.Entry<String, JsonElement> entries : obj.entrySet()) {
+                    translations.put(entries.getKey(), entries.getValue().getAsString());
                 }
             }
         }
 
         @Override
-        public String translate(String s)
-        {
-            return translations.get( s );
+        public String translate(String s) {
+            return translations.get(s);
         }
     }
 }

@@ -13,29 +13,25 @@ import net.md_5.bungee.protocol.ProtocolConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PlayerListHeaderFooter extends DefinedPacket
-{
+public class PlayerListHeaderFooter extends DefinedPacket {
 
     private String header;
     private String footer;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        header = readString( buf );
-        footer = readString( buf );
+    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        header = readString(buf);
+        footer = readString(buf);
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        writeString( header, buf );
-        writeString( footer, buf );
+    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        writeString(header, buf);
+        writeString(footer, buf);
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

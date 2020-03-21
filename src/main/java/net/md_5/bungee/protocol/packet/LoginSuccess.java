@@ -12,29 +12,25 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class LoginSuccess extends DefinedPacket
-{
+public class LoginSuccess extends DefinedPacket {
 
     private String uuid;
     private String username;
 
     @Override
-    public void read(ByteBuf buf)
-    {
-        uuid = readString( buf );
-        username = readString( buf );
+    public void read(ByteBuf buf) {
+        uuid = readString(buf);
+        username = readString(buf);
     }
 
     @Override
-    public void write(ByteBuf buf)
-    {
-        writeString( uuid, buf );
-        writeString( username, buf );
+    public void write(ByteBuf buf) {
+        writeString(uuid, buf);
+        writeString(username, buf);
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

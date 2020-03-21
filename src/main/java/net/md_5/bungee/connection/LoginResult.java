@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginResult
-{
+public class LoginResult {
 
     private String id;
     private String name;
@@ -14,8 +13,7 @@ public class LoginResult
 
     @Data
     @AllArgsConstructor
-    public static class Property
-    {
+    public static class Property {
 
         private String name;
         private String value;

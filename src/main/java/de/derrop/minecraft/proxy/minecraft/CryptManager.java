@@ -5,7 +5,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
-import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -44,7 +43,7 @@ public class CryptManager {
      */
     public static byte[] getServerIdHash(String serverId, PublicKey publicKey, SecretKey secretKey) {
         try {
-            return digestOperation("SHA-1", new byte[][]{serverId.getBytes("ISO_8859_1"), secretKey.getEncoded(), publicKey.getEncoded()});
+            return digestOperation("SHA-1", serverId.getBytes("ISO_8859_1"), secretKey.getEncoded(), publicKey.getEncoded());
         } catch (UnsupportedEncodingException unsupportedencodingexception) {
             unsupportedencodingexception.printStackTrace();
             return null;
@@ -78,9 +77,7 @@ public class CryptManager {
             KeyFactory keyfactory = KeyFactory.getInstance("RSA");
             return keyfactory.generatePublic(encodedkeyspec);
         } catch (NoSuchAlgorithmException var3) {
-            ;
         } catch (InvalidKeySpecException var4) {
-            ;
         }
 
         return null;
@@ -147,7 +144,7 @@ public class CryptManager {
     public static Cipher createNetCipherInstance(int opMode, Key key) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
-            cipher.init(opMode, (Key) key, (AlgorithmParameterSpec) (new IvParameterSpec(key.getEncoded())));
+            cipher.init(opMode, key, new IvParameterSpec(key.getEncoded()));
             return cipher;
         } catch (GeneralSecurityException generalsecurityexception) {
             throw new RuntimeException(generalsecurityexception);

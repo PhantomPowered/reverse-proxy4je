@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import net.md_5.bungee.Util;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -20,25 +19,23 @@ import java.util.UUID;
 @ToString(exclude = "favicon")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServerPing
-{
+public class ServerPing {
 
     private Protocol version;
 
     @Data
     @AllArgsConstructor
-    public static class Protocol
-    {
+    public static class Protocol {
 
         private String name;
         private int protocol;
     }
+
     private Players players;
 
     @Data
     @AllArgsConstructor
-    public static class Players
-    {
+    public static class Players {
 
         private int max;
         private int online;
@@ -47,15 +44,13 @@ public class ServerPing
 
     @Data
     @AllArgsConstructor
-    public static class PlayerInfo
-    {
+    public static class PlayerInfo {
 
         private String name;
         private UUID uniqueId;
 
-        public String getId()
-        {
-            return uniqueId.toString().replace( "-", "" );
+        public String getId() {
+            return uniqueId.toString().replace("-", "");
         }
     }
 
@@ -63,8 +58,7 @@ public class ServerPing
     private Favicon favicon;
 
     @Data
-    public static class ModInfo
-    {
+    public static class ModInfo {
 
         private String type = "FML";
         private List<ModItem> modList = new ArrayList<>();
@@ -72,8 +66,7 @@ public class ServerPing
 
     @Data
     @AllArgsConstructor
-    public static class ModItem
-    {
+    public static class ModItem {
 
         private String modid;
         private String version;
@@ -84,58 +77,48 @@ public class ServerPing
     private final ModInfo modinfo = new ModInfo();
 
     @Deprecated
-    public ServerPing(Protocol version, Players players, String description, String favicon)
-    {
-        this( version, players, new TextComponent( TextComponent.fromLegacyText( description ) ), favicon == null ? null : Favicon.create( favicon ) );
+    public ServerPing(Protocol version, Players players, String description, String favicon) {
+        this(version, players, new TextComponent(TextComponent.fromLegacyText(description)), favicon == null ? null : Favicon.create(favicon));
     }
 
     @Deprecated
-    public ServerPing(Protocol version, Players players, String description, Favicon favicon)
-    {
-        this( version, players, new TextComponent( TextComponent.fromLegacyText( description ) ), favicon );
+    public ServerPing(Protocol version, Players players, String description, Favicon favicon) {
+        this(version, players, new TextComponent(TextComponent.fromLegacyText(description)), favicon);
     }
 
     @Deprecated
-    public String getFavicon()
-    {
+    public String getFavicon() {
         return getFaviconObject() == null ? null : getFaviconObject().getEncoded();
     }
 
-    public Favicon getFaviconObject()
-    {
+    public Favicon getFaviconObject() {
         return this.favicon;
     }
 
     @Deprecated
-    public void setFavicon(String favicon)
-    {
-        setFavicon( favicon == null ? null : Favicon.create( favicon ) );
+    public void setFavicon(String favicon) {
+        setFavicon(favicon == null ? null : Favicon.create(favicon));
     }
 
-    public void setFavicon(Favicon favicon)
-    {
+    public void setFavicon(Favicon favicon) {
         this.favicon = favicon;
     }
 
     @Deprecated
-    public void setDescription(String description)
-    {
-        this.description = new TextComponent( TextComponent.fromLegacyText( description ) );
+    public void setDescription(String description) {
+        this.description = new TextComponent(TextComponent.fromLegacyText(description));
     }
 
     @Deprecated
-    public String getDescription()
-    {
-        return BaseComponent.toLegacyText( description );
+    public String getDescription() {
+        return BaseComponent.toLegacyText(description);
     }
 
-    public void setDescriptionComponent(BaseComponent description)
-    {
+    public void setDescriptionComponent(BaseComponent description) {
         this.description = description;
     }
 
-    public BaseComponent getDescriptionComponent()
-    {
+    public BaseComponent getDescriptionComponent() {
         return description;
     }
 }

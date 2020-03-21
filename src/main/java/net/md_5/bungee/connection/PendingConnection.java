@@ -6,8 +6,7 @@ import java.util.UUID;
 /**
  * Represents a user attempting to log into the proxy.
  */
-public interface PendingConnection extends Connection
-{
+public interface PendingConnection extends Connection {
 
     /**
      * Get the requested username.

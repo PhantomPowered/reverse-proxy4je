@@ -4,12 +4,10 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.command.Command;
 import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
-import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.Chat;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CommandChat extends Command {

@@ -15,8 +15,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.score.Objective;
-import net.md_5.bungee.api.score.Score;
 import net.md_5.bungee.api.score.Scoreboard;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.entitymap.EntityMap;
@@ -33,8 +31,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public final class UserConnection implements ProxiedPlayer
-{
+public final class UserConnection implements ProxiedPlayer {
 
     /*========================================================================*/
     @NonNull
@@ -86,30 +83,26 @@ public final class UserConnection implements ProxiedPlayer
         return ch;
     }
 
-    public void init()
-    {
-        this.entityRewrite = EntityMap.getEntityMap( getPendingConnection().getVersion() );
+    public void init() {
+        this.entityRewrite = EntityMap.getEntityMap(getPendingConnection().getVersion());
 
         this.displayName = name;
 
         tabListHandler = new PlayerUniqueTabList(this.ch);
     }
 
-    public void sendPacket(PacketWrapper packet)
-    {
-        ch.write( packet );
+    public void sendPacket(PacketWrapper packet) {
+        ch.write(packet);
     }
 
     @Deprecated
-    public boolean isActive()
-    {
+    public boolean isActive() {
         return !ch.isClosed();
     }
 
     @Override
-    public void setDisplayName(String name)
-    {
-        Preconditions.checkNotNull( name, "displayName" );
+    public void setDisplayName(String name) {
+        Preconditions.checkNotNull(name, "displayName");
         displayName = name;
     }
 
@@ -160,28 +153,23 @@ public final class UserConnection implements ProxiedPlayer
     }
 
     @Override
-    public void disconnect(String reason)
-    {
-        disconnect0( TextComponent.fromLegacyText( reason ) );
+    public void disconnect(String reason) {
+        disconnect0(TextComponent.fromLegacyText(reason));
     }
 
     @Override
-    public void disconnect(BaseComponent... reason)
-    {
-        disconnect0( reason );
+    public void disconnect(BaseComponent... reason) {
+        disconnect0(reason);
     }
 
     @Override
-    public void disconnect(BaseComponent reason)
-    {
-        disconnect0( reason );
+    public void disconnect(BaseComponent reason) {
+        disconnect0(reason);
     }
 
-    public void disconnect0(final BaseComponent... reason)
-    {
-        if ( !ch.isClosing() )
-        {
-            ch.close( new Kick( ComponentSerializer.toString( reason ) ) );
+    public void disconnect0(final BaseComponent... reason) {
+        if (!ch.isClosing()) {
+            ch.close(new Kick(ComponentSerializer.toString(reason)));
 
             if (this.proxyClient != null) {
                 this.proxyClient.free();
@@ -190,8 +178,7 @@ public final class UserConnection implements ProxiedPlayer
     }
 
     @Override
-    public void chat(String message)
-    {
+    public void chat(String message) {
         Preconditions.checkState(proxyClient != null, "Not connected to server");
         this.proxyClient.getChannelWrapper().write(new Chat(message));
     }
@@ -202,19 +189,17 @@ public final class UserConnection implements ProxiedPlayer
     }
 
     @Override
-    public void sendMessage(ChatMessageType position, BaseComponent... message)
-    {
+    public void sendMessage(ChatMessageType position, BaseComponent... message) {
         // transform score components
-        message = ChatComponentTransformer.getInstance().transform( this, message );
+        message = ChatComponentTransformer.getInstance().transform(this, message);
 
-        if ( position == ChatMessageType.ACTION_BAR )
-        {
+        if (position == ChatMessageType.ACTION_BAR) {
             // Versions older than 1.11 cannot send the Action bar with the new JSON formattings
             // Fix by converting to a legacy message, see https://bugs.mojang.com/browse/MC-119145
             // derrop: this is a 1.8 proxy
             /*if ( ProxyServer.getInstance().getProtocolVersion() <= ProtocolConstants.MINECRAFT_1_10 )
             {*/
-                sendMessage( position, ComponentSerializer.toString( new TextComponent( BaseComponent.toLegacyText( message ) ) ) );
+            sendMessage(position, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(message))));
             /*} else
             {
                 net.md_5.bungee.protocol.packet.Title title = new net.md_5.bungee.protocol.packet.Title();
@@ -222,60 +207,50 @@ public final class UserConnection implements ProxiedPlayer
                 title.setText( ComponentSerializer.toString( message ) );
                 unsafe.sendPacket( title );
             }*/
-        } else
-        {
-            sendMessage( position, ComponentSerializer.toString( message ) );
+        } else {
+            sendMessage(position, ComponentSerializer.toString(message));
         }
     }
 
     @Override
-    public void sendMessage(ChatMessageType position, BaseComponent message)
-    {
-        message = ChatComponentTransformer.getInstance().transform( this, message )[0];
+    public void sendMessage(ChatMessageType position, BaseComponent message) {
+        message = ChatComponentTransformer.getInstance().transform(this, message)[0];
 
         // Action bar doesn't display the new JSON formattings, legacy works - send it using this for now
-        if ( position == ChatMessageType.ACTION_BAR )
-        {
-            sendMessage( position, ComponentSerializer.toString( new TextComponent( BaseComponent.toLegacyText( message ) ) ) );
-        } else
-        {
-            sendMessage( position, ComponentSerializer.toString( message ) );
+        if (position == ChatMessageType.ACTION_BAR) {
+            sendMessage(position, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(message))));
+        } else {
+            sendMessage(position, ComponentSerializer.toString(message));
         }
     }
 
     @Override
-    public void sendData(String channel, byte[] data)
-    {
+    public void sendData(String channel, byte[] data) {
         unsafe().sendPacket(new PluginMessage(channel, data, false));
     }
 
     @Override
-    public InetSocketAddress getAddress()
-    {
+    public InetSocketAddress getAddress() {
         return (InetSocketAddress) getSocketAddress();
     }
 
     @Override
-    public SocketAddress getSocketAddress()
-    {
+    public SocketAddress getSocketAddress() {
         return ch.getRemoteAddress();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 
     @Override
-    public Unsafe unsafe()
-    {
+    public Unsafe unsafe() {
         return unsafe;
     }
 
     @Override
-    public String getUUID()
-    {
+    public String getUUID() {
         return getPendingConnection().getUUID();
     }
 
@@ -297,72 +272,62 @@ public final class UserConnection implements ProxiedPlayer
     }
 
     @Override
-    public UUID getUniqueId()
-    {
+    public UUID getUniqueId() {
         return getPendingConnection().getUniqueId();
     }
 
     @Override
-    public void setTabHeader(BaseComponent header, BaseComponent footer)
-    {
-        header = ChatComponentTransformer.getInstance().transform( this, header )[0];
-        footer = ChatComponentTransformer.getInstance().transform( this, footer )[0];
+    public void setTabHeader(BaseComponent header, BaseComponent footer) {
+        header = ChatComponentTransformer.getInstance().transform(this, header)[0];
+        footer = ChatComponentTransformer.getInstance().transform(this, footer)[0];
 
-        unsafe().sendPacket( new PlayerListHeaderFooter(
-                ComponentSerializer.toString( header ),
-                ComponentSerializer.toString( footer )
-        ) );
+        unsafe().sendPacket(new PlayerListHeaderFooter(
+                ComponentSerializer.toString(header),
+                ComponentSerializer.toString(footer)
+        ));
     }
 
     @Override
-    public void setTabHeader(BaseComponent[] header, BaseComponent[] footer)
-    {
-        header = ChatComponentTransformer.getInstance().transform( this, header );
-        footer = ChatComponentTransformer.getInstance().transform( this, footer );
+    public void setTabHeader(BaseComponent[] header, BaseComponent[] footer) {
+        header = ChatComponentTransformer.getInstance().transform(this, header);
+        footer = ChatComponentTransformer.getInstance().transform(this, footer);
 
-        unsafe().sendPacket( new PlayerListHeaderFooter(
-                ComponentSerializer.toString( header ),
-                ComponentSerializer.toString( footer )
-        ) );
+        unsafe().sendPacket(new PlayerListHeaderFooter(
+                ComponentSerializer.toString(header),
+                ComponentSerializer.toString(footer)
+        ));
     }
 
     @Override
-    public void resetTabHeader()
-    {
+    public void resetTabHeader() {
         // Mojang did not add a way to remove the header / footer completely, we can only set it to empty
-        setTabHeader( (BaseComponent) null, null );
+        setTabHeader((BaseComponent) null, null);
     }
 
     @Override
-    public void sendTitle(Title title)
-    {
-        title.send( this );
+    public void sendTitle(Title title) {
+        title.send(this);
     }
 
-    public String getExtraDataInHandshake()
-    {
+    public String getExtraDataInHandshake() {
         return this.getPendingConnection().getExtraDataInHandshake();
     }
 
-    public void setCompressionThreshold(int compressionThreshold)
-    {
-        if ( !ch.isClosing() && this.compressionThreshold == -1 && compressionThreshold >= 0 )
-        {
+    public void setCompressionThreshold(int compressionThreshold) {
+        if (!ch.isClosing() && this.compressionThreshold == -1 && compressionThreshold >= 0) {
             this.compressionThreshold = compressionThreshold;
-            unsafe.sendPacket( new SetCompression( compressionThreshold ) );
-            ch.setCompressionThreshold( compressionThreshold );
+            unsafe.sendPacket(new SetCompression(compressionThreshold));
+            ch.setCompressionThreshold(compressionThreshold);
         }
     }
 
     @Override
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return !ch.isClosed();
     }
 
     @Override
-    public Scoreboard getScoreboard()
-    {
+    public Scoreboard getScoreboard() {
         return serverSentScoreboard;
     }
 }

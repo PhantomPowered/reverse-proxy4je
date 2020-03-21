@@ -7,8 +7,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public final class KeybindComponent extends BaseComponent
-{
+public final class KeybindComponent extends BaseComponent {
 
     /**
      * The keybind identifier to use.
@@ -22,10 +21,9 @@ public final class KeybindComponent extends BaseComponent
      *
      * @param original the original for the new keybind component.
      */
-    public KeybindComponent(KeybindComponent original)
-    {
-        super( original );
-        setKeybind( original.getKeybind() );
+    public KeybindComponent(KeybindComponent original) {
+        super(original);
+        setKeybind(original.getKeybind());
     }
 
     /**
@@ -34,29 +32,25 @@ public final class KeybindComponent extends BaseComponent
      * @param keybind the keybind value
      * @see Keybinds
      */
-    public KeybindComponent(String keybind)
-    {
-        setKeybind( keybind );
+    public KeybindComponent(String keybind) {
+        setKeybind(keybind);
     }
 
     @Override
-    public BaseComponent duplicate()
-    {
-        return new KeybindComponent( this );
+    public BaseComponent duplicate() {
+        return new KeybindComponent(this);
     }
 
     @Override
-    protected void toPlainText(StringBuilder builder)
-    {
-        builder.append( getKeybind() );
-        super.toPlainText( builder );
+    protected void toPlainText(StringBuilder builder) {
+        builder.append(getKeybind());
+        super.toPlainText(builder);
     }
 
     @Override
-    protected void toLegacyText(StringBuilder builder)
-    {
-        addFormat( builder );
-        builder.append( getKeybind() );
-        super.toLegacyText( builder );
+    protected void toLegacyText(StringBuilder builder) {
+        addFormat(builder);
+        builder.append(getKeybind());
+        super.toLegacyText(builder);
     }
 }

@@ -4,9 +4,6 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.command.Command;
 import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
-import net.md_5.bungee.connection.ProxiedPlayer;
-
-import java.util.Optional;
 
 public class CommandList extends Command {
 

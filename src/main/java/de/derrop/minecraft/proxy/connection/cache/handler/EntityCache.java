@@ -1,6 +1,5 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
-import de.derrop.minecraft.proxy.connection.cache.packet.JoinGame;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
@@ -17,7 +16,8 @@ public class EntityCache implements PacketCacheHandler {
 
     private Map<Integer, PositionedPacket> entities = new HashMap<>();
     private Map<Integer, EntityMetadata> metadata = new HashMap<>();
- // todo (fake?) players are not spawned properly
+
+    // todo (fake?) players are not spawned properly
     @Override
     public int[] getPacketIDs() {
         return new int[]{

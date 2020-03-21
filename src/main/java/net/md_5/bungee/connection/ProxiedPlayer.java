@@ -13,14 +13,12 @@ import java.util.UUID;
  * Represents a player who's connection is being connected to somewhere else,
  * whether it be a remote or embedded server.
  */
-public interface ProxiedPlayer extends Connection, CommandSender
-{
+public interface ProxiedPlayer extends Connection, CommandSender {
 
     /**
      * Represents the player's chat state.
      */
-    public enum ChatMode
-    {
+    enum ChatMode {
 
         /**
          * The player will see all chat.
@@ -33,15 +31,14 @@ public interface ProxiedPlayer extends Connection, CommandSender
         /**
          * The chat is completely disabled, the player won't see anything.
          */
-        HIDDEN;
+        HIDDEN
 
     }
 
-    public enum MainHand
-    {
+    enum MainHand {
 
         LEFT,
-        RIGHT;
+        RIGHT
     }
 
     /**
@@ -63,27 +60,27 @@ public interface ProxiedPlayer extends Connection, CommandSender
      * Send a message to the specified screen position of this player.
      *
      * @param position the screen position
-     * @param message the message to send
+     * @param message  the message to send
      */
-    public void sendMessage(ChatMessageType position, BaseComponent... message);
+    void sendMessage(ChatMessageType position, BaseComponent... message);
 
     /**
      * Send a message to the specified screen position of this player.
      *
      * @param position the screen position
-     * @param message the message to send
+     * @param message  the message to send
      */
-    public void sendMessage(ChatMessageType position, BaseComponent message);
+    void sendMessage(ChatMessageType position, BaseComponent message);
 
     /**
      * Send a plugin message to this player.
-     *
+     * <p>
      * In recent Minecraft versions channel names must contain a colon separator
      * and consist of [a-z0-9/._-]. This will be enforced in a future version.
      * The "BungeeCord" channel is an exception and may only take this form.
      *
      * @param channel the channel to send this data via
-     * @param data the data to send
+     * @param data    the data to send
      */
     void sendData(String channel, byte[] data);
 

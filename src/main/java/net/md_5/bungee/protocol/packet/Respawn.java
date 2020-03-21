@@ -13,8 +13,7 @@ import net.md_5.bungee.protocol.ProtocolConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Respawn extends DefinedPacket
-{
+public class Respawn extends DefinedPacket {
 
     private int dimension;
     private long seed;
@@ -23,40 +22,33 @@ public class Respawn extends DefinedPacket
     private String levelType;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
+    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
         dimension = buf.readInt();
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_15 )
-        {
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
             seed = buf.readLong();
         }
-        if ( protocolVersion < ProtocolConstants.MINECRAFT_1_14 )
-        {
+        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
             difficulty = buf.readUnsignedByte();
         }
         gameMode = buf.readUnsignedByte();
-        levelType = readString( buf );
+        levelType = readString(buf);
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        buf.writeInt( dimension );
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_15 )
-        {
-            buf.writeLong( seed );
+    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        buf.writeInt(dimension);
+        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
+            buf.writeLong(seed);
         }
-        if ( protocolVersion < ProtocolConstants.MINECRAFT_1_14 )
-        {
-            buf.writeByte( difficulty );
+        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
+            buf.writeByte(difficulty);
         }
-        buf.writeByte( gameMode );
-        writeString( levelType, buf );
+        buf.writeByte(gameMode);
+        writeString(levelType, buf);
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

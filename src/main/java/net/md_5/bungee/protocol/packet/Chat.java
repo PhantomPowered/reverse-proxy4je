@@ -13,40 +13,33 @@ import net.md_5.bungee.protocol.ProtocolConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Chat extends DefinedPacket
-{
+public class Chat extends DefinedPacket {
 
     private String message;
     private byte position;
 
-    public Chat(String message)
-    {
-        this( message, (byte) 0 );
+    public Chat(String message) {
+        this(message, (byte) 0);
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        message = readString( buf );
-        if ( direction == ProtocolConstants.Direction.TO_CLIENT )
-        {
+    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        message = readString(buf);
+        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
             position = buf.readByte();
         }
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)
-    {
-        writeString( message, buf );
-        if ( direction == ProtocolConstants.Direction.TO_CLIENT )
-        {
-            buf.writeByte( position );
+    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        writeString(message, buf);
+        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
+            buf.writeByte(position);
         }
     }
 
     @Override
-    public void handle(AbstractPacketHandler handler) throws Exception
-    {
-        handler.handle( this );
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
     }
 }

@@ -9,14 +9,12 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public final class HoverEvent
-{
+public final class HoverEvent {
 
     private final Action action;
     private final BaseComponent[] value;
 
-    public enum Action
-    {
+    public enum Action {
 
         SHOW_TEXT,
         SHOW_ACHIEVEMENT,
