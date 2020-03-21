@@ -31,8 +31,6 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandAlert());
         this.commandMap.registerCommand(new CommandForEach());
         this.commandMap.registerCommand(new CommandConnect());// todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
-
-        // todo help command?
     }
 
     public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException {
