@@ -26,6 +26,7 @@ public class CommandMap {
         String[] args = line.split(" ");
         Command command = this.commands.get(args[0].toLowerCase());
         if (command == null) {
+            sender.sendMessage("§cCommand not found");
             return true;
         }
         if (!command.canExecute(sender)) {
