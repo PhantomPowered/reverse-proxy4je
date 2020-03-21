@@ -37,6 +37,7 @@ public class ConnectedProxyClient {
     private MCCredentials credentials;
     private ChannelWrapper channelWrapper;
     private UserConnection redirector;
+    private Channel channel;
     //private Collection<byte[]> initPackets = new ArrayList<>(); // chunks, tablist
     private PacketCache packetCache = new PacketCache();
     private Scoreboard scoreboard = new Scoreboard();
@@ -55,8 +56,10 @@ public class ConnectedProxyClient {
     }
 
     public CompletableFuture<Boolean> connect(NetworkAddress address) {
-        if (this.address != null) {
-            throw new IllegalArgumentException("Already connected client");
+        if (this.channel != null) {
+            this.channel.close().syncUninterruptibly();
+            this.address = null;
+            this.packetCache.reset();
         }
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -86,13 +89,14 @@ public class ConnectedProxyClient {
             }
         };
 
-        new Bootstrap()
+        this.channel = new Bootstrap()
                 .channel(NettyUtils.getSocketChannelClass())
                 .group(NettyUtils.newEventLoopGroup())
                 .handler(initializer)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))
-                .addListener(listener);
+                .addListener(listener)
+                .channel();
 
         return future;
     }

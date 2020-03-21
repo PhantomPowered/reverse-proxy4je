@@ -20,6 +20,22 @@ public class NetworkAddress {
         return port;
     }
 
+    public static NetworkAddress parse(String input) {
+        String[] hostAndPort = input.split(":");
+        int port;
+        if (hostAndPort.length == 1) {
+            port = 25565;
+        } else {
+            try {
+                port = Integer.parseInt(hostAndPort[1]);
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+
+        return new NetworkAddress(hostAndPort[0], port);
+    }
+
     @Override
     public String toString() {
         return this.host + ":" + this.port;

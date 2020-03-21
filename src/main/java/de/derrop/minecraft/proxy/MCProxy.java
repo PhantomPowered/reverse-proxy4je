@@ -1,7 +1,9 @@
 package de.derrop.minecraft.proxy;
 
 import de.derrop.minecraft.proxy.command.CommandMap;
+import de.derrop.minecraft.proxy.command.defaults.CommandConnect;
 import de.derrop.minecraft.proxy.command.defaults.CommandInfo;
+import de.derrop.minecraft.proxy.command.defaults.CommandList;
 import de.derrop.minecraft.proxy.command.defaults.CommandSwitch;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
@@ -12,6 +14,7 @@ import net.md_5.bungee.protocol.packet.KeepAlive;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -20,14 +23,16 @@ public class MCProxy {
     private static MCProxy instance;
 
     private ProxyServer proxyServer = new ProxyServer();
-    private Collection<ConnectedProxyClient> onlineClients = new ArrayList<>();
+    private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
     private CommandMap commandMap = new CommandMap();
 
     private MCProxy() {
         this.commandMap.registerCommand(new CommandInfo());
         this.commandMap.registerCommand(new CommandSwitch());
+        this.commandMap.registerCommand(new CommandList());
+        //this.commandMap.registerCommand(new CommandConnect()); todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
+
         // todo help command?
-        // TODO Maybe we could add ingame commands like "/list accounts", "/switch account", "/showname"
     }
 
     public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException {

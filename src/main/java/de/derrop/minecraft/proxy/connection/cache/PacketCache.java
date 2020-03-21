@@ -6,25 +6,18 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Predicate;
 
 public class PacketCache {
 
-    private final Collection<PacketCacheHandler> handlers = Arrays.asList(
-            new SimplePacketCache(1, false), // join game
-            new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
-            new SimplePacketCache(5), // spawn position
-            new SimplePacketCache(71), // header/footer
-            new ListPacketCache(2, 30), // chat
-            new PlayerInventoryCache(),
-            new ChunkCache(),
-            new PlayerInfoCache(),
-            new EntityCache()
-    );
-    // todo (resource pack), keep alive proxy <-> client, signs, effects
-    // todo scoreboards are not cleared when switching account
+    private final Collection<PacketCacheHandler> handlers = new ArrayList<>();
+
+    {
+        this.reset();
+    }
 
     public PacketCacheHandler getHandler(Predicate<PacketCacheHandler> filter) {
         return this.handlers.stream().filter(filter).findFirst().orElse(null);
@@ -59,6 +52,23 @@ public class PacketCache {
         for (PacketCacheHandler handler : this.handlers) {
             handler.onClientSwitch(ch);
         }
+    }
+
+    public void reset() {
+        this.handlers.clear();
+        this.handlers.addAll(Arrays.asList(
+                new SimplePacketCache(1, false), // join game
+                new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
+                new SimplePacketCache(5), // spawn position todo doesn't work perfectly
+                new SimplePacketCache(71), // header/footer
+                new ListPacketCache(2, 30), // chat
+                new PlayerInventoryCache(),
+                new ChunkCache(),
+                new PlayerInfoCache(),
+                new EntityCache()
+        ));
+        // todo (resource pack), keep alive proxy <-> client, signs, effects
+        // todo scoreboards are not cleared when switching account
     }
 
 }
