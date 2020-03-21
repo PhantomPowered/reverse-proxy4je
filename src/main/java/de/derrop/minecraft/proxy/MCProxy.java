@@ -78,7 +78,7 @@ public class MCProxy {
         String creds =
                 "MirLulu:yasmine.fleurbaaij@kpnmail.nl:Sarah123\n" +
                 "NotJxey:karty09@gmail.com:puppy1125\n" +
-                /*"TvdAddicted:elisablair251@gmail.com:turgeon77\n" +
+                /*// "TvdAddicted:elisablair251@gmail.com:turgeon77\n" + -> Gomme PERMANENT banned
                 "kayleighblueeyes:mindy86@hotmail.co.uk:kayleigh2004\n" +
                 "Aftdarksummer:aftdarksummer@gmail.com:Moneymaker123\n" +
                 "DxNicolexD:nicole.nterekas@hotmail.com:jhutch1992\n" +

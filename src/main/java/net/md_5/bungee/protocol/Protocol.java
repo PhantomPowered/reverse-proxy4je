@@ -2,8 +2,8 @@ package net.md_5.bungee.protocol;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
-import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.JoinGame;
+import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.packet.*;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TObjectIntMap;

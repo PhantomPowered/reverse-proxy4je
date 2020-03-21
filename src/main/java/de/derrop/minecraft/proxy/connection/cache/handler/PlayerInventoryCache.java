@@ -25,13 +25,13 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        // todo this doesn't work properly when opening a chest or something like that
         if (newPacket.getDeserializedPacket() instanceof WindowItems) {
             WindowItems items = (WindowItems) newPacket.getDeserializedPacket();
 
             if (items.getWindowId() != WINDOW_ID) {
                 return;
             }
+
             for (int slot = 0; slot < items.getItems().length; slot++) {
                 InventoryItem item = items.getItems()[slot];
                 if (item.getItemId() > 0) {
@@ -43,6 +43,10 @@ public class PlayerInventoryCache implements PacketCacheHandler {
         } else if (newPacket.getDeserializedPacket() instanceof SetSlot) {
             SetSlot setSlot = (SetSlot) newPacket.getDeserializedPacket();
             InventoryItem item = setSlot.getItem();
+
+            if (setSlot.getWindowId() != WINDOW_ID) {
+                return;
+            }
 
             if (item.getItemId() > 0) {
                 this.itemsBySlot.put(setSlot.getSlot(), item);
