@@ -8,11 +8,12 @@ import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 public class PacketCache {
 
     private final Collection<PacketCacheHandler> handlers = Arrays.asList(
-            new SimplePacketCache(1), // join game
+            new SimplePacketCache(1, false), // join game
             new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
             new SimplePacketCache(71), // header/footer
             new PlayerInventoryCache(),
@@ -21,6 +22,10 @@ public class PacketCache {
             new EntityCache()
     );
     // todo scoreboards, (resource pack), keep alive proxy <-> client, signs, tab header/footer
+
+    public PacketCacheHandler getHandler(Predicate<PacketCacheHandler> filter) {
+        return this.handlers.stream().filter(filter).findFirst().orElse(null);
+    }
 
     public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
         packet.markReaderIndex();
@@ -39,9 +44,11 @@ public class PacketCache {
         packet.resetReaderIndex();
     }
 
-    public void send(ChannelWrapper ch) {
+    public void send(ChannelWrapper ch, boolean switched) {
         for (PacketCacheHandler handler : this.handlers) {
-            handler.sendCached(ch);
+            if (!switched || handler.sendOnSwitch()) {
+                handler.sendCached(ch);
+            }
         }
     }
 

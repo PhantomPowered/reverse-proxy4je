@@ -1,5 +1,7 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
+import de.derrop.minecraft.proxy.MCProxy;
+import de.derrop.minecraft.proxy.connection.JoinGame;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
@@ -29,6 +31,14 @@ public class EntityCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         DefinedPacket packet = newPacket.getDeserializedPacket();
+
+        if (packet instanceof PositionedPacket) {
+            int entityId = ((PositionedPacket) packet).getEntityId();
+            SimplePacketCache joinGameCache = (SimplePacketCache) packetCache.getHandler(handler -> handler instanceof SimplePacketCache && ((SimplePacketCache) handler).getLastPacket() instanceof JoinGame);
+            if (joinGameCache != null && ((JoinGame) joinGameCache.getLastPacket()).getEntityId() == entityId) {
+                return;
+            }
+        }
 
         if (packet instanceof EntityTeleport) {
 

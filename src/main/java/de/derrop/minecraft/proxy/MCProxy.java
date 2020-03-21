@@ -2,6 +2,7 @@ package de.derrop.minecraft.proxy;
 
 import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.defaults.CommandInfo;
+import de.derrop.minecraft.proxy.command.defaults.CommandSwitch;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
@@ -24,6 +25,7 @@ public class MCProxy {
 
     private MCProxy() {
         this.commandMap.registerCommand(new CommandInfo());
+        this.commandMap.registerCommand(new CommandSwitch());
         // todo help command?
         // TODO Maybe we could add ingame commands like "/list accounts", "/switch account", "/showname"
     }
@@ -70,10 +72,10 @@ public class MCProxy {
     public static void main(String[] args) throws Exception {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
-        /*String creds =
+        String creds =
                 "MirLulu:yasmine.fleurbaaij@kpnmail.nl:Sarah123\n" +
                 "NotJxey:karty09@gmail.com:puppy1125\n" +
-                "TvdAddicted:elisablair251@gmail.com:turgeon77\n" +
+                /*"TvdAddicted:elisablair251@gmail.com:turgeon77\n" +
                 "kayleighblueeyes:mindy86@hotmail.co.uk:kayleigh2004\n" +
                 "Aftdarksummer:aftdarksummer@gmail.com:Moneymaker123\n" +
                 "DxNicolexD:nicole.nterekas@hotmail.com:jhutch1992\n" +
@@ -91,19 +93,20 @@ public class MCProxy {
                 "rockinruru:ruthieru1@aol.com:MochaDog1\n" +
                 "nomocker:noriane-mcr@hotmail.fr:twilight33\n" +
                 "abbbiii2711:saxkb@yahoo.co.uk:maxjosh1d123\n" +
-                "hackhornet1:npickl@me.com:2smart4u\n" +
+                "hackhornet1:npickl@me.com:2smart4u\n" +*/
                 "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +
                 "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +
                 "SeaShel:slb224@live.com:96pisces";
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
             String s1 = split[1] + ":" + split[2];
-            System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25565), MCCredentials.parse(s1)));
+            System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));
+            //System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25565), MCCredentials.parse(s1)));
             Thread.sleep(1000);
-        }*/
-        MCCredentials credentials = MCCredentials.parse("kealicie@gmail.com:flylikeaG6");
+        }
+        MCCredentials credentials = MCCredentials.parse("superfini@gmx.net:lilli02");
         //System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), credentials));
-        System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), credentials));
+        //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), credentials));
 
         new Thread(() -> {
             while (!Thread.interrupted()) {

@@ -134,7 +134,7 @@ public final class UserConnection implements ProxiedPlayer
         }
         this.tabListHandler.onServerChange();
 
-        proxyClient.redirectPackets(this);
+        proxyClient.redirectPackets(this, this.proxyClient != null);
         proxyClient.getScoreboard().write(this);
 
         this.sendMessage("§7Your name: §e" + proxyClient.getAuthentication().getSelectedProfile().getName());

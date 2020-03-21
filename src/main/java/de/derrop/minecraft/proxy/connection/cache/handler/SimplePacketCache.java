@@ -11,9 +11,19 @@ public class SimplePacketCache implements PacketCacheHandler {
     private int packetId;
 
     private DefinedPacket lastPacket;
+    private boolean sendOnSwitch;
 
     public SimplePacketCache(int packetId) {
+        this(packetId, true);
+    }
+
+    public SimplePacketCache(int packetId, boolean sendOnSwitch) {
         this.packetId = packetId;
+        this.sendOnSwitch = sendOnSwitch;
+    }
+
+    public DefinedPacket getLastPacket() {
+        return lastPacket;
     }
 
     @Override
@@ -24,6 +34,11 @@ public class SimplePacketCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         this.lastPacket = newPacket.getDeserializedPacket();
+    }
+
+    @Override
+    public boolean sendOnSwitch() {
+        return this.sendOnSwitch;
     }
 
     @Override

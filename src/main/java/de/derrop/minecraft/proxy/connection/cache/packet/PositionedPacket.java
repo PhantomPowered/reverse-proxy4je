@@ -2,6 +2,8 @@ package de.derrop.minecraft.proxy.connection.cache.packet;
 
 public interface PositionedPacket {
 
+    int getEntityId();
+
     void setX(int x);
 
     void setY(int y);

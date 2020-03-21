@@ -171,8 +171,8 @@ public class ConnectedProxyClient {
         }
     }
 
-    public void redirectPackets(UserConnection con) {
-        this.packetCache.send(con.getCh());
+    public void redirectPackets(UserConnection con, boolean switched) {
+        this.packetCache.send(con.getCh(), switched);
         this.redirector = con;
     }
 
