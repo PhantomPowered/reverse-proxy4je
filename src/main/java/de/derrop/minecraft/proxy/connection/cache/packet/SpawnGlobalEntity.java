@@ -16,11 +16,12 @@ public class SpawnGlobalEntity extends DefinedPacket implements PositionedPacket
     private int x;
     private int y;
     private int z;
-    private int type;
+    private byte type;
 
     @Override
     public void read(ByteBuf buf) {
         this.entityId = readVarInt(buf);
+        this.type = buf.readByte();
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
@@ -29,6 +30,7 @@ public class SpawnGlobalEntity extends DefinedPacket implements PositionedPacket
     @Override
     public void write(ByteBuf buf) {
         writeVarInt(this.entityId, buf);
+        buf.writeByte(this.type);
         buf.writeInt(this.x);
         buf.writeInt(this.y);
         buf.writeInt(this.z);
