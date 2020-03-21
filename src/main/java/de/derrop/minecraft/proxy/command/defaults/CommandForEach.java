@@ -29,6 +29,7 @@ public class CommandForEach extends Command {
 
         if (args[0].equalsIgnoreCase("execute")) {
 
+            sender.sendMessage("Executing the commands...");
             for (ConnectedProxyClient onlineClient : MCProxy.getInstance().getOnlineClients()) {
                 if (!onlineClient.getAccountUUID().equals(sender.getUniqueId())) {
                     ((ProxiedPlayer) sender).chat(message.replace("{name}", onlineClient.getAccountName()));
