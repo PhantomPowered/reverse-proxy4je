@@ -30,7 +30,7 @@ public class CommandConnect extends Command {
 
         Collection<ConnectedProxyClient> clients = args[0].equalsIgnoreCase("all") ?
                 MCProxy.getInstance().getOnlineClients() :
-                MCProxy.getInstance().getOnlineClients().stream().filter(proxyClient -> proxyClient.getAuthentication().getSelectedProfile().getName().equalsIgnoreCase(args[0])).collect(Collectors.toList());
+                MCProxy.getInstance().getOnlineClients().stream().filter(proxyClient -> proxyClient.getAccountName().equalsIgnoreCase(args[0])).collect(Collectors.toList());
 
         if (clients.isEmpty()) {
             sender.sendMessage("§cNo client matching the given name found");

@@ -2,6 +2,7 @@ package net.md_5.bungee.connection;
 
 import com.google.common.base.Preconditions;
 import de.derrop.minecraft.proxy.Constants;
+import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.PlayerUniqueTabList;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.md_5.bungee.ChatComponentTransformer;
+import net.md_5.bungee.api.BungeeTitle;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -113,6 +115,18 @@ public final class UserConnection implements ProxiedPlayer
         displayName = name;
     }
 
+    public void handleDisconnected(ConnectedProxyClient proxyClient) {
+        ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient();
+        if (nextClient == null || nextClient.equals(proxyClient)) {
+            this.disconnect("No client found");
+            return;
+        }
+
+        this.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§cDisconnected")).fadeIn(10).stay(20).fadeOut(10));
+
+        this.useClient(nextClient);
+    }
+
     @Override
     public void useClient(ConnectedProxyClient proxyClient) {
         Preconditions.checkNotNull(proxyClient, "proxyClient");
@@ -138,7 +152,7 @@ public final class UserConnection implements ProxiedPlayer
         proxyClient.redirectPackets(this, this.proxyClient != null);
         proxyClient.getScoreboard().write(this);
 
-        this.sendMessage("§7Your name: §e" + proxyClient.getAuthentication().getSelectedProfile().getName());
+        this.sendMessage("§7Your name: §e" + proxyClient.getAccountName());
 
         this.proxyClient = proxyClient;
     }

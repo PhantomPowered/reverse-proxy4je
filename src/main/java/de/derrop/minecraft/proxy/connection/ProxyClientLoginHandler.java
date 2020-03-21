@@ -43,7 +43,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
     @Override
     public void connected(ChannelWrapper channel) throws Exception {
-        System.out.println("Connected to " + this.proxyClient.getAddress() + " with the account " + this.proxyClient.getAuthentication().getSelectedProfile().getName());
+        System.out.println("Connected to " + this.proxyClient.getAddress() + " with the account " + this.proxyClient.getAccountName());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
     @Override
     public void handle(Kick kick) throws Exception {
-        System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAuthentication().getSelectedProfile().getName() + "): " + kick.getMessage());
+        System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAccountName() + "): " + kick.getMessage());
         this.proxyClient.connectionFailed();
     }
 

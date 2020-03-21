@@ -25,18 +25,18 @@ public class CommandSwitch extends Command {
             sender.sendMessage("switch <account> | switch to another account");
             sender.sendMessage("Available clients:");
             for (ConnectedProxyClient freeClient : MCProxy.getInstance().getFreeClients()) {
-                sender.sendMessage("- " + freeClient.getAuthentication().getSelectedProfile().getName());
+                sender.sendMessage("- " + freeClient.getAccountName());
             }
             return;
         }
 
         Optional<ConnectedProxyClient> optionalClient = MCProxy.getInstance().getFreeClients().stream()
-                .filter(proxyClient -> proxyClient.getAuthentication().getSelectedProfile().getName().equalsIgnoreCase(args[0]))
+                .filter(proxyClient -> proxyClient.getAccountName().equalsIgnoreCase(args[0]))
                 .findFirst();
         if (!optionalClient.isPresent()) {
-            sender.sendMessage("That account does not exist, available:");
+            sender.sendMessage("§cThat account does not exist, available:");
             for (ConnectedProxyClient freeClient : MCProxy.getInstance().getFreeClients()) {
-                sender.sendMessage("- " + freeClient.getAuthentication().getSelectedProfile().getName());
+                sender.sendMessage("- " + freeClient.getAccountName());
             }
             return;
         }

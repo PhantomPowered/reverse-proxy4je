@@ -109,6 +109,10 @@ public class ConnectedProxyClient {
         return authentication;
     }
 
+    public String getAccountName() {
+        return this.authentication.getSelectedProfile().getName();
+    }
+
     public MinecraftSessionService getSessionService() {
         return sessionService;
     }

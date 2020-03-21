@@ -1,10 +1,7 @@
 package de.derrop.minecraft.proxy;
 
 import de.derrop.minecraft.proxy.command.CommandMap;
-import de.derrop.minecraft.proxy.command.defaults.CommandConnect;
-import de.derrop.minecraft.proxy.command.defaults.CommandInfo;
-import de.derrop.minecraft.proxy.command.defaults.CommandList;
-import de.derrop.minecraft.proxy.command.defaults.CommandSwitch;
+import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
@@ -30,6 +27,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandInfo());
         this.commandMap.registerCommand(new CommandSwitch());
         this.commandMap.registerCommand(new CommandList());
+        this.commandMap.registerCommand(new CommandChat());
         //this.commandMap.registerCommand(new CommandConnect()); todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
 
         // todo help command?

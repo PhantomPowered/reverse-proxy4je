@@ -16,7 +16,7 @@ public class CommandInfo extends Command {
     public void execute(CommandSender sender, String input, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ConnectedProxyClient client = ((ProxiedPlayer) sender).getConnectedClient();
-            sender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getAuthentication().getSelectedProfile().getName() + " §7on §e" + client.getAddress().getHost()));
+            sender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getAccountName() + " §7on §e" + client.getAddress().getHost()));
         }
         sender.sendMessage("§7Connected clients: §e" + MCProxy.getInstance().getOnlineClients().size() + " §7(Free: §a" + MCProxy.getInstance().getFreeClients().size() + "§7)");
         // todo banned accounts

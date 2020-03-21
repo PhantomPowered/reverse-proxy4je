@@ -18,7 +18,7 @@ public class CommandList extends Command {
     public void execute(CommandSender sender, String input, String[] args) {
         sender.sendMessage("Connected clients:");
         for (ConnectedProxyClient onlineClient : MCProxy.getInstance().getOnlineClients()) {
-            sender.sendMessage("- §e" + onlineClient.getAuthentication().getSelectedProfile().getName() + " §7(" + (onlineClient.getRedirector() != null ? "§cnot free" : "§afree") + "§7); Connected on: " + onlineClient.getAddress());
+            sender.sendMessage("- §e" + onlineClient.getAccountName() + " §7(" + (onlineClient.getRedirector() != null ? "§cnot free" : "§afree") + "§7); Connected on: " + onlineClient.getAddress());
         }
     }
 }

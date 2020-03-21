@@ -26,23 +26,26 @@ public class DownstreamBridge extends PacketHandler {
 
     @Override
     public void exception(Throwable t) throws Exception {
+        System.err.println("Exception on proxy client " + this.proxyClient.getAccountName() + "!");
         t.printStackTrace();
-        proxyClient.getChannelWrapper().close(Util.exception(t));
         if (this.proxyClient.getRedirector() != null) {
+            UserConnection con = this.proxyClient.getRedirector();
             this.proxyClient.free();
-            // todo connect with next client or disconnect the receiver?
+            con.handleDisconnected(this.proxyClient);
         }
+        proxyClient.getChannelWrapper().close();
+        MCProxy.getInstance().removeProxyClient(this.proxyClient);
     }
 
     @Override
     public void disconnected(ChannelWrapper channel) throws Exception {
         // We lost connection to the server
         if (this.proxyClient.getRedirector() != null) {
+            UserConnection con = this.proxyClient.getRedirector();
             this.proxyClient.free();
-            MCProxy.getInstance().removeProxyClient(this.proxyClient);
-
-            // todo connect the receiver with the next client
+            con.handleDisconnected(this.proxyClient);
         }
+        MCProxy.getInstance().removeProxyClient(this.proxyClient);
     }
 
     @Override
@@ -291,6 +294,6 @@ public class DownstreamBridge extends PacketHandler {
         if (this.proxyClient == null) {
             return "[] <-> DownstreamBridge <-> []";
         }
-        return "[" + this.proxyClient.getAuthentication().getSelectedProfile().getName() + "] <-> DownstreamBridge <-> [" + this.proxyClient.getCredentials().getEmail() + "]";
+        return "[" + this.proxyClient.getAccountName() + "] <-> DownstreamBridge <-> [" + this.proxyClient.getCredentials().getEmail() + "]";
     }
 }
