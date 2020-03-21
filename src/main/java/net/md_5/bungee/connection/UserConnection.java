@@ -139,7 +139,6 @@ public final class UserConnection implements ProxiedPlayer
         if (this.proxyClient != null) {
             this.proxyClient.free();
             this.proxyClient.getScoreboard().writeClear(this);
-            // todo clear inventory
 
             /* todo for (UUID bossbar : user.getSentBossBars()) {
                 // Send remove bossbar packet

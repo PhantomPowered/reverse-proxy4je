@@ -9,12 +9,18 @@ import de.derrop.minecraft.proxy.connection.cache.packet.SetSlot;
 import de.derrop.minecraft.proxy.connection.cache.packet.WindowItems;
 import net.md_5.bungee.netty.ChannelWrapper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerInventoryCache implements PacketCacheHandler {
 
     private static final byte WINDOW_ID = 0; // 0 -> player inventory
+    private static final InventoryItem[] EMPTY_INVENTORY = new InventoryItem[45];
+
+    static {
+        Arrays.fill(EMPTY_INVENTORY, InventoryItem.NONE);
+    }
 
     private Map<Integer, InventoryItem> itemsBySlot = new HashMap<>();
 
@@ -65,5 +71,10 @@ public class PlayerInventoryCache implements PacketCacheHandler {
             }
             ch.write(new WindowItems(WINDOW_ID, items));
         });
+    }
+
+    @Override
+    public void onClientSwitch(ChannelWrapper ch) {
+        ch.write(new WindowItems(WINDOW_ID, EMPTY_INVENTORY));
     }
 }
