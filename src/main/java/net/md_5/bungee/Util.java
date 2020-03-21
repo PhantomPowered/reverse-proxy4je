@@ -91,7 +91,6 @@ public class Util
      */
     public static String exception(Throwable t)
     {
-        // TODO: We should use clear manually written exceptions
         StackTraceElement[] trace = t.getStackTrace();
         return t.getClass().getSimpleName() + " : " + t.getMessage()
                 + ( ( trace.length > 0 ) ? " @ " + t.getStackTrace()[0].getClassName() + ":" + t.getStackTrace()[0].getLineNumber() : "" );
