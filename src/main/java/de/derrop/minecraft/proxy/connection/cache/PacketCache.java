@@ -68,7 +68,7 @@ public class PacketCache {
                 new EntityCache()
         ));
         // todo (resource pack), keep alive proxy <-> client, signs, effects
-        // todo scoreboards are not cleared when switching account
+        // todo scoreboards are not displayed properly
     }
 
 }
