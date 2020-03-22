@@ -4,6 +4,7 @@ import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
+import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
 import de.derrop.minecraft.proxy.storage.UUIDStorage;
@@ -11,6 +12,9 @@ import de.derrop.minecraft.proxy.util.NetworkAddress;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -23,9 +27,10 @@ public class MCProxy {
     private ProxyServer proxyServer = new ProxyServer();
     private PermissionProvider permissionProvider = new PermissionProvider();
     private UUIDStorage uuidStorage = new UUIDStorage();
+    private AccountReader accountReader = new AccountReader();
+    private CommandMap commandMap = new CommandMap();
 
     private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
-    private CommandMap commandMap = new CommandMap();
 
     private MCProxy() {
         this.commandMap.registerCommand(new CommandHelp(this.commandMap));
@@ -89,16 +94,19 @@ public class MCProxy {
     public static void main(String[] args) throws Exception {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
-        String creds =
-                        "megakidd0731@yahoo.com:sofia0523\n" +
-                        "itzflexx195@gmail.com:Sunshine2004";
-        for (String s : creds.split("\n")) {
-            String[] split = s.split(":");
-            String s1 = split.length == 2 ? split[0] + ":" + split[1] : split[1] + ":" + split[2];
-            //System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25577), MCCredentials.parse(s1)));
-            System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));
-            //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));
-            Thread.sleep(1000);
+
+        Path accountsPath = Paths.get("accounts.txt");
+        if (Files.exists(accountsPath)) {
+            instance.accountReader.readAccounts(accountsPath, (credentials, address) -> {
+                try {
+                    System.out.println("Connection for " + credentials.getEmail() + ": " + instance.startClient(address, credentials));
+                    Thread.sleep(1000);
+                } catch (ExecutionException | InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+            });
+        } else {
+            instance.accountReader.writeDefaults(accountsPath);
         }
 
         new Thread(() -> {

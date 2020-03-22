@@ -4,3 +4,4 @@ dependency-reduced-pom.xml
 target/
 uuids.json
 permissions.json
+accounts.txt
