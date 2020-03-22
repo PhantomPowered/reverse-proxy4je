@@ -4,6 +4,7 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.DestroyEntities;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.PositionedPacket;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.SpawnPlayer;
 import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
@@ -26,13 +27,13 @@ public class PlayerVelocityHandler {
     private float rotPitch = 90, rotYaw = 0;
     private int motionX, motionY, motionZ;
 
-    private int posX, posY, posZ;
+    private double posX, posY, posZ;
 
     private int positionUpdateTicks = 0;
 
     private float lastReportedRotPitch = 90, lastReportedRotYaw = 0;
 
-    private int lastReportedPosX, lastReportedPosY, lastReportedPosZ;
+    private double lastReportedPosX, lastReportedPosY, lastReportedPosZ;
 
     public void handlePacket(ProtocolConstants.Direction direction, DefinedPacket packet) {
         if (direction == ProtocolConstants.Direction.TO_CLIENT) {
@@ -47,7 +48,7 @@ public class PlayerVelocityHandler {
                 if (Arrays.stream(((DestroyEntities) packet).getEntityIds()).anyMatch(i -> i == this.ridingEntityId)) {
                     this.ridingEntity = false;
                 }
-            } else if (packet instanceof PositionedPacket) {
+            } else if (packet instanceof SpawnPlayer) {
                 if (((PositionedPacket) packet).getEntityId() == this.proxyClient.getEntityId()) {
                     this.posX = ((PositionedPacket) packet).getX();
                     this.posY = ((PositionedPacket) packet).getY();
@@ -58,6 +59,23 @@ public class PlayerVelocityHandler {
             }
         } else if (direction == ProtocolConstants.Direction.TO_SERVER) {
             // todo idk if it is necessary to listen to the packets by the client for positions like they are sent below
+            if (packet instanceof PlayerPosition) {
+                this.posX = ((PlayerPosition) packet).getX();
+                this.posY = ((PlayerPosition) packet).getY();
+                this.posZ = ((PlayerPosition) packet).getZ();
+                this.onGround = ((PlayerPosition) packet).isOnGround();
+            } else if (packet instanceof PlayerLook) {
+                this.rotPitch = ((PlayerLook) packet).getPitch();
+                this.rotYaw = ((PlayerLook) packet).getYaw();
+                this.onGround = ((PlayerLook) packet).isOnGround();
+            } else if (packet instanceof PlayerPosLook) {
+                this.posX = ((PlayerPosLook) packet).getX();
+                this.posY = ((PlayerPosLook) packet).getY();
+                this.posZ = ((PlayerPosLook) packet).getZ();
+                this.rotPitch = ((PlayerPosLook) packet).getPitch();
+                this.rotYaw = ((PlayerPosLook) packet).getYaw();
+                this.onGround = ((PlayerPosLook) packet).isOnGround();
+            }
         }
     }
 
@@ -93,7 +111,7 @@ public class PlayerVelocityHandler {
                     }
 
                     if (flag2) {
-                         velocityHandler.lastReportedPosX = velocityHandler.posX;
+                        velocityHandler.lastReportedPosX = velocityHandler.posX;
                         velocityHandler.lastReportedPosY = velocityHandler.posY;
                         velocityHandler.lastReportedPosZ = velocityHandler.posZ;
                         velocityHandler.positionUpdateTicks = 0;

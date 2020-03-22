@@ -121,7 +121,7 @@ public class MCProxy {
             instance.accountReader.writeDefaults(accountsPath);
         }
 
-        //PlayerVelocityHandler.start(); todo
+        // PlayerVelocityHandler.start(); todo
 
         new Thread(() -> {
             while (!Thread.interrupted()) {
