@@ -84,15 +84,9 @@ public class EntityCache implements PacketCacheHandler {
     @Override
     public void sendCached(UserConnection con) {
         for (PositionedPacket packet : new ArrayList<>(this.entities.values())) {
-            if (packet.getEntityId() == con.getServerEntityId()) {
-                continue;
-            }
             con.getCh().write(packet);
         }
         for (EntityMetadata metadata : new ArrayList<>(this.metadata.values())) {
-            if (metadata.getEntityId() == con.getServerEntityId()) {
-                continue;
-            }
             con.unsafe().sendPacket(metadata);
         }
     }
