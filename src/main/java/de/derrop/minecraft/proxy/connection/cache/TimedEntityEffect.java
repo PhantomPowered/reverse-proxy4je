@@ -39,7 +39,7 @@ public class TimedEntityEffect {
     }
 
     public static TimedEntityEffect fromEntityEffect(EntityEffect entityEffect) {
-        long durationMillis = ((entityEffect.getDuration() / 20) * 1000) + System.currentTimeMillis();
+        long durationMillis = entityEffect.getDuration() >= 32767 ? -1 : ((entityEffect.getDuration() / 20) * 1000) + System.currentTimeMillis();
 
         return new TimedEntityEffect(
                 entityEffect.getEntityId(), entityEffect.getEffectId(),
@@ -53,7 +53,7 @@ public class TimedEntityEffect {
             return null;
         }
 
-        int durationTicks = (int) (((this.timeout - System.currentTimeMillis()) / 1000) * 20);
+        int durationTicks = this.timeout == -1 ? 32767 : (int) (((this.timeout - System.currentTimeMillis()) / 1000) * 20);
         return new EntityEffect(this.entityId, this.effectId, this.amplifier, durationTicks, this.hideParticles);
     }
 
