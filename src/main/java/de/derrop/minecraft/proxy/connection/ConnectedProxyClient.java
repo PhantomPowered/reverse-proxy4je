@@ -4,6 +4,7 @@ import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
+import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.minecraft.SessionUtils;
 import de.derrop.minecraft.proxy.util.NettyUtils;
@@ -20,10 +21,7 @@ import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
-import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.MinecraftDecoder;
-import net.md_5.bungee.protocol.MinecraftEncoder;
-import net.md_5.bungee.protocol.Protocol;
+import net.md_5.bungee.protocol.*;
 import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
@@ -46,6 +44,8 @@ public class ConnectedProxyClient {
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private int entityId;
     private int dimension;
+
+    private PlayerVelocityHandler velocityHandler = new PlayerVelocityHandler(this);
 
     private long lastAlivePacket = -1;
 
@@ -123,6 +123,10 @@ public class ConnectedProxyClient {
         return this.authentication.getSelectedProfile().getId();
     }
 
+    public PlayerVelocityHandler getVelocityHandler() {
+        return velocityHandler;
+    }
+
     public MinecraftSessionService getSessionService() {
         return sessionService;
     }
@@ -195,6 +199,9 @@ public class ConnectedProxyClient {
         }
 
         this.packetCache.handlePacket(packet, deserialized);
+        if (deserialized != null) {
+            this.velocityHandler.handlePacket(ProtocolConstants.Direction.TO_CLIENT, deserialized);
+        }
 
         if (this.redirector != null) {
             this.redirector.getCh().write(packet);

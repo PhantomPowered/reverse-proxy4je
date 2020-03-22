@@ -4,11 +4,13 @@ import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
+import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
 import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
 import de.derrop.minecraft.proxy.storage.UUIDStorage;
 import de.derrop.minecraft.proxy.util.NetworkAddress;
+import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 
 import java.net.InetSocketAddress;
@@ -16,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -71,6 +75,14 @@ public class MCProxy {
         return onlineClients;
     }
 
+    public Collection<ProxiedPlayer> getOnlinePlayers() {
+        return this.getOnlineClients().stream().map(ConnectedProxyClient::getRedirector).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public ProxiedPlayer getOnlinePlayer(UUID uniqueId) {
+        return this.getOnlineClients().stream().map(ConnectedProxyClient::getRedirector).filter(Objects::nonNull).filter(connection -> connection.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
+    }
+
     public Collection<ConnectedProxyClient> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getRedirector() == null).collect(Collectors.toList());
     }
@@ -108,6 +120,8 @@ public class MCProxy {
         } else {
             instance.accountReader.writeDefaults(accountsPath);
         }
+
+        //PlayerVelocityHandler.start(); todo
 
         new Thread(() -> {
             while (!Thread.interrupted()) {

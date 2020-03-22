@@ -65,8 +65,8 @@ public class PacketCache {
                 new LoginCache(),
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
-                new SimplePacketCache(PacketConstants.CAMERA),
-                new MappedPacketCache<>(PacketConstants.UPDATE_SIGN, UpdateSign::getPos, updateSign -> false),
+                new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
+                new MappedPacketCache<>(PacketConstants.UPDATE_SIGN, UpdateSign::getPos, updateSign -> false), // todo I think this doesn't work properly
                 new SimplePacketCache(PacketConstants.TIME_UPDATE), // time update
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat

@@ -10,6 +10,7 @@ import de.derrop.minecraft.proxy.connection.cache.packet.inventory.SetSlot;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.WindowItems;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.*;
+import de.derrop.minecraft.proxy.connection.velocity.*;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -272,6 +273,14 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.TIME_UPDATE)
             );
             TO_CLIENT.registerPacket(
+                    EntityVelocity.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 18)
+            );
+            TO_CLIENT.registerPacket(
+                    EntityAttach.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 27)
+            );
+            TO_CLIENT.registerPacket(
                     Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );
@@ -318,6 +327,22 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_12_1, 0x09),
                     map(ProtocolConstants.MINECRAFT_1_13, 0x0A),
                     map(ProtocolConstants.MINECRAFT_1_14, 0x0B)
+            );
+            TO_SERVER.registerPacket(
+                    Player.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 3)
+            );
+            TO_SERVER.registerPacket(
+                    PlayerPosition.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 4)
+            );
+            TO_SERVER.registerPacket(
+                    PlayerLook.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 5)
+            );
+            TO_SERVER.registerPacket(
+                    PlayerPosLook.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 6)
             );
         }
     },
