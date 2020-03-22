@@ -10,6 +10,7 @@ public class CommandConnect extends Command {
 
     public CommandConnect() {
         super("connect");
+        super.setPermission("command.connect");
     }
 
     @Override

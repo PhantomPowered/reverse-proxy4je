@@ -10,6 +10,7 @@ public class CommandAlert extends Command {
 
     public CommandAlert() {
         super("alert");
+        super.setPermission("command.alert");
     }
 
     @Override

@@ -22,6 +22,10 @@ public abstract class Command {
         return this.permission;
     }
 
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
     public boolean canExecute(CommandSender sender) {
         return this.getPermission() == null || sender.hasPermission(this.getPermission());
     }

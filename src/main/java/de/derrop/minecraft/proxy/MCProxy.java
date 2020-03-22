@@ -5,6 +5,8 @@ import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
+import de.derrop.minecraft.proxy.permission.PermissionProvider;
+import de.derrop.minecraft.proxy.storage.UUIDStorage;
 import de.derrop.minecraft.proxy.util.NetworkAddress;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 
@@ -19,6 +21,9 @@ public class MCProxy {
     private static MCProxy instance;
 
     private ProxyServer proxyServer = new ProxyServer();
+    private PermissionProvider permissionProvider = new PermissionProvider();
+    private UUIDStorage uuidStorage = new UUIDStorage();
+
     private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
     private CommandMap commandMap = new CommandMap();
 
@@ -30,6 +35,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandChat());
         this.commandMap.registerCommand(new CommandAlert());
         this.commandMap.registerCommand(new CommandForEach());
+        this.commandMap.registerCommand(new CommandPermissions());
         this.commandMap.registerCommand(new CommandConnect());// todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
     }
 
@@ -68,6 +74,14 @@ public class MCProxy {
         return commandMap;
     }
 
+    public PermissionProvider getPermissionProvider() {
+        return permissionProvider;
+    }
+
+    public UUIDStorage getUUIDStorage() {
+        return uuidStorage;
+    }
+
     public static MCProxy getInstance() {
         return instance;
     }
@@ -76,18 +90,10 @@ public class MCProxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
         String creds =
-                "nomocker:noriane-mcr@hotmail.fr:twilight33\n" +
-                        "abbbiii2711:saxkb@yahoo.co.uk:maxjosh1d123\n" +
-                        "hackhornet1:npickl@me.com:2smart4u\n" +
-                        "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +
-                        "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +
-                        "SeaShel:slb224@live.com:96pisces\n" +
-                        "stephskiii:stephskinoosh@gmail.com:chloemax1\n" +
-                        "niniboo123:ninac6403@yahoo.com:ninac1234567\n" +
-                        "madisonpazich:madisonpazich@gmail.com:Pets22cute";
+                "Waarivzrach@gmail.com:rezrea14";
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
-            String s1 = split[1] + ":" + split[2];
+            String s1 = split.length == 2 ? split[0] + ":" + split[1] : split[1] + ":" + split[2];
             //System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25577), MCCredentials.parse(s1)));
             System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), MCCredentials.parse(s1)));
             //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));

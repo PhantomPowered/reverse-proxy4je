@@ -10,6 +10,7 @@ public class CommandInfo extends Command {
 
     public CommandInfo() {
         super("info", "i");
+        super.setPermission("command.info");
     }
 
     @Override

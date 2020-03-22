@@ -14,6 +14,7 @@ public class CommandChat extends Command {
 
     public CommandChat() {
         super("chat");
+        super.setPermission("command.chat");
     }
 
     @Override

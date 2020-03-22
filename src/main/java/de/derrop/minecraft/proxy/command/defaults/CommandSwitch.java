@@ -12,6 +12,7 @@ public class CommandSwitch extends Command {
 
     public CommandSwitch() {
         super("switch");
+        super.setPermission("command.switch");
     }
 
     @Override

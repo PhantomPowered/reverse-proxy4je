@@ -9,6 +9,7 @@ public class CommandList extends Command {
 
     public CommandList() {
         super("list");
+        super.setPermission("command.list");
     }
 
     @Override

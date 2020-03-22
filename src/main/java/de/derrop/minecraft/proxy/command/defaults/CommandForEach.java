@@ -12,6 +12,7 @@ public class CommandForEach extends Command {
 
     public CommandForEach() {
         super("foreach");
+        super.setPermission("command.foreach");
     }
 
     @Override

@@ -84,6 +84,8 @@ public final class UserConnection implements ProxiedPlayer {
         this.displayName = name;
 
         tabListHandler = new PlayerUniqueTabList(this.ch);
+
+        MCProxy.getInstance().getUUIDStorage().createMapping(this.getUniqueId(), this.getName());
     }
 
     public int getClientEntityId() {
@@ -295,7 +297,7 @@ public final class UserConnection implements ProxiedPlayer {
 
     @Override
     public boolean hasPermission(String permission) {
-        return true; // todo
+        return MCProxy.getInstance().getPermissionProvider().hasPermission(this.getUniqueId(), permission);
     }
 
     @Override
