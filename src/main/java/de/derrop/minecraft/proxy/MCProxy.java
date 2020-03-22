@@ -76,14 +76,15 @@ public class MCProxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
         String creds =
-                "SeaShel:slb224@live.com:96pisces\n" +
+                "nomocker:noriane-mcr@hotmail.fr:twilight33\n" +
+                        "abbbiii2711:saxkb@yahoo.co.uk:maxjosh1d123\n" +
+                        "hackhornet1:npickl@me.com:2smart4u\n" +
+                        "Twihard2097:sarahkeatley@shaw.ca:Skwk1997\n" +
+                        "Madp03:chipmunkgirl10@gmail.com:peanut10\n" +
+                        "SeaShel:slb224@live.com:96pisces\n" +
                         "stephskiii:stephskinoosh@gmail.com:chloemax1\n" +
                         "niniboo123:ninac6403@yahoo.com:ninac1234567\n" +
-                        "madisonpazich:madisonpazich@gmail.com:Pets22cute\n" +
-                        "Fnyyy:mifassidebo@gmail.com:T5r4e3z2a1\n" +
-                        "Tumbljorge:jordyn@gusefamily.net:Pookabear02\n" +
-                        "JustCallMeMara:mara.martens18@gmail.com:mara1818\n" +
-                        "CookieSky:jiym@comcast.net:JAKE5312";
+                        "madisonpazich:madisonpazich@gmail.com:Pets22cute";
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
             String s1 = split[1] + ":" + split[2];

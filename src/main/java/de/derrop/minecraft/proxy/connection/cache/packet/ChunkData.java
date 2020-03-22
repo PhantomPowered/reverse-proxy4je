@@ -34,7 +34,7 @@ public class ChunkData extends DefinedPacket {
         buf.writeInt(this.x);
         buf.writeInt(this.z);
         buf.writeBoolean(this.b);
-        buf.writeShort((short) (this.extracted.dataLength & 65535));
+        buf.writeShort(this.extracted.dataLength);
         writeArrayNoLimit(this.extracted.data, buf);
     }
 

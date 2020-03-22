@@ -242,10 +242,6 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.WORLD_BORDER)
             );
             TO_CLIENT.registerPacket(
-                    JoinGame.class,
-                    map(ProtocolConstants.MINECRAFT_1_8, 1)
-            );
-            TO_CLIENT.registerPacket(
                     Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );

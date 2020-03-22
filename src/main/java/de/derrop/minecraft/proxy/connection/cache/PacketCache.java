@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
+import net.md_5.bungee.protocol.Protocol;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,8 @@ public class PacketCache {
     public void reset() {
         this.handlers.clear();
         this.handlers.addAll(Arrays.asList(
-                new SimplePacketCache(1, false), // join game
+                // THE ORDER IS IMPORTANT
+                new LoginCache(),
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
                 new SimplePacketCache(3), // time update

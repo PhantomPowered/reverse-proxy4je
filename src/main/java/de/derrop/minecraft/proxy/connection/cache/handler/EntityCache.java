@@ -32,14 +32,6 @@ public class EntityCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         DefinedPacket packet = newPacket.getDeserializedPacket();
 
-        if (packet instanceof PositionedPacket) {
-            int entityId = ((PositionedPacket) packet).getEntityId();
-            SimplePacketCache joinGameCache = (SimplePacketCache) packetCache.getHandler(handler -> handler instanceof SimplePacketCache && ((SimplePacketCache) handler).getLastPacket() instanceof JoinGame);
-            if (joinGameCache != null && ((JoinGame) joinGameCache.getLastPacket()).getEntityId() == entityId) {
-                return;
-            }
-        }
-
         if (packet instanceof EntityTeleport) {
 
             EntityTeleport entityTeleport = (EntityTeleport) packet;
