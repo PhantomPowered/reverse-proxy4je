@@ -2,8 +2,8 @@ package net.md_5.bungee.connection;
 
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
-import de.derrop.minecraft.proxy.connection.cache.packet.Disconnect;
-import de.derrop.minecraft.proxy.connection.cache.packet.JoinGame;
+import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
+import de.derrop.minecraft.proxy.connection.cache.packet.system.JoinGame;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;

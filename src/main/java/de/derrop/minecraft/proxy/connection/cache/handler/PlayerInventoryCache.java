@@ -5,10 +5,9 @@ import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.InventoryItem;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
-import de.derrop.minecraft.proxy.connection.cache.packet.SetSlot;
-import de.derrop.minecraft.proxy.connection.cache.packet.WindowItems;
+import de.derrop.minecraft.proxy.connection.cache.packet.inventory.SetSlot;
+import de.derrop.minecraft.proxy.connection.cache.packet.inventory.WindowItems;
 import net.md_5.bungee.connection.UserConnection;
-import net.md_5.bungee.netty.ChannelWrapper;
 
 import java.util.Arrays;
 import java.util.HashMap;

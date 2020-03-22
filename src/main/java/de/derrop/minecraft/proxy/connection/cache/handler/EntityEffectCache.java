@@ -5,8 +5,8 @@ import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.TimedEntityEffect;
-import de.derrop.minecraft.proxy.connection.cache.packet.EntityEffect;
-import de.derrop.minecraft.proxy.connection.cache.packet.RemoveEntityEffect;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.EntityEffect;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.RemoveEntityEffect;
 import net.md_5.bungee.connection.UserConnection;
 
 import java.util.Map;

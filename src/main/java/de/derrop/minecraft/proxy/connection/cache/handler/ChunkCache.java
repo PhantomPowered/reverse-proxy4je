@@ -4,13 +4,12 @@ import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
-import de.derrop.minecraft.proxy.connection.cache.packet.BlockUpdate;
-import de.derrop.minecraft.proxy.connection.cache.packet.ChunkBulk;
-import de.derrop.minecraft.proxy.connection.cache.packet.ChunkData;
-import de.derrop.minecraft.proxy.connection.cache.packet.MultiBlockUpdate;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.BlockUpdate;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.ChunkBulk;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.ChunkData;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.MultiBlockUpdate;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import net.md_5.bungee.connection.UserConnection;
-import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;

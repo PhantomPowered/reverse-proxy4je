@@ -1,9 +1,10 @@
-package de.derrop.minecraft.proxy.connection.cache.packet;
+package de.derrop.minecraft.proxy.connection.cache.packet.world;
 
 import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -11,23 +12,25 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@ToString
-public class Disconnect extends DefinedPacket {
+public class UnloadChunk extends DefinedPacket {
 
-    private BaseComponent[] reason;
+    private int x;
+    private int z;
 
     @Override
     public void read(ByteBuf buf) {
-        this.reason = ComponentSerializer.parse(readString(buf));
+        this.x = buf.readInt();
+        this.z = buf.readInt();
     }
 
     @Override
     public void write(ByteBuf buf) {
-        writeString(ComponentSerializer.toString(this.reason), buf);
+        buf.writeInt(this.x);
+        buf.writeInt(this.z);
     }
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
+
 }

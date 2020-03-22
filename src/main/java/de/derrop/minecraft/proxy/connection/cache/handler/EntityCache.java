@@ -1,14 +1,11 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
-import de.derrop.minecraft.proxy.connection.cache.packet.*;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.*;
 import net.md_5.bungee.connection.UserConnection;
-import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.*;

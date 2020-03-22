@@ -1,10 +1,7 @@
-package de.derrop.minecraft.proxy.connection.cache.packet;
+package de.derrop.minecraft.proxy.connection.cache.packet.entity.effect;
 
 import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -12,25 +9,25 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class UnloadChunk extends DefinedPacket {
+@ToString
+public class RemoveEntityEffect extends DefinedPacket {
 
-    private int x;
-    private int z;
+    private int entityId;
+    private int effectId;
 
     @Override
     public void read(ByteBuf buf) {
-        this.x = buf.readInt();
-        this.z = buf.readInt();
+        this.entityId = readVarInt(buf);
+        this.effectId = buf.readUnsignedByte();
     }
 
     @Override
     public void write(ByteBuf buf) {
-        buf.writeInt(this.x);
-        buf.writeInt(this.z);
+        writeVarInt(this.entityId, buf);
+        buf.writeByte(this.effectId);
     }
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
     }
-
 }

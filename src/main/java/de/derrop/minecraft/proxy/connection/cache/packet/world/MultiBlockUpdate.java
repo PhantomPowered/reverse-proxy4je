@@ -1,4 +1,4 @@
-package de.derrop.minecraft.proxy.connection.cache.packet;
+package de.derrop.minecraft.proxy.connection.cache.packet.world;
 
 import de.derrop.minecraft.proxy.util.BlockPos;
 import io.netty.buffer.ByteBuf;

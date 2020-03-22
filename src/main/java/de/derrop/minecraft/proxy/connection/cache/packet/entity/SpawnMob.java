@@ -1,4 +1,4 @@
-package de.derrop.minecraft.proxy.connection.cache.packet;
+package de.derrop.minecraft.proxy.connection.cache.packet.entity;
 
 import de.derrop.minecraft.proxy.util.DataWatcher;
 import io.netty.buffer.ByteBuf;

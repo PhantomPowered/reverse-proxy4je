@@ -1,6 +1,6 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
-import de.derrop.minecraft.proxy.connection.cache.packet.EntityEffect;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.EntityEffect;
 
 public class TimedEntityEffect {
 
