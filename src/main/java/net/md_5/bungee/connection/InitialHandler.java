@@ -297,6 +297,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
             uniqueId = offlineId;
         }
 
+        if (MCProxy.getInstance().getOnlinePlayer(uniqueId) != null) {
+            this.disconnect("Already connected");
+            return;
+        }
 
         ch.getHandle().eventLoop().execute(() -> {
             if (!ch.isClosing()) {
