@@ -70,7 +70,8 @@ public class PacketCache {
                 new PlayerInventoryCache(),
                 new ChunkCache(),
                 new PlayerInfoCache(),
-                new EntityCache()
+                new EntityCache(),
+                new EntityEffectCache()
         ));
         // todo chunks are not loaded until they are received from the server again
         // todo (resource pack), keep alive proxy <-> client, signs, effects

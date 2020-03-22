@@ -242,6 +242,14 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.WORLD_BORDER)
             );
             TO_CLIENT.registerPacket(
+                    EntityEffect.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_EFFECT)
+            );
+            TO_CLIENT.registerPacket(
+                    RemoveEntityEffect.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.REMOVE_ENTITY_EFFECT)
+            );
+            TO_CLIENT.registerPacket(
                     Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );

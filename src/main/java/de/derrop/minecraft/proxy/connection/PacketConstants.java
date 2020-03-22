@@ -19,5 +19,7 @@ public interface PacketConstants {
     int PLAYER_ABILITIES = 57;
     int DISCONNECT = 64;
     int WORLD_BORDER = 68;
+    int ENTITY_EFFECT = 29;
+    int REMOVE_ENTITY_EFFECT = 30;
 
 }
