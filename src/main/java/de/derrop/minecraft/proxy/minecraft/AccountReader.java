@@ -28,6 +28,9 @@ public class AccountReader {
         }
 
         for (String line : Files.readAllLines(path)) {
+            if (line.startsWith("#")) {
+                continue;
+            }
             String[] base = line.split("->");
             if (base.length != 2) {
                 System.err.println("Wrong pattern in the line " + line);
