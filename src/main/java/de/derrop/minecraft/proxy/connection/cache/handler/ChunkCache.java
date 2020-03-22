@@ -9,6 +9,7 @@ import de.derrop.minecraft.proxy.connection.cache.packet.ChunkBulk;
 import de.derrop.minecraft.proxy.connection.cache.packet.ChunkData;
 import de.derrop.minecraft.proxy.connection.cache.packet.MultiBlockUpdate;
 import de.derrop.minecraft.proxy.util.BlockPos;
+import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -84,14 +85,14 @@ public class ChunkCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(ChannelWrapper ch) {
+    public void sendCached(UserConnection con) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk
         for (ChunkData chunk : new ArrayList<>(this.chunks)) {
-            ch.write(chunk);
+            con.unsafe().sendPacket(chunk);
         }
 
         for (Map.Entry<BlockPos, Integer> entry : new ArrayList<>(this.blockUpdates.entrySet())) {
-            ch.write(new BlockUpdate(entry.getKey(), entry.getValue()));
+            con.unsafe().sendPacket(new BlockUpdate(entry.getKey(), entry.getValue()));
         }
     }
 }

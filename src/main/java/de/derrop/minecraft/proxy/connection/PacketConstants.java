@@ -18,5 +18,6 @@ public interface PacketConstants {
     int WINDOW_ITEMS = 48;
     int PLAYER_ABILITIES = 57;
     int DISCONNECT = 64;
+    int WORLD_BORDER = 68;
 
 }

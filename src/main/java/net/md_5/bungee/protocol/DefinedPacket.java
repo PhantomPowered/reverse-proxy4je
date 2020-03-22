@@ -137,6 +137,35 @@ public abstract class DefinedPacket {
         }
     }
 
+    public static long readVarLong(ByteBuf buf) {
+        long i = 0L;
+        int j = 0;
+
+        while (true) {
+            byte b0 = buf.readByte();
+            i |= (long) (b0 & 127) << j++ * 7;
+
+            if (j > 10) {
+                throw new RuntimeException("VarLong too big");
+            }
+
+            if ((b0 & 128) != 128) {
+                break;
+            }
+        }
+
+        return i;
+    }
+
+    public static void writeVarLong(long value, ByteBuf buf) {
+        while ((value & -128L) != 0L) {
+            buf.writeByte((int) (value & 127L) | 128);
+            value >>>= 7;
+        }
+
+        buf.writeByte((int) value);
+    }
+
     public static int readVarShort(ByteBuf buf) {
         int low = buf.readUnsignedShort();
         int high = 0;

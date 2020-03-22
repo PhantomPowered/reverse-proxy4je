@@ -76,25 +76,22 @@ public class MCProxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25565));
         String creds =
-                "SELLIpart1:syreha.a.allen@hotmail.co.uk:Reya0606\n" +
-                        "Prancine:mochatoby324@gmail.com:Ilovepickles123\n" +
-                        "Streetfighter02:milaarre@hotmail.com:Hudson2006\n" +
-                        "notvaleria:lilyblue1228@yahoo.com:shawn1228\n" +
-                        "Kaylah_mc:kaylahneowhouse@gmail.com:aussie01\n" +
+                "SeaShel:slb224@live.com:96pisces\n" +
                         "stephskiii:stephskinoosh@gmail.com:chloemax1\n" +
-                        "vickysurf:vickysurf11@gmail.com:50sombras\n" +
-                        "Staticfrowizzdra:kealicie@gmail.com:flylikeaG6\n" +
-                        "a:86baby86a@gmail.com:donald86";
+                        "niniboo123:ninac6403@yahoo.com:ninac1234567\n" +
+                        "madisonpazich:madisonpazich@gmail.com:Pets22cute\n" +
+                        "Fnyyy:mifassidebo@gmail.com:T5r4e3z2a1\n" +
+                        "Tumbljorge:jordyn@gusefamily.net:Pookabear02\n" +
+                        "JustCallMeMara:mara.martens18@gmail.com:mara1818\n" +
+                        "CookieSky:jiym@comcast.net:JAKE5312";
         for (String s : creds.split("\n")) {
             String[] split = s.split(":");
             String s1 = split[1] + ":" + split[2];
-            System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25577), MCCredentials.parse(s1)));
+            //System.out.println(instance.startClient(new NetworkAddress("49.12.37.57", 25577), MCCredentials.parse(s1)));
+            System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), MCCredentials.parse(s1)));
             //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), MCCredentials.parse(s1)));
             Thread.sleep(1000);
         }
-        MCCredentials credentials = MCCredentials.parse("superfini@gmx.net:lilli02");
-        //System.out.println(instance.startClient(new NetworkAddress("localhost", 25566), credentials));
-        //System.out.println(instance.startClient(new NetworkAddress("mc.gommehd.com", 25565), credentials));
 
         new Thread(() -> {
             while (!Thread.interrupted()) {

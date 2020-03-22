@@ -1,16 +1,17 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
+import de.derrop.minecraft.proxy.MCProxy;
+import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.packet.*;
+import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class EntityCache implements PacketCacheHandler {
 
@@ -80,11 +81,10 @@ public class EntityCache implements PacketCacheHandler {
 
             this.metadata.put(((EntityMetadata) packet).getEntityId(), (EntityMetadata) packet);
 
-        } else if (newPacket.getPacketId() == PacketConstants.DESTROY_ENTITIES) {
+        } else if (packet instanceof DestroyEntities) {
 
-            int count = DefinedPacket.readVarInt(newPacket.getPacketData());
-            for (int i = 0; i < count; i++) {
-                int entityId = DefinedPacket.readVarInt(newPacket.getPacketData());
+            DestroyEntities destroyEntities = (DestroyEntities) packet;
+            for (int entityId : destroyEntities.getEntityIds()) {
                 this.entities.remove(entityId);
                 this.metadata.remove(entityId);
             }
@@ -93,12 +93,35 @@ public class EntityCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(ChannelWrapper ch) {
+    public void sendCached(UserConnection con) {
         for (PositionedPacket packet : new ArrayList<>(this.entities.values())) {
-            ch.write(packet);
+            if (packet.getEntityId() == con.getServerEntityId()) {
+                continue;
+            }
+            con.getCh().write(packet);
         }
         for (EntityMetadata metadata : new ArrayList<>(this.metadata.values())) {
-            ch.write(metadata);
+            if (metadata.getEntityId() == con.getServerEntityId()) {
+                continue;
+            }
+            con.unsafe().sendPacket(metadata);
         }
+    }
+
+    @Override
+    public void onClientSwitch(UserConnection con) {
+        if (this.entities.isEmpty()) {
+            return;
+        }
+
+        Set<Integer> entityIdSet = new HashSet<>(this.entities.keySet());
+
+        int[] entityIds = new int[entityIdSet.size()];
+        int i = 0;
+        for (Integer entityId : entityIdSet) {
+            entityIds[i++] = entityId;
+        }
+
+        con.unsafe().sendPacket(new DestroyEntities(entityIds));
     }
 }

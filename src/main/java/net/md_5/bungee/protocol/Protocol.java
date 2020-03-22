@@ -234,6 +234,14 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_METADATA)
             );
             TO_CLIENT.registerPacket(
+                    DestroyEntities.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DESTROY_ENTITIES)
+            );
+            TO_CLIENT.registerPacket(
+                    WorldBorder.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.WORLD_BORDER)
+            );
+            TO_CLIENT.registerPacket(
                     JoinGame.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 1)
             );

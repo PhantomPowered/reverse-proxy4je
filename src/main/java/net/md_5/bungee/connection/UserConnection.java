@@ -56,12 +56,6 @@ public final class UserConnection implements ProxiedPlayer {
     private TabList tabListHandler;
     /*========================================================================*/
     @Getter
-    @Setter
-    private int clientEntityId;
-    @Getter
-    @Setter
-    private int serverEntityId;
-    @Getter
     private final Scoreboard serverSentScoreboard = new Scoreboard();
     @Getter
     private final Collection<UUID> sentBossBars = new HashSet<>();
@@ -90,6 +84,14 @@ public final class UserConnection implements ProxiedPlayer {
         this.displayName = name;
 
         tabListHandler = new PlayerUniqueTabList(this.ch);
+    }
+
+    public int getClientEntityId() {
+        return this.proxyClient == null ? 0 : this.proxyClient.getEntityId();
+    }
+
+    public int getServerEntityId() {
+        return this.getClientEntityId();
     }
 
     public void sendPacket(PacketWrapper packet) {

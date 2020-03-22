@@ -3,6 +3,7 @@ package net.md_5.bungee.connection;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.Disconnect;
+import de.derrop.minecraft.proxy.connection.cache.packet.JoinGame;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -68,7 +69,9 @@ public class DownstreamBridge extends PacketHandler {
     public void handle(PacketWrapper packet) throws Exception {
         this.proxyClient.getEntityMap().rewriteClientbound(packet.buf, this.proxyClient.getEntityId(), this.proxyClient.getEntityId(), 47);
         this.proxyClient.redirectPacket(packet.buf, packet.packet);
-        //this.proxyClient.redirectPacket(packet.buf);
+        if (packet.packet instanceof JoinGame) {
+            this.proxyClient.setEntityId(((JoinGame) packet.packet).getEntityId());
+        }
     }
 
     @Override

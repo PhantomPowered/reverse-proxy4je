@@ -3,6 +3,7 @@ package de.derrop.minecraft.proxy.connection.cache.handler;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
+import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -42,9 +43,9 @@ public class SimplePacketCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(ChannelWrapper ch) {
+    public void sendCached(UserConnection con) {
         if (this.lastPacket != null) {
-            ch.write(this.lastPacket);
+            con.unsafe().sendPacket(this.lastPacket);
         }
     }
 }

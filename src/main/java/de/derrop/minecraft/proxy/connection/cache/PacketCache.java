@@ -3,6 +3,7 @@ package de.derrop.minecraft.proxy.connection.cache;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
 import io.netty.buffer.ByteBuf;
+import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -40,17 +41,17 @@ public class PacketCache {
         packet.resetReaderIndex();
     }
 
-    public void send(ChannelWrapper ch, boolean switched) {
+    public void send(UserConnection connection, boolean switched) {
         for (PacketCacheHandler handler : this.handlers) {
             if (!switched || handler.sendOnSwitch()) {
-                handler.sendCached(ch);
+                handler.sendCached(connection);
             }
         }
     }
 
-    public void handleFree(ChannelWrapper ch) {
+    public void handleFree(UserConnection connection) {
         for (PacketCacheHandler handler : this.handlers) {
-            handler.onClientSwitch(ch);
+            handler.onClientSwitch(connection);
         }
     }
 
@@ -59,6 +60,8 @@ public class PacketCache {
         this.handlers.addAll(Arrays.asList(
                 new SimplePacketCache(1, false), // join game
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
+                new SimplePacketCache(PacketConstants.WORLD_BORDER),
+                new SimplePacketCache(3), // time update
                 new SimplePacketCache(5), // spawn position todo doesn't work perfectly
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat

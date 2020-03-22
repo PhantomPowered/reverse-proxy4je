@@ -173,7 +173,7 @@ public class ConnectedProxyClient {
 
     public void free() {
         if (this.redirector != null) {
-            this.packetCache.handleFree(this.redirector.getCh());
+            this.packetCache.handleFree(this.redirector);
         }
         this.redirector = null;
     }
@@ -206,7 +206,7 @@ public class ConnectedProxyClient {
     }
 
     public void redirectPackets(UserConnection con, boolean switched) {
-        this.packetCache.send(con.getCh(), switched);
+        this.packetCache.send(con, switched);
         this.redirector = con;
     }
 

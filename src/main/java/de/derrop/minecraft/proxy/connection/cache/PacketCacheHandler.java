@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
+import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
 
 public interface PacketCacheHandler {
@@ -8,13 +9,13 @@ public interface PacketCacheHandler {
 
     void cachePacket(PacketCache packetCache, CachedPacket newPacket);
 
-    void sendCached(ChannelWrapper ch);
+    void sendCached(UserConnection con);
 
     default boolean sendOnSwitch() {
         return true;
     }
 
-    default void onClientSwitch(ChannelWrapper ch) {
+    default void onClientSwitch(UserConnection con) {
     }
 
 }
