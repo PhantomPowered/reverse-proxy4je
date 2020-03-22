@@ -30,6 +30,10 @@ public class BlockPos extends Vec3i {
         this(source.getX(), source.getY(), source.getZ());
     }
 
+    public boolean isInChunk(int x, int z) {
+        return this.getX() >> 4 == x && this.getZ() >> 4 == z;
+    }
+
     /**
      * Add the given coordinates to the coordinates of this BlockPos
      */

@@ -16,11 +16,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChunkCache implements PacketCacheHandler {
 
-    private Collection<ChunkData> chunks = new ArrayList<>();
-    private Map<BlockPos, Integer> blockUpdates = new HashMap<>();
+    private static final int AIR_BLOCK_STATE = 0;
+
+    private Collection<ChunkData> chunks = new CopyOnWriteArrayList<>();
+    private Map<BlockPos, Integer> blockUpdates = new ConcurrentHashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -81,6 +85,11 @@ public class ChunkCache implements PacketCacheHandler {
 
     private void unload(int x, int z) {
         this.chunks.removeIf(chunkData -> chunkData.getX() == x && chunkData.getZ() == z);
+        for (BlockPos pos : this.blockUpdates.keySet()) {
+            if (pos.isInChunk(x, z)) {
+                this.blockUpdates.remove(pos);
+            }
+        }
     }
 
     @Override
@@ -90,8 +99,20 @@ public class ChunkCache implements PacketCacheHandler {
             con.unsafe().sendPacket(chunk);
         }
 
-        for (Map.Entry<BlockPos, Integer> entry : new ArrayList<>(this.blockUpdates.entrySet())) {
+        for (Map.Entry<BlockPos, Integer> entry : this.blockUpdates.entrySet()) {
             con.unsafe().sendPacket(new BlockUpdate(entry.getKey(), entry.getValue()));
+        }
+    }
+
+    @Override
+    public void onClientSwitch(UserConnection con) {
+        for (ChunkData chunk : this.chunks) {
+            ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.isB(), new ChunkData.Extracted());
+            modChunk.getExtracted().dataLength = 0;
+            modChunk.getExtracted().data = new byte[0];
+        }
+        for (BlockPos pos : this.blockUpdates.keySet()) {
+            con.unsafe().sendPacket(new BlockUpdate(pos, AIR_BLOCK_STATE));
         }
     }
 }
