@@ -256,6 +256,14 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.REMOVE_ENTITY_EFFECT)
             );
             TO_CLIENT.registerPacket(
+                    Camera.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.CAMERA)
+            );
+            TO_CLIENT.registerPacket(
+                    UpdateSign.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.UPDATE_SIGN)
+            );
+            TO_CLIENT.registerPacket(
                     Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );

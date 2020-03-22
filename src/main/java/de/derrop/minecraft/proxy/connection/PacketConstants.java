@@ -21,5 +21,7 @@ public interface PacketConstants {
     int WORLD_BORDER = 68;
     int ENTITY_EFFECT = 29;
     int REMOVE_ENTITY_EFFECT = 30;
+    int UPDATE_SIGN = 51;
+    int CAMERA = 67;
 
 }

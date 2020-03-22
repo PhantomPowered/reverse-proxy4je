@@ -2,6 +2,7 @@ package de.derrop.minecraft.proxy.connection.cache;
 
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -63,6 +64,8 @@ public class PacketCache {
                 new LoginCache(),
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
+                new SimplePacketCache(PacketConstants.CAMERA),
+                new MappedPacketCache<>(PacketConstants.UPDATE_SIGN, UpdateSign::getPos, updateSign -> false),
                 new SimplePacketCache(3), // time update
                 new SimplePacketCache(5), // spawn position todo doesn't work perfectly
                 new SimplePacketCache(71), // header/footer
@@ -74,7 +77,7 @@ public class PacketCache {
                 new EntityEffectCache()
         ));
         // todo chunks are not loaded until they are received from the server again
-        // todo (resource pack), keep alive proxy <-> client, signs, effects
+        // todo (resource pack), keep alive proxy <-> client, signs, gamemode
         // todo scoreboards are not displayed properly
     }
 
