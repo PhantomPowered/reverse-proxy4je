@@ -2,6 +2,7 @@ package de.derrop.minecraft.proxy.connection.cache;
 
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.Maps;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.connection.UserConnection;
@@ -74,7 +75,8 @@ public class PacketCache {
                 new ChunkCache(),
                 new PlayerInfoCache(),
                 new EntityCache(),
-                new EntityEffectCache()
+                new EntityEffectCache(),
+                new MiniMapCache()
         ));
         // todo chunks are not loaded until they are received from the server again
         // todo (resource pack), keep alive proxy <-> client, signs, gamemode

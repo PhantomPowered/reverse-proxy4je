@@ -264,6 +264,10 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.UPDATE_SIGN)
             );
             TO_CLIENT.registerPacket(
+                    Maps.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.MAPS)
+            );
+            TO_CLIENT.registerPacket(
                     Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );

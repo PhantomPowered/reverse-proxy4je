@@ -23,5 +23,6 @@ public interface PacketConstants {
     int REMOVE_ENTITY_EFFECT = 30;
     int UPDATE_SIGN = 51;
     int CAMERA = 67;
+    int MAPS = 52;
 
 }
