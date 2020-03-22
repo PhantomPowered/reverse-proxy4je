@@ -67,7 +67,7 @@ public class PacketCache {
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
                 new SimplePacketCache(PacketConstants.CAMERA),
                 new MappedPacketCache<>(PacketConstants.UPDATE_SIGN, UpdateSign::getPos, updateSign -> false),
-                new SimplePacketCache(3), // time update
+                new SimplePacketCache(PacketConstants.TIME_UPDATE), // time update
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat
                 new PlayerInventoryCache(),

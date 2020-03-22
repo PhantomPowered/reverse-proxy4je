@@ -24,5 +24,6 @@ public interface PacketConstants {
     int UPDATE_SIGN = 51;
     int CAMERA = 67;
     int MAPS = 52;
+    int TIME_UPDATE = 3;
 
 }
