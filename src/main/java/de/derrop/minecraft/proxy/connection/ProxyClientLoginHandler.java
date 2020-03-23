@@ -50,7 +50,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
     @Override
     public void handle(Kick kick) throws Exception {
-        System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAccountName() + "): " + kick.getMessage());
+        System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAccountName() + "/" + this.proxyClient.getCredentials().getEmail() + "): " + kick.getMessage());
         this.proxyClient.connectionFailed();
     }
 
@@ -80,7 +80,6 @@ public class ProxyClientLoginHandler extends PacketHandler {
     @Override
     public void handle(LoginSuccess loginSuccess) throws Exception {
         this.proxyClient.getChannelWrapper().setProtocol(Protocol.GAME);
-        this.proxyClient.connectionSuccess();
 
         this.proxyClient.getChannelWrapper().getHandle().pipeline().get(HandlerBoss.class).setHandler(new DownstreamBridge(this.proxyClient));
         throw CancelSendSignal.INSTANCE; // without this, the LoginSuccess would be recorded by ConnectedProxyClient#redirectPacket
@@ -93,6 +92,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     @Override
     public void handle(Login login) throws Exception {
         this.proxyClient.setEntityId(login.getEntityId());
+        this.proxyClient.connectionSuccess();
     }
 
     @Override
