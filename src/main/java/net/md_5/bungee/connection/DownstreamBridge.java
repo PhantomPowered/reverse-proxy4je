@@ -198,7 +198,7 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(Kick kick) throws Exception {
         MCProxy.getInstance().removeProxyClient(this.proxyClient);
-        ConnectedProxyClient proxyClient = MCProxy.getInstance().findBestProxyClient();
+        ConnectedProxyClient proxyClient = MCProxy.getInstance().findBestProxyClient(null);
         if (proxyClient == null) {
             //con.disconnect0(ComponentSerializer.parse(kick.getMessage()));
             return;

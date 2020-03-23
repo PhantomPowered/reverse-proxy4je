@@ -1,9 +1,11 @@
 package de.derrop.minecraft.proxy.command.defaults;
 
+import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.command.Command;
 import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.ProxiedPlayer;
 
 import java.util.Optional;
@@ -42,6 +44,7 @@ public class CommandSwitch extends Command {
             return;
         }
 
-        ((ProxiedPlayer) sender).useClient(optionalClient.get());
+        ((ProxiedPlayer) sender).disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + optionalClient.get().getAccountName()));
+        MCProxy.getInstance().setReconnectTarget(sender.getUniqueId(), optionalClient.get().getAccountUUID());
     }
 }

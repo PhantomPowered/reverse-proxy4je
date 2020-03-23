@@ -92,6 +92,31 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
+    public int getMaterial(BlockPos pos) {
+        if (this.blockUpdates.containsKey(pos)) {
+            return this.blockUpdates.get(pos); // todo this is the blockstate, not the material
+        }
+
+        for (ChunkData chunk : this.chunks) {
+            if (pos.isInChunk(chunk.getX(), chunk.getZ())) {
+                int i = 0;
+
+                char[] chars = new char[4096];
+                for (int k = 0; k < chars.length; k++) {
+                    chars[k] = (char) ((chunk.getExtracted().data[i + 1] & 255) << 8 | chunk.getExtracted().data[i] & 255);
+                    i += 2;
+                }
+
+                int cIndex = pos.getY() << 8 | pos.getZ() << 4 | pos.getX();
+                if (cIndex >= 0) {
+                    return chars[cIndex];
+                }
+            }
+        }
+
+        return -1;
+    }
+
     @Override
     public void sendCached(UserConnection con) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk

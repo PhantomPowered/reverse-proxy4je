@@ -8,6 +8,7 @@ import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
 import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
+import de.derrop.minecraft.proxy.reconnect.ReconnectProfile;
 import de.derrop.minecraft.proxy.storage.UUIDStorage;
 import de.derrop.minecraft.proxy.util.NetworkAddress;
 import net.md_5.bungee.connection.ProxiedPlayer;
@@ -17,9 +18,8 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -35,6 +35,7 @@ public class MCProxy {
     private CommandMap commandMap = new CommandMap();
 
     private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
+    private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
     private MCProxy() {
         this.commandMap.registerCommand(new CommandHelp(this.commandMap));
@@ -67,8 +68,28 @@ public class MCProxy {
         this.onlineClients.remove(proxyClient);
     }
 
-    public ConnectedProxyClient findBestProxyClient() {
-        return this.onlineClients.stream().filter(proxyClient -> proxyClient.getRedirector() == null).findFirst().orElse(null);
+    public ConnectedProxyClient findBestProxyClient(UUID uniqueId) {
+        if (uniqueId != null && this.reconnectProfiles.containsKey(uniqueId)) {
+            ReconnectProfile profile = this.reconnectProfiles.get(uniqueId);
+            if (System.currentTimeMillis() < profile.getTimeout()) {
+                Optional<ConnectedProxyClient> optionalClient = this.onlineClients.stream()
+                        .filter(proxyClient -> proxyClient.getRedirector() == null)
+                        .filter(proxyClient -> proxyClient.getAccountUUID().equals(profile.getTargetUniqueId()))
+                        .findFirst();
+                if (optionalClient.isPresent()) {
+                    this.reconnectProfiles.remove(uniqueId);
+                    return optionalClient.get();
+                }
+            }
+        }
+        return this.onlineClients.stream()
+                .filter(proxyClient -> proxyClient.getRedirector() == null)
+                .filter(proxyClient -> !this.reconnectProfiles.containsKey(proxyClient.getAccountUUID()))
+                .findFirst().orElse(null);
+    }
+
+    public void setReconnectTarget(UUID uniqueId, UUID targetUniqueId) {
+        this.reconnectProfiles.put(uniqueId, new ReconnectProfile(uniqueId, targetUniqueId));
     }
 
     public Collection<ConnectedProxyClient> getOnlineClients() {
@@ -121,7 +142,7 @@ public class MCProxy {
             instance.accountReader.writeDefaults(accountsPath);
         }
 
-        // PlayerVelocityHandler.start(); todo
+         //PlayerVelocityHandler.start(); todo
 
         new Thread(() -> {
             while (!Thread.interrupted()) {
@@ -135,6 +156,12 @@ public class MCProxy {
                     onlineClient.keepAliveTick();
                     if (onlineClient.getRedirector() != null) {
                         onlineClient.getRedirector().unsafe().sendPacket(new KeepAlive(System.nanoTime()));
+                    }
+                }
+
+                for (ReconnectProfile profile : instance.reconnectProfiles.values()) {
+                    if (System.currentTimeMillis() >= profile.getTimeout()) {
+                        instance.reconnectProfiles.remove(profile.getUniqueId());
                     }
                 }
             }

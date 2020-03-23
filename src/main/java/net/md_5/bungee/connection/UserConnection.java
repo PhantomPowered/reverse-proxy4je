@@ -116,7 +116,7 @@ public final class UserConnection implements ProxiedPlayer {
             return;
         }
 
-        ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient();
+        ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient(this.getUniqueId());
         if (nextClient == null || nextClient.equals(proxyClient)) {
             this.disconnect("No client found");
             return;

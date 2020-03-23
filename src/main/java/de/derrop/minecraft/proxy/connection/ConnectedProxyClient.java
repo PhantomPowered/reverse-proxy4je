@@ -127,6 +127,10 @@ public class ConnectedProxyClient {
         return velocityHandler;
     }
 
+    public PacketCache getPacketCache() {
+        return packetCache;
+    }
+
     public MinecraftSessionService getSessionService() {
         return sessionService;
     }

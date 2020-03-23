@@ -313,7 +313,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
 
                 ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(userCon));
 
-                ConnectedProxyClient client = MCProxy.getInstance().findBestProxyClient();
+                ConnectedProxyClient client = MCProxy.getInstance().findBestProxyClient(uniqueId);
                 if (client == null) {
                     disconnect("No client available");
                     return;
