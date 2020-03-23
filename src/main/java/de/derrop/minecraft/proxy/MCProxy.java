@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy;
 
+import de.derrop.minecraft.proxy.ban.BanTester;
 import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
@@ -61,7 +62,7 @@ public class MCProxy {
             return false;
         }
 
-        return proxyClient.connect(address).get();
+        return proxyClient.connect(address, null).get();
     }
 
     public void removeProxyClient(ConnectedProxyClient proxyClient) {
@@ -130,7 +131,17 @@ public class MCProxy {
 
         Path accountsPath = Paths.get("accounts.txt");
         if (Files.exists(accountsPath)) {
+            BanTester banTester = new BanTester();
             instance.accountReader.readAccounts(accountsPath, (credentials, address) -> {
+                /*try { // TODO
+                    if (banTester.isBanned(credentials, address)) {
+                        System.err.println("Account " + credentials.getEmail() + " is banned on " + address + "!");
+                        return;
+                    }
+                } catch (IllegalArgumentException exception) {
+                    System.err.println("Invalid credentials for " + credentials.getEmail() + "!");
+                    return;
+                }*/
                 try {
                     System.out.println("Connection for " + credentials.getEmail() + ": " + instance.startClient(address, credentials));
                     Thread.sleep(1000);
@@ -172,6 +183,6 @@ public class MCProxy {
         }
     }
 
-    // todo we could put information like "CPS (autoclicker)" into the action bar
+    // todo we could put information like "CPS (autoclicker), PlayerESP (is this possible in the 1.8?)" into the action bar
 
 }

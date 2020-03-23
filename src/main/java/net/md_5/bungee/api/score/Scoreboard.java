@@ -49,7 +49,10 @@ public class Scoreboard {
 
     public void addObjective(Objective objective) {
         Preconditions.checkNotNull(objective, "objective");
-        Preconditions.checkArgument(!objectives.containsKey(objective.getName()), "Objective %s already exists in this scoreboard", objective.getName());
+        if (this.objectives.containsKey(objective.getName())) {
+            return;
+        }
+        //Preconditions.checkArgument(!objectives.containsKey(objective.getName()), "Objective %s already exists in this scoreboard", objective.getName());
         objectives.put(objective.getName(), objective);
     }
 
@@ -64,7 +67,10 @@ public class Scoreboard {
 
     public void addTeam(Team team) {
         Preconditions.checkNotNull(team, "team");
-        Preconditions.checkArgument(!teams.containsKey(team.getName()), "Team %s already exists in this scoreboard", team.getName());
+        if (this.teams.containsKey(team.getName())) {
+            return;
+        }
+        //Preconditions.checkArgument(!teams.containsKey(team.getName()), "Team %s already exists in this scoreboard", team.getName());
         teams.put(team.getName(), team);
     }
 

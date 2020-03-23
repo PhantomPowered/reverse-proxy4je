@@ -42,7 +42,7 @@ public class CommandConnect extends Command {
         player.disableAutoReconnect();
         player.useClient(null);
 
-        proxyClient.connect(address).thenAccept(success -> {
+        proxyClient.connect(address, null).thenAccept(success -> {
             player.enableAutoReconnect();
             if (success) {
                 player.useClient(proxyClient);

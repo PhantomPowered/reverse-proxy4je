@@ -14,6 +14,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.score.Team;
 import net.md_5.bungee.api.score.*;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -197,6 +198,7 @@ public class DownstreamBridge extends PacketHandler {
 
     @Override
     public void handle(Kick kick) throws Exception {
+        this.proxyClient.setLastKickReason(ComponentSerializer.parse(kick.getMessage()));
         MCProxy.getInstance().removeProxyClient(this.proxyClient);
         ConnectedProxyClient proxyClient = MCProxy.getInstance().findBestProxyClient(null);
         if (proxyClient == null) {

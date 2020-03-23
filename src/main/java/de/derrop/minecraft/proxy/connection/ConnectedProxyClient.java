@@ -15,6 +15,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.handler.proxy.HttpProxyHandler;
+import io.netty.handler.proxy.Socks4ProxyHandler;
+import io.netty.handler.proxy.Socks5ProxyHandler;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.score.Scoreboard;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
@@ -45,6 +49,8 @@ public class ConnectedProxyClient {
     private int entityId;
     private int dimension;
 
+    private BaseComponent[] lastKickReason;
+
     private PlayerVelocityHandler velocityHandler = new PlayerVelocityHandler(this);
 
     private long lastAlivePacket = -1;
@@ -61,7 +67,7 @@ public class ConnectedProxyClient {
         return success;
     }
 
-    public CompletableFuture<Boolean> connect(NetworkAddress address) {
+    public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
         if (this.channel != null) {
             this.channel.close().syncUninterruptibly();
             this.address = null;
@@ -74,6 +80,11 @@ public class ConnectedProxyClient {
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 PipelineUtils.BASE.initChannel(ch);
+
+                if (proxy != null) {
+                    ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
+                }
+
                 ch.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, false, 47));
                 ch.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, false, 47));
                 ch.pipeline().get(HandlerBoss.class).setHandler(new ProxyClientLoginHandler(ConnectedProxyClient.this));
@@ -102,6 +113,7 @@ public class ConnectedProxyClient {
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))
                 .addListener(listener)
+                .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
                 .channel();
 
         return future;
@@ -121,6 +133,14 @@ public class ConnectedProxyClient {
 
     public UUID getAccountUUID() {
         return this.authentication.getSelectedProfile().getId();
+    }
+
+    public BaseComponent[] getLastKickReason() {
+        return lastKickReason;
+    }
+
+    public void setLastKickReason(BaseComponent[] lastKickReason) {
+        this.lastKickReason = lastKickReason;
     }
 
     public PlayerVelocityHandler getVelocityHandler() {
@@ -256,7 +276,9 @@ public class ConnectedProxyClient {
             this.connectionHandler.complete(true);
             this.connectionHandler = null;
 
-            MCProxy.getInstance().getOnlineClients().add(this);
+            if (MCProxy.getInstance() != null) {
+                MCProxy.getInstance().getOnlineClients().add(this);
+            }
         }
     }
 

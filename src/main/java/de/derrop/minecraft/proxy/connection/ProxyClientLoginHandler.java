@@ -4,6 +4,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.minecraft.CryptManager;
 import net.md_5.bungee.EncryptionUtil;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.connection.DownstreamBridge;
 import net.md_5.bungee.jni.cipher.BungeeCipher;
@@ -51,6 +52,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     @Override
     public void handle(Kick kick) throws Exception {
         System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAccountName() + "/" + this.proxyClient.getCredentials().getEmail() + "): " + kick.getMessage());
+        this.proxyClient.setLastKickReason(ComponentSerializer.parse(kick.getMessage()));
         this.proxyClient.connectionFailed();
     }
 
