@@ -28,7 +28,8 @@ public class AccountReader {
         }
 
         for (String line : Files.readAllLines(path)) {
-            if (line.startsWith("#")) {
+            line = line.trim();
+            if (line.startsWith("#") || line.isEmpty()) {
                 continue;
             }
             String[] base = line.split("->");
