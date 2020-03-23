@@ -175,6 +175,7 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(Login login) throws Exception {
         this.proxyClient.setEntityId(login.getEntityId());
+        this.proxyClient.connectionSuccess();
     }
 
     @Override

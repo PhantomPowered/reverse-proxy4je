@@ -92,12 +92,6 @@ public class ProxyClientLoginHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(Login login) throws Exception {
-        this.proxyClient.setEntityId(login.getEntityId());
-        this.proxyClient.connectionSuccess();
-    }
-
-    @Override
     public String toString() {
         return "ProxyClient -> " + this.proxyClient.getAddress();
     }
