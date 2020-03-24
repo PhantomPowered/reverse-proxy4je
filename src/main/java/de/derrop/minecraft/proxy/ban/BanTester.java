@@ -215,7 +215,8 @@ public class BanTester {
             System.err.println("Failed to test if " + proxyClient.getAccountName() + "#" + proxyClient.getAccountUUID() + " (" + credentials.getEmail() + ") is banned on " + address + " with proxy " + proxy);
             ++this.currentProxyIndex; // if the account is banned, we don't use this proxy anymore to prevent that more accounts get banned
         }
-        return false;
+
+        throw new IllegalStateException("No proxies available");
     }
 
 }
