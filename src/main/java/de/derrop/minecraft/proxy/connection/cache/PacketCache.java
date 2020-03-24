@@ -33,7 +33,7 @@ public class PacketCache {
         if (deserialized instanceof UpdateSign) {
             int state = this.getBlockStateAt(((UpdateSign) deserialized).getPos());
             if (state != DefaultBlockStates.POST_SIGN && state != DefaultBlockStates.WALL_SIGN) {
-                throw CancelSendSignal.INSTANCE;
+                return;
             }
         }
 
@@ -88,7 +88,6 @@ public class PacketCache {
                 new MiniMapCache(),
                 new SignCache()
         ));
-        // todo chunks are not loaded until they are received from the server again. Now fixed?
         // todo (resource pack), keep alive proxy <-> client, gamemode
         // todo scoreboards are not displayed properly
     }
