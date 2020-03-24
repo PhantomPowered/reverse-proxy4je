@@ -216,11 +216,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                 System.out.println("Connect: " + this);
 
                 if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
-                    if (handshake.getProtocolVersion() > 578) {
-                        disconnect("we only support 1.8");
-                    } else {
-                        disconnect("we don't support clients below 1.8");
-                    }
+                    disconnect("We only support 1.8");
                     return;
                 }
                 break;

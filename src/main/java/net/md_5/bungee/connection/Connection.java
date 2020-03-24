@@ -37,7 +37,6 @@ public interface Connection {
      * @param reason the reason shown to the player / sent to the server on
      *               disconnect
      */
-    @Deprecated
     void disconnect(String reason);
 
     /**

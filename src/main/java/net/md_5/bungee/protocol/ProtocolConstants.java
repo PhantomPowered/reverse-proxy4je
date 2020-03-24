@@ -38,7 +38,7 @@ public class ProtocolConstants {
             "1.15.x"
     );
     public static final List<Integer> SUPPORTED_VERSION_IDS = Arrays.asList(
-            ProtocolConstants.MINECRAFT_1_8,
+            ProtocolConstants.MINECRAFT_1_8/*,
             ProtocolConstants.MINECRAFT_1_9,
             ProtocolConstants.MINECRAFT_1_9_1,
             ProtocolConstants.MINECRAFT_1_9_2,
@@ -59,7 +59,7 @@ public class ProtocolConstants {
             ProtocolConstants.MINECRAFT_1_14_4,
             ProtocolConstants.MINECRAFT_1_15,
             ProtocolConstants.MINECRAFT_1_15_1,
-            ProtocolConstants.MINECRAFT_1_15_2
+            ProtocolConstants.MINECRAFT_1_15_2*/
     );
 
     public enum Direction {
