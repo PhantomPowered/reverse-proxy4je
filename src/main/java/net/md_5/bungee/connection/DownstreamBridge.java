@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.score.Team;
-import net.md_5.bungee.api.score.*;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
@@ -79,96 +77,6 @@ public class DownstreamBridge extends PacketHandler {
         this.proxyClient.getChannelWrapper().write(alive);
         this.proxyClient.setLastAlivePacket(System.currentTimeMillis());
         throw CancelSendSignal.INSTANCE;
-    }
-
-    @Override
-    public void handle(PlayerListItem playerList) throws Exception {
-    }
-
-    @Override
-    public void handle(ScoreboardObjective objective) throws Exception {
-        Scoreboard serverScoreboard = this.proxyClient.getScoreboard();
-        switch (objective.getAction()) {
-            case 0:
-                serverScoreboard.addObjective(new Objective(objective.getName(), objective.getValue(), objective.getType().toString()));
-                break;
-            case 1:
-                serverScoreboard.removeObjective(objective.getName());
-                break;
-            case 2:
-                Objective oldObjective = serverScoreboard.getObjective(objective.getName());
-                if (oldObjective != null) {
-                    oldObjective.setValue(objective.getValue());
-                    oldObjective.setType(objective.getType().toString());
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown objective action: " + objective.getAction());
-        }
-    }
-
-    @Override
-    public void handle(ScoreboardScore score) throws Exception {
-        Scoreboard serverScoreboard = this.proxyClient.getScoreboard();
-        switch (score.getAction()) {
-            case 0:
-                Score s = new Score(score.getItemName(), score.getScoreName(), score.getValue());
-                serverScoreboard.removeScore(score.getItemName());
-                serverScoreboard.addScore(s);
-                break;
-            case 1:
-                serverScoreboard.removeScore(score.getItemName());
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown scoreboard action: " + score.getAction());
-        }
-    }
-
-    @Override
-    public void handle(ScoreboardDisplay displayScoreboard) throws Exception {
-        Scoreboard serverScoreboard = this.proxyClient.getScoreboard();
-        serverScoreboard.setName(displayScoreboard.getName());
-        serverScoreboard.setPosition(Position.values()[displayScoreboard.getPosition()]);
-    }
-
-    @Override
-    public void handle(net.md_5.bungee.protocol.packet.Team team) throws Exception {
-        Scoreboard serverScoreboard = this.proxyClient.getScoreboard();
-        // Remove team and move on
-        if (team.getMode() == 1) {
-            serverScoreboard.removeTeam(team.getName());
-            return;
-        }
-
-        // Create or get old team
-        Team t;
-        if (team.getMode() == 0) {
-            t = new Team(team.getName());
-            serverScoreboard.addTeam(t);
-        } else {
-            t = serverScoreboard.getTeam(team.getName());
-        }
-
-        if (t != null) {
-            if (team.getMode() == 0 || team.getMode() == 2) {
-                t.setDisplayName(team.getDisplayName());
-                t.setPrefix(team.getPrefix());
-                t.setSuffix(team.getSuffix());
-                t.setFriendlyFire(team.getFriendlyFire());
-                t.setNameTagVisibility(team.getNameTagVisibility());
-                t.setCollisionRule(team.getCollisionRule());
-                t.setColor(team.getColor());
-            }
-            if (team.getPlayers() != null) {
-                for (String s : team.getPlayers()) {
-                    if (team.getMode() == 0 || team.getMode() == 3) {
-                        t.addPlayer(s);
-                    } else if (team.getMode() == 4) {
-                        t.removePlayer(s);
-                    }
-                }
-            }
-        }
     }
 
     @Override

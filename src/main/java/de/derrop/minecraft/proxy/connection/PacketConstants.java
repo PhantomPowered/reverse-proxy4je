@@ -25,5 +25,9 @@ public interface PacketConstants {
     int CAMERA = 67;
     int MAPS = 52;
     int TIME_UPDATE = 3;
+    int SCOREBOARD_OBJECTIVE = 59;
+    int SCOREBOARD_SCORE = 60;
+    int SCOREBOARD_DISPLAY = 61;
+    int SCOREBOARD_TEAM = 62;
 
 }

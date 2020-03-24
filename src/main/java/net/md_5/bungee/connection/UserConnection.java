@@ -15,7 +15,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.score.Scoreboard;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -55,8 +54,6 @@ public final class UserConnection implements ProxiedPlayer {
     @Getter
     private TabList tabListHandler;
     /*========================================================================*/
-    @Getter
-    private final Scoreboard serverSentScoreboard = new Scoreboard();
     @Getter
     private final Collection<UUID> sentBossBars = new HashSet<>();
     private boolean autoReconnect = true;
@@ -156,7 +153,6 @@ public final class UserConnection implements ProxiedPlayer {
         if (proxyClient == null) {
             if (this.proxyClient != null) {
                 this.proxyClient.free();
-                this.proxyClient.getScoreboard().writeClear(this);
             }
             return;
         }
@@ -168,7 +164,6 @@ public final class UserConnection implements ProxiedPlayer {
 
         if (this.proxyClient != null) {
             this.proxyClient.free();
-            this.proxyClient.getScoreboard().writeClear(this);
         }
 
         for (UUID bossbarId : this.sentBossBars) {
@@ -182,7 +177,6 @@ public final class UserConnection implements ProxiedPlayer {
         this.connected = true;
 
         proxyClient.redirectPackets(this, this.proxyClient != null);
-        proxyClient.getScoreboard().write(this);
 
         this.sendMessage("§7Your name: §e" + proxyClient.getAccountName());
 
@@ -376,10 +370,5 @@ public final class UserConnection implements ProxiedPlayer {
     @Override
     public boolean isConnected() {
         return !ch.isClosed();
-    }
-
-    @Override
-    public Scoreboard getScoreboard() {
-        return serverSentScoreboard;
     }
 }

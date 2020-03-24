@@ -20,14 +20,21 @@ public class ScoreboardScore extends DefinedPacket {
      * 0 = create / update, 1 = remove.
      */
     private byte action;
-    private String scoreName;
+    private String objectiveName;
     private int value;
+
+    /**
+     * Destroy packet
+     */
+    public ScoreboardScore(String itemName, String objectiveName) {
+        this(itemName, (byte) 1, objectiveName, -1);
+    }
 
     @Override
     public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
         itemName = readString(buf);
         action = buf.readByte();
-        scoreName = readString(buf);
+        objectiveName = readString(buf);
         if (action != 1) {
             value = readVarInt(buf);
         }
@@ -37,7 +44,7 @@ public class ScoreboardScore extends DefinedPacket {
     public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
         writeString(itemName, buf);
         buf.writeByte(action);
-        writeString(scoreName, buf);
+        writeString(objectiveName, buf);
         if (action != 1) {
             writeVarInt(value, buf);
         }

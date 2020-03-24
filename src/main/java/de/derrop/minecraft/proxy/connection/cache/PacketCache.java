@@ -86,10 +86,10 @@ public class PacketCache {
                 new EntityCache(),
                 new EntityEffectCache(),
                 new MiniMapCache(),
-                new SignCache()
+                new SignCache(),
+                new ScoreboardCache()
         ));
         // todo (resource pack), keep alive proxy <-> client, gamemode
-        // todo scoreboards are not displayed properly
     }
 
 }

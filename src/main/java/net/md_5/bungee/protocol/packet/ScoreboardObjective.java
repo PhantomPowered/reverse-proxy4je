@@ -1,5 +1,6 @@
 package net.md_5.bungee.protocol.packet;
 
+import de.derrop.minecraft.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,11 +20,18 @@ public class ScoreboardObjective extends DefinedPacket {
 
     private String name;
     private String value;
-    private HealthDisplay type;
+    private IScoreObjectiveCriteria.EnumRenderType type;
     /**
      * 0 to create, 1 to remove, 2 to update display text.
      */
     private byte action;
+
+    /**
+     * Destroy packet
+     */
+    public ScoreboardObjective(String name) {
+        this(name, null, null, (byte) 1);
+    }
 
     @Override
     public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
@@ -32,9 +40,9 @@ public class ScoreboardObjective extends DefinedPacket {
         if (action == 0 || action == 2) {
             value = readString(buf);
             if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
-                type = HealthDisplay.values()[readVarInt(buf)];
+                type = IScoreObjectiveCriteria.EnumRenderType.values()[readVarInt(buf)];
             } else {
-                type = HealthDisplay.fromString(readString(buf));
+                type = IScoreObjectiveCriteria.EnumRenderType.valueOf(readString(buf).toUpperCase());
             }
         }
     }
@@ -48,7 +56,7 @@ public class ScoreboardObjective extends DefinedPacket {
             if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
                 writeVarInt(type.ordinal(), buf);
             } else {
-                writeString(type.toString(), buf);
+                writeString(type.toString().toLowerCase(), buf);
             }
         }
     }

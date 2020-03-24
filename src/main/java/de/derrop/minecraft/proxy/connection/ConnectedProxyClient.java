@@ -17,7 +17,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.score.Scoreboard;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -44,7 +43,6 @@ public class ConnectedProxyClient {
     private UserConnection redirector;
     private Channel channel;
     private PacketCache packetCache = new PacketCache();
-    private Scoreboard scoreboard = new Scoreboard();
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private int entityId;
     private int dimension;
@@ -163,10 +161,6 @@ public class ConnectedProxyClient {
 
     public ChannelWrapper getChannelWrapper() {
         return channelWrapper;
-    }
-
-    public Scoreboard getScoreboard() {
-        return scoreboard;
     }
 
     public UserConnection getRedirector() {

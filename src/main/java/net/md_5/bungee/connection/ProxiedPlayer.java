@@ -5,7 +5,6 @@ import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.score.Scoreboard;
 
 import java.util.UUID;
 
@@ -153,11 +152,4 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      * @see Title
      */
     void sendTitle(Title title);
-
-    /**
-     * Get the {@link Scoreboard} that belongs to this player.
-     *
-     * @return this player's {@link Scoreboard}
-     */
-    Scoreboard getScoreboard();
 }

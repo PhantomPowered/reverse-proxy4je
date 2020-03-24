@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ScoreComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.score.Score;
 import net.md_5.bungee.connection.ProxiedPlayer;
 
 import java.util.List;
@@ -88,12 +87,12 @@ public final class ChatComponentTransformer {
             component.setName(player.getName());
         }
 
-        if (player.getScoreboard().getObjective(component.getObjective()) != null) {
+        /*if (player.getScoreboard().getObjective(component.getObjective()) != null) {
             Score score = player.getScoreboard().getScore(component.getName());
             if (score != null) {
                 component.setValue(Integer.toString(score.getValue()));
             }
-        }
+        }*/
     }
 
     /**
