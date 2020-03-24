@@ -32,7 +32,7 @@ public class PacketCache {
 
         if (deserialized instanceof UpdateSign) {
             int state = this.getBlockStateAt(((UpdateSign) deserialized).getPos());
-            if (state != DefaultBlockStates.POST_SIGN && state != DefaultBlockStates.WALL_SIGN) {
+            if (Arrays.stream(DefaultBlockStates.SIGNS).noneMatch(i -> i == state)) {
                 return;
             }
         }
