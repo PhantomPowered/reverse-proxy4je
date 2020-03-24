@@ -9,6 +9,7 @@ import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.chunk.DefaultBlockStates;
 import net.md_5.bungee.connection.UserConnection;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +37,8 @@ public class SignCache implements PacketCacheHandler {
         for (Map.Entry<BlockPos, UpdateSign> entry : this.signUpdates.entrySet()) {
             int state = this.packetCache.getBlockStateAt(entry.getKey());
 
-            if (state != DefaultBlockStates.POST_SIGN && state != DefaultBlockStates.WALL_SIGN) {
+            if (Arrays.stream(DefaultBlockStates.SIGNS).noneMatch(i -> i == state)) {
+                this.signUpdates.remove(entry.getKey());
                 continue;
             }
 
