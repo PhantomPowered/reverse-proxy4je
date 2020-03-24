@@ -231,9 +231,6 @@ public class ConnectedProxyClient {
         if (packet == null) {
             return;
         }
-        if (deserialized instanceof Chat) {
-            System.out.println(((Chat) deserialized).getMessage());
-        }
 
         if (deserialized != null && !this.blockedPackets.isEmpty()) {
             for (Map.Entry<Predicate<DefinedPacket>, Long> entry : this.blockedPackets.entrySet()) {
