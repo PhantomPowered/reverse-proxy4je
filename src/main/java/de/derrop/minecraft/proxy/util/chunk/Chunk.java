@@ -113,31 +113,20 @@ public class Chunk {
     }
 
     public void setBlockStateAt(int x, int y, int z, int state) {
-        // TODO
-        /*int oldState = this.getBlockStateAt(x, y, z);
-        ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
-        boolean flag = false;
+        ExtendedBlockStorage storage = this.storageArrays[y >> 4];
 
-        if (extendedblockstorage == null) {
+        if (storage == null) {
             if (state == DefaultBlockStates.AIR) {
                 return;
             }
 
-            extendedblockstorage = this.storageArrays[j >> 4] = new ExtendedBlockStorage(j >> 4 << 4);
-            flag = j >= i1;
+            storage = this.storageArrays[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4);
         }
 
-        extendedblockstorage.set(i, j & 15, k, state);
+        storage.set(x & 15, y & 15, z & 15, state);
 
-        if (block1 != block) {
-            if (!this.worldObj.isRemote) {
-                block1.breakBlock(this.worldObj, pos, iblockstate);
-            } else if (block1 instanceof ITileEntityProvider) {
-                this.worldObj.removeTileEntity(pos);
-            }
-        }
-
-        if (extendedblockstorage.getBlockByExtId(i, j & 15, k) != block) {
+        // TODO implement light level updates?
+        /*if (extendedblockstorage.getBlockByExtId(i, j & 15, k) != block) {
             return null;
         } else {
             if (flag) {

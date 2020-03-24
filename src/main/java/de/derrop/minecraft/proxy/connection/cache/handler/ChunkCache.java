@@ -15,16 +15,11 @@ import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChunkCache implements PacketCacheHandler {
 
-    private static final int AIR_BLOCK_STATE = 0;
-
     private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
-    private Map<BlockPos, Integer> blockUpdates = new ConcurrentHashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -94,53 +89,15 @@ public class ChunkCache implements PacketCacheHandler {
 
     private void unload(int x, int z) {
         this.chunks.removeIf(chunkData -> chunkData.getX() == x && chunkData.getZ() == z);
-        for (BlockPos pos : this.blockUpdates.keySet()) {
-            if (pos.isInChunk(x, z)) {
-                this.blockUpdates.remove(pos);
-            }
-        }
     }
 
     public int getBlockStateAt(BlockPos pos) {
-        /*if (this.blockUpdates.containsKey(pos)) {
-            return this.blockUpdates.get(pos); // todo this is the blockstate, not the material
-        }*/
-
         Chunk chunk = this.getChunk(pos);
         if (chunk == null) {
             return -1;
         }
 
         return chunk.getBlockStateAt(pos.getX(), pos.getY(), pos.getZ());
-
-        /*int i = 0;
-
-        char[] chars = new char[4096];
-        for (int k = 0; k < chars.length; k++) {
-            chars[k] = (char) ((chunk.getExtracted().data[i + 1] & 255) << 8 | chunk.getExtracted().data[i] & 255);
-            i += 2;
-        }
-
-        int cIndex = (pos.getY() & 15) << 8 | (pos.getZ() & 15) << 4 | (pos.getX() & 15);
-        return chars[cIndex];*/
-
-        /*for (ChunkData chunk : this.chunks) {
-            if (pos.isInChunk(chunk.getX(), chunk.getZ())) {
-                int i = 0;
-
-                char[] chars = new char[4096];
-                for (int k = 0; k < chars.length; k++) {
-                    chars[k] = (char) ((chunk.getExtracted().data[i + 1] & 255) << 8 | chunk.getExtracted().data[i] & 255);
-                    i += 2;
-                }
-
-                int cIndex = pos.getY() << 8 | pos.getZ() << 4 | pos.getX();
-                if (cIndex >= 0) {
-                    return chars[cIndex];
-                }
-            }
-        }*/
-
     }
 
     public Chunk getChunk(int x, int z) {
@@ -157,31 +114,21 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(UserConnection con) {
-        // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk
+        // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk. Now fixed?
         for (Chunk chunk : new ArrayList<>(this.chunks)) {
             ChunkData chunkData = new ChunkData();
             chunk.fillChunkData(chunkData);
             con.unsafe().sendPacket(chunkData);
-        }
-
-        for (Map.Entry<BlockPos, Integer> entry : this.blockUpdates.entrySet()) {
-            con.unsafe().sendPacket(new BlockUpdate(entry.getKey(), entry.getValue()));
         }
     }
 
     @Override
     public void onClientSwitch(UserConnection con) {
         for (Chunk chunk : this.chunks) {
-            /*ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.isB(), new ChunkData.Extracted());
-            modChunk.getExtracted().dataLength = 0;
-            modChunk.getExtracted().data = new byte[0];*/
             ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isB(), new ChunkData.Extracted());
             modChunk.getExtracted().dataLength = 0;
             modChunk.getExtracted().data = new byte[0];
             con.unsafe().sendPacket(modChunk);
-        }
-        for (BlockPos pos : this.blockUpdates.keySet()) {
-            con.unsafe().sendPacket(new BlockUpdate(pos, AIR_BLOCK_STATE));
         }
     }
 }
