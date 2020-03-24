@@ -26,6 +26,7 @@ import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
+import net.md_5.bungee.protocol.packet.Chat;
 import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
@@ -229,6 +230,9 @@ public class ConnectedProxyClient {
         }
         if (packet == null) {
             return;
+        }
+        if (deserialized instanceof Chat) {
+            System.out.println(((Chat) deserialized).getMessage());
         }
 
         if (deserialized != null && !this.blockedPackets.isEmpty()) {

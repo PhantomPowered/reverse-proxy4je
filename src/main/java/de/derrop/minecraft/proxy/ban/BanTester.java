@@ -187,6 +187,9 @@ public class BanTester {
 
         for (int i = this.currentProxyIndex; i < PROXIES.length; i++) {
             NetworkAddress proxy = PROXIES[i];
+
+            System.out.println("Trying to connect to " + address + " as " + proxyClient.getAccountName() + " (" + credentials.getEmail() + ") through " + proxy);
+
             try {
                 if (proxyClient.connect(address, proxy).get(10, TimeUnit.SECONDS)) {
                     proxyClient.getChannelWrapper().close();
@@ -195,6 +198,7 @@ public class BanTester {
                 }
                 if (proxyClient.getLastKickReason() != null) {
                     String kickReason = TextComponent.toPlainText(proxyClient.getLastKickReason());
+                    System.out.println("Account " + proxyClient.getAccountName() + " (" + credentials.getEmail() + ") got kicked while trying to check whether the account is banned on " + address + " through " + proxy + ": " + kickReason);
                     if (kickReason.contains("Suspicious IP detected. More information here")) { // Gomme blocked IP
                         ++this.currentProxyIndex;
                         continue;
