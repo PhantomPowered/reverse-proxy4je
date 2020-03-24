@@ -74,18 +74,17 @@ public class Chunk {
             }
         }
 
-        // TODO
-        /*for (ExtendedBlockStorage extendedblockstorage2 : list) {
-            j = copyArray(extendedblockstorage2.getBlocklightArray().getData(), extracted.data, j);
+        for (ExtendedBlockStorage extendedblockstorage2 : list) {
+            j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
         }
 
         if (hasSky) {
             for (ExtendedBlockStorage extendedblockstorage3 : list) {
-                j = copyArray(extendedblockstorage3.getSkylightArray().getData(), extracted.data, j);
+                j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
             }
         }
 
-        if (fullChunk) {
+        /*if (fullChunk) {
             copyArray(p_179756_0_.getBiomeArray(), extracted.data, j);
         }*/
 
@@ -95,10 +94,10 @@ public class Chunk {
         chunkData.setZ(this.lastChunkData.getZ());
     }
 
-    /*private static int copyArray(byte[] sourceArray, byte[] targetArray, int copyAmount) {
+    private static int copyArray(byte[] sourceArray, byte[] targetArray, int copyAmount) {
         System.arraycopy(sourceArray, 0, targetArray, copyAmount, sourceArray.length);
         return copyAmount + sourceArray.length;
-    }*/
+    }
     
     public int getBlockStateAt(int x, int y, int z) {
         if (y >= 0 && y >> 4 < this.storageArrays.length) {
