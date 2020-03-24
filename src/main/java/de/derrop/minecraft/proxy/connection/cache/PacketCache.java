@@ -88,8 +88,8 @@ public class PacketCache {
                 new MiniMapCache(),
                 new SignCache()
         ));
-        // todo chunks are not loaded until they are received from the server again
-        // todo (resource pack), keep alive proxy <-> client, signs, gamemode
+        // todo chunks are not loaded until they are received from the server again. Now fixed?
+        // todo (resource pack), keep alive proxy <-> client, gamemode
         // todo scoreboards are not displayed properly
     }
 
