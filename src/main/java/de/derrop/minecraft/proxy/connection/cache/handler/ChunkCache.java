@@ -9,6 +9,7 @@ import de.derrop.minecraft.proxy.connection.cache.packet.world.ChunkBulk;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.ChunkData;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.MultiBlockUpdate;
 import de.derrop.minecraft.proxy.util.BlockPos;
+import de.derrop.minecraft.proxy.util.chunk.Chunk;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -22,7 +23,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     private static final int AIR_BLOCK_STATE = 0;
 
-    private Collection<ChunkData> chunks = new CopyOnWriteArrayList<>();
+    private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
     private Map<BlockPos, Integer> blockUpdates = new ConcurrentHashMap<>();
 
     @Override
@@ -52,14 +53,21 @@ public class ChunkCache implements PacketCacheHandler {
 
             BlockUpdate blockUpdate = (BlockUpdate) packet;
 
-            this.blockUpdates.put(blockUpdate.getPos(), blockUpdate.getBlockState());
+            Chunk chunk = this.getChunk(blockUpdate.getPos());
+            if (chunk != null) {
+                chunk.setBlockStateAt(blockUpdate.getPos().getX(), blockUpdate.getPos().getY(), blockUpdate.getPos().getZ(), blockUpdate.getBlockState());
+            }
 
         } else if (packet instanceof MultiBlockUpdate) {
 
             MultiBlockUpdate multiBlockUpdate = (MultiBlockUpdate) packet;
 
             for (MultiBlockUpdate.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
-                this.blockUpdates.put(updateData.getPos(), updateData.getBlockState());
+                BlockPos pos = updateData.getPos();
+                Chunk chunk = this.getChunk(pos);
+                if (chunk != null) {
+                    chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), updateData.getBlockState());
+                }
             }
 
         }
@@ -79,7 +87,9 @@ public class ChunkCache implements PacketCacheHandler {
     }
 
     private void load(ChunkData chunkData) {
-        this.chunks.add(chunkData);
+        Chunk chunk = new Chunk();
+        chunk.fillChunk(chunkData);
+        this.chunks.add(chunk);
     }
 
     private void unload(int x, int z) {
@@ -91,12 +101,30 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
-    public int getMaterial(BlockPos pos) {
-        if (this.blockUpdates.containsKey(pos)) {
+    public int getBlockStateAt(BlockPos pos) {
+        /*if (this.blockUpdates.containsKey(pos)) {
             return this.blockUpdates.get(pos); // todo this is the blockstate, not the material
+        }*/
+
+        Chunk chunk = this.getChunk(pos);
+        if (chunk == null) {
+            return -1;
         }
 
-        for (ChunkData chunk : this.chunks) {
+        return chunk.getBlockStateAt(pos.getX(), pos.getY(), pos.getZ());
+
+        /*int i = 0;
+
+        char[] chars = new char[4096];
+        for (int k = 0; k < chars.length; k++) {
+            chars[k] = (char) ((chunk.getExtracted().data[i + 1] & 255) << 8 | chunk.getExtracted().data[i] & 255);
+            i += 2;
+        }
+
+        int cIndex = (pos.getY() & 15) << 8 | (pos.getZ() & 15) << 4 | (pos.getX() & 15);
+        return chars[cIndex];*/
+
+        /*for (ChunkData chunk : this.chunks) {
             if (pos.isInChunk(chunk.getX(), chunk.getZ())) {
                 int i = 0;
 
@@ -111,16 +139,29 @@ public class ChunkCache implements PacketCacheHandler {
                     return chars[cIndex];
                 }
             }
-        }
+        }*/
 
-        return -1;
+    }
+
+    public Chunk getChunk(int x, int z) {
+        return this.chunks.stream().filter(chunkData -> chunkData.getX() == x && chunkData.getZ() == z).findFirst().orElse(null);
+    }
+
+    public Chunk getChunk(BlockPos pos) {
+        return this.getChunk(pos.getX() >> 4, pos.getZ() >> 4);
+    }
+
+    public boolean isChunkLoaded(BlockPos pos) {
+        return this.getChunk(pos) != null;
     }
 
     @Override
     public void sendCached(UserConnection con) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk
-        for (ChunkData chunk : new ArrayList<>(this.chunks)) {
-            con.unsafe().sendPacket(chunk);
+        for (Chunk chunk : new ArrayList<>(this.chunks)) {
+            ChunkData chunkData = new ChunkData();
+            chunk.fillChunkData(chunkData);
+            con.unsafe().sendPacket(chunkData);
         }
 
         for (Map.Entry<BlockPos, Integer> entry : this.blockUpdates.entrySet()) {
@@ -130,10 +171,14 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void onClientSwitch(UserConnection con) {
-        for (ChunkData chunk : this.chunks) {
-            ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.isB(), new ChunkData.Extracted());
+        for (Chunk chunk : this.chunks) {
+            /*ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.isB(), new ChunkData.Extracted());
+            modChunk.getExtracted().dataLength = 0;
+            modChunk.getExtracted().data = new byte[0];*/
+            ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isB(), new ChunkData.Extracted());
             modChunk.getExtracted().dataLength = 0;
             modChunk.getExtracted().data = new byte[0];
+            con.unsafe().sendPacket(modChunk);
         }
         for (BlockPos pos : this.blockUpdates.keySet()) {
             con.unsafe().sendPacket(new BlockUpdate(pos, AIR_BLOCK_STATE));

@@ -34,7 +34,7 @@ public class ChunkBulk extends DefinedPacket {
             this.extracted[i].dataLength = buf.readShort() & 65535;
 
 
-            this.extracted[i].data = new byte[getArraySize(Integer.bitCount(this.extracted[i].dataLength), this.b, true)];
+            this.extracted[i].data = new byte[ChunkData.getArraySize(Integer.bitCount(this.extracted[i].dataLength), this.b, true)];
         }
 
         for (int i = 0; i < size; i++) {
@@ -56,14 +56,6 @@ public class ChunkBulk extends DefinedPacket {
         for (int i = 0; i < this.extracted.length; i++) {
             buf.writeBytes(this.extracted[i].data);
         }
-    }
-
-    private static int getArraySize(int a, boolean b, boolean c) {
-        int i = a * 2 * 16 * 16 * 16;
-        int j = a * 16 * 16 * 16 / 2;
-        int k = b ? a * 16 * 16 * 16 / 2 : 0;
-        int l = c ? 256 : 0;
-        return i + j + k + l;
     }
 
     @Override

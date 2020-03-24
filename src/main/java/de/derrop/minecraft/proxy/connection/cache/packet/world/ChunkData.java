@@ -19,6 +19,14 @@ public class ChunkData extends DefinedPacket {
     private boolean b;
     private Extracted extracted;
 
+    public static int getArraySize(int a, boolean b, boolean c) {
+        int i = a * 2 * 16 * 16 * 16;
+        int j = a * 16 * 16 * 16 / 2;
+        int k = b ? a * 16 * 16 * 16 / 2 : 0;
+        int l = c ? 256 : 0;
+        return i + j + k + l;
+    }
+
     @Override
     public void read(ByteBuf buf) {
         this.x = buf.readInt();

@@ -3,7 +3,10 @@ package de.derrop.minecraft.proxy.connection.cache;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
+import de.derrop.minecraft.proxy.util.BlockPos;
+import de.derrop.minecraft.proxy.util.chunk.DefaultBlockStates;
 import io.netty.buffer.ByteBuf;
+import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -27,6 +30,13 @@ public class PacketCache {
     public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
         packet.markReaderIndex();
 
+        if (deserialized instanceof UpdateSign) {
+            int state = this.getBlockStateAt(((UpdateSign) deserialized).getPos());
+            if (state != DefaultBlockStates.POST_SIGN && state != DefaultBlockStates.WALL_SIGN) {
+                throw CancelSendSignal.INSTANCE;
+            }
+        }
+
         int receivedPacketId = DefinedPacket.readVarInt(packet);
 
         for (PacketCacheHandler handler : this.handlers) {
@@ -39,6 +49,10 @@ public class PacketCache {
         }
 
         packet.resetReaderIndex();
+    }
+
+    public int getBlockStateAt(BlockPos pos) {
+        return ((ChunkCache) this.getHandler(handler -> handler instanceof ChunkCache)).getBlockStateAt(pos);
     }
 
     public void send(UserConnection connection, boolean switched) {
@@ -63,7 +77,6 @@ public class PacketCache {
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
                 new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
-                new MappedPacketCache<>(PacketConstants.UPDATE_SIGN, UpdateSign::getPos, updateSign -> false), // todo I think this doesn't work properly
                 new SimplePacketCache(PacketConstants.TIME_UPDATE), // time update
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat
@@ -72,7 +85,8 @@ public class PacketCache {
                 new PlayerInfoCache(),
                 new EntityCache(),
                 new EntityEffectCache(),
-                new MiniMapCache()
+                new MiniMapCache(),
+                new SignCache()
         ));
         // todo chunks are not loaded until they are received from the server again
         // todo (resource pack), keep alive proxy <-> client, signs, gamemode
