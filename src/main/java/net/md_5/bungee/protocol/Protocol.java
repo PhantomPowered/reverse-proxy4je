@@ -6,6 +6,13 @@ import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.*;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.EntityEffect;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.RemoveEntityEffect;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.Camera;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.GameStateChange;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.PlayerAbilities;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnGlobalEntity;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnMob;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnObject;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnPlayer;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.SetSlot;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.WindowItems;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
@@ -271,6 +278,10 @@ public enum Protocol {
             TO_CLIENT.registerPacket(
                     TimeUpdate.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.TIME_UPDATE)
+            );
+            TO_CLIENT.registerPacket(
+                    GameStateChange.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.GAME_STATE_CHANGE)
             );
             TO_CLIENT.registerPacket(
                     EntityVelocity.class,

@@ -1,4 +1,4 @@
-package de.derrop.minecraft.proxy.connection.cache.packet.entity;
+package de.derrop.minecraft.proxy.connection.cache.packet.entity.player;
 
 import io.netty.buffer.ByteBuf;
 import lombok.*;

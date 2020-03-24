@@ -3,8 +3,8 @@ package de.derrop.minecraft.proxy.connection.velocity;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.DestroyEntities;
-import de.derrop.minecraft.proxy.connection.cache.packet.entity.PositionedPacket;
-import de.derrop.minecraft.proxy.connection.cache.packet.entity.SpawnPlayer;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
 

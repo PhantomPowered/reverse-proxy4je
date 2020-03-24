@@ -1,4 +1,4 @@
-package de.derrop.minecraft.proxy.connection.cache.packet.entity;
+package de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn;
 
 public interface PositionedPacket {
 

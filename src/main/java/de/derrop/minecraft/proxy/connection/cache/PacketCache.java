@@ -2,11 +2,11 @@ package de.derrop.minecraft.proxy.connection.cache;
 
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.GameStateChange;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.chunk.DefaultBlockStates;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -78,6 +78,7 @@ public class PacketCache {
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
                 new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
                 new SimplePacketCache(PacketConstants.TIME_UPDATE), // time update
+                new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, GameStateChange::getState, gameStateChange -> false),
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat
                 new PlayerInventoryCache(),
