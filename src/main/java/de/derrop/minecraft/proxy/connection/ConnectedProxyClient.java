@@ -46,7 +46,6 @@ public class ConnectedProxyClient {
     private ChannelWrapper channelWrapper;
     private UserConnection redirector;
     private Channel channel;
-    //private Collection<byte[]> initPackets = new ArrayList<>(); // chunks, tablist
     private PacketCache packetCache = new PacketCache();
     private Scoreboard scoreboard = new Scoreboard();
     private EntityMap entityMap = EntityMap.getEntityMap(47);
@@ -263,36 +262,6 @@ public class ConnectedProxyClient {
         this.packetCache.send(con, switched);
         this.redirector = con;
     }
-
-    /*
-    public void redirectPacket(ByteBuf packet) {
-        if (this.channelWrapper.getProtocol() != Protocol.GAME) {
-            return;
-        }
-        if (packet == null) {
-            return;
-        }
-        packet.markReaderIndex();
-        byte[] bytes = new byte[packet.readableBytes()];
-        packet.readBytes(bytes);
-        this.initPackets.add(bytes);
-        packet.resetReaderIndex();
-        if (this.redirector != null) {
-            this.redirector.getCh().write(packet);
-
-            if (!this.redirector.isConnected()) {
-                this.redirector = null;
-            }
-        }
-    }
-
-    public void redirectPackets(UserConnection con) {
-        for (byte[] initPacket : new ArrayList<>(this.initPackets)) {
-            con.getCh().write(Unpooled.wrappedBuffer(initPacket));
-        }
-        this.redirector = con;
-    }
-    */
 
     public void connectionSuccess() {
         if (this.connectionHandler != null) {
