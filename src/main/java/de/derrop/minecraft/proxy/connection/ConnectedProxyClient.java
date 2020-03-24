@@ -30,8 +30,11 @@ import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public class ConnectedProxyClient {
 
@@ -48,6 +51,8 @@ public class ConnectedProxyClient {
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private int entityId;
     private int dimension;
+
+    private Map<Predicate<DefinedPacket>, Long> blockedPackets = new ConcurrentHashMap<>();
 
     private BaseComponent[] lastKickReason;
 
@@ -214,12 +219,29 @@ public class ConnectedProxyClient {
         // todo implement this?
     }
 
+    public void blockPacketUntil(Predicate<DefinedPacket> tester, long until) {
+        this.blockedPackets.put(tester, until);
+    }
+
     public void redirectPacket(ByteBuf packet, DefinedPacket deserialized) {
         if (this.channelWrapper.getProtocol() != Protocol.GAME) {
             return;
         }
         if (packet == null) {
             return;
+        }
+
+        if (deserialized != null && !this.blockedPackets.isEmpty()) {
+            for (Map.Entry<Predicate<DefinedPacket>, Long> entry : this.blockedPackets.entrySet()) {
+                if (entry.getValue() >= System.currentTimeMillis()) {
+                    this.blockedPackets.remove(entry.getKey());
+                    continue;
+                }
+
+                if (entry.getKey().test(deserialized)) {
+                    return;
+                }
+            }
         }
 
         this.packetCache.handlePacket(packet, deserialized);

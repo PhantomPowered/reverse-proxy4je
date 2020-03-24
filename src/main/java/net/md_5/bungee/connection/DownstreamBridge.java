@@ -53,7 +53,7 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     private void disconnectReceiver(BaseComponent[] reason) {
-        System.out.println("Disconnected " + this.proxyClient.getAccountName() + " with " + ChatColor.stripColor(TextComponent.toLegacyText(reason)));
+        System.out.println("Disconnected " + this.proxyClient.getCredentials().getEmail() + " (" + this.proxyClient.getAccountName() + "#" + this.proxyClient.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
         if (this.proxyClient.getRedirector() != null) {
             UserConnection con = this.proxyClient.getRedirector();
             this.proxyClient.free();

@@ -66,6 +66,7 @@ public final class UserConnection implements ProxiedPlayer {
     @Getter
     private EntityMap entityRewrite;
     private int compressionThreshold = -1;
+    private boolean connected = false;
     /*========================================================================*/
     private final Unsafe unsafe = new Unsafe() {
         @Override
@@ -112,22 +113,42 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     public void handleDisconnected(ConnectedProxyClient proxyClient, BaseComponent[] reason) {
+        if (!this.connected) {
+            return;
+        }
+        this.connected = false;
+
         if (!this.autoReconnect) {
+            this.disconnect(reason);
             return;
         }
 
         ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient(this.getUniqueId());
         if (nextClient == null || nextClient.equals(proxyClient)) {
-            this.disconnect("No client found");
+            this.disconnect("No client found:\n" + TextComponent.toLegacyText(reason));
             return;
         }
         if (reason != null) {
+            nextClient.blockPacketUntil(packet -> packet instanceof Chat && ((Chat) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(), System.currentTimeMillis() + 10000);
+
             this.sendMessage(ChatMessageType.CHAT, reason);
+            new Thread(() -> {
+                for (int i = 0; i < 200; i++) {
+                    this.sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(TextComponent.toPlainText(reason).replace('\n', ' ')));
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }).start();
         }
 
         this.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§cDisconnected")).fadeIn(20).stay(100).fadeOut(20));
 
         this.useClient(nextClient);
+
+        //this.disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "§cDisconnected!\n§7There are §e" + MCProxy.getInstance().getFreeClients() + " free clients §7left!"));
     }
 
     @Override
@@ -157,6 +178,8 @@ public final class UserConnection implements ProxiedPlayer {
         this.sentBossBars.clear();
 
         this.tabListHandler.onServerChange();
+
+        this.connected = true;
 
         proxyClient.redirectPackets(this, this.proxyClient != null);
         proxyClient.getScoreboard().write(this);
