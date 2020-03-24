@@ -2,13 +2,10 @@ package de.derrop.minecraft.proxy.connection.cache;
 
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
-import de.derrop.minecraft.proxy.connection.cache.packet.world.Maps;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.connection.UserConnection;
-import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.Protocol;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -3,7 +3,6 @@ package de.derrop.minecraft.proxy.storage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import de.derrop.minecraft.proxy.permission.PermissionEntity;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -11,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

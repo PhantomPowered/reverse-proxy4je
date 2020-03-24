@@ -5,7 +5,6 @@ import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
-import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
 import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
