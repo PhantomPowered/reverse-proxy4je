@@ -94,6 +94,8 @@ public class ConnectedProxyClient {
         this.velocityHandler = new PlayerVelocityHandler(this);
         this.entityId = -1;
         this.dimension = -1;
+
+        MCProxy.getInstance().getOnlineClients().remove(this);
     }
 
     public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {

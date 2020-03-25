@@ -62,6 +62,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandForEach());
         this.commandMap.registerCommand(new CommandPermissions());
         this.commandMap.registerCommand(new CommandConnect());
+        this.commandMap.registerCommand(new CommandAccount());
         this.commandMap.registerCommand(new CommandStop());
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));

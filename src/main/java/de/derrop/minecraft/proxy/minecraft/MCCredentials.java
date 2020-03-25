@@ -3,6 +3,8 @@ package de.derrop.minecraft.proxy.minecraft;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.Arrays;
+
 @ToString
 @EqualsAndHashCode
 public class MCCredentials {
@@ -25,7 +27,10 @@ public class MCCredentials {
 
     public static MCCredentials parse(String line) {
         String[] split = line.split(":");
-        if (split.length != 2) {
+        if (split.length == 3) { // Name:E-Mail:Password
+            split = Arrays.copyOfRange(split, 1, split.length);
+        }
+        if (split.length != 2) { // E-Mail:Password
             return null;
         }
         if (!split[0].contains("@")) {

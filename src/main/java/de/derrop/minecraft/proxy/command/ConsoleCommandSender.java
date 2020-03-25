@@ -1,6 +1,7 @@
 package de.derrop.minecraft.proxy.command;
 
 import de.derrop.minecraft.proxy.logging.ILogger;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class ConsoleCommandSender implements CommandSender {
 
     @Override
     public void sendMessage(String message) {
-        this.logger.info(message);
+        this.logger.info(ChatColor.stripColor(message));
     }
 
     @Override
