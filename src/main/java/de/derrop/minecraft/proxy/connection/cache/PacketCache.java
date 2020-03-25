@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy.connection.cache;
 
+import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.GameStateChange;
@@ -17,10 +18,15 @@ import java.util.function.Predicate;
 
 public class PacketCache {
 
+    private final ConnectedProxyClient targetProxyClient;
     private final Collection<PacketCacheHandler> handlers = new ArrayList<>();
 
     {
         this.reset();
+    }
+
+    public PacketCache(ConnectedProxyClient targetProxyClient) {
+        this.targetProxyClient = targetProxyClient;
     }
 
     public PacketCacheHandler getHandler(Predicate<PacketCacheHandler> filter) {
@@ -53,6 +59,10 @@ public class PacketCache {
 
     public int getBlockStateAt(BlockPos pos) {
         return ((ChunkCache) this.getHandler(handler -> handler instanceof ChunkCache)).getBlockStateAt(pos);
+    }
+
+    public ConnectedProxyClient getTargetProxyClient() {
+        return targetProxyClient;
     }
 
     public void send(UserConnection connection, boolean switched) {

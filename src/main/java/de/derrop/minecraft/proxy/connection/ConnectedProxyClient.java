@@ -42,7 +42,7 @@ public class ConnectedProxyClient {
     private ChannelWrapper channelWrapper;
     private UserConnection redirector;
     private Channel channel;
-    private PacketCache packetCache = new PacketCache();
+    private PacketCache packetCache = new PacketCache(this);
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private int entityId;
     private int dimension;

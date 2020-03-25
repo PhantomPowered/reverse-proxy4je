@@ -122,7 +122,7 @@ public class PlayerListItem extends DefinedPacket {
     }
 
     @Data
-    public static class Item {
+    public static class Item implements Cloneable {
 
         // ALL
         private UUID uuid;
@@ -140,5 +140,14 @@ public class PlayerListItem extends DefinedPacket {
         // ADD_PLAYER & UPDATE_DISPLAY_NAME
         private String displayName;
 
+        @Override
+        public Item clone() {
+            try {
+                return (Item) super.clone();
+            } catch (CloneNotSupportedException exception) {
+                exception.printStackTrace();
+            }
+            return null;
+        }
     }
 }

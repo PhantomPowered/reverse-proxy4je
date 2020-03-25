@@ -18,8 +18,12 @@ public class PlayerInfoCache implements PacketCacheHandler {
 
     private Collection<PlayerListItem.Item> items = new ArrayList<>();
 
+    private PacketCache packetCache;
+
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+        this.packetCache = packetCache;
+
         PlayerListItem playerListItem = (PlayerListItem) newPacket.getDeserializedPacket();
 
         if (playerListItem.getAction() == PlayerListItem.Action.REMOVE_PLAYER) {
@@ -42,10 +46,22 @@ public class PlayerInfoCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(UserConnection con) {
+        if (this.packetCache == null) {
+            return;
+        }
+
         PlayerListItem playerListItem = new PlayerListItem();
 
         playerListItem.setAction(PlayerListItem.Action.ADD_PLAYER);
         playerListItem.setItems(this.items.toArray(new PlayerListItem.Item[0]));
+
+        for (int i = 0; i < playerListItem.getItems().length; i++) {
+            PlayerListItem.Item item = playerListItem.getItems()[i];
+            if (item.getUuid().equals(this.packetCache.getTargetProxyClient().getAccountUUID())) {
+                playerListItem.getItems()[i] = item.clone();
+                playerListItem.getItems()[i].setUuid(con.getUniqueId());
+            }
+        }
 
         con.unsafe().sendPacket(playerListItem);
     }
