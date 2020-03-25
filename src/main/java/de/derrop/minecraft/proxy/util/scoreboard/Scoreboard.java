@@ -9,19 +9,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Scoreboard {
     
-    private final Map<String, ScoreObjective> scoreObjectives = Maps.<String, ScoreObjective>newHashMap();
-    private final Map<IScoreObjectiveCriteria, List<ScoreObjective>> scoreObjectiveCriterias = Maps.<IScoreObjectiveCriteria, List<ScoreObjective>>newHashMap();
-    private final Map<String, Map<ScoreObjective, Score>> entitiesScoreObjectives = Maps.<String, Map<ScoreObjective, Score>>newHashMap();
+    private final Map<String, ScoreObjective> scoreObjectives = new ConcurrentHashMap<>();
+    private final Map<IScoreObjectiveCriteria, List<ScoreObjective>> scoreObjectiveCriterias = new ConcurrentHashMap<>();
+    private final Map<String, Map<ScoreObjective, Score>> entitiesScoreObjectives = new ConcurrentHashMap<>();
 
     /**
      * Index 0 is tab menu, 1 is sidebar, and 2 is below name
      */
     private final ScoreObjective[] objectiveDisplaySlots = new ScoreObjective[19];
-    private final Map<String, ScorePlayerTeam> teams = Maps.<String, ScorePlayerTeam>newHashMap();
-    private final Map<String, ScorePlayerTeam> teamMemberships = Maps.<String, ScorePlayerTeam>newHashMap();
+    private final Map<String, ScorePlayerTeam> teams = new ConcurrentHashMap<>();
+    private final Map<String, ScorePlayerTeam> teamMemberships = new ConcurrentHashMap<>();
     private static String[] field_178823_g = null;
 
     /**
