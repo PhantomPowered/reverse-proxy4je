@@ -160,7 +160,7 @@ public class MCProxy {
 
          //PlayerVelocityHandler.start(); todo
 
-        new Thread(() -> {
+        Constants.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.interrupted()) {
                 try {
                     Thread.sleep(5000);
@@ -181,7 +181,7 @@ public class MCProxy {
                     }
                 }
             }
-        }).start();
+        });
 
         while (true) {
             Thread.sleep(Long.MAX_VALUE);

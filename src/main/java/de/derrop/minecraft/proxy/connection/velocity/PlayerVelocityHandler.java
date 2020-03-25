@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy.connection.velocity;
 
+import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.DestroyEntities;
@@ -100,7 +101,7 @@ public class PlayerVelocityHandler {
     }
 
     public static void start() {
-        new Thread(() -> {
+        Constants.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.interrupted()) {
                 for (ConnectedProxyClient onlineClient : MCProxy.getInstance().getOnlineClients()) {
                     if (onlineClient.getRedirector() != null) {
@@ -161,7 +162,7 @@ public class PlayerVelocityHandler {
                     exception.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
 }

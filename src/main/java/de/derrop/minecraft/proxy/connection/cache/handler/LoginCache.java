@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy.connection.cache.handler;
 
+import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
@@ -28,7 +29,7 @@ public class LoginCache implements PacketCacheHandler {
     @Override
     public void sendCached(UserConnection con) {
         if (this.lastLogin == null) {
-            new Thread(() -> {
+            Constants.EXECUTOR_SERVICE.execute(() -> {
                 int count = 0;
                 while (this.lastLogin == null && count++ < 50) {
                     try {
@@ -42,7 +43,7 @@ public class LoginCache implements PacketCacheHandler {
                     return;
                 }
                 this.sendCached(con);
-            }).start();
+            });
             return;
         }
 

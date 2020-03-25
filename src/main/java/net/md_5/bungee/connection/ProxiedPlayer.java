@@ -1,11 +1,11 @@
 package net.md_5.bungee.connection;
 
+import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.protocol.packet.Chat;
 
 import java.util.UUID;
@@ -77,7 +77,7 @@ public interface ProxiedPlayer extends Connection, CommandSender {
         if (this.getConnectedClient() != null) {
             this.getConnectedClient().blockPacketUntil(packet -> packet instanceof Chat && ((Chat) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(), System.currentTimeMillis() + (units * 100));
         }
-        new Thread(() -> {
+        Constants.EXECUTOR_SERVICE.execute(() -> {
             for (int i = 0; i < units; i++) {
                 this.sendMessage(ChatMessageType.ACTION_BAR, message);
                 try {
@@ -86,7 +86,7 @@ public interface ProxiedPlayer extends Connection, CommandSender {
                     exception.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     /**
