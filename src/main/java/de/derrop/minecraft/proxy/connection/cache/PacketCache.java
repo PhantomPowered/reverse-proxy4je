@@ -100,7 +100,7 @@ public class PacketCache {
                 new SignCache(),
                 new ScoreboardCache()
         ));
-        // todo (resource pack), keep alive proxy <-> client, gamemode
+        // todo (resource pack), keep alive proxy <-> client
     }
 
 }
