@@ -20,6 +20,5 @@ public class CommandInfo extends Command {
             sender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getAccountName() + " §7on §e" + client.getAddress().getHost()));
         }
         sender.sendMessage("§7Connected clients: §e" + MCProxy.getInstance().getOnlineClients().size() + " §7(Free: §a" + MCProxy.getInstance().getFreeClients().size() + "§7)");
-        // todo banned accounts
     }
 }

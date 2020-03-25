@@ -2,9 +2,14 @@ package de.derrop.minecraft.proxy;
 
 import de.derrop.minecraft.proxy.ban.BanTester;
 import de.derrop.minecraft.proxy.command.CommandMap;
+import de.derrop.minecraft.proxy.command.ConsoleCommandSender;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
+import de.derrop.minecraft.proxy.logging.DefaultLogger;
+import de.derrop.minecraft.proxy.logging.FileLoggerHandler;
+import de.derrop.minecraft.proxy.logging.ILogger;
+import de.derrop.minecraft.proxy.logging.JAnsiConsole;
 import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
@@ -15,6 +20,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +44,15 @@ public class MCProxy {
     private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
-    private MCProxy() {
+    private ILogger logger;
+
+    private MCProxy() throws IOException {
+        this.logger = new DefaultLogger(new JAnsiConsole(() -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))));
+        this.logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));
+        this.logger.getConsole().addLineHandler("DefaultCommandMap", line ->
+                this.commandMap.dispatchCommand(new ConsoleCommandSender(this.logger), CommandMap.PREFIX + line)
+        );
+
         this.commandMap.registerCommand(new CommandHelp(this.commandMap));
         this.commandMap.registerCommand(new CommandInfo());
         this.commandMap.registerCommand(new CommandSwitch());
@@ -47,7 +61,10 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandAlert());
         this.commandMap.registerCommand(new CommandForEach());
         this.commandMap.registerCommand(new CommandPermissions());
-        this.commandMap.registerCommand(new CommandConnect());// todo this doesn't work, but a command like "add account <email:password> <server>" and "disconnect account <name>" would be useful
+        this.commandMap.registerCommand(new CommandConnect());
+        this.commandMap.registerCommand(new CommandStop());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
 
     public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException {
@@ -112,6 +129,18 @@ public class MCProxy {
 
     public Collection<ConnectedProxyClient> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getRedirector() == null).collect(Collectors.toList());
+    }
+
+    public void shutdown() {
+        for (ConnectedProxyClient onlineClient : this.getOnlineClients()) {
+            if (onlineClient.getRedirector() != null) {
+                onlineClient.getRedirector().disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
+            }
+            onlineClient.disconnect();
+        }
+        if (!Thread.currentThread().getName().equals("Shutdown Thread")) {
+            System.exit(0);
+        }
     }
 
     public CommandMap getCommandMap() {

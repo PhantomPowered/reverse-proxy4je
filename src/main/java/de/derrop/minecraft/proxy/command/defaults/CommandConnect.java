@@ -59,8 +59,6 @@ public class CommandConnect extends Command {
             player.sendTitle(new BungeeTitle().reset());
             player.enableAutoReconnect();
             if (success) {
-                MCProxy.getInstance().getOnlineClients().add(newClient);
-
                 MCProxy.getInstance().switchClientSafe(player, newClient);
             } else {
                 this.fallback(player, proxyClient, null);

@@ -12,12 +12,12 @@ public class CommandPermissions extends Command {
 
     public CommandPermissions() {
         super("perms", "permissions", "perm", "permission");
-        // todo add permission (console commands required first)
+        super.setPermission("command.permissions");
     }
 
     @Override
     public void execute(CommandSender sender, String input, String[] args) {
-        if (args.length < 4) {
+        if (args.length < 1) {
             this.sendHelp(sender);
             return;
         }
@@ -68,6 +68,12 @@ public class CommandPermissions extends Command {
 
             MCProxy.getInstance().getPermissionProvider().updatePermissionEntity(entity);
             sender.sendMessage("The permission has been successfully removed from the user " + name + "!");
+        } else if (args.length == 2) {
+            sender.sendMessage(name + "#" + uniqueId + ":");
+            sender.sendMessage("Permissions:");
+            for (String permission : entity.getPermissions()) {
+                sender.sendMessage("- " + permission);
+            }
         } else {
             this.sendHelp(sender);
         }
@@ -77,6 +83,7 @@ public class CommandPermissions extends Command {
         sender.sendMessage("perms user <name> add permission <permission>");
         sender.sendMessage("perms user <name> remove permission <permission>");
         sender.sendMessage("perms user <name> clear permissions");
+        sender.sendMessage("perms user <name>");
     }
 
 }

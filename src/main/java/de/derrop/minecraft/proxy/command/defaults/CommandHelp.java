@@ -18,7 +18,7 @@ public class CommandHelp extends Command {
         sender.sendMessage("Available commands:");
         for (Command command : this.commandMap.getCommands()) {
             if (command != this && command.canExecute(sender)) {
-                sender.sendMessage("- " + command.getNames()[0]);
+                sender.sendMessage("- " + command.getNames()[0] + " (Permission: " + command.getPermission() + ")");
             }
         }
     }

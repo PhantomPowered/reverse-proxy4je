@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class CommandMap {
 
-    private static final String PREFIX = "/proxy ";
+    public static final String PREFIX = "/proxy ";
 
     private Map<String, Command> commands = new HashMap<>();
 
