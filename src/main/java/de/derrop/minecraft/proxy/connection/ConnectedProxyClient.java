@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
+import de.derrop.minecraft.proxy.exception.KickedException;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.minecraft.SessionUtils;
 import de.derrop.minecraft.proxy.util.NettyUtils;
@@ -27,7 +28,6 @@ import net.md_5.bungee.protocol.*;
 import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.UUID;
@@ -48,6 +48,8 @@ public class ConnectedProxyClient {
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private int entityId;
     private int dimension;
+
+    private boolean globalAccount = true;
 
     private Map<Predicate<DefinedPacket>, Long> blockedPackets = new ConcurrentHashMap<>();
 
@@ -75,7 +77,7 @@ public class ConnectedProxyClient {
     }
 
     public void disconnect() {
-        if (this.channel == null) {
+        if (this.channel == null || this.channelWrapper == null) {
             return;
         }
 
@@ -95,7 +97,9 @@ public class ConnectedProxyClient {
         this.entityId = -1;
         this.dimension = -1;
 
-        MCProxy.getInstance().getOnlineClients().remove(this);
+        if (MCProxy.getInstance() != null && this.globalAccount) {
+            MCProxy.getInstance().getOnlineClients().remove(this);
+        }
     }
 
     public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
@@ -144,6 +148,10 @@ public class ConnectedProxyClient {
                 .channel();
 
         return future;
+    }
+
+    public void disableGlobal() {
+        this.globalAccount = false;
     }
 
     public NetworkAddress getAddress() {
@@ -290,7 +298,7 @@ public class ConnectedProxyClient {
             this.connectionHandler.complete(true);
             this.connectionHandler = null;
 
-            if (MCProxy.getInstance() != null) {
+            if (MCProxy.getInstance() != null && this.globalAccount) {
                 MCProxy.getInstance().getOnlineClients().add(this);
             }
         }
@@ -298,7 +306,7 @@ public class ConnectedProxyClient {
 
     public void connectionFailed() {
         if (this.connectionHandler != null) {
-            this.connectionHandler.completeExceptionally(new ConnectException(TextComponent.toLegacyText(this.lastKickReason)));
+            this.connectionHandler.completeExceptionally(new KickedException(TextComponent.toLegacyText(this.lastKickReason)));
             this.connectionHandler = null;
         }
     }

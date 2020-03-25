@@ -57,7 +57,6 @@ public class ProxyClientLoginHandler extends PacketHandler {
             return;
         }
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
-        System.err.println("Got kicked from " + this.proxyClient.getAddress() + " (Account: " + this.proxyClient.getAccountName() + "/" + this.proxyClient.getCredentials().getEmail() + "): " + TextComponent.toLegacyText(reason));
         this.proxyClient.setLastKickReason(reason);
         this.proxyClient.connectionFailed();
     }

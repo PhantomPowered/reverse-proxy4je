@@ -1,11 +1,13 @@
 package de.derrop.minecraft.proxy;
 
+import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import de.derrop.minecraft.proxy.ban.BanTester;
 import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.ConsoleCommandSender;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
+import de.derrop.minecraft.proxy.exception.KickedException;
 import de.derrop.minecraft.proxy.logging.DefaultLogger;
 import de.derrop.minecraft.proxy.logging.FileLoggerHandler;
 import de.derrop.minecraft.proxy.logging.ILogger;
@@ -40,6 +42,8 @@ public class MCProxy {
     private UUIDStorage uuidStorage = new UUIDStorage();
     private AccountReader accountReader = new AccountReader();
     private CommandMap commandMap = new CommandMap();
+
+    private BanTester banTester = new BanTester();
 
     private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
@@ -156,6 +160,14 @@ public class MCProxy {
         return uuidStorage;
     }
 
+    public BanTester getBanTester() {
+        return banTester;
+    }
+
+    public ILogger getLogger() {
+        return logger;
+    }
+
     public static MCProxy getInstance() {
         return instance;
     }
@@ -166,22 +178,36 @@ public class MCProxy {
 
         Path accountsPath = Paths.get("accounts.txt");
         if (Files.exists(accountsPath)) {
-            BanTester banTester = new BanTester();
+            Set<NetworkAddress> bannedAddresses = new HashSet<>();
             instance.accountReader.readAccounts(accountsPath, (credentials, address) -> {
-                /*try { // TODO
-                    if (banTester.isBanned(credentials, address)) {
-                        System.err.println("Account " + credentials.getEmail() + " is banned on " + address + "!");
+                System.out.println("Connecting... " + credentials.getEmail() + " -> " + address);
+                if (bannedAddresses.contains(address)) {
+                    System.out.println("Not connecting with " + credentials.getEmail() + " to " + address + " to prevent getting an IP ban because another account was banned before while trying to connect");
+                    return;
+                }
+
+                try {
+                    if (instance.banTester.isBanned(credentials, address)) {
                         return;
                     }
-                } catch (IllegalArgumentException exception) {
-                    System.err.println("Invalid credentials for " + credentials.getEmail() + "!");
+                } catch (InvalidCredentialsException exception) {
+                    System.err.println("Invalid credentials for " + credentials.getEmail());
                     return;
-                }*/
+                }
+
                 try {
                     System.out.println("Connection for " + credentials.getEmail() + ": " + instance.startClient(address, credentials));
                     Thread.sleep(1000);
                 } catch (ExecutionException | InterruptedException exception) {
-                    exception.printStackTrace();
+                    if (exception.getCause() instanceof KickedException) {
+                        System.err.println("Got kicked from " + address + " as " + credentials.getEmail() + ": " + exception.getMessage().replace('\n', ' '));
+                        if (instance.banTester.isBanned(exception.getMessage()) == BanTester.BanTestResult.BANNED) {
+                            instance.logger.warn("Preventing connections to " + address + " because " + credentials.getEmail() + " is banned");
+                            bannedAddresses.add(address);
+                        }
+                    } else {
+                        exception.printStackTrace();
+                    }
                 }
             });
         } else {
