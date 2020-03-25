@@ -28,6 +28,21 @@ public class LoginCache implements PacketCacheHandler {
     @Override
     public void sendCached(UserConnection con) {
         if (this.lastLogin == null) {
+            new Thread(() -> {
+                int count = 0;
+                while (this.lastLogin == null && count++ < 50) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+
+                if (count >= 50) {
+                    return;
+                }
+                this.sendCached(con);
+            }).start();
             return;
         }
 

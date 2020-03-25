@@ -17,6 +17,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -26,6 +27,7 @@ import net.md_5.bungee.protocol.*;
 import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.UUID;
@@ -67,12 +69,35 @@ public class ConnectedProxyClient {
         return success;
     }
 
-    public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
-        if (this.channel != null) {
-            this.channel.close().syncUninterruptibly();
-            this.address = null;
-            this.packetCache.reset();
+    public void setAuthentication(UserAuthentication authentication, MCCredentials credentials) {
+        this.authentication = authentication;
+        this.credentials = credentials;
+    }
+
+    public void disconnect() {
+        if (this.channel == null) {
+            return;
         }
+
+        this.channelWrapper.close();
+        this.channel = null;
+        this.channelWrapper = null;
+        this.address = null;
+        this.packetCache.reset();
+
+        this.lastKickReason = null;
+        this.lastAlivePacket = -1;
+        if (this.connectionHandler != null) {
+            this.connectionHandler.complete(false);
+            this.connectionHandler = null;
+        }
+        this.velocityHandler = new PlayerVelocityHandler(this);
+        this.entityId = -1;
+        this.dimension = -1;
+    }
+
+    public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
+        this.disconnect();
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -95,8 +120,6 @@ public class ConnectedProxyClient {
                 this.channelWrapper = new ChannelWrapper(future1.channel());
                 this.address = address;
 
-                this.connectionHandler = future;
-
                 this.channelWrapper.write(new Handshake(47, address.getHost(), address.getPort(), 2));
                 this.channelWrapper.setProtocol(Protocol.LOGIN);
                 this.channelWrapper.write(new LoginRequest(authentication.getSelectedProfile().getName()));
@@ -105,6 +128,8 @@ public class ConnectedProxyClient {
                 future.complete(false);
             }
         };
+
+        this.connectionHandler = future;
 
         this.channel = new Bootstrap()
                 .channel(NettyUtils.getSocketChannelClass())
@@ -161,6 +186,10 @@ public class ConnectedProxyClient {
 
     public ChannelWrapper getChannelWrapper() {
         return channelWrapper;
+    }
+
+    public boolean isConnected() {
+        return this.channelWrapper != null && !this.channelWrapper.isClosing() && !this.channelWrapper.isClosed();
     }
 
     public UserConnection getRedirector() {
@@ -267,7 +296,7 @@ public class ConnectedProxyClient {
 
     public void connectionFailed() {
         if (this.connectionHandler != null) {
-            this.connectionHandler.complete(false);
+            this.connectionHandler.completeExceptionally(new ConnectException(TextComponent.toLegacyText(this.lastKickReason)));
             this.connectionHandler = null;
         }
     }

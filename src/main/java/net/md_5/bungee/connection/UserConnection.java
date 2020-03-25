@@ -122,23 +122,14 @@ public final class UserConnection implements ProxiedPlayer {
 
         ConnectedProxyClient nextClient = MCProxy.getInstance().findBestProxyClient(this.getUniqueId());
         if (nextClient == null || nextClient.equals(proxyClient)) {
-            this.disconnect("No client found:\n" + TextComponent.toLegacyText(reason));
+            this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.proxyClient.getAddress() + ", no fallback client found. Reason:\n§r" + TextComponent.toLegacyText(reason));
             return;
         }
         if (reason != null) {
             nextClient.blockPacketUntil(packet -> packet instanceof Chat && ((Chat) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(), System.currentTimeMillis() + 10000);
 
             this.sendMessage(ChatMessageType.CHAT, reason);
-            new Thread(() -> {
-                for (int i = 0; i < 200; i++) {
-                    this.sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(TextComponent.toPlainText(reason).replace('\n', ' ')));
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            }).start();
+            this.sendActionBar(200, TextComponent.fromLegacyText(TextComponent.toPlainText(reason).replace('\n', ' ')));
         }
 
         this.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§cDisconnected")).fadeIn(20).stay(100).fadeOut(20));
@@ -150,6 +141,10 @@ public final class UserConnection implements ProxiedPlayer {
 
     @Override
     public void useClient(ConnectedProxyClient proxyClient) {
+        if (this.ch.isClosing() || this.ch.isClosed()) {
+            return;
+        }
+
         if (proxyClient == null) {
             if (this.proxyClient != null) {
                 this.proxyClient.free();

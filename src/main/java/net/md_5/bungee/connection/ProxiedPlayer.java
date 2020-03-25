@@ -5,6 +5,8 @@ import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.protocol.packet.Chat;
 
 import java.util.UUID;
 
@@ -70,6 +72,22 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      * @param message  the message to send
      */
     void sendMessage(ChatMessageType position, BaseComponent message);
+
+    default void sendActionBar(int units, BaseComponent... message) {
+        if (this.getConnectedClient() != null) {
+            this.getConnectedClient().blockPacketUntil(packet -> packet instanceof Chat && ((Chat) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(), System.currentTimeMillis() + (units * 100));
+        }
+        new Thread(() -> {
+            for (int i = 0; i < units; i++) {
+                this.sendMessage(ChatMessageType.ACTION_BAR, message);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     /**
      * Send a plugin message to this player.

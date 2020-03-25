@@ -55,13 +55,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
         playerListItem.setAction(PlayerListItem.Action.ADD_PLAYER);
         playerListItem.setItems(this.items.toArray(new PlayerListItem.Item[0]));
 
-        for (int i = 0; i < playerListItem.getItems().length; i++) {
-            PlayerListItem.Item item = playerListItem.getItems()[i];
-            if (item.getUuid().equals(this.packetCache.getTargetProxyClient().getAccountUUID())) {
-                playerListItem.getItems()[i] = item.clone();
-                playerListItem.getItems()[i].setUuid(con.getUniqueId());
-            }
-        }
+        this.replaceOwn(con, playerListItem);
 
         con.unsafe().sendPacket(playerListItem);
     }
@@ -73,6 +67,19 @@ public class PlayerInfoCache implements PacketCacheHandler {
         playerListItem.setAction(PlayerListItem.Action.REMOVE_PLAYER);
         playerListItem.setItems(this.items.toArray(new PlayerListItem.Item[0]));
 
+        this.replaceOwn(con, playerListItem);
+
         con.unsafe().sendPacket(playerListItem);
     }
+
+    private void replaceOwn(UserConnection con, PlayerListItem playerListItem) {
+        for (int i = 0; i < playerListItem.getItems().length; i++) {
+            PlayerListItem.Item item = playerListItem.getItems()[i];
+            if (item.getUuid().equals(this.packetCache.getTargetProxyClient().getAccountUUID())) {
+                playerListItem.getItems()[i] = item.clone();
+                playerListItem.getItems()[i].setUuid(con.getUniqueId());
+            }
+        }
+    }
+
 }

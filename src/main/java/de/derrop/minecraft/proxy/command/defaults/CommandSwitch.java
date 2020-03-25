@@ -44,7 +44,6 @@ public class CommandSwitch extends Command {
             return;
         }
 
-        ((ProxiedPlayer) sender).disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + optionalClient.get().getAccountName()));
-        MCProxy.getInstance().setReconnectTarget(sender.getUniqueId(), optionalClient.get().getAccountUUID());
+        MCProxy.getInstance().switchClientSafe((ProxiedPlayer) sender, optionalClient.get());
     }
 }

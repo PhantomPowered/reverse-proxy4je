@@ -11,6 +11,7 @@ import de.derrop.minecraft.proxy.permission.PermissionProvider;
 import de.derrop.minecraft.proxy.reconnect.ReconnectProfile;
 import de.derrop.minecraft.proxy.storage.UUIDStorage;
 import de.derrop.minecraft.proxy.util.NetworkAddress;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 
@@ -62,6 +63,11 @@ public class MCProxy {
         }
 
         return proxyClient.connect(address, null).get();
+    }
+
+    public void switchClientSafe(ProxiedPlayer player, ConnectedProxyClient proxyClient) {
+        player.disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getAccountName()));
+        MCProxy.getInstance().setReconnectTarget(player.getUniqueId(), proxyClient.getAccountUUID());
     }
 
     public void removeProxyClient(ConnectedProxyClient proxyClient) {

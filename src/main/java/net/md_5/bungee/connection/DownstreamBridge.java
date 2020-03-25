@@ -50,12 +50,17 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     private void disconnectReceiver(BaseComponent[] reason) {
+        if (this.proxyClient == null) {
+            return;
+        }
         System.out.println("Disconnected " + this.proxyClient.getCredentials().getEmail() + " (" + this.proxyClient.getAccountName() + "#" + this.proxyClient.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
         if (this.proxyClient.getRedirector() != null) {
             UserConnection con = this.proxyClient.getRedirector();
             this.proxyClient.free();
             con.handleDisconnected(this.proxyClient, reason);
         }
+        this.proxyClient.setLastKickReason(reason);
+        this.proxyClient.connectionFailed();
     }
 
     @Override
