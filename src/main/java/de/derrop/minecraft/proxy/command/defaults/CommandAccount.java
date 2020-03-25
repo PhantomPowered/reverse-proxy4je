@@ -26,8 +26,8 @@ public class CommandAccount extends Command {
     @Override
     public void execute(CommandSender sender, String input, String[] args) {
         if (args.length == 3 && args[0].equalsIgnoreCase("add")) {
-            MCCredentials credentials = MCCredentials.parse(args[1]);
-            NetworkAddress address = NetworkAddress.parse(args[2]);
+            MCCredentials credentials = MCCredentials.parse(args[2]);
+            NetworkAddress address = NetworkAddress.parse(args[1]);
 
             if (credentials == null || address == null) {
                 sender.sendMessage("§cInvalid credentials or address");
