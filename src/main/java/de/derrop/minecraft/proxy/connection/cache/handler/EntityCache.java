@@ -10,11 +10,12 @@ import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityCache implements PacketCacheHandler {
 
-    private Map<Integer, PositionedPacket> entities = new HashMap<>();
-    private Map<Integer, EntityMetadata> metadata = new HashMap<>();
+    private Map<Integer, PositionedPacket> entities = new ConcurrentHashMap<>();
+    private Map<Integer, EntityMetadata> metadata = new ConcurrentHashMap<>();
 
     // todo (fake?) players are not spawned properly
     @Override
@@ -84,10 +85,10 @@ public class EntityCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(UserConnection con) {
-        for (PositionedPacket packet : new ArrayList<>(this.entities.values())) {
+        for (PositionedPacket packet : this.entities.values()) {
             con.getCh().write(packet);
         }
-        for (EntityMetadata metadata : new ArrayList<>(this.metadata.values())) {
+        for (EntityMetadata metadata : this.metadata.values()) {
             con.unsafe().sendPacket(metadata);
         }
     }
