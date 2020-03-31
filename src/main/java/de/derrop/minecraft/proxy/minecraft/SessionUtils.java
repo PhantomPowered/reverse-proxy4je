@@ -13,20 +13,14 @@ public class SessionUtils {
 
     public static final AuthenticationService SERVICE = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
 
-    public static UserAuthentication logIn(String email, String password) {
+    public static UserAuthentication logIn(String email, String password) throws AuthenticationException {
         UserAuthentication authentication = SERVICE.createUserAuthentication(Agent.MINECRAFT);
         authentication.setUsername(email);
         authentication.setPassword(password);
 
-        try {
-            authentication.logIn();
+        authentication.logIn();
 
-            return authentication;
-        } catch (AuthenticationException exception) {
-            exception.printStackTrace();
-        }
-
-        return null;
+        return authentication;
     }
 
 }

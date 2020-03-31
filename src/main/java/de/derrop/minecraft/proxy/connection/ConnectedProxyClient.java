@@ -1,6 +1,8 @@
 package de.derrop.minecraft.proxy.connection;
 
 import com.mojang.authlib.UserAuthentication;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
@@ -61,14 +63,11 @@ public class ConnectedProxyClient {
 
     private CompletableFuture<Boolean> connectionHandler;
 
-    public boolean performMojangLogin(MCCredentials credentials) {
+    public boolean performMojangLogin(MCCredentials credentials) throws AuthenticationException {
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        boolean success = (this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword())) != null;
-        if (success) {
-            System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
-            this.credentials = credentials;
-        }
-        return success;
+        this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword());
+        System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
+        return true;
     }
 
     public void setAuthentication(UserAuthentication authentication, MCCredentials credentials) {

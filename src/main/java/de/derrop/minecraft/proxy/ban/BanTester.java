@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy.ban;
 
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
@@ -65,7 +66,7 @@ public class BanTester {
         }
     }
 
-    public boolean isBanned(MCCredentials credentials, NetworkAddress address) throws InvalidCredentialsException {
+    public boolean isBanned(MCCredentials credentials, NetworkAddress address) throws AuthenticationException {
         System.out.println("Testing if the account " + credentials.getEmail() + " is banned on " + address + "...");
 
         ConnectedProxyClient proxyClient = new ConnectedProxyClient();
@@ -93,7 +94,7 @@ public class BanTester {
                     return false;
                 }
 
-                kickReason = TextComponent.toPlainText(proxyClient.getLastKickReason());
+                kickReason = proxyClient.getLastKickReason() == null ? null : TextComponent.toPlainText(proxyClient.getLastKickReason());
             } catch (Exception exception) {
                 if (exception.getCause() instanceof KickedException) {
                     kickReason = ChatColor.stripColor(exception.getMessage());

@@ -1,5 +1,6 @@
 package de.derrop.minecraft.proxy;
 
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import de.derrop.minecraft.proxy.ban.BanTester;
 import de.derrop.minecraft.proxy.command.CommandMap;
@@ -72,15 +73,10 @@ public class MCProxy {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
 
-    public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException {
+    public boolean startClient(NetworkAddress address, MCCredentials credentials) throws ExecutionException, InterruptedException, AuthenticationException {
         ConnectedProxyClient proxyClient = new ConnectedProxyClient();
 
-        try {
-            if (!proxyClient.performMojangLogin(credentials)) {
-                return false;
-            }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        if (!proxyClient.performMojangLogin(credentials)) {
             return false;
         }
 
@@ -89,7 +85,7 @@ public class MCProxy {
 
     public void switchClientSafe(ProxiedPlayer player, ConnectedProxyClient proxyClient) {
         player.disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getAccountName()));
-        MCProxy.getInstance().setReconnectTarget(player.getUniqueId(), proxyClient.getAccountUUID());
+        this.setReconnectTarget(player.getUniqueId(), proxyClient.getAccountUUID());
     }
 
     public void removeProxyClient(ConnectedProxyClient proxyClient) {
@@ -118,6 +114,12 @@ public class MCProxy {
 
     public void setReconnectTarget(UUID uniqueId, UUID targetUniqueId) {
         this.reconnectProfiles.put(uniqueId, new ReconnectProfile(uniqueId, targetUniqueId));
+    }
+
+    public Optional<ConnectedProxyClient> getClientByEmail(String email) {
+        return this.onlineClients.stream().filter(proxyClient -> proxyClient.getCredentials() != null)
+                .filter(proxyClient -> proxyClient.getCredentials().getEmail().equals(email))
+                .findFirst();
     }
 
     public Collection<ConnectedProxyClient> getOnlineClients() {
@@ -174,7 +176,7 @@ public class MCProxy {
 
     public static void main(String[] args) throws Exception {
         instance = new MCProxy();
-        instance.proxyServer.start(new InetSocketAddress(25565));
+        instance.proxyServer.start(new InetSocketAddress(25567));
 
         Path accountsPath = Paths.get("accounts.txt");
         if (Files.exists(accountsPath)) {
@@ -190,7 +192,7 @@ public class MCProxy {
                     if (instance.banTester.isBanned(credentials, address)) {
                         return;
                     }
-                } catch (InvalidCredentialsException exception) {
+                } catch (AuthenticationException exception) {
                     System.err.println("Invalid credentials for " + credentials.getEmail());
                     return;
                 }
@@ -208,6 +210,8 @@ public class MCProxy {
                     } else {
                         exception.printStackTrace();
                     }
+                } catch (AuthenticationException exception) {
+                    System.out.println("Invalid credentials for " + credentials.getEmail());
                 }
             });
         } else {
@@ -245,5 +249,7 @@ public class MCProxy {
     }
 
     // todo we could put information like "CPS (autoclicker), PlayerESP (is this possible in the 1.8?)" into the action bar
+    //  Or maybe an extra program (like a labymod addon) or a standalone program which can be opened on a second screen (or the mobile?) to display some information
+    //  Or maybe just a website for that?
 
 }

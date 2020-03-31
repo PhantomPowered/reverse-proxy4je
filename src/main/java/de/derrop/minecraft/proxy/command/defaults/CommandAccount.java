@@ -1,5 +1,7 @@
 package de.derrop.minecraft.proxy.command.defaults;
 
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.command.Command;
@@ -35,7 +37,7 @@ public class CommandAccount extends Command {
                 return;
             }
 
-            if (MCProxy.getInstance().getOnlineClients().stream().anyMatch(proxyClient -> proxyClient.getCredentials().getEmail().equals(credentials.getEmail()))) {
+            if (MCProxy.getInstance().getClientByEmail(credentials.getEmail()).isPresent()) {
                 sender.sendMessage("§cThat account is already registered");
                 return;
             }
@@ -62,6 +64,9 @@ public class CommandAccount extends Command {
                 }
             } catch (ExecutionException | InterruptedException exception) {
                 exception.printStackTrace();
+            } catch (AuthenticationException exception) {
+                sender.sendMessage("§cInvalid credentials");
+                System.out.println("Invalid credentials for " + credentials.getEmail());
             }
         } else if (args.length == 2 && args[0].equalsIgnoreCase("close")) {
             this.closeAll(sender, client -> client.getCredentials().getEmail().equalsIgnoreCase(args[1]) || client.getAccountName().equalsIgnoreCase(args[1]));
