@@ -9,6 +9,7 @@ public class CommandStop extends Command {
 
     public CommandStop() {
         super("stop", "exit");
+        super.setPermission("command.stop");
     }
 
     @Override

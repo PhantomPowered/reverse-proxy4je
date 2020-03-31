@@ -21,6 +21,7 @@ public class CommandAccount extends Command {
 
     public CommandAccount() {
         super("account", "acc");
+        super.setPermission("command.account");
     }
 
     @Override
