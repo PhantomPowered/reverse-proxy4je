@@ -253,7 +253,7 @@ public class ConnectedProxyClient {
     }
 
     public void redirectPacket(ByteBuf packet, DefinedPacket deserialized) {
-        if (this.channelWrapper.getProtocol() != Protocol.GAME) {
+        if (this.channelWrapper == null || this.channelWrapper.getProtocol() != Protocol.GAME) {
             return;
         }
         if (packet == null) {
