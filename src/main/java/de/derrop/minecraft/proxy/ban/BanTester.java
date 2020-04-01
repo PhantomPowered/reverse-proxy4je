@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class BanTester {
 
@@ -88,8 +89,8 @@ public class BanTester {
             String kickReason = null;
 
             try {
-                if (proxyClient.connect(address, proxy).get(10, TimeUnit.SECONDS)) {
-                    proxyClient.getChannelWrapper().close("Quitting");
+                if (proxyClient.connect(address, proxy).get(5, TimeUnit.SECONDS)) {
+                    proxyClient.getChannelWrapper().close();
                     System.out.println("Account " + credentials.getEmail() + " is not banned on " + address);
                     return false;
                 }
@@ -98,7 +99,7 @@ public class BanTester {
             } catch (Exception exception) {
                 if (exception.getCause() instanceof KickedException) {
                     kickReason = ChatColor.stripColor(exception.getMessage());
-                } else {
+                } else if (!(exception instanceof TimeoutException)) {
                     exception.printStackTrace();
                 }
             }
