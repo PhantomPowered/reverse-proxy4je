@@ -54,7 +54,7 @@ public class DownstreamBridge extends PacketHandler {
             return;
         }
         if (this.proxyClient.getCredentials() != null) {
-            System.out.println("Disconnected " + this.proxyClient.getCredentials().getEmail() + " (" + this.proxyClient.getAccountName() + "#" + this.proxyClient.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
+            System.out.println("Disconnected " + this.proxyClient.getCredentials() + " (" + this.proxyClient.getAccountName() + "#" + this.proxyClient.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
         } else {
             System.out.println("Disconnected with " + TextComponent.toPlainText(reason));
         }
