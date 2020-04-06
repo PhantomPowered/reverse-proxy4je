@@ -69,6 +69,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandConnect());
         this.commandMap.registerCommand(new CommandAccount());
         this.commandMap.registerCommand(new CommandStop());
+        this.commandMap.registerCommand(new CommandKick());
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
@@ -132,6 +133,10 @@ public class MCProxy {
 
     public ProxiedPlayer getOnlinePlayer(UUID uniqueId) {
         return this.getOnlineClients().stream().map(ConnectedProxyClient::getRedirector).filter(Objects::nonNull).filter(connection -> connection.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
+    }
+
+    public ProxiedPlayer getOnlinePlayer(String name) {
+        return this.getOnlineClients().stream().map(ConnectedProxyClient::getRedirector).filter(Objects::nonNull).filter(connection -> connection.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     public Collection<ConnectedProxyClient> getFreeClients() {
@@ -202,7 +207,7 @@ public class MCProxy {
                     Thread.sleep(1000);
                 } catch (ExecutionException | InterruptedException exception) {
                     if (exception.getCause() instanceof KickedException) {
-                        System.err.println("Got kicked from " + address + " as " + credentials.getEmail() + ": " + exception.getMessage().replace('\n', ' '));
+                        System.err.println("Got kicked from " + address + " as " + credentials + ": " + exception.getMessage().replace('\n', ' '));
                         if (instance.banTester.isBanned(exception.getMessage()) == BanTester.BanTestResult.BANNED) {
                             instance.logger.warn("Preventing connections to " + address + " because " + credentials.getEmail() + " is banned");
                             bannedAddresses.add(address);
