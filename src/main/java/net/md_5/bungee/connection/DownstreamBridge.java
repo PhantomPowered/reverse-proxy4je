@@ -7,7 +7,6 @@ import de.derrop.minecraft.proxy.connection.cache.packet.system.JoinGame;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import lombok.AllArgsConstructor;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -18,10 +17,14 @@ import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
-@AllArgsConstructor
 public class DownstreamBridge extends PacketHandler {
 
     private ConnectedProxyClient proxyClient;
+    private boolean disconnected = false;
+
+    public DownstreamBridge(ConnectedProxyClient proxyClient) {
+        this.proxyClient = proxyClient;
+    }
 
     private UserConnection con() {
         return this.proxyClient != null ? this.proxyClient.getRedirector() : null;
@@ -50,9 +53,11 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     private void disconnectReceiver(BaseComponent[] reason) {
-        if (this.proxyClient == null) {
+        if (this.proxyClient == null || this.disconnected) {
             return;
         }
+        this.disconnected = true;
+
         if (this.proxyClient.getCredentials() != null) {
             System.out.println("Disconnected " + this.proxyClient.getCredentials() + " (" + this.proxyClient.getAccountName() + "#" + this.proxyClient.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
         } else {
