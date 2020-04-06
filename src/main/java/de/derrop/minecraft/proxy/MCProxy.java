@@ -182,23 +182,23 @@ public class MCProxy {
         if (Files.exists(accountsPath)) {
             Set<NetworkAddress> bannedAddresses = new HashSet<>();
             instance.accountReader.readAccounts(accountsPath, (credentials, address) -> {
-                System.out.println("Connecting... " + credentials.getEmail() + " -> " + address);
+                System.out.println("Connecting... " + credentials + " -> " + address);
                 if (bannedAddresses.contains(address)) {
-                    System.out.println("Not connecting with " + credentials.getEmail() + " to " + address + " to prevent getting an IP ban because another account was banned before while trying to connect");
+                    System.out.println("Not connecting with " + credentials + " to " + address + " to prevent getting an IP ban because another account was banned before while trying to connect");
                     return;
                 }
 
-                try {
+                /*try {
                     if (instance.banTester.isBanned(credentials, address)) {
                         return;
                     }
                 } catch (AuthenticationException exception) {
                     System.err.println("Invalid credentials for " + credentials.getEmail());
                     return;
-                }
+                }*/
 
                 try {
-                    System.out.println("Connection for " + credentials.getEmail() + ": " + instance.startClient(address, credentials));
+                    System.out.println("Connection for " + credentials + ": " + instance.startClient(address, credentials));
                     Thread.sleep(1000);
                 } catch (ExecutionException | InterruptedException exception) {
                     if (exception.getCause() instanceof KickedException) {

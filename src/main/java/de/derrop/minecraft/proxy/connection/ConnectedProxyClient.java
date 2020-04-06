@@ -21,6 +21,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.connection.DownstreamBridge;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -64,6 +65,10 @@ public class ConnectedProxyClient {
     private CompletableFuture<Boolean> connectionHandler;
 
     public boolean performMojangLogin(MCCredentials credentials) throws AuthenticationException {
+        if (credentials.isOffline()) {
+            this.credentials = credentials;
+            return true;
+        }
         System.out.println("Logging in " + credentials.getEmail() + "...");
         this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword());
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
@@ -127,7 +132,7 @@ public class ConnectedProxyClient {
 
                 this.channelWrapper.write(new Handshake(47, address.getHost(), address.getPort(), 2));
                 this.channelWrapper.setProtocol(Protocol.LOGIN);
-                this.channelWrapper.write(new LoginRequest(authentication.getSelectedProfile().getName()));
+                this.channelWrapper.write(new LoginRequest(this.getAccountName()));
             } else {
                 future1.channel().close();
                 future.complete(false);
@@ -162,11 +167,11 @@ public class ConnectedProxyClient {
     }
 
     public String getAccountName() {
-        return this.authentication.getSelectedProfile().getName();
+        return this.credentials.isOffline() ? this.credentials.getUsername() : this.authentication.getSelectedProfile().getName();
     }
 
     public UUID getAccountUUID() {
-        return this.authentication.getSelectedProfile().getId();
+        return this.credentials.isOffline() ? UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.credentials.getUsername()).getBytes()) : this.authentication.getSelectedProfile().getId();
     }
 
     public BaseComponent[] getLastKickReason() {
