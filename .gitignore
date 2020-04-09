@@ -3,6 +3,7 @@ dependency-reduced-pom.xml
 *.iml
 target/
 logs/
+replays/
 uuids.json
 permissions.json
 accounts.txt
