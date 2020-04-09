@@ -63,6 +63,10 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
     @Override
     public void handle(EncryptionRequest request) throws Exception {
+        if (this.proxyClient.getCredentials().isOffline()) {
+            throw new IllegalStateException("Joined with an offline account on an online mode server");
+        }
+
         final SecretKey secretKey = CryptManager.createNewSharedKey();
         String s = request.getServerId();
         PublicKey publicKey = CryptManager.decodePublicKey(request.getPublicKey());
