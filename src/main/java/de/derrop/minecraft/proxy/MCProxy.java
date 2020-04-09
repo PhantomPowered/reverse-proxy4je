@@ -17,6 +17,7 @@ import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
 import de.derrop.minecraft.proxy.reconnect.ReconnectProfile;
+import de.derrop.minecraft.proxy.replay.ReplaySystem;
 import de.derrop.minecraft.proxy.storage.UUIDStorage;
 import de.derrop.minecraft.proxy.util.NetworkAddress;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -49,6 +50,8 @@ public class MCProxy {
     private Collection<ConnectedProxyClient> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
+    private ReplaySystem replaySystem = new ReplaySystem();
+
     private ILogger logger;
 
     private MCProxy() throws IOException {
@@ -70,6 +73,7 @@ public class MCProxy {
         this.commandMap.registerCommand(new CommandAccount());
         this.commandMap.registerCommand(new CommandStop());
         this.commandMap.registerCommand(new CommandKick());
+        this.commandMap.registerCommand(new CommandReplay());
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
@@ -141,6 +145,10 @@ public class MCProxy {
 
     public Collection<ConnectedProxyClient> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getRedirector() == null).collect(Collectors.toList());
+    }
+
+    public ReplaySystem getReplaySystem() {
+        return this.replaySystem;
     }
 
     public void shutdown() {

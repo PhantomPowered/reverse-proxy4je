@@ -6,6 +6,7 @@ import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.*;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.*;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -84,12 +85,12 @@ public class EntityCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         for (PositionedPacket packet : this.entities.values()) {
-            con.getCh().write(packet);
+            con.sendPacket(packet);
         }
         for (EntityMetadata metadata : this.metadata.values()) {
-            con.unsafe().sendPacket(metadata);
+            con.sendPacket(metadata);
         }
     }
 

@@ -4,6 +4,7 @@ import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.packet.EntityStatus;
 import net.md_5.bungee.protocol.packet.Login;
@@ -27,7 +28,7 @@ public class LoginCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         if (this.lastLogin == null) {
             Constants.EXECUTOR_SERVICE.execute(() -> {
                 int count = 0;
@@ -47,26 +48,32 @@ public class LoginCache implements PacketCacheHandler {
             return;
         }
 
-        if (con.getProxyClient() == null) {
+        if (con instanceof UserConnection && ((UserConnection) con).getProxyClient() == null) {
             // no switch, directly connected to the proxy
             Login login = new Login(this.lastLogin.getEntityId(), (short) 0, this.lastLogin.getDimension(), 0L, this.lastLogin.getDifficulty(),
                     (short) 255, this.lastLogin.getLevelType(), this.lastLogin.getViewDistance(), this.lastLogin.isReducedDebugInfo(), this.lastLogin.isNormalRespawn());
 
-            con.unsafe().sendPacket(login);
-            con.setDimension(this.lastLogin.getDimension());
+            con.sendPacket(login);
+            ((UserConnection) con).setDimension(this.lastLogin.getDimension());
             return;
         }
 
-        con.unsafe().sendPacket(new EntityStatus(con.getClientEntityId(), this.lastLogin.isReducedDebugInfo() ? EntityStatus.DEBUG_INFO_REDUCED : EntityStatus.DEBUG_INFO_NORMAL));
+        if (con instanceof UserConnection) {
+            con.sendPacket(new EntityStatus(((UserConnection) con).getClientEntityId(), this.lastLogin.isReducedDebugInfo() ? EntityStatus.DEBUG_INFO_REDUCED : EntityStatus.DEBUG_INFO_NORMAL));
 
-        con.setDimensionChange(true);
-        if (this.lastLogin.getDimension() == con.getDimension()) {
-            con.unsafe().sendPacket(new Respawn((this.lastLogin.getDimension() >= 0 ? -1 : 0), this.lastLogin.getSeed(), this.lastLogin.getDifficulty(), this.lastLogin.getGameMode(), this.lastLogin.getLevelType()));
+            ((UserConnection) con).setDimensionChange(true);
         }
 
-        con.unsafe().sendPacket(new Respawn(this.lastLogin.getDimension(), this.lastLogin.getSeed(), this.lastLogin.getDifficulty(), this.lastLogin.getGameMode(), this.lastLogin.getLevelType()));
+        if (!(con instanceof UserConnection) || this.lastLogin.getDimension() == ((UserConnection) con).getDimension()) {
+            con.sendPacket(new Respawn((this.lastLogin.getDimension() >= 0 ? -1 : 0), this.lastLogin.getSeed(), this.lastLogin.getDifficulty(), this.lastLogin.getGameMode(), this.lastLogin.getLevelType()));
+        }
 
-        con.setDimension(this.lastLogin.getDimension());
+        con.sendPacket(new Respawn(this.lastLogin.getDimension(), this.lastLogin.getSeed(), this.lastLogin.getDifficulty(), this.lastLogin.getGameMode(), this.lastLogin.getLevelType()));
+
+        if (con instanceof UserConnection) {
+            ((UserConnection) con).setDimension(this.lastLogin.getDimension());
+        }
 
     }
+
 }

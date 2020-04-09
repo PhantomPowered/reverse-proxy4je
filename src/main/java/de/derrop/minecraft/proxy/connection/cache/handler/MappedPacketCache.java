@@ -3,6 +3,7 @@ package de.derrop.minecraft.proxy.connection.cache.handler;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -43,9 +44,9 @@ public class MappedPacketCache<V extends DefinedPacket> implements PacketCacheHa
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         for (V value : this.cachedPackets.values()) {
-            con.unsafe().sendPacket(value);
+            con.sendPacket(value);
         }
     }
 }

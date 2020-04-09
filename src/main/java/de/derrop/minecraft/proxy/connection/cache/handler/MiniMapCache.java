@@ -5,6 +5,7 @@ import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.Maps;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 
 import java.util.Map;
@@ -45,9 +46,9 @@ public class MiniMapCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         for (Maps maps : this.maps.values()) {
-            con.unsafe().sendPacket(maps);
+            con.sendPacket(maps);
         }
     }
 }

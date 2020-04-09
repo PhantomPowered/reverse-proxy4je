@@ -14,12 +14,15 @@ import net.md_5.bungee.protocol.DefinedPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class PacketCache {
 
     private final ConnectedProxyClient targetProxyClient;
     private final Collection<PacketCacheHandler> handlers = new ArrayList<>();
+
+    private BiConsumer<ByteBuf, Integer> packetHandler;
 
     {
         this.reset();
@@ -29,8 +32,20 @@ public class PacketCache {
         this.targetProxyClient = targetProxyClient;
     }
 
+    public void setPacketHandler(BiConsumer<ByteBuf, Integer> packetHandler) {
+        this.packetHandler = packetHandler;
+    }
+
+    public BiConsumer<ByteBuf, Integer> getPacketHandler() {
+        return this.packetHandler;
+    }
+
     public PacketCacheHandler getHandler(Predicate<PacketCacheHandler> filter) {
         return this.handlers.stream().filter(filter).findFirst().orElse(null);
+    }
+
+    public Collection<PacketCacheHandler> getHandlers() {
+        return this.handlers;
     }
 
     public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
@@ -55,6 +70,10 @@ public class PacketCache {
         }
 
         packet.resetReaderIndex();
+
+        if (this.packetHandler != null) {
+            this.packetHandler.accept(packet, receivedPacketId);
+        }
     }
 
     public int getBlockStateAt(BlockPos pos) {

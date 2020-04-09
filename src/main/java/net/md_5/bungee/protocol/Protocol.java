@@ -422,8 +422,8 @@ public enum Protocol {
     /*========================================================================*/
     public static final int MAX_PACKET_ID = 0xFF;
     /*========================================================================*/
-    final DirectionData TO_SERVER = new DirectionData(this, ProtocolConstants.Direction.TO_SERVER);
-    final DirectionData TO_CLIENT = new DirectionData(this, ProtocolConstants.Direction.TO_CLIENT);
+    public final DirectionData TO_SERVER = new DirectionData(this, ProtocolConstants.Direction.TO_SERVER);
+    public final DirectionData TO_CLIENT = new DirectionData(this, ProtocolConstants.Direction.TO_CLIENT);
 
     public static void main(String[] args) {
         for (int version : ProtocolConstants.SUPPORTED_VERSION_IDS) {
@@ -471,7 +471,7 @@ public enum Protocol {
         return new ProtocolMapping(protocol, id);
     }
 
-    static final class DirectionData {
+    public static final class DirectionData {
 
         private final TIntObjectMap<ProtocolData> protocols = new TIntObjectHashMap<>();
         //
@@ -545,7 +545,7 @@ public enum Protocol {
             }
         }
 
-        final int getId(Class<? extends DefinedPacket> packet, int version) {
+        public final int getId(Class<? extends DefinedPacket> packet, int version) {
 
             ProtocolData protocolData = getProtocolData(version);
             if (protocolData == null) {

@@ -3,6 +3,7 @@ package de.derrop.minecraft.proxy.connection.cache.handler;
 import de.derrop.minecraft.proxy.connection.cache.CachedPacket;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.packet.PlayerListItem;
 
@@ -45,7 +46,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         if (this.packetCache == null) {
             return;
         }
@@ -55,9 +56,11 @@ public class PlayerInfoCache implements PacketCacheHandler {
         playerListItem.setAction(PlayerListItem.Action.ADD_PLAYER);
         playerListItem.setItems(this.items.toArray(new PlayerListItem.Item[0]));
 
-        this.replaceOwn(con, playerListItem);
+        if (con instanceof UserConnection) {
+            this.replaceOwn((UserConnection) con, playerListItem);
+        }
 
-        con.unsafe().sendPacket(playerListItem);
+        con.sendPacket(playerListItem);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
 
         this.replaceOwn(con, playerListItem);
 
-        con.unsafe().sendPacket(playerListItem);
+        con.sendPacket(playerListItem);
     }
 
     private void replaceOwn(UserConnection con, PlayerListItem playerListItem) {

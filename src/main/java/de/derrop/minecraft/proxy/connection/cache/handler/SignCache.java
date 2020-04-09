@@ -7,6 +7,7 @@ import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.chunk.DefaultBlockStates;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public class SignCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         for (Map.Entry<BlockPos, UpdateSign> entry : this.signUpdates.entrySet()) {
             int state = this.packetCache.getBlockStateAt(entry.getKey());
 
@@ -42,7 +43,7 @@ public class SignCache implements PacketCacheHandler {
                 continue;
             }
 
-            con.unsafe().sendPacket(entry.getValue());
+            con.sendPacket(entry.getValue());
         }
     }
     // todo sometimes I get the "Unable to locate sign" message

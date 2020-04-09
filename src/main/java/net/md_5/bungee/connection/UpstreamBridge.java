@@ -48,6 +48,10 @@ public class UpstreamBridge extends PacketHandler {
                 con.getProxyClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.packet);
             }
             con.getProxyClient().getChannelWrapper().write(packet);
+
+            if (con.getProxyClient().getClientPacketHandler() != null) {
+                con.getProxyClient().getClientPacketHandler().accept(packet);
+            }
         }
     }
 

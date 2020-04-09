@@ -7,6 +7,7 @@ import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.util.scoreboard.*;
 import de.derrop.minecraft.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.packet.ScoreboardDisplay;
@@ -113,17 +114,17 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.unsafe().sendPacket(new ScoreboardObjective(objective.getName(), objective.getDisplayName(), objective.getRenderType(), (byte) 0));
+            con.sendPacket(new ScoreboardObjective(objective.getName(), objective.getDisplayName(), objective.getRenderType(), (byte) 0));
         }
 
         for (Score score : this.scoreboard.getScores()) {
-            con.unsafe().sendPacket(new ScoreboardScore(score.getPlayerName(), (byte) 0, score.getObjective().getName(), score.getScorePoints()));
+            con.sendPacket(new ScoreboardScore(score.getPlayerName(), (byte) 0, score.getObjective().getName(), score.getScorePoints()));
         }
 
         for (ScorePlayerTeam team : this.scoreboard.getTeams()) {
-            con.unsafe().sendPacket(new Team(
+            con.sendPacket(new Team(
                     team.getRegisteredName(), (byte) 0, team.getTeamName(), team.getColorPrefix(), team.getColorSuffix(),
                     team.getNameTagVisibility().toString().toLowerCase(), null, team.getChatFormat(),
                     (byte) 0, team.getMembershipCollection().toArray(new String[0])
@@ -131,26 +132,26 @@ public class ScoreboardCache implements PacketCacheHandler {
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.unsafe().sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), objective.getName()));
+            con.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), objective.getName()));
         }
     }
 
     @Override
     public void onClientSwitch(UserConnection con) {
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.unsafe().sendPacket(new ScoreboardObjective(objective.getName()));
+            con.sendPacket(new ScoreboardObjective(objective.getName()));
         }
 
         for (Score score : this.scoreboard.getScores()) {
-            con.unsafe().sendPacket(new ScoreboardScore(score.getPlayerName(), score.getObjective().getName()));
+            con.sendPacket(new ScoreboardScore(score.getPlayerName(), score.getObjective().getName()));
         }
 
         for (ScorePlayerTeam team : this.scoreboard.getTeams()) {
-            con.unsafe().sendPacket(new Team(team.getRegisteredName()));
+            con.sendPacket(new Team(team.getRegisteredName()));
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.unsafe().sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
+            con.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
         }
     }
 }

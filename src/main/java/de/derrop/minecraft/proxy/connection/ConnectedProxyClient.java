@@ -2,10 +2,10 @@ package de.derrop.minecraft.proxy.connection;
 
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
 import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
 import de.derrop.minecraft.proxy.exception.KickedException;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
@@ -21,7 +21,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.connection.DownstreamBridge;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -36,6 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ConnectedProxyClient {
@@ -51,6 +51,12 @@ public class ConnectedProxyClient {
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private int entityId;
     private int dimension;
+
+    public int posX, posY, posZ;
+
+    private Consumer<PacketWrapper> clientPacketHandler;
+
+    private Runnable disconnectionHandler;
 
     private boolean globalAccount = true;
 
@@ -104,6 +110,8 @@ public class ConnectedProxyClient {
         if (MCProxy.getInstance() != null && this.globalAccount) {
             MCProxy.getInstance().getOnlineClients().remove(this);
         }
+
+        this.disconnectionHandler.run();
     }
 
     public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
@@ -152,6 +160,18 @@ public class ConnectedProxyClient {
                 .channel();
 
         return future;
+    }
+
+    public void setDisconnectionHandler(Runnable disconnectionHandler) {
+        this.disconnectionHandler = disconnectionHandler;
+    }
+
+    public void setClientPacketHandler(Consumer<PacketWrapper> clientPacketHandler) {
+        this.clientPacketHandler = clientPacketHandler;
+    }
+
+    public Consumer<PacketWrapper> getClientPacketHandler() {
+        return clientPacketHandler;
     }
 
     public void disableGlobal() {
@@ -288,6 +308,14 @@ public class ConnectedProxyClient {
 
             if (!this.redirector.isConnected()) {
                 this.redirector = null;
+            }
+        }
+
+        if (deserialized instanceof PositionedPacket) {
+            if (((PositionedPacket) deserialized).getEntityId() == this.getEntityId()) {
+                this.posX = ((PositionedPacket) deserialized).getX();
+                this.posY = ((PositionedPacket) deserialized).getY();
+                this.posZ = ((PositionedPacket) deserialized).getZ();
             }
         }
     }

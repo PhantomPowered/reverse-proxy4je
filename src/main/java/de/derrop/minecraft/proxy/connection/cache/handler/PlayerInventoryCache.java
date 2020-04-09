@@ -7,6 +7,7 @@ import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.SetSlot;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.WindowItems;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 
 import java.util.Arrays;
@@ -63,18 +64,18 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
             InventoryItem[] items = new InventoryItem[count + 1];
             for (int slot = 0; slot < items.length; slot++) {
                 items[slot] = this.itemsBySlot.getOrDefault(slot, InventoryItem.NONE);
             }
-            con.unsafe().sendPacket(new WindowItems(WINDOW_ID, items));
+            con.sendPacket(new WindowItems(WINDOW_ID, items));
         });
     }
 
     @Override
     public void onClientSwitch(UserConnection con) {
-        con.unsafe().sendPacket(new WindowItems(WINDOW_ID, EMPTY_INVENTORY));
+        con.sendPacket(new WindowItems(WINDOW_ID, EMPTY_INVENTORY));
     }
 }

@@ -7,6 +7,7 @@ import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.TimedEntityEffect;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.EntityEffect;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.RemoveEntityEffect;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 
 import java.util.Map;
@@ -44,12 +45,12 @@ public class EntityEffectCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         for (Map<Integer, TimedEntityEffect> effects : this.effects.values()) {
             for (TimedEntityEffect effect : effects.values()) {
                 EntityEffect effectPacket = effect.toEntityEffect();
                 if (effectPacket != null) {
-                    con.unsafe().sendPacket(effectPacket);
+                    con.sendPacket(effectPacket);
                 } else {
                     effects.remove((int) effect.getEffectId());
                     if (effects.isEmpty()) {

@@ -366,4 +366,9 @@ public final class UserConnection implements ProxiedPlayer {
     public boolean isConnected() {
         return !ch.isClosed();
     }
+
+    @Override
+    public void sendPacket(Object packet) {
+        this.getCh().write(packet);
+    }
 }

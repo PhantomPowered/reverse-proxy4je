@@ -10,6 +10,7 @@ import de.derrop.minecraft.proxy.connection.cache.packet.world.ChunkData;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.MultiBlockUpdate;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.chunk.Chunk;
+import net.md_5.bungee.connection.PacketReceiver;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -113,22 +114,22 @@ public class ChunkCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(UserConnection con) {
+    public void sendCached(PacketReceiver con) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk. Now fixed?
         for (Chunk chunk : new ArrayList<>(this.chunks)) {
             ChunkData chunkData = new ChunkData();
             chunk.fillChunkData(chunkData);
-            con.unsafe().sendPacket(chunkData);
+            con.sendPacket(chunkData);
         }
     }
 
     @Override
     public void onClientSwitch(UserConnection con) {
-        for (Chunk chunk : this.chunks) {
+        /*for (Chunk chunk : this.chunks) {
             ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isB(), new ChunkData.Extracted());
             modChunk.getExtracted().dataLength = 0;
             modChunk.getExtracted().data = new byte[0];
-            con.unsafe().sendPacket(modChunk);
-        }
+            con.sendPacket(modChunk);
+        }*/
     }
 }
