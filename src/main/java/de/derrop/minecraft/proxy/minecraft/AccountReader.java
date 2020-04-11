@@ -27,7 +27,17 @@ public class AccountReader {
             throw new FileNotFoundException("File for reading accounts doesn't exist");
         }
 
+        boolean skip = false;
         for (String line : Files.readAllLines(path)) {
+            if (line.equals("###")) {
+                skip = !skip;
+                continue;
+            }
+
+            if (skip) {
+                continue;
+            }
+
             line = line.trim();
             if (line.startsWith("#") || line.isEmpty()) {
                 continue;
