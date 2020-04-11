@@ -69,7 +69,8 @@ public class CommandAccount extends Command {
                 System.out.println("Invalid credentials for " + credentials.getEmail());
             }
         } else if (args.length == 2 && args[0].equalsIgnoreCase("close")) {
-            this.closeAll(sender, client -> client.getCredentials().getEmail().equalsIgnoreCase(args[1]) || client.getAccountName().equalsIgnoreCase(args[1]));
+            this.closeAll(sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1])) ||
+                    client.getAccountName().equalsIgnoreCase(args[1]));
         } else if (args.length == 2 && args[0].equalsIgnoreCase("closeAll")) {
             NetworkAddress address = NetworkAddress.parse(args[1]);
             if (address == null) {
