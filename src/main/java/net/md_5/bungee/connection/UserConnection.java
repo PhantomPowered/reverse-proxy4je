@@ -148,6 +148,7 @@ public final class UserConnection implements ProxiedPlayer {
         if (proxyClient == null) {
             if (this.proxyClient != null) {
                 this.proxyClient.free();
+                this.proxyClient = null;
             }
             return;
         }
