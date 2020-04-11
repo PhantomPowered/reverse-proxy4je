@@ -1,5 +1,7 @@
 package de.derrop.minecraft.proxy.command;
 
+import net.md_5.bungee.Util;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +42,12 @@ public class CommandMap {
             return true;
         }
 
-        command.execute(sender, line, Arrays.copyOfRange(args, 1, args.length));
+        try {
+            command.execute(sender, line, Arrays.copyOfRange(args, 1, args.length));
+        } catch (Throwable exception) {
+            sender.sendMessage("§cAn error occurred: " + Util.exception(exception));
+            exception.printStackTrace();
+        }
         return true;
     }
 
