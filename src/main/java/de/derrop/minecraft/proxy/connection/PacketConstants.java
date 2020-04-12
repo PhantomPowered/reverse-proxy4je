@@ -31,5 +31,6 @@ public interface PacketConstants {
     int SCOREBOARD_DISPLAY = 61;
     int SCOREBOARD_TEAM = 62;
     int GAME_STATE_CHANGE = 43;
+    int RESOURCE_PACK_SEND = 72;
 
 }
