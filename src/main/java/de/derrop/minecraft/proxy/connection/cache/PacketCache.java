@@ -109,9 +109,9 @@ public class PacketCache {
                 new SimplePacketCache(PacketConstants.TIME_UPDATE),
                 new SimplePacketCache(PacketConstants.UPDATE_HEALTH),
                 new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, GameStateChange::getState, gameStateChange -> false),
-                new MappedPacketCache<>(PacketConstants.WORLD_BORDER, WorldBorder::getAction, worldBorder -> false),
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat
+                new WorldBorderCache(),
                 new PlayerInventoryCache(),
                 new ChunkCache(),
                 new PlayerInfoCache(),
