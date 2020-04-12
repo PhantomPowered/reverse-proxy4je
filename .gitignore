@@ -1,7 +1,12 @@
-.idea/
 dependency-reduced-pom.xml
+
+.idea/
 *.iml
+*.ipr
+*.iws
+
 target/
+
 logs/
 replays/
 uuids.json
