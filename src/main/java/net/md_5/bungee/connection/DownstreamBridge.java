@@ -1,20 +1,19 @@
 package net.md_5.bungee.connection;
 
+import de.derklaro.minecraft.proxy.TheProxy;
+import de.derklaro.minecraft.proxy.events.PluginMessageReceivedEvent;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.JoinGame;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
-import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
+import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
 
 public class DownstreamBridge extends PacketHandler {
@@ -101,21 +100,17 @@ public class DownstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
-        if (pluginMessage.getTag().equals( /*con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_13 ? "minecraft:brand" : */"MC|Brand")) {
-            ByteBuf brand = Unpooled.wrappedBuffer(pluginMessage.getData());
-            String serverBrand = DefinedPacket.readString(brand);
-            //brand.release();
-
-            brand = ByteBufAllocator.DEFAULT.heapBuffer();
-            DefinedPacket.writeString("RopProxy <- " + serverBrand, brand);
-            pluginMessage.setData(DefinedPacket.toArray(brand));
-            //brand.release();
-            // changes in the packet are ignored so we need to send it manually
-            if (this.con() != null) {
-                this.con().unsafe().sendPacket(pluginMessage);
-            }
+        if (TheProxy.getTheProxy().getEventManager().callEvent(new PluginMessageReceivedEvent(this.con(), ProtocolConstants.Direction.TO_CLIENT, pluginMessage)).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
+
+        Connection connection = this.con();
+        if (connection == null) {
+            return;
+        }
+
+        connection.unsafe().sendPacket(pluginMessage);
+        throw CancelSendSignal.INSTANCE;
     }
 
     @Override

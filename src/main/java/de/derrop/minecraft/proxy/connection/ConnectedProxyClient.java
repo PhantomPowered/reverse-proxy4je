@@ -3,6 +3,8 @@ package de.derrop.minecraft.proxy.connection;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import de.derklaro.minecraft.proxy.task.Task;
+import de.derklaro.minecraft.proxy.task.basic.DefaultTask;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityMetadata;
@@ -124,10 +126,10 @@ public class ConnectedProxyClient {
         }
     }
 
-    public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
+    public Task<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
         this.disconnect();
 
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        Task<Boolean> future = new DefaultTask<>();
 
         ChannelInitializer initializer = new ChannelInitializer() {
             @Override

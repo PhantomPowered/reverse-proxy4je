@@ -1,14 +1,17 @@
 package de.derrop.minecraft.proxy;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.exceptions.InvalidCredentialsException;
+import de.derklaro.minecraft.proxy.TheProxy;
+import de.derklaro.minecraft.proxy.connections.ServiceConnection;
+import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
+import de.derklaro.minecraft.proxy.task.Task;
+import de.derklaro.minecraft.proxy.task.TaskFutureListener;
 import de.derrop.minecraft.proxy.ban.BanTester;
 import de.derrop.minecraft.proxy.command.CommandMap;
 import de.derrop.minecraft.proxy.command.ConsoleCommandSender;
 import de.derrop.minecraft.proxy.command.defaults.*;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.ProxyServer;
-import de.derrop.minecraft.proxy.exception.KickedException;
 import de.derrop.minecraft.proxy.logging.DefaultLogger;
 import de.derrop.minecraft.proxy.logging.FileLoggerHandler;
 import de.derrop.minecraft.proxy.logging.ILogger;
@@ -23,12 +26,11 @@ import de.derrop.minecraft.proxy.util.NetworkAddress;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.packet.KeepAlive;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -54,7 +56,11 @@ public class MCProxy {
 
     private ILogger logger;
 
-    private MCProxy() throws IOException {
+    private final Collection<Runnable> shutdownHooks = new CopyOnWriteArrayList<>();
+
+    private final Collection<ServiceConnection> openConnections = new CopyOnWriteArrayList<>();
+
+    protected MCProxy() throws IOException {
         this.logger = new DefaultLogger(new JAnsiConsole(() -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))));
         this.logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));
         this.logger.getConsole().addLineHandler("DefaultCommandMap", line ->
@@ -151,15 +157,25 @@ public class MCProxy {
         return this.replaySystem;
     }
 
+    public void addShutdownRunnable(@NotNull Runnable runnable) {
+        this.shutdownHooks.add(runnable);
+    }
+
     public void shutdown() {
         for (ConnectedProxyClient onlineClient : this.getOnlineClients()) {
             if (onlineClient.getRedirector() != null) {
                 onlineClient.getRedirector().disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
             }
+
             onlineClient.disconnect();
         }
+
         if (!Thread.currentThread().getName().equals("Shutdown Thread")) {
             System.exit(0);
+        } else {
+            for (Runnable shutdownHook : this.shutdownHooks) {
+                shutdownHook.run();
+            }
         }
     }
 
@@ -191,48 +207,51 @@ public class MCProxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25567));
 
-        Path accountsPath = Paths.get("accounts.txt");
-        if (Files.exists(accountsPath)) {
-            Set<NetworkAddress> bannedAddresses = new HashSet<>();
-            instance.accountReader.readAccounts(accountsPath, (credentials, address) -> {
-                System.out.println("Connecting... " + credentials + " -> " + address);
-                if (bannedAddresses.contains(address)) {
-                    System.out.println("Not connecting with " + credentials + " to " + address + " to prevent getting an IP ban because another account was banned before while trying to connect");
-                    return;
-                }
+        TheProxy proxy = new TheProxy();
+        proxy.handleStart();
+        instance.addShutdownRunnable(() -> proxy.end());
 
-                /*try {
-                    if (instance.banTester.isBanned(credentials, address)) {
-                        return;
+        if (Files.exists(TheProxy.ACCOUNT_PATH)) {
+            instance.accountReader.readAccounts(TheProxy.ACCOUNT_PATH, (mcCredentials, networkAddress) -> {
+                ServiceConnection connection = new BasicServiceConnection(mcCredentials, networkAddress);
+                connection.connect(new TaskFutureListener<Boolean>() {
+                    @Override
+                    public void onCancel(@NotNull Task<Boolean> task) {
+                        System.err.println("Connection to " + connection.getNetworkAddress() + " cancelled");
                     }
-                } catch (AuthenticationException exception) {
-                    System.err.println("Invalid credentials for " + credentials.getEmail());
-                    return;
-                }*/
 
-                try {
-                    System.out.println("Connection for " + credentials + ": " + instance.startClient(address, credentials));
-                    Thread.sleep(1000);
-                } catch (ExecutionException | InterruptedException exception) {
-                    if (exception.getCause() instanceof KickedException) {
-                        System.err.println("Got kicked from " + address + " as " + credentials + ": " + exception.getMessage().replace('\n', ' '));
-                        if (instance.banTester.isBanned(exception.getMessage()) == BanTester.BanTestResult.BANNED) {
-                            instance.logger.warn("Preventing connections to " + address + " because " + credentials.getEmail() + " is banned");
-                            bannedAddresses.add(address);
+                    @Override
+                    public void onFailure(@NotNull Task<Boolean> task) {
+                        Throwable lastException = task.getException();
+                        if (lastException == null) {
+                            System.err.println("Got kicked from " + connection.getNetworkAddress() + " as " + connection.getCredentials());
+                            return;
                         }
-                    } else {
-                        exception.printStackTrace();
+
+                        System.err.println("Got kicked from " + connection.getNetworkAddress()
+                                + " as " + connection.getCredentials() + ": " + lastException.getMessage().replace('\n', ' '));
                     }
-                } catch (AuthenticationException exception) {
-                    System.out.println("Invalid credentials for " + credentials.getEmail());
-                }
+
+                    @Override
+                    public void onSuccess(@NotNull Task<Boolean> task) {
+                        Boolean result = task.getResult();
+                        if (result != null && result) {
+                            System.out.println("Successfully opended connection to " + connection.getNetworkAddress() + " as " + connection.getCredentials());
+                            instance.openConnections.add(connection);
+                            return;
+                        }
+
+                        System.err.println("Unable to open connection to " + connection.getNetworkAddress() + " as " + connection.getCredentials());
+                    }
+                });
             });
         } else {
-            instance.accountReader.writeDefaults(accountsPath);
+            instance.accountReader.writeDefaults(TheProxy.ACCOUNT_PATH);
         }
 
-         //PlayerVelocityHandler.start(); todo
+        //PlayerVelocityHandler.start(); todo
 
+        // TODO Fix this shit
         Constants.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.interrupted()) {
                 try {
@@ -264,5 +283,7 @@ public class MCProxy {
     // todo we could put information like "CPS (autoclicker), PlayerESP (is this possible in the 1.8?)" into the action bar
     //  Or maybe an extra program (like a labymod addon) or a standalone program which can be opened on a second screen (or the mobile?) to display some information
     //  Or maybe just a website for that?
+    //  And add bac click limit disable
+    //  Service registry
 
 }

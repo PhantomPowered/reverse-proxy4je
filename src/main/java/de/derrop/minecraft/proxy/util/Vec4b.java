@@ -44,7 +44,7 @@ public class Vec4b {
             return false;
         } else {
             Vec4b vec4b = (Vec4b) p_equals_1_;
-            return this.b1 != vec4b.b1 ? false : (this.b4 != vec4b.b4 ? false : (this.b2 != vec4b.b2 ? false : this.b3 == vec4b.b3));
+            return this.b1 == vec4b.b1 && (this.b4 == vec4b.b4 && (this.b2 == vec4b.b2 && this.b3 == vec4b.b3));
         }
     }
 

@@ -206,14 +206,14 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                 // Ping
                 thisState = State.STATUS;
                 ch.setProtocol(Protocol.STATUS);
-                System.out.println("Ping: " + this);
+//                System.out.println("Ping: " + this);
 
                 break;
             case 2:
                 // Login
                 thisState = State.USERNAME;
                 ch.setProtocol(Protocol.LOGIN);
-                System.out.println("Connect: " + this);
+                //System.out.println("Connect: " + this);
 
                 if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
                     disconnect("We only support 1.8");

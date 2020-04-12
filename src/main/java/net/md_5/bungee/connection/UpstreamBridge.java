@@ -1,6 +1,8 @@
 package net.md_5.bungee.connection;
 
 import com.google.common.base.Preconditions;
+import de.derklaro.minecraft.proxy.TheProxy;
+import de.derklaro.minecraft.proxy.events.PluginMessageReceivedEvent;
 import de.derrop.minecraft.proxy.MCProxy;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -116,6 +118,10 @@ public class UpstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
+        if (TheProxy.getTheProxy().getEventManager().callEvent(new PluginMessageReceivedEvent(this.con, ProtocolConstants.Direction.TO_SERVER, pluginMessage)).isCancelled()) {
+            throw CancelSendSignal.INSTANCE;
+        }
+
         if (pluginMessage.getTag().equals("BungeeCord")) {
             throw CancelSendSignal.INSTANCE;
         }
