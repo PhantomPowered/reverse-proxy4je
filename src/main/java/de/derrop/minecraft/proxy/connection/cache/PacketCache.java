@@ -5,6 +5,7 @@ import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.handler.*;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.GameStateChange;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.UpdateSign;
+import de.derrop.minecraft.proxy.connection.cache.packet.world.WorldBorder;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.chunk.DefaultBlockStates;
 import io.netty.buffer.ByteBuf;
@@ -104,12 +105,13 @@ public class PacketCache {
                 // THE ORDER IS IMPORTANT
                 new LoginCache(),
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
-                new SimplePacketCache(PacketConstants.WORLD_BORDER),
                 new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
-                new SimplePacketCache(PacketConstants.TIME_UPDATE), // time update
+                new SimplePacketCache(PacketConstants.TIME_UPDATE),
+                new SimplePacketCache(PacketConstants.UPDATE_HEALTH),
                 new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, GameStateChange::getState, gameStateChange -> false),
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat
+                new WorldBorderCache(),
                 new PlayerInventoryCache(),
                 new ChunkCache(),
                 new PlayerInfoCache(),

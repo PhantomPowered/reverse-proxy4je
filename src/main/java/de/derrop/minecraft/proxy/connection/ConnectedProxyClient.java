@@ -7,6 +7,8 @@ import de.derklaro.minecraft.proxy.task.Task;
 import de.derklaro.minecraft.proxy.task.basic.DefaultTask;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
+import de.derrop.minecraft.proxy.connection.cache.packet.ResourcePackSend;
+import de.derrop.minecraft.proxy.connection.cache.packet.ResourcePackStatusResponse;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityMetadata;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnPosition;
@@ -26,6 +28,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -299,6 +302,12 @@ public class ConnectedProxyClient {
         }
         if (packet == null) {
             return;
+        }
+
+        if (deserialized instanceof ResourcePackSend) {
+            this.channelWrapper.write(new ResourcePackStatusResponse(((ResourcePackSend) deserialized).getHash(), ResourcePackStatusResponse.Action.ACCEPTED));
+            this.channelWrapper.write(new ResourcePackStatusResponse(((ResourcePackSend) deserialized).getHash(), ResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
+            throw CancelSendSignal.INSTANCE;
         }
 
         if (deserialized != null && !this.blockedPackets.isEmpty()) {

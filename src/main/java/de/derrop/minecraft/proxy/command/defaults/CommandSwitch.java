@@ -42,7 +42,7 @@ public class CommandSwitch extends Command {
             return;
         }
 
-        ((ProxiedPlayer) sender).useClient(optionalClient.get());
-        //MCProxy.getInstance().switchClientSafe((ProxiedPlayer) sender, optionalClient.get());
+        //((ProxiedPlayer) sender).useClient(optionalClient.get());
+        MCProxy.getInstance().switchClientSafe((ProxiedPlayer) sender, optionalClient.get());
     }
 }
