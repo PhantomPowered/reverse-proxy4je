@@ -122,7 +122,9 @@ public class MCProxy {
     }
 
     public Optional<ConnectedProxyClient> getClientByEmail(String email) {
-        return this.onlineClients.stream().filter(proxyClient -> proxyClient.getCredentials() != null)
+        return this.onlineClients.stream()
+                .filter(proxyClient -> proxyClient.getCredentials() != null)
+                .filter(proxyClient -> proxyClient.getCredentials().getEmail() != null)
                 .filter(proxyClient -> proxyClient.getCredentials().getEmail().equals(email))
                 .findFirst();
     }
