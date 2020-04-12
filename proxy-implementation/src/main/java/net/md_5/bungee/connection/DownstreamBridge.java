@@ -101,9 +101,13 @@ public class DownstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
-        if (TheProxy.getTheProxy().getEventManager().callEvent(new PluginMessageReceivedEvent(this.con(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData())).isCancelled()) {
+        PluginMessageReceivedEvent event = new PluginMessageReceivedEvent(this.con(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
+        if (TheProxy.getTheProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
+
+        pluginMessage.setTag(event.getTag());
+        pluginMessage.setData(event.getData());
 
         Connection connection = this.con();
         if (connection == null) {

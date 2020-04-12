@@ -119,13 +119,13 @@ public class UpstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
-        if (TheProxy.getTheProxy().getEventManager().callEvent(new PluginMessageReceivedEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData())).isCancelled()) {
+        PluginMessageReceivedEvent event = new PluginMessageReceivedEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
+        if (TheProxy.getTheProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
 
-        if (pluginMessage.getTag().equals("BungeeCord")) {
-            throw CancelSendSignal.INSTANCE;
-        }
+        pluginMessage.setTag(event.getTag());
+        pluginMessage.setData(event.getData());
 
         if (PluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
             con.getPendingConnection().getRelayMessages().add(pluginMessage);
