@@ -106,7 +106,8 @@ public class PacketCache {
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
                 new SimplePacketCache(PacketConstants.WORLD_BORDER),
                 new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
-                new SimplePacketCache(PacketConstants.TIME_UPDATE), // time update
+                new SimplePacketCache(PacketConstants.TIME_UPDATE),
+                new SimplePacketCache(PacketConstants.UPDATE_HEALTH),
                 new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, GameStateChange::getState, gameStateChange -> false),
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat

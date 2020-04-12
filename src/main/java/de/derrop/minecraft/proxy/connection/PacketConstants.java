@@ -2,6 +2,7 @@ package de.derrop.minecraft.proxy.connection;
 
 public interface PacketConstants {
 
+    int UPDATE_HEALTH = 6;
     int CHUNK_DATA = 33;
     int CHUNK_BULK = 38;
     int BLOCK_UPDATE = 35;

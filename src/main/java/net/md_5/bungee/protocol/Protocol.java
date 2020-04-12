@@ -9,6 +9,7 @@ import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.RemoveEnt
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.Camera;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.GameStateChange;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.PlayerAbilities;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.UpdateHealth;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.*;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.SetSlot;
 import de.derrop.minecraft.proxy.connection.cache.packet.inventory.WindowItems;
@@ -291,6 +292,10 @@ public enum Protocol {
             TO_CLIENT.registerPacket(
                     SpawnPosition.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 5)
+            );
+            TO_CLIENT.registerPacket(
+                    UpdateHealth.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.UPDATE_HEALTH)
             );
             TO_CLIENT.registerPacket(
                     Disconnect.class,
