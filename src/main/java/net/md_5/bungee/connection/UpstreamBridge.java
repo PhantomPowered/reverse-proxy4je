@@ -43,15 +43,13 @@ public class UpstreamBridge extends PacketHandler {
     @Override
     public void handle(PacketWrapper packet) throws Exception {
         if (con.getProxyClient() != null && con.getProxyClient().isConnected()) {
+            con.getProxyClient().handleClientPacket(packet);
+
             con.getEntityRewrite().rewriteServerbound(packet.buf, con.getClientEntityId(), con.getServerEntityId(), con.getPendingConnection().getVersion());
             if (packet.packet != null) {
                 con.getProxyClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.packet);
             }
             con.getProxyClient().getChannelWrapper().write(packet);
-
-            if (con.getProxyClient().getClientPacketHandler() != null) {
-                con.getProxyClient().getClientPacketHandler().accept(packet);
-            }
         }
     }
 

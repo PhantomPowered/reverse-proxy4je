@@ -1,11 +1,9 @@
 package de.derrop.minecraft.proxy.command.defaults;
 
-import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.command.Command;
 import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.ProxiedPlayer;
 
 import java.util.Optional;
@@ -44,6 +42,7 @@ public class CommandSwitch extends Command {
             return;
         }
 
-        MCProxy.getInstance().switchClientSafe((ProxiedPlayer) sender, optionalClient.get());
+        ((ProxiedPlayer) sender).useClient(optionalClient.get());
+        //MCProxy.getInstance().switchClientSafe((ProxiedPlayer) sender, optionalClient.get());
     }
 }

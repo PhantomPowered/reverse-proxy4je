@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import de.derrop.minecraft.proxy.connection.PacketUtil;
 import de.derrop.minecraft.proxy.connection.cache.InventoryItem;
 import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -343,6 +344,7 @@ public class DataWatcher {
         dataTypes.put(Rotations.class, 7);
     }
 
+    @AllArgsConstructor
     public static class WatchableObject {
         private final int objectType;
         private final int dataValueId;

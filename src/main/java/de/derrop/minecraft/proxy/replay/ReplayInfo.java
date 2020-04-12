@@ -15,18 +15,24 @@ public class ReplayInfo {
     private String creatorName;
     private MCCredentials recorder;
     private long timestamp;
+    private int ownEntityId;
 
-    public ReplayInfo(NetworkAddress serverAddress, UUID creatorId, String creatorName, MCCredentials recorder, long timestamp) {
+    public ReplayInfo(NetworkAddress serverAddress, UUID creatorId, String creatorName, MCCredentials recorder, long timestamp, int ownEntityId) {
         this.serverAddress = serverAddress;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.recorder = recorder;
         this.timestamp = timestamp;
+        this.ownEntityId = ownEntityId;
     }
 
     public ReplayInfo() {
     }
-    
+
+    public int getOwnEntityId() {
+        return this.ownEntityId;
+    }
+
     public NetworkAddress getServerAddress() {
         return serverAddress;
     }
@@ -48,6 +54,8 @@ public class ReplayInfo {
     }
     
     public void write(DataOutputStream outputStream) throws IOException {
+        outputStream.writeInt(this.ownEntityId);
+
         outputStream.writeUTF(this.serverAddress.getHost());
         outputStream.writeInt(this.serverAddress.getPort());
 
@@ -68,6 +76,8 @@ public class ReplayInfo {
     }
     
     public void read(DataInputStream inputStream) throws IOException {
+        this.ownEntityId = inputStream.readInt();
+
         this.serverAddress = new NetworkAddress(inputStream.readUTF(), inputStream.readInt());
 
         this.creatorId = new UUID(inputStream.readLong(), inputStream.readLong());

@@ -2,9 +2,18 @@ package de.derrop.minecraft.proxy.replay;
 
 import com.google.common.base.Preconditions;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
+import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.PacketCacheHandler;
 import de.derrop.minecraft.proxy.connection.cache.handler.LoginCache;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityMetadata;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityTeleport;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnPlayer;
+import de.derrop.minecraft.proxy.connection.velocity.PlayerLook;
+import de.derrop.minecraft.proxy.connection.velocity.PlayerPosLook;
+import de.derrop.minecraft.proxy.connection.velocity.PlayerPosition;
+import de.derrop.minecraft.proxy.util.DataWatcher;
+import de.derrop.minecraft.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.md_5.bungee.connection.PacketReceiver;
@@ -13,6 +22,8 @@ import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import net.md_5.bungee.protocol.packet.KeepAlive;
+import net.md_5.bungee.protocol.packet.PlayerListItem;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -23,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class ReplaySystem {
@@ -119,28 +131,64 @@ public class ReplaySystem {
 
         infoConsumer.accept(replayInputStream.getReplayInfo());
 
+        this.executorService.execute(() -> {
+            while (!replayInputStream.isClosed()) {
+                player.sendPacket(new KeepAlive(System.nanoTime()));
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
+
         long recBegin = replayInputStream.getReplayInfo().getTimestamp();
         long playBegin = System.currentTimeMillis();
+        long diff = playBegin - recBegin;
+        if (diff < 0) {
+            throw new IllegalArgumentException("Cannot play replays out of the future");
+        }
 
         ReplayPacket packet;
         while ((packet = replayInputStream.readPacket()) != null) {
-            long targetTime = (packet.getTimestamp() - recBegin) + playBegin;
-            if (System.currentTimeMillis() < targetTime) {
+            long targetTime = packet.getTimestamp() + diff;
+            long current = System.currentTimeMillis();
+
+            if (targetTime > current) {
                 try {
-                    Thread.sleep(targetTime - System.currentTimeMillis());
+                    Thread.sleep(targetTime - current);
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }
             }
 
-            player.getCh().write(Unpooled.wrappedBuffer(packet.getData()));
+            ByteBuf buf = Unpooled.wrappedBuffer(packet.getData());
+            buf.markReaderIndex();
+
+            int id = DefinedPacket.readVarInt(buf);
+
+            if (id == PacketConstants.SPAWN_PLAYER) {
+                SpawnPlayer spawnPlayer = new SpawnPlayer();
+                spawnPlayer.read(buf, ProtocolConstants.Direction.TO_CLIENT, 47);
+
+                if (spawnPlayer.getEntityId() == replayInputStream.getReplayInfo().getOwnEntityId()) {
+                    player.sendPacket(new EntityTeleport(
+                            player.getClientEntityId(),
+                            spawnPlayer.getX(), spawnPlayer.getY(), spawnPlayer.getZ(), spawnPlayer.getYaw(), spawnPlayer.getPitch(), false
+                    ));
+                }
+            }
+
+            buf.resetReaderIndex();
+
+            player.sendPacket(buf);
         }
     }
 
     public ReplayOutputStream recordReplay(ConnectedProxyClient proxyClient, UUID creatorId, String creatorName, OutputStream outputStream) throws IOException {
         Preconditions.checkArgument(proxyClient.getPacketCache().getPacketHandler() == null, "already recording a replay for that client");
 
-        ReplayInfo replayInfo = new ReplayInfo(proxyClient.getAddress(), creatorId, creatorName, proxyClient.getCredentials(), System.currentTimeMillis());
+        ReplayInfo replayInfo = new ReplayInfo(proxyClient.getAddress(), creatorId, creatorName, proxyClient.getCredentials(), System.currentTimeMillis(), proxyClient.getEntityId());
 
         ReplayOutputStream replayOutputStream = new ReplayOutputStream(replayInfo, this.executorService, outputStream);
 
@@ -164,8 +212,7 @@ public class ReplaySystem {
 
                 DefinedPacket definedPacket = (DefinedPacket) packet;
 
-                Protocol.DirectionData prot = Protocol.GAME.TO_CLIENT;
-                DefinedPacket.writeVarInt(prot.getId(definedPacket.getClass(), 47), buf);
+                DefinedPacket.writeVarInt(Protocol.GAME.TO_CLIENT.getId(definedPacket.getClass(), 47), buf);
 
                 ((DefinedPacket) packet).write(buf, ProtocolConstants.Direction.TO_CLIENT, 47);
             } else if (packet instanceof PacketWrapper) {
@@ -189,15 +236,55 @@ public class ReplaySystem {
             byte[] data = new byte[buf.readableBytes()];
             buf.readBytes(data);
 
-            replayOutputStream.write(new ReplayPacket(data, replayInfo.getTimestamp()));
+            replayOutputStream.write(new ReplayPacket(data, System.currentTimeMillis()));
         };
         for (PacketCacheHandler handler : proxyClient.getPacketCache().getHandlers()) {
             handler.sendCached(receiver);
         }
+        receiver.sendPacket(new SpawnPlayer(proxyClient.getEntityId(), UUID.fromString("fdef0011-1c58-40c8-bfef-0bdcb1495938"),
+                PlayerPositionPacketUtil.getFixLocation(proxyClient.posX), PlayerPositionPacketUtil.getFixLocation(proxyClient.posY), PlayerPositionPacketUtil.getFixLocation(proxyClient.posZ),
+                PlayerPositionPacketUtil.getFixRotation(0), PlayerPositionPacketUtil.getFixRotation(0),
+                (short) 0,
+                Arrays.asList(
+                        new DataWatcher.WatchableObject(2, 18, 0, true),
+                        new DataWatcher.WatchableObject(3, 17, 0F, true),
+                        new DataWatcher.WatchableObject(0, 16, (byte) 0, true),
+                        new DataWatcher.WatchableObject(0, 10, (byte) 127, true),
+                        new DataWatcher.WatchableObject(0, 9, (byte) 0, true),
+                        new DataWatcher.WatchableObject(0, 8, (byte) 0, true),
+                        new DataWatcher.WatchableObject(2, 7, 0, true),
+                        new DataWatcher.WatchableObject(3, 6, 20F, true),
+                        new DataWatcher.WatchableObject(0, 4, (byte) 0, true),
+                        new DataWatcher.WatchableObject(0, 3, (byte) 0, true),
+                        new DataWatcher.WatchableObject(4, 2, "", true),
+                        new DataWatcher.WatchableObject(1, 1, (short) 300, true),
+                        new DataWatcher.WatchableObject(0, 0, (byte) 0, true)
+                )
+        ));
+        receiver.sendPacket(proxyClient.getEntityMetadata());
 
-        receiver.sendPacket(new SpawnPlayer(proxyClient.getEntityId(), proxyClient.getAccountUUID(), proxyClient.posX, proxyClient.posY, proxyClient.posZ, (byte) 0, (byte) 0, (short) 0, new ArrayList<>()));
+        AtomicBoolean lastOnGround = new AtomicBoolean();
+        proxyClient.setClientPacketHandler(packetWrapper -> {
+            if (packetWrapper.packet instanceof PlayerPosLook) {
+                lastOnGround.set(((PlayerPosLook) packetWrapper.packet).isOnGround());
+            } else if (packetWrapper.packet instanceof PlayerLook) {
+                lastOnGround.set(((PlayerLook) packetWrapper.packet).isOnGround());
+            } else if (packetWrapper.packet instanceof PlayerPosition) {
+                lastOnGround.set(((PlayerPosition) packetWrapper.packet).isOnGround());
+            }
 
-        proxyClient.setClientPacketHandler(packetWrapper -> receiver.sendPacket(packetWrapper.buf));
+            if (packetWrapper.packet instanceof PositionedPacket) {
+                PositionedPacket packet = (PositionedPacket) packetWrapper.packet;
+                receiver.sendPacket(new EntityTeleport(proxyClient.getEntityId(),
+                        PlayerPositionPacketUtil.getFixLocation(packet.getX()),
+                        PlayerPositionPacketUtil.getFixLocation(packet.getY()),
+                        PlayerPositionPacketUtil.getFixLocation(packet.getZ()),
+                        PlayerPositionPacketUtil.getFixRotation(packet.getYaw()),
+                        PlayerPositionPacketUtil.getFixRotation(packet.getPitch()),
+                        lastOnGround.get()
+                ));
+            }
+        });
         proxyClient.getPacketCache().setPacketHandler((buf, packetId) -> receiver.sendPacket(buf));
         proxyClient.setDisconnectionHandler(() -> {
             replayOutputStream.close();

@@ -1,6 +1,7 @@
 package net.md_5.bungee.protocol.packet;
 
 import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class PlayerListItem extends DefinedPacket {
 
@@ -121,6 +123,8 @@ public class PlayerListItem extends DefinedPacket {
         REMOVE_PLAYER
     }
 
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Data
     public static class Item implements Cloneable {
 

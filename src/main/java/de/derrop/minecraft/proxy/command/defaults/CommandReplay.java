@@ -4,13 +4,18 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.command.Command;
 import de.derrop.minecraft.proxy.command.CommandSender;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnPlayer;
 import de.derrop.minecraft.proxy.replay.ReplayInfo;
 import de.derrop.minecraft.proxy.replay.ReplayOutputStream;
+import de.derrop.minecraft.proxy.util.PlayerPositionPacketUtil;
+import net.md_5.bungee.connection.ProxiedPlayer;
 import net.md_5.bungee.connection.UserConnection;
+import net.md_5.bungee.protocol.packet.PlayerListItem;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +31,36 @@ public class CommandReplay extends Command {
 
     @Override
     public void execute(CommandSender sender, String input, String[] args) {
+        if (args.length == 0) {
+            UUID id = UUID.randomUUID();
+            ((ProxiedPlayer) sender).sendPacket(new PlayerListItem(
+                    PlayerListItem.Action.ADD_PLAYER,
+                    new PlayerListItem.Item[]{
+                            new PlayerListItem.Item(
+                                    id, "TEST_NAME",
+                                    new String[][] {
+                                            new String[]{"textures", "eyJ0aW1lc3RhbXAiOjE1ODY2MzAyNDg2ODQsInByb2ZpbGVJZCI6ImFmN2M3YWFiMmRhOTRlYmI4MWZlN2I0NGUxYjhiNTBjIiwicHJvZmlsZU5hbWUiOiJkZXJyb3AiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzVlZmI0NjQzMjRkNzlmZjUyNGNlNjIwYTUzNzNkODkwMjY5ODI2NjczNjY2ODg1NjBhNGE1ZWZiN2QzM2I4NzUifX19", "bONmCbEnrKzF5h20M/aiqCFYSl/LCa2gvVXdDR7ndfpYyv9BQTZaksb1NvBo21YueewVxMlz6OOMSbCN74mCYOEoC+G+bm0DMiOr5aU7ZOSqXnmm09H//4/uqKaehpyQbRNFbqR1kGXweznhFAaxP+iceNgcK4bGwAQ5axPwxz86vNcyojUPwbBr+vi5nX3McAKLw7ht6rAg6JIxR3SgGUxXDJHArFxTpFE3zyc31mOUwrs78IgyYoapXwAQS5+OfmkY/YCBbDITUuBkYgMcAlMt1jeylR9C9Qg1eJ6KclTlu/AVUZwkrorXCQnEZfagYsflPkL6DT6lb9X7Si7M+ECskRb6S9GJ12pDtmqiACrwEtW7gPRon9geWA2Jz6+OqUlUX8g/PiDIbW/F3wNCSRXncQ4Qw/9f4fUCjvQLrgfDuuk3GBYxlQyQVZBz7OEgFwyHGwg3GMLYdAVyE829CyqH/kptR+37/M8mWwjjIWP/R6HkkB5HggzRM971BuyMFaU97i1CYhBHgjr5JqU2MdrbOcqJ8hWa/CLI0uI57a+9heTYgB/vyxrQR3v5AwAEvZOfLuDJkjAyMrfSHWw7q+vxiUFJODLogn1ACcp/Az+LRYn7tztfrJXkEGROLj6CqPj0TvLBEHjc7htrkG1NrBPRU0CrFT1rvRT6koqqvH4="}
+                                    },
+                                    1, 0,
+                                    "DisplayTEST"
+
+                            )
+                    }
+            ));
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
+            ((ProxiedPlayer) sender).sendPacket(new SpawnPlayer(
+                    19357, id,
+                    PlayerPositionPacketUtil.getFixLocation(-378), PlayerPositionPacketUtil.getFixLocation(68), PlayerPositionPacketUtil.getFixLocation(422),
+                    (byte) 0, (byte) 0,
+                    (short) 0, new ArrayList<>()
+            ));
+            return;
+        }
+
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             sender.sendMessage("Available replays:");
             for (UUID replayId : MCProxy.getInstance().getReplaySystem().listReplays()) {
@@ -47,7 +82,7 @@ public class CommandReplay extends Command {
 
             for (UUID replayId : MCProxy.getInstance().getReplaySystem().listReplays()) {
                 if (replayId.toString().toLowerCase().contains(args[1].toLowerCase())) {
-
+                    ConnectedProxyClient proxyClient = ((UserConnection) sender).getProxyClient();
                     ((UserConnection) sender).useClient(null);
 
                     MCProxy.getInstance().getReplaySystem().playReplayAsync((UserConnection) sender, replayId, replayInfo -> {
@@ -58,6 +93,7 @@ public class CommandReplay extends Command {
                         } else {
                             sender.sendMessage("Cannot load replay with id " + replayId);
                         }
+                        ((UserConnection) sender).useClient(proxyClient);
                     });
 
                     break;

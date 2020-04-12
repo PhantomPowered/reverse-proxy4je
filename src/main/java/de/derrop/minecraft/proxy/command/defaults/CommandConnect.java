@@ -11,6 +11,10 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.connection.ProxiedPlayer;
 
+import java.util.Collection;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
+
 public class CommandConnect extends Command {
 
     public CommandConnect() {
@@ -20,53 +24,105 @@ public class CommandConnect extends Command {
 
     @Override
     public void execute(CommandSender sender, String input, String[] args) {
-        if (!(sender instanceof ProxiedPlayer)) {
+        if (args.length == 0) {
+            sender.sendMessage("connect [ALL|name] <host>");
+            return;
+        }
+
+        if (args.length != 2 && !(sender instanceof ProxiedPlayer)) {
             sender.sendMessage("This command is only available for players");
             return;
         }
 
-        if (args.length == 0) {
-            sender.sendMessage("connect <host>"); // TODO connect [ALL|name] <host>
-            return;
+        if (args.length == 1) {
+            ProxiedPlayer player = (ProxiedPlayer) sender;
+
+            ConnectedProxyClient proxyClient = player.getConnectedClient();
+            if (proxyClient == null) {
+                sender.sendMessages("You are not connected with any client");
+                return;
+            }
+
+            NetworkAddress address = NetworkAddress.parse(args[0]);
+            if (address == null) {
+                sender.sendMessage("§cInvalid address");
+                return;
+            }
+
+            this.connect(proxyClient, address);
+        } else {
+            NetworkAddress address = NetworkAddress.parse(args[1]);
+            if (address == null) {
+                sender.sendMessage("§cInvalid address");
+                return;
+            }
+
+            Collection<ConnectedProxyClient> clients = MCProxy.getInstance().getOnlineClients().stream()
+                    .filter(proxyClient -> args[0].equalsIgnoreCase("all") || proxyClient.getAccountName().equalsIgnoreCase(args[0]))
+                    .collect(Collectors.toList());
+
+            if (clients.isEmpty()) {
+                sender.sendMessage("§cNo client matching found");
+                return;
+            }
+
+            CountDownLatch countDownLatch = new CountDownLatch(clients.size());
+
+            for (ConnectedProxyClient client : clients) {
+                Constants.EXECUTOR_SERVICE.execute(() -> {
+                    try {
+                        this.connect(client, address).get(10, TimeUnit.SECONDS);
+                    } catch (InterruptedException | ExecutionException | TimeoutException exception) {
+                        exception.printStackTrace();
+                    }
+                    countDownLatch.countDown();
+                });
+            }
+
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
+            sender.sendMessage("§aDone");
+        }
+    }
+
+    private CompletableFuture<Void> connect(ConnectedProxyClient proxyClient, NetworkAddress address) {
+        if (proxyClient.getAddress().equals(address)) {
+            return CompletableFuture.completedFuture(null);
         }
 
-        ProxiedPlayer player = (ProxiedPlayer) sender;
+        ProxiedPlayer player = proxyClient.getRedirector();
 
-        ConnectedProxyClient proxyClient = player.getConnectedClient();
-        if (proxyClient == null) {
-            sender.sendMessages("You are not connected with any client");
-            return;
+        if (player != null) {
+            player.disableAutoReconnect();
+            player.useClient(null);
+            player.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§7Connecting to")).subTitle(TextComponent.fromLegacyText("§e" + address + "§7...")).stay(200));
         }
-
-        NetworkAddress address = NetworkAddress.parse(args[0]);
-        if (address == null) {
-            sender.sendMessage("§cInvalid address");
-            return;
-        }
-
-        player.disableAutoReconnect();
-        player.useClient(null);
-        player.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§7Connecting to")).subTitle(TextComponent.fromLegacyText("§e" + address + "§7...")).stay(200));
 
         proxyClient.disconnect();
-        MCProxy.getInstance().getOnlineClients().remove(proxyClient);
 
         ConnectedProxyClient newClient = new ConnectedProxyClient();
 
         newClient.setAuthentication(proxyClient.getAuthentication(), proxyClient.getCredentials());
 
-        newClient.connect(address, null).thenAccept(success -> {
-            player.sendTitle(new BungeeTitle().reset());
-            player.enableAutoReconnect();
-            if (success) {
-                MCProxy.getInstance().switchClientSafe(player, newClient);
-            } else {
-                this.fallback(player, proxyClient, null);
+        return newClient.connect(address, null).thenAccept(success -> {
+            if (player != null) {
+                player.sendTitle(new BungeeTitle().reset());
+                player.enableAutoReconnect();
+                if (success) {
+                    MCProxy.getInstance().switchClientSafe(player, newClient);
+                } else {
+                    this.fallback(player, proxyClient, null);
+                }
             }
         }).exceptionally(throwable -> {
-            player.sendTitle(new BungeeTitle().reset());
-            player.sendActionBar(200, TextComponent.fromLegacyText(throwable.getMessage().replace('\n', ' ')));
-            this.fallback(player, proxyClient, throwable);
+            if (player != null) {
+                player.sendTitle(new BungeeTitle().reset());
+                player.sendActionBar(200, TextComponent.fromLegacyText(throwable.getMessage().replace('\n', ' ')));
+                this.fallback(player, proxyClient, throwable);
+            }
             return null;
         });
     }

@@ -5,11 +5,14 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.connection.cache.PacketCache;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityMetadata;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
-import de.derrop.minecraft.proxy.connection.velocity.PlayerVelocityHandler;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.SpawnPosition;
+import de.derrop.minecraft.proxy.connection.velocity.*;
 import de.derrop.minecraft.proxy.exception.KickedException;
 import de.derrop.minecraft.proxy.minecraft.MCCredentials;
 import de.derrop.minecraft.proxy.minecraft.SessionUtils;
+import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.NettyUtils;
 import de.derrop.minecraft.proxy.util.NetworkAddress;
 import io.netty.bootstrap.Bootstrap;
@@ -29,6 +32,7 @@ import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.LoginRequest;
+import net.md_5.bungee.protocol.packet.Respawn;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -53,6 +57,9 @@ public class ConnectedProxyClient {
     private int dimension;
 
     public int posX, posY, posZ;
+    private boolean onGround;
+
+    private EntityMetadata entityMetadata;
 
     private Consumer<PacketWrapper> clientPacketHandler;
 
@@ -77,6 +84,7 @@ public class ConnectedProxyClient {
         }
         System.out.println("Logging in " + credentials.getEmail() + "...");
         this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword());
+        this.credentials = credentials;
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
         return true;
     }
@@ -111,7 +119,9 @@ public class ConnectedProxyClient {
             MCProxy.getInstance().getOnlineClients().remove(this);
         }
 
-        this.disconnectionHandler.run();
+        if (this.disconnectionHandler != null) {
+            this.disconnectionHandler.run();
+        }
     }
 
     public CompletableFuture<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
@@ -230,6 +240,10 @@ public class ConnectedProxyClient {
         return redirector;
     }
 
+    public EntityMetadata getEntityMetadata() {
+        return entityMetadata;
+    }
+
     public EntityMap getEntityMap() {
         return entityMap;
     }
@@ -317,6 +331,37 @@ public class ConnectedProxyClient {
                 this.posY = ((PositionedPacket) deserialized).getY();
                 this.posZ = ((PositionedPacket) deserialized).getZ();
             }
+        } else if (deserialized instanceof SpawnPosition) {
+            BlockPos pos = ((SpawnPosition) deserialized).getSpawnPosition();
+            this.posX = pos.getX();
+            this.posY = pos.getY();
+            this.posZ = pos.getZ();
+        } else if (deserialized instanceof EntityMetadata) {
+            this.entityMetadata = (EntityMetadata) deserialized;
+        }
+    }
+
+    public void handleClientPacket(PacketWrapper packetWrapper) {
+        if (this.clientPacketHandler != null) {
+            this.clientPacketHandler.accept(packetWrapper);
+        }
+
+        DefinedPacket deserialized = packetWrapper.packet;
+
+        if (deserialized instanceof PositionedPacket) {
+            this.posX = ((PositionedPacket) deserialized).getX();
+            this.posY = ((PositionedPacket) deserialized).getY();
+            this.posZ = ((PositionedPacket) deserialized).getZ();
+        }
+
+        if (packetWrapper.packet instanceof PlayerPosLook) {
+            this.onGround = ((PlayerPosLook) packetWrapper.packet).isOnGround();
+        } else if (packetWrapper.packet instanceof PlayerLook) {
+            this.onGround = ((PlayerLook) packetWrapper.packet).isOnGround();
+        } else if (packetWrapper.packet instanceof PlayerPosition) {
+            this.onGround = ((PlayerPosition) packetWrapper.packet).isOnGround();
+        } else if (packetWrapper.packet instanceof Player) {
+            this.onGround = ((Player) packetWrapper.packet).isOnGround();
         }
     }
 

@@ -8,6 +8,7 @@ import java.io.InputStream;
 
 public class ReplayInputStream extends DataInputStream {
     private ReplayInfo replayInfo;
+    private boolean closed = false;
 
     public ReplayInputStream(InputStream in) throws IOException {
         super(in);
@@ -22,6 +23,7 @@ public class ReplayInputStream extends DataInputStream {
 
     public ReplayPacket readPacket() throws IOException {
         if (this.available() <= 0) {
+            this.close();
             return null;
         }
 
@@ -32,4 +34,13 @@ public class ReplayInputStream extends DataInputStream {
         return new ReplayPacket(data, timestamp);
     }
 
+    public boolean isClosed() {
+        return this.closed;
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.closed = true;
+        super.close();
+    }
 }
