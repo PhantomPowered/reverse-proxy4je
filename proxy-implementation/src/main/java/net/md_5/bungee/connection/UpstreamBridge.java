@@ -3,8 +3,10 @@ package net.md_5.bungee.connection;
 import com.google.common.base.Preconditions;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.api.connection.ProtocolDirection;
-import de.derrop.minecraft.proxy.api.events.PluginMessageReceivedEvent;
+import de.derrop.minecraft.proxy.api.events.connection.ChatEvent;
+import de.derrop.minecraft.proxy.api.events.connection.PluginMessageEvent;
 import net.md_5.bungee.Util;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
@@ -64,7 +66,15 @@ public class UpstreamBridge extends PacketHandler {
         int maxLength = (con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         Preconditions.checkArgument(chat.getMessage().length() <= maxLength, "Chat message too long"); // Mojang limit, check on updates
 
-        if (MCProxy.getInstance().getCommandMap().dispatchCommand(con, chat.getMessage())) {
+
+        ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
+        if (this.con.getProxy().getEventManager().callEvent(event).isCancelled()) {
+            throw CancelSendSignal.INSTANCE;
+        }
+        chat.setMessage(ComponentSerializer.toString(event.getMessage()));
+
+
+        if (MCProxy.getInstance().getCommandMap().dispatchCommand(this.con, chat.getMessage())) {
             throw CancelSendSignal.INSTANCE;
         }
     }
@@ -118,7 +128,7 @@ public class UpstreamBridge extends PacketHandler {
 
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
-        PluginMessageReceivedEvent event = new PluginMessageReceivedEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
+        PluginMessageEvent event = new PluginMessageEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
         if (this.con.getProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
@@ -127,7 +137,7 @@ public class UpstreamBridge extends PacketHandler {
         pluginMessage.setData(event.getData());
 
         if (PluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
-            con.getPendingConnection().getRelayMessages().add(pluginMessage);
+            this.con.getPendingConnection().getRelayMessages().add(pluginMessage);
         }
     }
 

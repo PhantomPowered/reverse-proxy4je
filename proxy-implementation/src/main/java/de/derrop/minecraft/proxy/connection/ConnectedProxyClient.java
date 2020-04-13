@@ -23,6 +23,7 @@ import de.derrop.minecraft.proxy.util.NettyUtils;
 import de.derrop.minecraft.proxy.api.util.NetworkAddress;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
@@ -349,7 +350,18 @@ public class ConnectedProxyClient {
         }
 
         if (this.redirector != null) {
-            this.redirector.getCh().write(packet);
+            if (deserialized != null) { // rewrite to allow modifications by the packet handlers
+                int id = DefinedPacket.readVarInt(packet);
+
+                ByteBuf buf = Unpooled.buffer();
+                DefinedPacket.writeVarInt(id, buf);
+
+                deserialized.write(buf, ProtocolConstants.Direction.TO_CLIENT, 47);
+
+                this.redirector.getCh().write(buf);
+            } else {
+                this.redirector.getCh().write(packet);
+            }
 
             if (!this.redirector.isConnected()) {
                 this.redirector = null;

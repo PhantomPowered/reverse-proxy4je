@@ -6,6 +6,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.api.Proxy;
+import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
 import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
 import de.derrop.minecraft.proxy.api.task.Task;
@@ -22,6 +23,8 @@ import net.md_5.bungee.protocol.packet.Chat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -201,6 +204,31 @@ public class BasicServiceConnection implements ServiceConnection {
     @Override
     public boolean isReScheduleOnFailure() {
         return this.reScheduleOnFailure;
+    }
+
+    @Override
+    public InetSocketAddress getAddress() {
+        return (InetSocketAddress) this.getSocketAddress();
+    }
+
+    @Override
+    public SocketAddress getSocketAddress() {
+        return this.client.getChannelWrapper().getHandle().remoteAddress();
+    }
+
+    @Override
+    public void disconnect(String reason) {
+        this.close();
+    }
+
+    @Override
+    public void disconnect(BaseComponent... reason) {
+        this.close();
+    }
+
+    @Override
+    public void disconnect(BaseComponent reason) {
+        this.close();
     }
 
     @Override

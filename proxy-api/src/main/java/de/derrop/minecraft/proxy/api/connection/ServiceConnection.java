@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 
-public interface ServiceConnection extends AutoCloseable {
+public interface ServiceConnection extends Connection, AutoCloseable {
 
     @NotNull
     Proxy getProxy();

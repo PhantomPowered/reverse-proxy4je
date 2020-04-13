@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.derrop.minecraft.proxy.api.connection.ProtocolDirection;
 import de.derrop.minecraft.proxy.api.event.handler.Listener;
-import de.derrop.minecraft.proxy.api.events.PluginMessageReceivedEvent;
+import de.derrop.minecraft.proxy.api.events.connection.PluginMessageEvent;
 import de.derrop.minecraft.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public final class LabyModListener {
 
     @Listener
-    public void handle(final @NotNull PluginMessageReceivedEvent event) {
+    public void handle(final @NotNull PluginMessageEvent event) {
         if (event.getDirection() != ProtocolDirection.TO_SERVER || !event.getTag().equals("LMC")) {
             return;
         }
