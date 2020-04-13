@@ -1,4 +1,4 @@
-package de.derklaro.minecraft.proxy.labymod;
+package de.derrop.minecraft.proxy.plugins;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

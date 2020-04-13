@@ -1,19 +1,16 @@
 package net.md_5.bungee.connection;
 
-import de.derklaro.minecraft.proxy.TheProxy;
 import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
+import de.derrop.minecraft.proxy.MCProxy;
+import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
+import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
 import de.derrop.minecraft.proxy.api.connection.Connection;
 import de.derrop.minecraft.proxy.api.connection.ProtocolDirection;
 import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
-import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
 import de.derrop.minecraft.proxy.api.events.PluginMessageReceivedEvent;
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.JoinGame;
 import net.md_5.bungee.Util;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
@@ -102,7 +99,7 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
         PluginMessageReceivedEvent event = new PluginMessageReceivedEvent(this.con(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
-        if (TheProxy.getTheProxy().getEventManager().callEvent(event).isCancelled()) {
+        if (this.connection.getProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
 

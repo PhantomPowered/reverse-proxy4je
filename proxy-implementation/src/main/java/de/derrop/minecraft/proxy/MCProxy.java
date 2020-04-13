@@ -1,7 +1,7 @@
 package de.derrop.minecraft.proxy;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
-import de.derklaro.minecraft.proxy.TheProxy;
+import de.derklaro.minecraft.proxy.brand.ProxyBrandChangeListener;
 import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
 import de.derklaro.minecraft.proxy.event.basic.DefaultEventManager;
 import de.derrop.minecraft.proxy.api.Proxy;
@@ -40,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
@@ -50,6 +51,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class MCProxy extends Proxy {
+
+    private static final Path ACCOUNT_PATH = Paths.get("accounts.txt");
 
     private static MCProxy instance;
 
@@ -247,12 +250,10 @@ public class MCProxy extends Proxy {
         instance.pluginManager.loadPlugins(Paths.get("plugins"));
         instance.pluginManager.enablePlugins();
 
-        TheProxy proxy = new TheProxy();
-        proxy.handleStart();
-        instance.addShutdownRunnable(proxy::end);
+        instance.eventManager.registerListener(new ProxyBrandChangeListener());
 
-        if (Files.exists(TheProxy.ACCOUNT_PATH)) {
-            instance.accountReader.readAccounts(TheProxy.ACCOUNT_PATH, (mcCredentials, networkAddress) -> {
+        if (Files.exists(ACCOUNT_PATH)) {
+            instance.accountReader.readAccounts(ACCOUNT_PATH, (mcCredentials, networkAddress) -> {
                 try {
                     ServiceConnection connection = new BasicServiceConnection(instance, mcCredentials, networkAddress);
 
@@ -291,7 +292,7 @@ public class MCProxy extends Proxy {
                 }
             });
         } else {
-            instance.accountReader.writeDefaults(TheProxy.ACCOUNT_PATH);
+            instance.accountReader.writeDefaults(ACCOUNT_PATH);
         }
 
         //PlayerVelocityHandler.start(); todo

@@ -6,6 +6,7 @@ public class LabyModPlugin extends Plugin {
 
     @Override
     public void onEnable() {
+        super.getProxy().getEventManager().registerListener(new LabyModListener());
     }
 
     @Override
