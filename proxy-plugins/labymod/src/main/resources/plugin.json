@@ -2,5 +2,5 @@
   "name": "LabyMod",
   "version": "1.0",
   "authors": ["derrop", "derklaro"],
-  "main": "de.derrop.minecraft.proxy.plugins.LabyModPlugin"
+  "main": "com.github.derrop.proxy.plugins.LabyModPlugin"
 }

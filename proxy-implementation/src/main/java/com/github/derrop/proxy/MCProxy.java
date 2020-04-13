@@ -31,7 +31,6 @@ import com.github.derrop.proxy.permission.PermissionProvider;
 import com.github.derrop.proxy.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.reconnect.ReconnectProfile;
-import com.github.derrop.proxy.replay.ReplaySystem;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.UUIDStorage;
 import com.github.derrop.proxy.title.BasicTitle;
@@ -73,8 +72,6 @@ public class MCProxy extends Proxy {
     private Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
-    private ReplaySystem replaySystem = new ReplaySystem();
-
     private CommandMap commandMap;
     private ILogger logger;
 
@@ -103,7 +100,6 @@ public class MCProxy extends Proxy {
         this.commandMap.registerCommand(new CommandAccount());
         this.commandMap.registerCommand(new CommandStop());
         this.commandMap.registerCommand(new CommandKick());
-        this.commandMap.registerCommand(new CommandReplay());
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
@@ -164,10 +160,6 @@ public class MCProxy extends Proxy {
 
     public Collection<ServiceConnection> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getPlayer() == null).collect(Collectors.toList());
-    }
-
-    public ReplaySystem getReplaySystem() {
-        return this.replaySystem;
     }
 
     public void addShutdownRunnable(@NotNull Runnable runnable) {

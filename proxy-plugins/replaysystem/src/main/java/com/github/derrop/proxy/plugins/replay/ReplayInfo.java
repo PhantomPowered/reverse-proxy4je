@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.replay;
+package com.github.derrop.proxy.plugins.replay;
 
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;

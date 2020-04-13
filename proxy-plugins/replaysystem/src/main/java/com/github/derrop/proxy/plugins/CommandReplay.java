@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.command.defaults;
+package com.github.derrop.proxy.plugins;
 
 import com.github.derrop.proxy.api.command.Command;
 import com.github.derrop.proxy.api.command.CommandSender;

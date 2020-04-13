@@ -1,4 +1,4 @@
-package de.derrop.minecraft.proxy.plugins;
+package com.github.derrop.proxy.plugins;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.plugin.Plugin;

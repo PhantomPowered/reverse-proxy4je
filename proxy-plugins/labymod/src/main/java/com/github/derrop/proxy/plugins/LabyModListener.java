@@ -1,4 +1,4 @@
-package de.derrop.minecraft.proxy.plugins;
+package com.github.derrop.proxy.plugins;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

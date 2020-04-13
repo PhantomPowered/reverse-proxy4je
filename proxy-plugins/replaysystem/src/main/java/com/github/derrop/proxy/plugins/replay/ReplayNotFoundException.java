@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.replay;
+package com.github.derrop.proxy.plugins.replay;
 
 import java.util.UUID;
 
