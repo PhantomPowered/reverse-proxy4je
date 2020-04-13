@@ -25,7 +25,7 @@ public class PlayerLoginEvent extends PlayerEvent implements Cancelable {
 
     @Nullable
     public BaseComponent[] getCancelReason() {
-        return cancelReason;
+        return this.cancelReason;
     }
 
     public void setTargetConnection(@Nullable ServiceConnection targetConnection) {

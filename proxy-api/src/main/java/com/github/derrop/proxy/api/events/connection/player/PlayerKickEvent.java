@@ -6,13 +6,22 @@ import com.github.derrop.proxy.api.event.Cancelable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlayerKickEvent extends PlayerEvent implements Cancelable { // TODO
+public class PlayerKickEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel;
     private BaseComponent[] reason;
 
     public PlayerKickEvent(@NotNull ProxiedPlayer player, @Nullable BaseComponent[] reason) {
         super(player);
+        this.reason = reason;
+    }
+
+    @Nullable
+    public BaseComponent[] getReason() {
+        return this.reason;
+    }
+
+    public void setReason(@Nullable BaseComponent[] reason) {
         this.reason = reason;
     }
 

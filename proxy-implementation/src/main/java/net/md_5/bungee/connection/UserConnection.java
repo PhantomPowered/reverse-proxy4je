@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
@@ -216,8 +217,16 @@ public final class UserConnection implements ProxiedPlayer {
         disconnect0(reason);
     }
 
-    public void disconnect0(final BaseComponent... reason) {
+    public void disconnect0(BaseComponent... reason) {
         if (!ch.isClosing()) {
+            PlayerKickEvent event = this.proxy.getEventManager().callEvent(new PlayerKickEvent(this, reason));
+            if (event.isCancelled()) {
+                return;
+            }
+            if (event.getReason() != null) {
+                reason = event.getReason();
+            }
+
             ch.close(new Kick(ComponentSerializer.toString(reason)));
 
             if (this.connectedClient != null) {
