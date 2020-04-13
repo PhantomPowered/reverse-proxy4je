@@ -1,25 +1,31 @@
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.api.command.Command;
+import com.github.derrop.proxy.api.command.CommandContainer;
 import com.github.derrop.proxy.api.command.CommandMap;
-import com.github.derrop.proxy.api.command.CommandSender;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public class CommandHelp extends Command {
+public class CommandHelp extends NonTabCompleteableCommandCallback {
 
-    private CommandMap commandMap;
+    private final CommandMap commandMap;
 
-    public CommandHelp(CommandMap commandMap) {
-        super("help", "?");
+    public CommandHelp(@NotNull CommandMap commandMap) {
+        super("proxy.command.help", null);
         this.commandMap = commandMap;
     }
 
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-        sender.sendMessage("Available commands:");
-        for (Command command : this.commandMap.getCommands()) {
-            if (command != this && command.canExecute(sender)) {
-                sender.sendMessage("- " + command.getNames()[0] + " (Permission: " + command.getPermission() + ")");
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        commandSender.sendMessage("Available commands:");
+        for (CommandContainer command : this.commandMap.getAllCommands()) {
+            if (command.getCallback() != this && command.getCallback().testPermission(commandSender)) {
+                commandSender.sendMessage(" - " + command.getMainAlias());
             }
         }
+
+        return CommandResult.END;
     }
 }

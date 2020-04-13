@@ -16,12 +16,12 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.basic.DefaultEventManager;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
-import com.github.derrop.proxy.command.ConsoleCommandSender;
 import com.github.derrop.proxy.command.DefaultCommandMap;
+import com.github.derrop.proxy.command.console.ConsoleCommandSender;
 import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.connection.ProxyServer;
+import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.logging.DefaultLogger;
 import com.github.derrop.proxy.logging.FileLoggerHandler;
 import com.github.derrop.proxy.logging.ILogger;
@@ -72,7 +72,6 @@ public class MCProxy extends Proxy {
     private Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
-    private CommandMap commandMap;
     private ILogger logger;
 
     private final Collection<Runnable> shutdownHooks = new CopyOnWriteArrayList<>();
@@ -80,26 +79,16 @@ public class MCProxy extends Proxy {
     protected MCProxy() throws IOException {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
 
+
         this.logger = new DefaultLogger(new JAnsiConsole(() -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))));
-        this.commandMap = new DefaultCommandMap(this.logger);
 
         this.logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));
-        this.logger.getConsole().addLineHandler("DefaultCommandMap", line ->
-                this.commandMap.dispatchCommand(new ConsoleCommandSender(this.logger), DefaultCommandMap.PREFIX + line)
-        );
+        //this.logger.getConsole().addLineHandler("DefaultCommandMap", line ->
+        //        this.commandMap.dispatchCommand(new ConsoleCommandSender(this.logger), DefaultCommandMap.PREFIX + line)
+        //);
 
-        this.commandMap.registerCommand(new CommandHelp(this.commandMap));
-        this.commandMap.registerCommand(new CommandInfo());
-        this.commandMap.registerCommand(new CommandSwitch());
-        this.commandMap.registerCommand(new CommandList());
-        this.commandMap.registerCommand(new CommandChat());
-        this.commandMap.registerCommand(new CommandAlert());
-        this.commandMap.registerCommand(new CommandForEach());
-        this.commandMap.registerCommand(new CommandPermissions());
-        this.commandMap.registerCommand(new CommandConnect());
-        this.commandMap.registerCommand(new CommandAccount());
-        this.commandMap.registerCommand(new CommandStop());
-        this.commandMap.registerCommand(new CommandKick());
+        CommandMap commandMap = this.serviceRegistry.getProviderUnchecked(CommandMap.class);
+
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
@@ -194,12 +183,6 @@ public class MCProxy extends Proxy {
     @Override
     public EventManager getEventManager() {
         return this.eventManager;
-    }
-
-    @NotNull
-    @Override
-    public CommandMap getCommandMap() {
-        return this.commandMap;
     }
 
     @NotNull
@@ -325,6 +308,23 @@ public class MCProxy extends Proxy {
         while (true) {
             Thread.sleep(Long.MAX_VALUE);
         }
+    }
+
+    private void handleCommands() {
+        CommandMap commandMap = new DefaultCommandMap();
+
+        commandMap.registerCommand(null, new CommandAccount(), "acc", "account");
+        commandMap.registerCommand(null, new CommandAlert(), "alert");
+        commandMap.registerCommand(null, new CommandChat(), "chat");
+        commandMap.registerCommand(null, new CommandConnect(), "connect");
+        commandMap.registerCommand(null, new CommandForEach(), "foreach");
+        commandMap.registerCommand(null, new CommandHelp(commandMap), "help", "ask", "?");
+        commandMap.registerCommand(null, new CommandInfo(), "info", "information", "i");
+        commandMap.registerCommand(null, new CommandKick(), "kick");
+        commandMap.registerCommand(null, new CommandList(), "list", "glist");
+        commandMap.registerCommand(null, new CommandSwitch(), "switch");
+
+        this.serviceRegistry.setProvider(null, CommandMap.class, commandMap);
     }
 
     // todo we could put information like "CPS (autoclicker), PlayerESP (is this possible in the 1.8?)" into the action bar

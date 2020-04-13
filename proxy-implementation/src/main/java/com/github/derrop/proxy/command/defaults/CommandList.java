@@ -1,33 +1,40 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public class CommandList extends Command {
+public class CommandList extends NonTabCompleteableCommandCallback {
 
     public CommandList() {
-        super("list");
-        super.setPermission("command.list");
+        super("proxy.command.list", null);
     }
 
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
         Collection<? extends ServiceConnection> clients = MCProxy.getInstance().getOnlineClients();
-        sender.sendMessage("Connected clients: (" + clients.size() + ")");
+        commandSender.sendMessage("Connected clients: (" + clients.size() + ")");
+
         for (ServiceConnection onlineClient : clients) {
-            sender.sendMessage("- §e" + onlineClient.getName() + " §7(" + (onlineClient.getPlayer() != null ? "§cnot free" : "§afree") + "§7); Connected on: " + onlineClient.getServerAddress());
+            commandSender.sendMessage("- §e" + onlineClient.getName() + " §7(" + (onlineClient.getPlayer() != null ? "§cnot free" : "§afree") + "§7); Connected on: " + onlineClient.getServerAddress());
         }
-        sender.sendMessage(" ");
+
+        commandSender.sendMessage(" ");
 
         Collection<ProxiedPlayer> players = MCProxy.getInstance().getPlayerRepository().getOnlinePlayers();
-        sender.sendMessage("Connected users: (" + players.size() + ")");
+        commandSender.sendMessage("Connected users: (" + players.size() + ")");
+
         for (ProxiedPlayer player : players) {
-            sender.sendMessage("- §e" + player.getName() + " §7(on: " + (player.getConnectedClient() == null ? "§cnone" : "§7" + player.getConnectedClient().getName()) + "§7)");
+            commandSender.sendMessage("- §e" + player.getName() + " §7(on: " + (player.getConnectedClient() == null ? "§cnone" : "§7" + player.getConnectedClient().getName()) + "§7)");
         }
+
+        return CommandResult.END;
     }
 }

@@ -1,77 +1,107 @@
 package com.github.derrop.proxy.command;
 
-import com.github.derrop.proxy.api.command.Command;
+import com.github.derrop.proxy.api.command.CommandCallback;
+import com.github.derrop.proxy.api.command.CommandContainer;
 import com.github.derrop.proxy.api.command.CommandMap;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.logging.ILogger;
-import net.md_5.bungee.Util;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.exception.CommandRegistrationException;
+import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
+import com.github.derrop.proxy.api.command.exception.UnknownCommandException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultCommandMap implements CommandMap {
 
-    public static final String PREFIX = "/proxy ";
-
-    private final CommandSender console;
-
-    private final Map<String, Command> commands = new HashMap<>();
-
-    public DefaultCommandMap(ILogger logger) {
-        this.console = new ConsoleCommandSender(logger);
-    }
+    private final Map<String, CommandContainer> commands = new ConcurrentHashMap<>();
 
     @Override
-    public String getPrefix() {
-        return PREFIX;
-    }
-
-    @Override
-    public void registerCommand(Command command) {
-        for (String name : command.getNames()) {
-            this.commands.put(name.toLowerCase(), command);
-        }
-    }
-
-    @Override
-    public Collection<Command> getCommands() {
-        return this.commands.values().stream().distinct().collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean dispatchCommand(String line) {
-        return this.dispatchCommand(this.console, line);
-    }
-
-    @Override
-    public boolean dispatchCommand(CommandSender sender, String line) {
-        if (!line.startsWith(PREFIX)) {
-            return false;
+    public @NotNull CommandContainer registerCommand(@Nullable Plugin plugin, @NotNull CommandCallback commandCallback, @NotNull List<String> aliases) throws CommandRegistrationException {
+        if (aliases.isEmpty()) {
+            throw new CommandRegistrationException("Unable to register command which has no aliases provided");
         }
 
-        line = line.substring(PREFIX.length());
+        String mainAlias = aliases.get(0);
+        CommandContainer commandContainer = new DefaultCommandContainer(plugin, commandCallback, mainAlias, new HashSet<>(aliases.subList(1, aliases.size())));
 
-        String[] args = line.split(" ");
-        Command command = this.commands.get(args[0].toLowerCase());
-        if (command == null) {
-            sender.sendMessage("§cCommand not found");
-            return true;
-        }
-        if (!command.canExecute(sender)) {
-            sender.sendMessage("You don't have the permission to execute this command");
-            return true;
+        for (String alias : aliases) {
+            this.commands.put(alias.toLowerCase(), commandContainer);
         }
 
+        return commandContainer;
+    }
+
+    @Override
+    public @NotNull Optional<CommandContainer> getCommandContainer(@NotNull String anyName) {
+        return Optional.ofNullable(this.commands.get(anyName.toLowerCase()));
+    }
+
+    @Override
+    public @NotNull Collection<CommandContainer> getCommandsByPlugin(@NotNull Plugin plugin) {
+        Collection<CommandContainer> out = new ArrayList<>();
+        for (CommandContainer value : this.commands.values()) {
+            if (value.getPlugin() != null && value.getPlugin().equals(plugin)) {
+                out.add(value);
+            }
+        }
+
+        return out;
+    }
+
+    @Override
+    public @NotNull Collection<CommandContainer> getAllCommands() {
+        return Collections.unmodifiableCollection(this.commands.values());
+    }
+
+    @Override
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String fullLine) throws CommandExecutionException, PermissionDeniedException {
+        String[] split = fullLine.split(" ");
         try {
-            command.execute(sender, line, Arrays.copyOfRange(args, 1, args.length));
-        } catch (Throwable exception) {
-            sender.sendMessage("§cAn error occurred: " + Util.exception(exception));
-            exception.printStackTrace();
+            CommandContainer commandContainer = this.getContainer(commandSender, split);
+            String[] args = split.length > 1 ? Arrays.copyOfRange(split, 1, split.length) : new String[0];
+            return commandContainer.getCallback().process(commandSender, args, fullLine);
+        } catch (final UnknownCommandException ex) {
+            return CommandResult.NOT_FOUND;
         }
-        return true;
     }
 
+    @Override
+    public @NotNull List<String> getSuggestions(@NotNull CommandSender commandSender, @NotNull String fullLine) {
+        String[] split = fullLine.split(" ");
+        try {
+            CommandContainer commandContainer = this.getContainer(commandSender, split);
+            String[] args = split.length > 1 ? Arrays.copyOfRange(split, 1, split.length) : new String[0];
+            return commandContainer.getCallback().getSuggestions(commandSender, args, fullLine);
+        } catch (final CommandExecutionException | UnknownCommandException | PermissionDeniedException ex) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public int getSize() {
+        return this.commands.size();
+    }
+
+    @NotNull
+    private CommandContainer getContainer(@NotNull CommandSender commandSender, @NotNull String[] split) throws CommandExecutionException, UnknownCommandException, PermissionDeniedException {
+        if (split.length == 0) {
+            throw new CommandExecutionException("Unable to process command with no arguments or command given");
+        }
+
+        CommandContainer commandContainer = this.commands.get(split[0].toLowerCase());
+        if (commandContainer == null) {
+            throw new UnknownCommandException("Unable to find command by name " + split[0]);
+        }
+
+        if (!commandContainer.getCallback().testPermission(commandSender)) {
+            throw new PermissionDeniedException(commandContainer);
+        }
+
+        return commandContainer;
+    }
 }

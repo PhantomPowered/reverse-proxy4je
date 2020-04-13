@@ -2,13 +2,14 @@ package com.github.derrop.proxy.api.entity;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.command.CommandSender;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.PendingConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -101,7 +102,7 @@ public interface ProxiedPlayer extends Connection, CommandSender {
 
     void enableAutoReconnect();
 
-    String getName();
+    @NotNull String getName();
 
     /**
      * Get the pending connection that belongs to this player.
@@ -131,7 +132,7 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      *
      * @return the UUID
      */
-    UUID getUniqueId();
+    @NotNull UUID getUniqueId();
 
     /**
      * Set the header and footer displayed in the tab player list.

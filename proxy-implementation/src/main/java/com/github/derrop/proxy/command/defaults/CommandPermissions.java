@@ -1,4 +1,6 @@
-package com.github.derrop.proxy.command.defaults;
+// TODO: replace this with new command
+
+/*package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.Command;
@@ -87,3 +89,5 @@ public class CommandPermissions extends Command {
     }
 
 }
+
+ */

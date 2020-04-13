@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ServiceRegistry {
 
-    default <T> void setProvider(@NotNull Plugin plugin, @NotNull Class<T> service, @NotNull T provider) {
+    default <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider) {
         this.setProvider(plugin, service, provider, false);
     }
 

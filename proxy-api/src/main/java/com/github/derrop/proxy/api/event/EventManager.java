@@ -2,8 +2,6 @@ package com.github.derrop.proxy.api.event;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public interface EventManager {
 
     /**
@@ -78,10 +76,4 @@ public interface EventManager {
      * Unregisters all listeners
      */
     void unregisterAll();
-
-    /**
-     * @return All registered listeners
-     */
-    @NotNull
-    List<List<LoadedListener>> getListeners();
 }

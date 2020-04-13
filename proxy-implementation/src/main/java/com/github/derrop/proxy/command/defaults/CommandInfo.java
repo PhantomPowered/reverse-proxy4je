@@ -1,24 +1,28 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import org.jetbrains.annotations.NotNull;
 
-public class CommandInfo extends Command {
+public class CommandInfo extends NonTabCompleteableCommandCallback {
 
     public CommandInfo() {
-        super("info", "i");
-        super.setPermission("command.info");
+        super("proxy.command.info", null);
     }
 
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-        if (sender instanceof ProxiedPlayer) {
-            ServiceConnection client = ((ProxiedPlayer) sender).getConnectedClient();
-            sender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        if (commandSender instanceof ProxiedPlayer) {
+            ServiceConnection client = ((ProxiedPlayer) commandSender).getConnectedClient();
+            commandSender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
         }
-        sender.sendMessage("§7Connected clients: §e" + MCProxy.getInstance().getOnlineClients().size() + " §7(Free: §a" + MCProxy.getInstance().getFreeClients().size() + "§7)");
+
+        commandSender.sendMessage("§7Connected clients: §e" + MCProxy.getInstance().getOnlineClients().size() + " §7(Free: §a" + MCProxy.getInstance().getFreeClients().size() + "§7)");
+        return CommandResult.END;
     }
 }

@@ -1,48 +1,55 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class CommandSwitch extends Command {
+public class CommandSwitch extends NonTabCompleteableCommandCallback {
 
     public CommandSwitch() {
-        super("switch");
-        super.setPermission("command.switch");
+        super("proxy.command.switch", null);
     }
 
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-        if (!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage("You have to be a player to execute this command");
-            return;
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        if (!(commandSender instanceof ProxiedPlayer)) {
+            commandSender.sendMessage("You have to be a player to execute this command");
+            return CommandResult.BREAK;
         }
 
-        if (args.length == 0) {
-            sender.sendMessage("switch <account> | switch to another account");
-            sender.sendMessage("Available clients:");
+        if (arguments.length == 0) {
+            commandSender.sendMessage("switch <account> | switch to another account");
+            commandSender.sendMessage("Available clients:");
+
             for (ServiceConnection freeClient : MCProxy.getInstance().getFreeClients()) {
-                sender.sendMessage("- " + freeClient.getName());
+                commandSender.sendMessage("- " + freeClient.getName());
             }
-            return;
+
+            return CommandResult.END;
         }
 
-        Optional<ServiceConnection> optionalClient = MCProxy.getInstance().getFreeClients().stream()
-                .filter(proxyClient -> args[0].equalsIgnoreCase(proxyClient.getName()))
+        Optional<ServiceConnection> optionalClient = MCProxy.getInstance()
+                .getFreeClients()
+                .stream()
+                .filter(proxyClient -> arguments[0].equalsIgnoreCase(proxyClient.getName()))
                 .findFirst();
         if (!optionalClient.isPresent()) {
-            sender.sendMessage("§cThat account does not exist, available:");
+            commandSender.sendMessage("§cThat account does not exist, available:");
             for (ServiceConnection freeClient : MCProxy.getInstance().getFreeClients()) {
-                sender.sendMessage("- " + freeClient.getName());
+                commandSender.sendMessage("- " + freeClient.getName());
             }
-            return;
+
+            return CommandResult.END;
         }
 
-        //((ProxiedPlayer) sender).useClient(optionalClient.get());
-        MCProxy.getInstance().switchClientSafe((ProxiedPlayer) sender, optionalClient.get());
+        MCProxy.getInstance().switchClientSafe((ProxiedPlayer) commandSender, optionalClient.get());
+        return CommandResult.END;
     }
 }

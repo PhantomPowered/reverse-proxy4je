@@ -1,5 +1,6 @@
 package net.md_5.bungee.connection;
 
+import com.github.derrop.proxy.api.command.CommandMap;
 import com.google.common.base.Preconditions;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
@@ -64,19 +65,19 @@ public class UpstreamBridge extends PacketHandler {
     @Override
     public void handle(Chat chat) throws Exception {
         int maxLength = (con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
-        Preconditions.checkArgument(chat.getMessage().length() <= maxLength, "Chat message too long"); // Mojang limit, check on updates
-
+        if (chat.getMessage().length() >= maxLength) {
+            throw CancelSendSignal.INSTANCE;
+        }
 
         ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
         if (this.con.getProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
+
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
 
-
-        if (MCProxy.getInstance().getCommandMap().dispatchCommand(this.con, chat.getMessage())) {
-            throw CancelSendSignal.INSTANCE;
-        }
+        CommandMap commandMap = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(CommandMap.class);
+        commandMap.process(this.con, chat.getMessage());
     }
 
     @Override

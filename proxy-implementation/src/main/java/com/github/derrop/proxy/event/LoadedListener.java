@@ -1,4 +1,6 @@
-package com.github.derrop.proxy.api.event;
+package com.github.derrop.proxy.event;
+
+import com.github.derrop.proxy.api.event.Event;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -1,8 +1,7 @@
-package com.github.derrop.proxy.basic;
+package com.github.derrop.proxy.event;
 
 import com.github.derrop.proxy.api.event.Event;
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.event.LoadedListener;
 import com.github.derrop.proxy.api.event.handler.Listener;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,12 +105,6 @@ public final class DefaultEventManager implements EventManager {
                 this.unregister(loadedListener.getListener());
             }
         }
-    }
-
-    @NotNull
-    @Override
-    public List<List<LoadedListener>> getListeners() {
-        return new ArrayList<>(this.done.values());
     }
 
     private Map<Class<?>, Map<Byte, Set<Method>>> find(Object listener) {

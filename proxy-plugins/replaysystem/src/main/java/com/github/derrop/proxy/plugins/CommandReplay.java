@@ -1,12 +1,22 @@
 package com.github.derrop.proxy.plugins;
 
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandReplay extends Command { // TODO
+public class CommandReplay extends NonTabCompleteableCommandCallback {
+
+    public CommandReplay(@NotNull String permission, @Nullable BaseComponent[] help) {
+        super(permission, help);
+    }
+
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        return CommandResult.END;
     }
 /*
     private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

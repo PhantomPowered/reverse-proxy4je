@@ -1,25 +1,20 @@
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.command.ConsoleCommandSender;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public class CommandStop extends Command {
+public class CommandStop extends NonTabCompleteableCommandCallback {
 
     public CommandStop() {
-        super("stop", "exit");
-        super.setPermission("command.stop");
+        super("proxy.command.stop", null);
     }
 
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-        if (!(sender instanceof ConsoleCommandSender)) {
-            sender.sendMessage("This command is only available for the console");
-            return;
-        }
-
-        sender.sendMessage("Shutting down...");
-        MCProxy.getInstance().shutdown();
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        System.exit(0);
+        return CommandResult.END;
     }
 }

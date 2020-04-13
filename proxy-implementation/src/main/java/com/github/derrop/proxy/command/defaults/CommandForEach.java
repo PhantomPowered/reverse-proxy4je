@@ -1,43 +1,45 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class CommandForEach extends Command {
+public class CommandForEach extends NonTabCompleteableCommandCallback {
 
     public CommandForEach() {
-        super("foreach");
-        super.setPermission("command.foreach");
+        super("proxy.command.foreach", null);
     }
 
     @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-        if (!(sender instanceof ProxiedPlayer)) {
-            sender.sendMessage("This command is only available for players");
-            return;
-        }
-        if (args.length < 2) {
-            sender.sendMessage("foreach EXECUTE <message> | execute a command for every player on the proxy (§e{name} §7for the name of the player)");
-            return;
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        if (!(commandSender instanceof ProxiedPlayer)) {
+            commandSender.sendMessage("This command is only available for players");
+            return CommandResult.BREAK;
         }
 
-        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        if (arguments.length < 2) {
+            commandSender.sendMessage("foreach EXECUTE <message> | execute a command for every player on the proxy (§e{name} §7for the name of the player)");
+            return CommandResult.BREAK;
+        }
 
-        if (args[0].equalsIgnoreCase("execute")) {
-
-            sender.sendMessage("Executing the commands...");
-            ServiceConnection selfClient = ((ProxiedPlayer) sender).getConnectedClient();
+        String message = String.join(" ", Arrays.copyOfRange(arguments, 1, arguments.length));
+        if (arguments[0].equalsIgnoreCase("execute")) {
+            commandSender.sendMessage("Executing the commands...");
+            ServiceConnection selfClient = ((ProxiedPlayer) commandSender).getConnectedClient();
             for (ServiceConnection onlineClient : MCProxy.getInstance().getOnlineClients()) {
                 if (selfClient == null || (onlineClient.getUniqueId() != null && !onlineClient.getUniqueId().equals(selfClient.getUniqueId()))) {
-                    ((ProxiedPlayer) sender).chat(message.replace("{name}", onlineClient.getName() == null ? "null" : onlineClient.getName()));
+                    ((ProxiedPlayer) commandSender).chat(message.replace("{name}", onlineClient.getName() == null ? "null" : onlineClient.getName()));
                 }
             }
-
         }
+
+        return CommandResult.END;
     }
 }

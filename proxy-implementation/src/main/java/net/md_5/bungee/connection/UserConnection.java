@@ -321,8 +321,18 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull String message) {
         this.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + message));
+    }
+
+    @Override
+    public void sendMessage(@NotNull BaseComponent component) {
+        this.sendMessage(ChatMessageType.CHAT, component);
+    }
+
+    @Override
+    public void sendMessage(@NotNull BaseComponent[] component) {
+        this.sendMessage(ChatMessageType.CHAT, component);
     }
 
     @Override
@@ -333,12 +343,12 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     @Override
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(@NotNull String permission) {
         return MCProxy.getInstance().getPermissionProvider().hasPermission(this.getUniqueId(), permission);
     }
 
     @Override
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return getPendingConnection().getUniqueId();
     }
 
