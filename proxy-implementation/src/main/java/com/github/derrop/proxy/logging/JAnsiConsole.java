@@ -3,6 +3,8 @@ package com.github.derrop.proxy.logging;
  * Created by Mc_Ruben on 08.02.2019
  */
 
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.command.console.ConsoleCommandSender;
 import jline.console.ConsoleReader;
 import lombok.Getter;
 import org.fusesource.jansi.Ansi;
@@ -25,6 +27,8 @@ import java.util.function.Supplier;
 public class JAnsiConsole implements IConsole {
 
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+
+    private static final CommandSender COMMAND_SENDER = new ConsoleCommandSender();
 
     private ConsoleReader consoleReader;
     private Supplier<String> promptSupplier;
@@ -285,6 +289,11 @@ public class JAnsiConsole implements IConsole {
             this.runningAnimation = null;
         }, animation.getClass().getName() + " - AnimationThread");
         this.animationThread.start();
+    }
+
+    @Override
+    public CommandSender getConsoleCommandSender() {
+        return COMMAND_SENDER;
     }
     /*
     public static InputStream createTimeOutUsingInputStream(InputStream inputStream, long timeout) {

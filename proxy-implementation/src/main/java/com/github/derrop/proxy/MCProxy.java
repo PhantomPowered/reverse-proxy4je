@@ -1,5 +1,6 @@
 package com.github.derrop.proxy;
 
+import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
@@ -9,8 +10,6 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
@@ -20,11 +19,9 @@ import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.connection.ProxyServer;
+import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
-import com.github.derrop.proxy.logging.DefaultLogger;
-import com.github.derrop.proxy.logging.FileLoggerHandler;
 import com.github.derrop.proxy.logging.ILogger;
-import com.github.derrop.proxy.logging.JAnsiConsole;
 import com.github.derrop.proxy.minecraft.AccountReader;
 import com.github.derrop.proxy.permission.PermissionProvider;
 import com.github.derrop.proxy.player.DefaultPlayerRepository;
@@ -34,8 +31,8 @@ import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.UUIDStorage;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.md_5.bungee.protocol.packet.KeepAlive;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -75,20 +72,11 @@ public class MCProxy extends Proxy {
 
     private final Collection<Runnable> shutdownHooks = new CopyOnWriteArrayList<>();
 
-    protected MCProxy() throws IOException {
+    protected MCProxy(@NotNull ILogger logger) throws IOException {
+        instance = this;
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
-        this.serviceRegistry.setProvider(null, CommandMap.class, new DefaultCommandMap());
 
-        this.logger = new DefaultLogger(new JAnsiConsole(() -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))));
-
-        this.logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));
-        //this.logger.getConsole().addLineHandler("DefaultCommandMap", line ->
-        //        this.commandMap.dispatchCommand(new ConsoleCommandSender(this.logger), DefaultCommandMap.PREFIX + line)
-        //);
-
-        CommandMap commandMap = this.serviceRegistry.getProviderUnchecked(CommandMap.class);
-
-
+        this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
 
@@ -102,7 +90,7 @@ public class MCProxy extends Proxy {
     }
 
     @Override
-    public @NotNull BasicServiceConnection findBestConnection(ProxiedPlayer player) {
+    public @Nullable BasicServiceConnection findBestConnection(ProxiedPlayer player) {
         if (player != null && this.reconnectProfiles.containsKey(player.getUniqueId())) {
             ReconnectProfile profile = this.reconnectProfiles.get(player.getUniqueId());
             if (System.currentTimeMillis() < profile.getTimeout()) {
@@ -116,6 +104,7 @@ public class MCProxy extends Proxy {
                 }
             }
         }
+
         return this.onlineClients.stream()
                 .filter(proxyClient -> proxyClient.getPlayer() == null)
                 .filter(proxyClient -> !this.reconnectProfiles.containsKey(proxyClient.getUniqueId()))
@@ -148,10 +137,6 @@ public class MCProxy extends Proxy {
 
     public Collection<ServiceConnection> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getPlayer() == null).collect(Collectors.toList());
-    }
-
-    public void addShutdownRunnable(@NotNull Runnable runnable) {
-        this.shutdownHooks.add(runnable);
     }
 
     public void shutdown() {
@@ -210,6 +195,10 @@ public class MCProxy extends Proxy {
         return permissionProvider;
     }
 
+    public Map<UUID, ReconnectProfile> getReconnectProfiles() {
+        return reconnectProfiles;
+    }
+
     public UUIDStorage getUUIDStorage() {
         return uuidStorage;
     }
@@ -226,87 +215,21 @@ public class MCProxy extends Proxy {
         return instance;
     }
 
-    public static void main(String[] args) throws Exception {
-        instance = new MCProxy();
-        instance.proxyServer.start(new InetSocketAddress(25567));
+    public void bootstrap(int port) throws IOException {
+        this.proxyServer.start(new InetSocketAddress(port)); // TODO: service + config
 
-        instance.pluginManager.loadPlugins(Paths.get("plugins"));
-        instance.pluginManager.enablePlugins();
+        this.pluginManager.loadPlugins(Paths.get("plugins")); // TODO: service + config
+        this.pluginManager.enablePlugins();
 
-        instance.eventManager.registerListener(new ProxyBrandChangeListener());
+        this.handleCommands();
 
-        if (Files.exists(ACCOUNT_PATH)) {
-            instance.accountReader.readAccounts(ACCOUNT_PATH, (mcCredentials, networkAddress) -> {
-                try {
-                    ServiceConnection connection = new BasicServiceConnection(instance, mcCredentials, networkAddress);
-
-                    connection.connect(new TaskFutureListener<Boolean>() {
-                        @Override
-                        public void onCancel(@NotNull Task<Boolean> task) {
-                            System.err.println("Connection to " + connection.getServerAddress() + " cancelled");
-                        }
-
-                        @Override
-                        public void onFailure(@NotNull Task<Boolean> task) {
-                            Throwable lastException = task.getException();
-                            if (lastException == null) {
-                                System.err.println("Got kicked from " + connection.getServerAddress() + " as " + connection.getCredentials());
-                                return;
-                            }
-
-                            System.err.println("Got kicked from " + connection.getServerAddress()
-                                    + " as " + connection.getCredentials() + ": " + lastException.getMessage().replace('\n', ' '));
-                        }
-
-                        @Override
-                        public void onSuccess(@NotNull Task<Boolean> task) {
-                            Boolean result = task.getResult();
-                            if (result != null && result) {
-                                System.out.println("Successfully opened connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
-                                return;
-                            }
-
-                            System.err.println("Unable to open connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
-                        }
-                    });
-
-                } catch (AuthenticationException exception) {
-                    exception.printStackTrace();
-                }
-            });
-        } else {
-            instance.accountReader.writeDefaults(ACCOUNT_PATH);
+        this.eventManager.registerListener(new ProxyBrandChangeListener()); // TODO: service
+        if (Files.notExists(ACCOUNT_PATH)) {
+            this.accountReader.writeDefaults(ACCOUNT_PATH);
         }
 
-        //PlayerVelocityHandler.start(); todo
-
-        // TODO Fix this shit
-        Constants.EXECUTOR_SERVICE.execute(() -> {
-            while (!Thread.interrupted()) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                }
-
-                for (BasicServiceConnection onlineClient : instance.onlineClients) {
-                    onlineClient.getClient().keepAliveTick();
-                    if (onlineClient.getPlayer() != null) {
-                        onlineClient.getPlayer().sendPacket(new KeepAlive(System.nanoTime())); // todo if no result for this packet is returned, disconnect the player
-                    }
-                }
-
-                for (ReconnectProfile profile : instance.reconnectProfiles.values()) {
-                    if (System.currentTimeMillis() >= profile.getTimeout()) {
-                        instance.reconnectProfiles.remove(profile.getUniqueId());
-                    }
-                }
-            }
-        });
-
-        while (true) {
-            Thread.sleep(Long.MAX_VALUE);
-        }
+        this.accountReader.readAccounts(ACCOUNT_PATH, new AccountBiConsumer());
+        EntityTickHandler.startTick();
     }
 
     private void handleCommands() {

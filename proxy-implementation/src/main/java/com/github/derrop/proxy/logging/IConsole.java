@@ -3,6 +3,8 @@ package com.github.derrop.proxy.logging;
  * Created by Mc_Ruben on 08.02.2019
  */
 
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -53,5 +55,7 @@ public interface IConsole {
     AbstractConsoleAnimation getRunningAnimation();
 
     void startAnimation(AbstractConsoleAnimation animation);
+
+    CommandSender getConsoleCommandSender();
 
 }

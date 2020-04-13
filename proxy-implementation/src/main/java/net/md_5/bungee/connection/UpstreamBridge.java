@@ -1,8 +1,11 @@
 package net.md_5.bungee.connection;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
@@ -69,15 +72,26 @@ public class UpstreamBridge extends PacketHandler {
             throw CancelSendSignal.INSTANCE;
         }
 
+        if (chat.getMessage().startsWith("/")) {
+            try {
+                CommandMap commandMap = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(CommandMap.class);
+                if (commandMap.process(this.con, chat.getMessage().replaceFirst("/", "")) != CommandResult.NOT_FOUND) {
+                    throw CancelSendSignal.INSTANCE;
+                }
+            } catch (final CommandExecutionException | PermissionDeniedException ex) {
+                this.con.sendMessage("Unable to process command: " + ex.getMessage());
+                throw CancelSendSignal.INSTANCE;
+            }
+
+            return;
+        }
+
         ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, TextComponent.fromLegacyText(chat.getMessage()));
         if (this.con.getProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
 
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
-
-        CommandMap commandMap = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(CommandMap.class);
-        commandMap.process(this.con, chat.getMessage());
     }
 
     @Override
