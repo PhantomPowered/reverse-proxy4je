@@ -1,12 +1,5 @@
 package com.github.derrop.proxy;
 
-import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.service.BasicServiceRegistry;
-import com.github.derrop.proxy.title.BasicTitle;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.basic.DefaultEventManager;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
@@ -15,12 +8,16 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.plugin.PluginManager;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.ban.BanTester;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.basic.DefaultEventManager;
+import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.ConsoleCommandSender;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
@@ -35,7 +32,10 @@ import com.github.derrop.proxy.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.replay.ReplaySystem;
+import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.UUIDStorage;
+import com.github.derrop.proxy.title.BasicTitle;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,8 +79,6 @@ public class MCProxy extends Proxy {
     private ILogger logger;
 
     private final Collection<Runnable> shutdownHooks = new CopyOnWriteArrayList<>();
-
-    private final Collection<ServiceConnection> openConnections = new CopyOnWriteArrayList<>();
 
     protected MCProxy() throws IOException {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
