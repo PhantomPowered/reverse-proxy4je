@@ -81,7 +81,7 @@ public class Chunk {
             }
         }
 
-        /*if (fullChunk) {
+        /*if (fullChunk) { TODO biomes
             copyArray(p_179756_0_.getBiomeArray(), extracted.data, j);
         }*/
 
@@ -120,30 +120,6 @@ public class Chunk {
         }
 
         storage.set(x & 15, y & 15, z & 15, state);
-
-        // TODO implement light level updates?
-        /*if (extendedblockstorage.getBlockByExtId(i, j & 15, k) != block) {
-            return null;
-        } else {
-            if (flag) {
-                this.generateSkylightMap();
-            } else {
-                int j1 = block.getLightOpacity();
-                int k1 = block1.getLightOpacity();
-
-                if (j1 > 0) {
-                    if (j >= i1) {
-                        this.relightBlock(i, j + 1, k);
-                    }
-                } else if (j == i1 - 1) {
-                    this.relightBlock(i, j, k);
-                }
-
-                if (j1 != k1 && (j1 < k1 || this.getLightFor(EnumSkyBlock.SKY, pos) > 0 || this.getLightFor(EnumSkyBlock.BLOCK, pos) > 0)) {
-                    this.propagateSkylightOcclusion(i, k);
-                }
-            }
-        }*/
     }
 
     public ChunkData getLastChunkData() {
