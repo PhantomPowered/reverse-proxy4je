@@ -1,8 +1,9 @@
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.api.block;
+
+import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.util.EnumFacing;
 
 public interface BlockAccess {
-
-    int getCombinedLight(BlockPos pos, int lightValue);
 
     int getBlockState(BlockPos pos);
 
@@ -14,11 +15,8 @@ public interface BlockAccess {
 
     boolean isWaterBlock(BlockPos pos);
 
-    /**
-     * set by !chunk.getAreLevelsEmpty
-     */
-    boolean extendedLevelsInChunkCache();
-
-    int getStrongPower(BlockPos pos, EnumFacing direction);
+    default int getStrongPower(BlockPos pos, EnumFacing direction) { // redstone (0 - 15)
+        return 0;
+    }
 
 }

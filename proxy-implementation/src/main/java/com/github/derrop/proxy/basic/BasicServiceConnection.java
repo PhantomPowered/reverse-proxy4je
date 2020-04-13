@@ -3,6 +3,7 @@ package com.github.derrop.proxy.basic;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
@@ -286,6 +287,11 @@ public class BasicServiceConnection implements ServiceConnection {
     @Override
     public Scoreboard getScoreboard() {
         return this.client.getScoreboard();
+    }
+
+    @Override
+    public BlockAccess getBlockAccess() {
+        return this.client.getPacketCache().getBlockAccess();
     }
 
     private void reSchedule(Collection<TaskFutureListener<Boolean>> listener) {

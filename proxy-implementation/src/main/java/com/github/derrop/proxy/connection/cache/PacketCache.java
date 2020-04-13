@@ -1,8 +1,10 @@
 package com.github.derrop.proxy.connection.cache;
 
+import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
@@ -23,14 +25,13 @@ public class PacketCache {
     private final ConnectedProxyClient targetProxyClient;
     private final Collection<PacketCacheHandler> handlers = new ArrayList<>();
 
-    private BiConsumer<ByteBuf, Integer> packetHandler;
+    private BlockAccess blockAccess;
 
-    {
-        this.reset();
-    }
+    private BiConsumer<ByteBuf, Integer> packetHandler;
 
     public PacketCache(ConnectedProxyClient targetProxyClient) {
         this.targetProxyClient = targetProxyClient;
+        this.reset();
     }
 
     public void setPacketHandler(BiConsumer<ByteBuf, Integer> packetHandler) {
@@ -43,6 +44,10 @@ public class PacketCache {
 
     public PacketCacheHandler getHandler(Predicate<PacketCacheHandler> filter) {
         return this.handlers.stream().filter(filter).findFirst().orElse(null);
+    }
+
+    public BlockAccess getBlockAccess() {
+        return this.blockAccess;
     }
 
     public Collection<PacketCacheHandler> getHandlers() {
@@ -106,6 +111,9 @@ public class PacketCache {
 
     public void reset() {
         this.handlers.clear();
+
+        ChunkCache chunkCache = new ChunkCache();
+
         this.handlers.addAll(Arrays.asList(
                 // THE ORDER IS IMPORTANT
                 new LoginCache(),
@@ -118,7 +126,7 @@ public class PacketCache {
                 new ListPacketCache(2, 30), // chat
                 new WorldBorderCache(),
                 new PlayerInventoryCache(),
-                new ChunkCache(),
+                chunkCache,
                 new PlayerInfoCache(),
                 new EntityCache(),
                 new EntityEffectCache(),
@@ -126,6 +134,8 @@ public class PacketCache {
                 new SignCache(),
                 new ScoreboardCache()
         ));
+
+        this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getProxy(), chunkCache);
     }
 
 }

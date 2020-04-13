@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
@@ -79,5 +80,7 @@ public interface ServiceConnection extends Connection, AutoCloseable {
     void unregister();
 
     Scoreboard getScoreboard();
+
+    BlockAccess getBlockAccess();
 
 }
