@@ -1417,6 +1417,9 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
     @NotNull
     @Override
     public int[] getValidBlockStateIDs(@NotNull Material material) {
+        if (material == Material.AIR) {
+            return new int[]{0};
+        }
         return BLOCK_STATE_IDS.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(material))
                 .mapToInt(Map.Entry::getKey)
@@ -1426,5 +1429,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
     @Override
     public Material getMaterial(int blockStateId) {
         return BLOCK_STATE_IDS.get(blockStateId);
+    }
+
+    @Override
+    public boolean isMaterial(int blockStateId, Material material) {
+        return BLOCK_STATE_IDS.get(blockStateId) == material;
     }
 }

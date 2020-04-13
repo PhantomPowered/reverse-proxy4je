@@ -1,15 +1,14 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.packet.world.UpdateSign;
-import com.github.derrop.proxy.api.util.BlockPos;
-import com.github.derrop.proxy.util.chunk.DefaultBlockStates;
-import com.github.derrop.proxy.api.connection.PacketSender;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,9 +34,9 @@ public class SignCache implements PacketCacheHandler {
     @Override
     public void sendCached(PacketSender con) {
         for (Map.Entry<BlockPos, UpdateSign> entry : this.signUpdates.entrySet()) {
-            int state = this.packetCache.getBlockStateAt(entry.getKey());
+            Material material = this.packetCache.getMaterialAt(entry.getKey());
 
-            if (Arrays.stream(DefaultBlockStates.SIGNS).noneMatch(i -> i == state)) {
+            if (material != Material.SIGN && material != Material.SIGN_POST) {
                 this.signUpdates.remove(entry.getKey());
                 continue;
             }

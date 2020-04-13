@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.util.chunk;
 
-import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
 import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,14 +105,14 @@ public class Chunk {
             }
         }
 
-        return DefaultBlockStates.AIR;
+        return -1;
     }
 
     public void setBlockStateAt(int x, int y, int z, int state) {
         ExtendedBlockStorage storage = this.storageArrays[y >> 4];
 
         if (storage == null) {
-            if (state == DefaultBlockStates.AIR) {
+            if (state == 0) { // air
                 return;
             }
 

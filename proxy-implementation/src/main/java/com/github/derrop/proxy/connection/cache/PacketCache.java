@@ -1,12 +1,13 @@
 package com.github.derrop.proxy.connection.cache;
 
+import com.github.derrop.proxy.api.block.BlockStateRegistry;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.connection.cache.packet.entity.player.GameStateChange;
 import com.github.derrop.proxy.connection.cache.packet.world.UpdateSign;
-import com.github.derrop.proxy.util.chunk.DefaultBlockStates;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -52,8 +53,8 @@ public class PacketCache {
         packet.markReaderIndex();
 
         if (deserialized instanceof UpdateSign) {
-            int state = this.getBlockStateAt(((UpdateSign) deserialized).getPos());
-            if (Arrays.stream(DefaultBlockStates.SIGNS).noneMatch(i -> i == state)) {
+            Material material = this.getMaterialAt(((UpdateSign) deserialized).getPos());
+            if (material != Material.SIGN_POST && material != Material.SIGN) {
                 return;
             }
         }
@@ -78,6 +79,11 @@ public class PacketCache {
 
     public int getBlockStateAt(BlockPos pos) {
         return ((ChunkCache) this.getHandler(handler -> handler instanceof ChunkCache)).getBlockStateAt(pos);
+    }
+
+    public Material getMaterialAt(BlockPos pos) {
+        int state = this.getBlockStateAt(pos);
+        return this.targetProxyClient.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getMaterial(state);
     }
 
     public ConnectedProxyClient getTargetProxyClient() {
