@@ -3,6 +3,7 @@ package de.derrop.minecraft.proxy.api.connection;
 import de.derrop.minecraft.proxy.api.Proxy;
 import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
 import de.derrop.minecraft.proxy.api.command.CommandSender;
+import de.derrop.minecraft.proxy.api.scoreboard.Scoreboard;
 import de.derrop.minecraft.proxy.api.util.ChatMessageType;
 import de.derrop.minecraft.proxy.api.util.Title;
 
@@ -158,4 +159,7 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      * @see Title
      */
     void sendTitle(Title title);
+
+    Scoreboard getScoreboard();
+
 }

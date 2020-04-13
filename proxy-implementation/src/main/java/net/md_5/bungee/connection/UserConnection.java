@@ -9,6 +9,7 @@ import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
 import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
 import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
+import de.derrop.minecraft.proxy.api.scoreboard.Scoreboard;
 import de.derrop.minecraft.proxy.api.util.ChatMessageType;
 import de.derrop.minecraft.proxy.api.util.Title;
 import de.derrop.minecraft.proxy.connection.PlayerUniqueTabList;
@@ -373,6 +374,11 @@ public final class UserConnection implements ProxiedPlayer {
     @Override
     public void sendTitle(Title title) {
         title.send(this);
+    }
+
+    @Override
+    public Scoreboard getScoreboard() {
+        throw new UnsupportedOperationException("Not supported yet"); // TODO
     }
 
     public String getExtraDataInHandshake() {
