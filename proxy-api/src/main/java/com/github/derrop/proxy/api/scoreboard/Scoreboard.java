@@ -20,7 +20,7 @@ public interface Scoreboard {
     Objective getObjective(@NotNull DisplaySlot displaySlot);
 
     @NotNull
-    Objective registerNewObjective(@NotNull String name, @NotNull String criteria);
+    Objective registerNewObjective(@NotNull String name);
 
 
     @NotNull

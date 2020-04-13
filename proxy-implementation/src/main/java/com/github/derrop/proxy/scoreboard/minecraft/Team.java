@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.scoreboard;
+package com.github.derrop.proxy.scoreboard.minecraft;
 
 import java.util.Collection;
 

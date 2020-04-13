@@ -1,6 +1,6 @@
-package com.github.derrop.proxy.util.scoreboard;
+package com.github.derrop.proxy.scoreboard.minecraft;
 
-import com.github.derrop.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 
 public class ScoreObjective
 {

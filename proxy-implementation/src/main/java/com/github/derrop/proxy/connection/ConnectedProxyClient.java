@@ -1,5 +1,9 @@
 package com.github.derrop.proxy.connection;
 
+import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
+import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -65,6 +69,7 @@ public class ConnectedProxyClient {
 
     private PacketCache packetCache = new PacketCache(this);
     private EntityMap entityMap = EntityMap.getEntityMap(47);
+    private Scoreboard scoreboard;
 
     private int entityId;
     private int dimension;
@@ -93,6 +98,8 @@ public class ConnectedProxyClient {
     public ConnectedProxyClient(MCProxy proxy, BasicServiceConnection connection) {
         this.proxy = proxy;
         this.connection = connection;
+
+        this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
     }
 
     public boolean performMojangLogin(MCCredentials credentials) throws AuthenticationException {
@@ -240,6 +247,10 @@ public class ConnectedProxyClient {
 
     public PlayerVelocityHandler getVelocityHandler() {
         return velocityHandler;
+    }
+
+    public Scoreboard getScoreboard() {
+        return scoreboard;
     }
 
     public PacketCache getPacketCache() {

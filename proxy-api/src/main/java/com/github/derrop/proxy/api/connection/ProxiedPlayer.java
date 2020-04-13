@@ -161,6 +161,4 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      */
     void sendTitle(ProvidedTitle providedTitle);
 
-    Scoreboard getScoreboard();
-
 }

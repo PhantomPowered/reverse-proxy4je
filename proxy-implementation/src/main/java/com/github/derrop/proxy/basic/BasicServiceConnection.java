@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.ChatMessageType;
@@ -17,6 +18,7 @@ import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.minecraft.SessionUtils;
+import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -281,6 +283,11 @@ public class BasicServiceConnection implements ServiceConnection {
         this.proxy.unregisterConnection(this);
     }
 
+    @Override
+    public Scoreboard getScoreboard() {
+        return this.client.getScoreboard();
+    }
+
     private void reSchedule(Collection<TaskFutureListener<Boolean>> listener) {
         Preconditions.checkArgument(this.client == null);
 
@@ -304,6 +311,6 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
-        this.client.getRedirector().sendPacket(packet);
+        this.client.getChannelWrapper().write(packet);
     }
 }

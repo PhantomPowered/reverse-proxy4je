@@ -2,6 +2,7 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.ChatMessageType;
@@ -76,5 +77,7 @@ public interface ServiceConnection extends Connection, AutoCloseable {
     boolean isConnected();
 
     void unregister();
+
+    Scoreboard getScoreboard();
 
 }

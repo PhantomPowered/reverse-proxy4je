@@ -1,13 +1,10 @@
-package com.github.derrop.proxy.util.scoreboard;
+package com.github.derrop.proxy.scoreboard.minecraft;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.github.derrop.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Scoreboard {

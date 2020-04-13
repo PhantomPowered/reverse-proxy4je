@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.api.scoreboard;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface Objective {
 
@@ -11,9 +12,12 @@ public interface Objective {
     String getCriteria();
 
     @NotNull
-    String getDisplayName();
+    String getName();
 
     @NotNull
+    String getDisplayName();
+
+    @Nullable
     DisplaySlot getDisplaySlot();
 
     void setDisplayName(@NotNull String displayName);
@@ -24,5 +28,7 @@ public interface Objective {
 
     @NotNull
     Score getScore(@NotNull String entry);
+
+    void unregisterScore(@NotNull String entry);
 
 }

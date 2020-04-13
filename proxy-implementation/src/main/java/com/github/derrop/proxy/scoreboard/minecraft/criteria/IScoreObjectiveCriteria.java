@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.scoreboard.criteria;
+package com.github.derrop.proxy.scoreboard.minecraft.criteria;
 
 import com.google.common.collect.Maps;
 

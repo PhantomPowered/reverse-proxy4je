@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.scoreboard.criteria;
+package com.github.derrop.proxy.scoreboard.minecraft.criteria;
 
 import java.util.List;
 import java.util.UUID;

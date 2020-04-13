@@ -8,7 +8,6 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.packet.Packet;
-import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
@@ -383,11 +382,6 @@ public final class UserConnection implements ProxiedPlayer {
     @Override
     public void sendTitle(ProvidedTitle providedTitle) {
         providedTitle.send(this);
-    }
-
-    @Override
-    public Scoreboard getScoreboard() {
-        throw new UnsupportedOperationException("Not supported yet"); // TODO
     }
 
     public void setCompressionThreshold(int compressionThreshold) {

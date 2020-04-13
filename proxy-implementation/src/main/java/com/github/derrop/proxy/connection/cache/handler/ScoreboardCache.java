@@ -4,8 +4,8 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.util.scoreboard.*;
-import com.github.derrop.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.scoreboard.minecraft.*;
+import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -14,9 +14,19 @@ import net.md_5.bungee.protocol.packet.ScoreboardObjective;
 import net.md_5.bungee.protocol.packet.ScoreboardScore;
 import net.md_5.bungee.protocol.packet.Team;
 
+import java.util.function.Consumer;
+
 public class ScoreboardCache implements PacketCacheHandler {
 
     private Scoreboard scoreboard = new Scoreboard();
+
+    private Consumer<DefinedPacket> packetHandler;
+
+    private UserConnection connectedPlayer;
+
+    public Scoreboard getScoreboard() {
+        return this.scoreboard;
+    }
 
     @Override
     public int[] getPacketIDs() {
@@ -108,24 +118,28 @@ public class ScoreboardCache implements PacketCacheHandler {
                 scoreboard.removeTeam(scoreplayerteam);
             }
         }
+
+        if (this.packetHandler != null) {
+            this.packetHandler.accept(packet);
+        }
     }
 
     @Override
     public void sendCached(PacketSender con) {
+        if (con instanceof UserConnection) {
+            this.connectedPlayer = (UserConnection) con;
+        }
+
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.sendPacket(new ScoreboardObjective(objective.getName(), objective.getDisplayName(), objective.getRenderType(), (byte) 0));
+            this.sendCreatedObjective(con, objective);
         }
 
         for (Score score : this.scoreboard.getScores()) {
-            con.sendPacket(new ScoreboardScore(score.getPlayerName(), (byte) 0, score.getObjective().getName(), score.getScorePoints()));
+            this.sendScoreUpdate(con, score.getPlayerName(), score.getObjective().getName(), score.getScorePoints());
         }
 
         for (ScorePlayerTeam team : this.scoreboard.getTeams()) {
-            con.sendPacket(new Team(
-                    team.getRegisteredName(), (byte) 0, team.getTeamName(), team.getColorPrefix(), team.getColorSuffix(),
-                    team.getNameTagVisibility().toString().toLowerCase(), null, team.getChatFormat(),
-                    (byte) 0, team.getMembershipCollection().toArray(new String[0])
-            ));
+            this.sendTeamCreation(con, team);
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
@@ -136,19 +150,99 @@ public class ScoreboardCache implements PacketCacheHandler {
     @Override
     public void onClientSwitch(UserConnection con) {
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.sendPacket(new ScoreboardObjective(objective.getName()));
+            this.sendDeletedObjective(con, objective.getName());
         }
 
         for (Score score : this.scoreboard.getScores()) {
-            con.sendPacket(new ScoreboardScore(score.getPlayerName(), score.getObjective().getName()));
+            this.sendScoreDestroy(con, score.getPlayerName(), score.getObjective().getName());
         }
 
         for (ScorePlayerTeam team : this.scoreboard.getTeams()) {
-            con.sendPacket(new Team(team.getRegisteredName()));
+            this.sendTeamUpdate(con, new Team(team.getRegisteredName()));
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
             con.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
         }
     }
+
+    public void setPacketHandler(Consumer<DefinedPacket> packetHandler) {
+        this.packetHandler = packetHandler;
+    }
+
+    public void sendScoreUpdate(String score, String objective, int value) {
+        if (this.connectedPlayer != null) {
+            this.sendScoreUpdate(this.connectedPlayer, score, objective, value);
+        }
+    }
+
+    private void sendScoreUpdate(PacketSender sender, String score, String objective, int value) {
+        sender.sendPacket(new ScoreboardScore(score, (byte) 0, objective, value));
+    }
+
+    public void sendScoreDestroy(String score, String objective) {
+        if (this.connectedPlayer != null) {
+            this.sendScoreDestroy(this.connectedPlayer, score, objective);
+        }
+    }
+
+    private void sendScoreDestroy(PacketSender sender, String score, String objective) {
+        sender.sendPacket(new ScoreboardScore(score, objective));
+    }
+
+    public void sendCreatedObjective(ScoreObjective objective) {
+        if (this.connectedPlayer != null) {
+            this.sendCreatedObjective(this.connectedPlayer, objective);
+            this.connectedPlayer.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
+        }
+    }
+
+    private void sendCreatedObjective(PacketSender sender, ScoreObjective objective) {
+        sender.sendPacket(new ScoreboardObjective(objective.getName(), objective.getDisplayName(), objective.getRenderType(), (byte) 0));
+    }
+
+    public void sendDeletedObjective(String name) {
+        if (this.connectedPlayer != null) {
+            this.sendDeletedObjective(this.connectedPlayer, name);
+        }
+    }
+
+    private void sendDeletedObjective(PacketSender sender, String name) {
+        sender.sendPacket(new ScoreboardObjective(name));
+    }
+
+    public void sendTeamCreation(ScorePlayerTeam team) {
+        if (this.connectedPlayer != null) {
+            this.sendTeamCreation(this.connectedPlayer, team);
+        }
+    }
+
+    private void sendTeamCreation(PacketSender sender, ScorePlayerTeam team) {
+        this.sendTeamUpdate((byte) 0, sender, team);
+    }
+
+    public void sendTeamUpdate(byte mode, ScorePlayerTeam team) {
+        if (this.connectedPlayer != null) {
+            this.sendTeamUpdate(mode, this.connectedPlayer, team);
+        }
+    }
+
+    private void sendTeamUpdate(byte mode, PacketSender sender, ScorePlayerTeam team) {
+        this.sendTeamUpdate(sender, new Team(
+                team.getRegisteredName(), mode, team.getTeamName(), team.getColorPrefix(), team.getColorSuffix(),
+                team.getNameTagVisibility().toString().toLowerCase(), null, team.getChatFormat(),
+                (byte) 0, team.getMembershipCollection().toArray(new String[0])
+        ));
+    }
+
+    public void sendTeamUpdate(Team team) {
+        if (this.connectedPlayer != null) {
+            this.sendTeamUpdate(this.connectedPlayer, team);
+        }
+    }
+
+    private void sendTeamUpdate(PacketSender sender, Team team) {
+        sender.sendPacket(team);
+    }
+
 }

@@ -18,7 +18,6 @@ import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
-import com.github.derrop.proxy.command.console.ConsoleCommandSender;
 import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.event.DefaultEventManager;
@@ -78,7 +77,7 @@ public class MCProxy extends Proxy {
 
     protected MCProxy() throws IOException {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
-
+        this.serviceRegistry.setProvider(null, CommandMap.class, new DefaultCommandMap());
 
         this.logger = new DefaultLogger(new JAnsiConsole(() -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))));
 
@@ -263,7 +262,7 @@ public class MCProxy extends Proxy {
                         public void onSuccess(@NotNull Task<Boolean> task) {
                             Boolean result = task.getResult();
                             if (result != null && result) {
-                                System.out.println("Successfully opended connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
+                                System.out.println("Successfully opened connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
                                 return;
                             }
 

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.scoreboard;
+package com.github.derrop.proxy.scoreboard.minecraft;
 
 import com.google.common.collect.Sets;
 
@@ -45,7 +45,7 @@ public class ScorePlayerTeam extends Team {
         }
     }
 
-    public Collection<String> getMembershipCollection() {
+    public Set<String> getMembershipCollection() {
         return this.membershipSet;
     }
 
