@@ -29,6 +29,7 @@ import de.derrop.minecraft.proxy.logging.JAnsiConsole;
 import de.derrop.minecraft.proxy.minecraft.AccountReader;
 import de.derrop.minecraft.proxy.permission.PermissionProvider;
 import de.derrop.minecraft.proxy.player.DefaultPlayerRepository;
+import de.derrop.minecraft.proxy.plugin.DefaultPluginManager;
 import de.derrop.minecraft.proxy.reconnect.ReconnectProfile;
 import de.derrop.minecraft.proxy.replay.ReplaySystem;
 import de.derrop.minecraft.proxy.storage.UUIDStorage;
@@ -39,6 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +59,7 @@ public class MCProxy extends Proxy {
     private AccountReader accountReader = new AccountReader();
     private EventManager eventManager = new DefaultEventManager();
     private PlayerRepository playerRepository = new DefaultPlayerRepository(this);
-    private PluginManager pluginManager;//todo
+    private PluginManager pluginManager = new DefaultPluginManager(this);
 
     private BanTester banTester = new BanTester();
 
@@ -161,23 +163,25 @@ public class MCProxy extends Proxy {
     }
 
     public void shutdown() {
-        for (ServiceConnection onlineClient : this.getOnlineClients()) {
-            if (onlineClient.getPlayer() != null) {
-                onlineClient.getPlayer().disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
-            }
-
-            try {
-                onlineClient.close();
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        }
-
         if (!Thread.currentThread().getName().equals("Shutdown Thread")) {
             System.exit(0);
         } else {
             for (Runnable shutdownHook : this.shutdownHooks) {
                 shutdownHook.run();
+            }
+
+            this.pluginManager.disablePlugins();
+
+            for (ServiceConnection onlineClient : this.getOnlineClients()) {
+                if (onlineClient.getPlayer() != null) {
+                    onlineClient.getPlayer().disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
+                }
+
+                try {
+                    onlineClient.close();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         }
     }
@@ -240,6 +244,9 @@ public class MCProxy extends Proxy {
         instance = new MCProxy();
         instance.proxyServer.start(new InetSocketAddress(25567));
 
+        instance.pluginManager.loadPlugins(Paths.get("plugins"));
+        instance.pluginManager.enablePlugins();
+
         TheProxy proxy = new TheProxy();
         proxy.handleStart();
         instance.addShutdownRunnable(proxy::end);
@@ -272,7 +279,6 @@ public class MCProxy extends Proxy {
                             Boolean result = task.getResult();
                             if (result != null && result) {
                                 System.out.println("Successfully opended connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
-                                instance.openConnections.add(connection);
                                 return;
                             }
 
