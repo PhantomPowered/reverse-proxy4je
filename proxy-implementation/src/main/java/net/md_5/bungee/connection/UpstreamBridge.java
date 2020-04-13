@@ -1,8 +1,8 @@
 package net.md_5.bungee.connection;
 
-import com.github.derrop.proxy.api.command.CommandMap;
-import com.google.common.base.Preconditions;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
@@ -69,7 +69,7 @@ public class UpstreamBridge extends PacketHandler {
             throw CancelSendSignal.INSTANCE;
         }
 
-        ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
+        ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, TextComponent.fromLegacyText(chat.getMessage()));
         if (this.con.getProxy().getEventManager().callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
