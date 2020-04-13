@@ -11,6 +11,7 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Proxy {
 
@@ -29,7 +30,7 @@ public abstract class Proxy {
     @NotNull
     public abstract ServiceConnection createConnection(MCCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException;
 
-    @NotNull
+    @Nullable
     public abstract ServiceConnection findBestConnection(ProxiedPlayer player);
 
     @NotNull

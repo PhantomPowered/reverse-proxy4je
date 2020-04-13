@@ -9,7 +9,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import java.net.Proxy;
 import java.util.UUID;
 
-public class SessionUtils {
+public class SessionUtils { // TODO: as service
 
     public static final AuthenticationService SERVICE = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
 

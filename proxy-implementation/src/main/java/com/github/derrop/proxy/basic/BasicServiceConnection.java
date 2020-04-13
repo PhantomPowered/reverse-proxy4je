@@ -304,6 +304,10 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
+        if (this.client == null || this.client.getRedirector() == null) {
+            return;
+        }
+
         this.client.getRedirector().sendPacket(packet);
     }
 }

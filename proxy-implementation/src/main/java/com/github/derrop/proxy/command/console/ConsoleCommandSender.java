@@ -3,7 +3,6 @@ package com.github.derrop.proxy.command.console;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.util.ChatColor;
-import com.github.derrop.proxy.logging.ILogger;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,15 +12,9 @@ public class ConsoleCommandSender implements CommandSender {
 
     private static final UUID CONSOLE_UUID = UUID.randomUUID();
 
-    private final ILogger logger;
-
-    public ConsoleCommandSender(ILogger logger) {
-        this.logger = logger;
-    }
-
     @Override
     public void sendMessage(@NotNull String message) {
-        this.logger.info(ChatColor.stripColor(message));
+        System.out.println(ChatColor.stripColor(message));
     }
 
     @Override
