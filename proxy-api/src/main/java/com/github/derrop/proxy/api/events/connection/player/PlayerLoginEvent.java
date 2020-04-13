@@ -1,20 +1,31 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.Cancelable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlayerLoginEvent extends PlayerEvent implements Cancelable { // TODO
+public class PlayerLoginEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel;
+    private BaseComponent[] cancelReason;
 
     private ServiceConnection targetConnection;
 
     public PlayerLoginEvent(@NotNull ProxiedPlayer player, @Nullable ServiceConnection targetConnection) {
         super(player);
         this.targetConnection = targetConnection;
+    }
+
+    public void setCancelReason(@Nullable BaseComponent[] cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+    @Nullable
+    public BaseComponent[] getCancelReason() {
+        return cancelReason;
     }
 
     public void setTargetConnection(@Nullable ServiceConnection targetConnection) {

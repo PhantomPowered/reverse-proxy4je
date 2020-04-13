@@ -1,6 +1,7 @@
 package net.md_5.bungee.connection;
 
 import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.github.derrop.proxy.Constants;
@@ -312,12 +313,29 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                 userCon.setCompressionThreshold(256);
                 userCon.init();
 
+                ServiceConnection client = MCProxy.getInstance().findBestConnection(userCon);
+
+                PlayerLoginEvent event = this.proxy.getEventManager().callEvent(new PlayerLoginEvent(userCon, client));
+                if (!this.isConnected()) {
+                    return;
+                }
+                if (event.isCancelled()) {
+                    this.disconnect(event.getCancelReason() == null ? TextComponent.fromLegacyText("§cNo reason given") : event.getCancelReason());
+                    return;
+                }
+
+                client = event.getTargetConnection();
+                if (client == null) {
+                    this.disconnect(TextComponent.fromLegacyText("§7No client found"));
+                    return;
+                }
+
+                userCon.useClient(client);
+
                 this.ch.write(new LoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
                 ch.setProtocol(Protocol.GAME);
                 ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(userCon));
 
-                ServiceConnection client = MCProxy.getInstance().findBestConnection(userCon);
-                userCon.useClient(client);
                 thisState = State.FINISHED;
             }
         });
