@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.util;
 
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.github.derrop.proxy.connection.PacketUtil;

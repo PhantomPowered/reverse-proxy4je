@@ -8,7 +8,7 @@ import com.github.derrop.proxy.connection.cache.packet.world.BlockUpdate;
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkBulk;
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
 import com.github.derrop.proxy.connection.cache.packet.world.MultiBlockUpdate;
-import com.github.derrop.proxy.util.BlockPos;
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.util.chunk.Chunk;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import net.md_5.bungee.connection.UserConnection;

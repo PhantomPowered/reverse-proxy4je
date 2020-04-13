@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.api.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;

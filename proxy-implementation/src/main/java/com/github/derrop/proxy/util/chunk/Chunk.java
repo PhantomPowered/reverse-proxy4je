@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.util.chunk;
 
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
-import com.github.derrop.proxy.util.BlockPos;
+import com.github.derrop.proxy.api.util.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;

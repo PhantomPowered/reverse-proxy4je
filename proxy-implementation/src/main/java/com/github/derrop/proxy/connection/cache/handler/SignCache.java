@@ -5,7 +5,7 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.packet.world.UpdateSign;
-import com.github.derrop.proxy.util.BlockPos;
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.util.chunk.DefaultBlockStates;
 import com.github.derrop.proxy.api.connection.PacketSender;
 

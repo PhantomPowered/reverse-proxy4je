@@ -1,7 +1,6 @@
 package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
-import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.mojang.authlib.UserAuthentication;
@@ -22,7 +21,7 @@ import com.github.derrop.proxy.connection.velocity.*;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.minecraft.SessionUtils;
-import com.github.derrop.proxy.util.BlockPos;
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.util.NettyUtils;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import io.netty.bootstrap.Bootstrap;

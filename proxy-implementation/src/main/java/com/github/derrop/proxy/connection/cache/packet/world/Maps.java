@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection.cache.packet.world;
 
-import com.github.derrop.proxy.util.Vec4b;
+import com.github.derrop.proxy.api.util.Vec4b;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;

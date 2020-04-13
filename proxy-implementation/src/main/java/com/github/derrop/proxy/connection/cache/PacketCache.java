@@ -1,11 +1,11 @@
 package com.github.derrop.proxy.connection.cache;
 
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.connection.cache.packet.entity.player.GameStateChange;
 import com.github.derrop.proxy.connection.cache.packet.world.UpdateSign;
-import com.github.derrop.proxy.util.BlockPos;
 import com.github.derrop.proxy.util.chunk.DefaultBlockStates;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.connection.UserConnection;

@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.util.nbt;
 
-import com.github.derrop.proxy.util.MathHelper;
+import com.github.derrop.proxy.api.util.MathHelper;
 
 import java.io.DataInput;
 import java.io.DataOutput;

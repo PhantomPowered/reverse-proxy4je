@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.api.util;
 
 public class Vec3i implements Comparable<Vec3i> {
 

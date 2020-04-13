@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.api.util;
 
 import java.util.Random;
 import java.util.UUID;
