@@ -11,4 +11,6 @@ public interface BlockStateRegistry {
     @Nullable
     Material getMaterial(int blockStateId);
 
+    boolean isMaterial(int blockStateId, Material material);
+
 }
