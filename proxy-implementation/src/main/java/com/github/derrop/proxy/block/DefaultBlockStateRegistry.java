@@ -1,10 +1,14 @@
 package com.github.derrop.proxy.block;
 
+import com.github.derrop.proxy.api.block.BlockStateRegistry;
+import com.github.derrop.proxy.api.block.Material;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultBlockStateRegistry {
+public class DefaultBlockStateRegistry implements BlockStateRegistry {
 
     public static final Map<Integer, Material> BLOCK_STATE_IDS;
 
@@ -1410,4 +1414,17 @@ public class DefaultBlockStateRegistry {
     }
 
 
+    @NotNull
+    @Override
+    public int[] getValidBlockStateIDs(@NotNull Material material) {
+        return BLOCK_STATE_IDS.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(material))
+                .mapToInt(Map.Entry::getKey)
+                .toArray();
+    }
+
+    @Override
+    public Material getMaterial(int blockStateId) {
+        return BLOCK_STATE_IDS.get(blockStateId);
+    }
 }

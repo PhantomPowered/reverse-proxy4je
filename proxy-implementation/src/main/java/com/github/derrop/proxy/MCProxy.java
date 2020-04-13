@@ -2,6 +2,7 @@ package com.github.derrop.proxy;
 
 import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ProxiedPlayer;
@@ -15,6 +16,7 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
@@ -75,6 +77,7 @@ public class MCProxy extends Proxy {
     protected MCProxy(@NotNull ILogger logger) throws IOException {
         instance = this;
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
+        this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), true);
 
         this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));

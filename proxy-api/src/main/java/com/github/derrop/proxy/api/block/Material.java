@@ -1,9 +1,8 @@
-package com.github.derrop.proxy.block;
+package com.github.derrop.proxy.api.block;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Map;
 
