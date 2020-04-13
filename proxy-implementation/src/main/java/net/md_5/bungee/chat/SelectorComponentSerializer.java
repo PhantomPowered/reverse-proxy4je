@@ -1,7 +1,7 @@
 package net.md_5.bungee.chat;
 
 import com.google.gson.*;
-import de.derrop.minecraft.proxy.api.chat.component.SelectorComponent;
+import com.github.derrop.proxy.api.chat.component.SelectorComponent;
 
 import java.lang.reflect.Type;
 

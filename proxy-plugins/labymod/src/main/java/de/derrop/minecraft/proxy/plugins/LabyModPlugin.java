@@ -1,12 +1,13 @@
 package de.derrop.minecraft.proxy.plugins;
 
-import de.derrop.minecraft.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.plugin.Plugin;
 
 public class LabyModPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        super.getProxy().getEventManager().registerListener(new LabyModListener());
+        super.getServiceRegistry().getProviderUnchecked(Proxy.class).getEventManager().registerListener(new LabyModListener());
     }
 
     @Override

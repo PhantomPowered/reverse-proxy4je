@@ -1,6 +1,6 @@
 package net.md_5.bungee.protocol.packet;
 
-import de.derrop.minecraft.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.util.scoreboard.criteria.IScoreObjectiveCriteria;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;

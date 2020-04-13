@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.component.ScoreComponent;
-import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
-import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.chat.component.ScoreComponent;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 
 import java.util.List;
 import java.util.regex.Pattern;

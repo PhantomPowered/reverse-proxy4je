@@ -1,7 +1,7 @@
 package net.md_5.bungee.netty;
 
 import com.google.common.base.Preconditions;
-import de.derrop.minecraft.proxy.MCProxy;
+import com.github.derrop.proxy.MCProxy;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.epoll.*;

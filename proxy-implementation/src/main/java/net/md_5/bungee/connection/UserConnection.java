@@ -1,31 +1,30 @@
 package net.md_5.bungee.connection;
 
+import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.util.ChatMessageType;
+import com.github.derrop.proxy.api.util.ProvidedTitle;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.google.common.base.Preconditions;
-import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
-import de.derrop.minecraft.proxy.Constants;
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.api.Proxy;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
-import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
-import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
-import de.derrop.minecraft.proxy.api.scoreboard.Scoreboard;
-import de.derrop.minecraft.proxy.api.util.ChatMessageType;
-import de.derrop.minecraft.proxy.api.util.Title;
-import de.derrop.minecraft.proxy.connection.PlayerUniqueTabList;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.md_5.bungee.ChatComponentTransformer;
-import net.md_5.bungee.api.BungeeTitle;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 import net.md_5.bungee.tab.TabList;
+import org.jetbrains.annotations.NotNull;
 
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.UUID;
 
@@ -33,40 +32,41 @@ public final class UserConnection implements ProxiedPlayer {
 
     private final MCProxy proxy;
 
-    /*========================================================================*/
-    @NonNull
     private final ChannelWrapper ch;
+
     @Getter
-    @NonNull
     private final String name;
+
     @Getter
     private final InitialHandler pendingConnection;
-    /*========================================================================*/
-    @Getter
+
     @Setter
     private BasicServiceConnection connectedClient;
+
     @Getter
     @Setter
     private int dimension;
+
     @Getter
     @Setter
     private boolean dimensionChange = true;
-    /*========================================================================*/
+
     @Getter
     private TabList tabListHandler;
-    /*========================================================================*/
-    /*@Getter
-    private final Collection<UUID> sentBossBars = new HashSet<>();*/
+
     private boolean autoReconnect = true;
-    /*========================================================================*/
+
     @Getter
     private String displayName;
+
     @Getter
     private EntityMap entityRewrite;
+
     private int compressionThreshold = -1;
+
     private boolean connected = false;
 
-    public UserConnection(MCProxy proxy, @NonNull ChannelWrapper ch, @NonNull String name, InitialHandler pendingConnection) {
+    public UserConnection(MCProxy proxy, @NotNull ChannelWrapper ch, @NotNull String name, InitialHandler pendingConnection) {
         this.proxy = proxy;
         this.ch = ch;
         this.name = name;
@@ -79,10 +79,8 @@ public final class UserConnection implements ProxiedPlayer {
 
     public void init() {
         this.entityRewrite = EntityMap.getEntityMap(getPendingConnection().getVersion());
-
         this.displayName = name;
-
-        tabListHandler = new PlayerUniqueTabList(this.ch);
+        this.tabListHandler = new PlayerUniqueTabList(this.ch);
 
         MCProxy.getInstance().getUUIDStorage().createMapping(this.getUniqueId(), this.getName());
     }
@@ -136,7 +134,13 @@ public final class UserConnection implements ProxiedPlayer {
             this.sendActionBar(200, TextComponent.fromLegacyText(TextComponent.toPlainText(reason).replace('\n', ' ')));
         }
 
-        this.sendTitle(new BungeeTitle().title(TextComponent.fromLegacyText("§cDisconnected")).fadeIn(20).stay(100).fadeOut(20));
+        ProvidedTitle title = MCProxy.getInstance()
+                .createTitle()
+                .title("§cDisconnected")
+                .fadeIn(20)
+                .stay(100)
+                .fadeOut(20);
+        this.sendTitle(title);
 
         this.useClient(nextClient);
 
@@ -302,11 +306,6 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     @Override
-    public InetSocketAddress getAddress() {
-        return (InetSocketAddress) getSocketAddress();
-    }
-
-    @Override
     public SocketAddress getSocketAddress() {
         return ch.getRemoteAddress();
     }
@@ -372,17 +371,13 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     @Override
-    public void sendTitle(Title title) {
-        title.send(this);
+    public void sendTitle(ProvidedTitle providedTitle) {
+        providedTitle.send(this);
     }
 
     @Override
     public Scoreboard getScoreboard() {
         throw new UnsupportedOperationException("Not supported yet"); // TODO
-    }
-
-    public String getExtraDataInHandshake() {
-        return this.getPendingConnection().getExtraDataInHandshake();
     }
 
     public void setCompressionThreshold(int compressionThreshold) {
@@ -399,7 +394,7 @@ public final class UserConnection implements ProxiedPlayer {
     }
 
     @Override
-    public void sendPacket(Object packet) {
+    public void sendPacket(@NotNull Packet packet) {
         this.getCh().write(packet);
     }
 }

@@ -1,16 +1,16 @@
 package net.md_5.bungee.connection;
 
-import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
-import de.derrop.minecraft.proxy.api.connection.Connection;
-import de.derrop.minecraft.proxy.api.connection.ProtocolDirection;
-import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
-import de.derrop.minecraft.proxy.api.events.connection.ChatEvent;
-import de.derrop.minecraft.proxy.api.events.connection.PluginMessageEvent;
-import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
-import de.derrop.minecraft.proxy.connection.cache.packet.system.JoinGame;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.Connection;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.events.connection.ChatEvent;
+import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
+import com.github.derrop.proxy.connection.cache.packet.system.JoinGame;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;

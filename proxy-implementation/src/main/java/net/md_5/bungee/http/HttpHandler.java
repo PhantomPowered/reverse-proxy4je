@@ -4,7 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import lombok.RequiredArgsConstructor;
-import de.derrop.minecraft.proxy.api.util.Callback;
+import com.github.derrop.proxy.api.util.Callback;
 
 import java.nio.charset.StandardCharsets;
 

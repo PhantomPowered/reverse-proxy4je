@@ -1,6 +1,7 @@
 package net.md_5.bungee.protocol;
 
-import de.derrop.minecraft.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public abstract class DefinedPacket {
+public abstract class DefinedPacket implements Packet {
 
     public static void writeString(String s, ByteBuf buf) {
         ByteBufUtils.writeString(s, buf);
@@ -103,13 +104,4 @@ public abstract class DefinedPacket {
     }
 
     public abstract void handle(AbstractPacketHandler handler) throws Exception;
-
-    @Override
-    public abstract boolean equals(Object obj);
-
-    @Override
-    public abstract int hashCode();
-
-    @Override
-    public abstract String toString();
 }

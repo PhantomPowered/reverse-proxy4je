@@ -1,11 +1,11 @@
 package net.md_5.bungee.connection;
 
-import de.derrop.minecraft.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.util.NetworkAddress;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BufUtil;
 import net.md_5.bungee.ServerPing;
 import net.md_5.bungee.Util;
-import de.derrop.minecraft.proxy.api.util.Callback;
+import com.github.derrop.proxy.api.util.Callback;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.netty.PipelineUtils;

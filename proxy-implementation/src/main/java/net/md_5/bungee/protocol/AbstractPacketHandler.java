@@ -1,6 +1,6 @@
 package net.md_5.bungee.protocol;
 
-import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
+import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
 import net.md_5.bungee.protocol.packet.*;
 
 public abstract class AbstractPacketHandler {

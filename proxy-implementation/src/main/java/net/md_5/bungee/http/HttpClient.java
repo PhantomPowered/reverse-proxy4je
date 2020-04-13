@@ -11,7 +11,7 @@ import io.netty.channel.EventLoop;
 import io.netty.handler.codec.http.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import de.derrop.minecraft.proxy.api.util.Callback;
+import com.github.derrop.proxy.api.util.Callback;
 import net.md_5.bungee.netty.PipelineUtils;
 
 import java.net.InetAddress;

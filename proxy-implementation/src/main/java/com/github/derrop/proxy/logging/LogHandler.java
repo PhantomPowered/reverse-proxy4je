@@ -1,0 +1,12 @@
+package com.github.derrop.proxy.logging;
+/*
+ * Created by Mc_Ruben on 08.02.2019
+ */
+
+public interface LogHandler {
+
+    void handleLine(String line, String formattedLine);
+
+    void close();
+
+}

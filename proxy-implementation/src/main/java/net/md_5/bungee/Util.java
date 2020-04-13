@@ -1,10 +1,10 @@
 package net.md_5.bungee;
 
+import com.github.derrop.proxy.api.chat.component.*;
 import com.google.common.base.Joiner;
 import com.google.common.primitives.UnsignedLongs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.derrop.minecraft.proxy.api.chat.component.*;
 import io.netty.channel.unix.DomainSocketAddress;
 import net.md_5.bungee.chat.*;
 

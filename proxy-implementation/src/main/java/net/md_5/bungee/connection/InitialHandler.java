@@ -1,15 +1,16 @@
 package net.md_5.bungee.connection;
 
+import com.github.derrop.proxy.api.connection.packet.Packet;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
-import de.derrop.minecraft.proxy.Constants;
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
-import de.derrop.minecraft.proxy.api.connection.PendingConnection;
-import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
-import de.derrop.minecraft.proxy.api.util.Callback;
-import de.derrop.minecraft.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.PendingConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.util.Callback;
+import com.github.derrop.proxy.api.util.ChatColor;
 import lombok.Getter;
 import net.md_5.bungee.*;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -25,6 +26,7 @@ import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -75,7 +77,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void sendPacket(Object packet) {
+    public void sendPacket(@NotNull Packet packet) {
         this.ch.write(packet);
     }
 
@@ -159,7 +161,8 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
         return new ServerPing(
                 new ServerPing.Protocol("§cProxy by §bderrop", -1),
                 new ServerPing.Players(0, 0, null),
-                motd, (Favicon) null
+                new TextComponent(TextComponent.fromLegacyText(motd)),
+                null
         );
     }
 
@@ -270,8 +273,8 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
         }
         String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16), "UTF-8");
 
-        String preventProxy = (getSocketAddress() instanceof InetSocketAddress) ? "&ip=" + URLEncoder.encode(getAddress().getAddress().getHostAddress(), "UTF-8") : "";
-        String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash + preventProxy;
+        //String preventProxy = (getSocketAddress() instanceof InetSocketAddress) ? "&ip=" + URLEncoder.encode(getAddress().getAddress().getHostAddress(), "UTF-8") : "";
+        String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash;// + preventProxy;
 
         Callback<String> handler = (result, error) -> {
             if (error == null) {
@@ -311,17 +314,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
 
                 this.ch.write(new LoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
                 ch.setProtocol(Protocol.GAME);
-
                 ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(userCon));
 
                 ServiceConnection client = MCProxy.getInstance().findBestConnection(userCon);
-                if (client == null) {
-                    disconnect("No client available");
-                    return;
-                }
-
                 userCon.useClient(client);
-
                 thisState = State.FINISHED;
             }
         });
@@ -363,11 +359,6 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     @Override
     public int getVersion() {
         return (handshake == null) ? -1 : handshake.getProtocolVersion();
-    }
-
-    @Override
-    public InetSocketAddress getAddress() {
-        return (InetSocketAddress) getSocketAddress();
     }
 
     @Override

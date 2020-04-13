@@ -46,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>de.derrop.minecraft.proxy.MCProxy</Main-Class>
+                            <Main-Class>com.github.derrop.proxy.MCProxy</Main-Class>
                             <Version>1.0</Version>
                             <Implementation-Version>1.0</Implementation-Version>
                         </manifestEntries>

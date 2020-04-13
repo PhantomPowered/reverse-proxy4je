@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import de.derrop.minecraft.proxy.api.util.ChatColor;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.ClickEvent;
-import de.derrop.minecraft.proxy.api.chat.HoverEvent;
+import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.chat.ClickEvent;
+import com.github.derrop.proxy.api.chat.HoverEvent;
 
 import java.util.Arrays;
 import java.util.Collections;

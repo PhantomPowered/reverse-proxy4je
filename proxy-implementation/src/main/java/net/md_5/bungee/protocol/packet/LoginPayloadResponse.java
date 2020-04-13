@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
-import de.derrop.minecraft.proxy.api.util.OverflowPacketException;
+import com.github.derrop.proxy.api.util.OverflowPacketException;
 
 @Data
 @NoArgsConstructor

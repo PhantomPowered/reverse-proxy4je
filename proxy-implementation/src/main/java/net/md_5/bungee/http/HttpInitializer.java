@@ -7,7 +7,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.RequiredArgsConstructor;
-import de.derrop.minecraft.proxy.api.util.Callback;
+import com.github.derrop.proxy.api.util.Callback;
 
 import javax.net.ssl.SSLEngine;
 import java.util.concurrent.TimeUnit;

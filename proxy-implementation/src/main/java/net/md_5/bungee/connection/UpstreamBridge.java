@@ -1,10 +1,10 @@
 package net.md_5.bungee.connection;
 
 import com.google.common.base.Preconditions;
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.api.connection.ProtocolDirection;
-import de.derrop.minecraft.proxy.api.events.connection.ChatEvent;
-import de.derrop.minecraft.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.events.connection.ChatEvent;
+import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
