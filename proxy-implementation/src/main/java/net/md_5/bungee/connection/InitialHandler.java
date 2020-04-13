@@ -313,6 +313,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                 userCon.setCompressionThreshold(256);
                 userCon.init();
 
+                this.ch.write(new LoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
+                ch.setProtocol(Protocol.GAME);
+                ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(userCon));
+
                 ServiceConnection client = MCProxy.getInstance().findBestConnection(userCon);
 
                 PlayerLoginEvent event = this.proxy.getEventManager().callEvent(new PlayerLoginEvent(userCon, client));
@@ -331,10 +335,6 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                 }
 
                 userCon.useClient(client);
-
-                this.ch.write(new LoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
-                ch.setProtocol(Protocol.GAME);
-                ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(userCon));
 
                 thisState = State.FINISHED;
             }
