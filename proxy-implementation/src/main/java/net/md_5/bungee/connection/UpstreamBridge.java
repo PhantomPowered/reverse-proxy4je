@@ -9,6 +9,7 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -36,6 +37,9 @@ public class UpstreamBridge extends PacketHandler {
     @Override
     public void disconnected(ChannelWrapper channel) throws Exception {
         // We lost connection to the client
+
+        this.con.getProxy().getEventManager().callEvent(new PlayerLogoutEvent(this.con));
+
         con.getTabListHandler().onDisconnect();
     }
 
