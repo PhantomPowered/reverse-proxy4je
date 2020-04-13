@@ -4,7 +4,6 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.api.command.Command;
 import de.derrop.minecraft.proxy.api.command.CommandSender;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
-import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.api.util.ChatColor;
 
 public class CommandAlert extends Command {

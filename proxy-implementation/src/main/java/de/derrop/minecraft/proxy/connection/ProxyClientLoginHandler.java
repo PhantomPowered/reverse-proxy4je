@@ -2,8 +2,6 @@ package de.derrop.minecraft.proxy.connection;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
-import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
 import de.derrop.minecraft.proxy.minecraft.CryptManager;
 import net.md_5.bungee.EncryptionUtil;
 import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;

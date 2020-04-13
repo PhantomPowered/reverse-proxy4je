@@ -4,8 +4,6 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.api.command.Command;
 import de.derrop.minecraft.proxy.api.command.CommandSender;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
-import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
-import net.md_5.bungee.protocol.packet.Chat;
 
 import java.util.Arrays;
 import java.util.Collection;

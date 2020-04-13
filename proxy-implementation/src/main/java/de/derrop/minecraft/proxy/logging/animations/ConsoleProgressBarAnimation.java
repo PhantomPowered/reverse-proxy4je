@@ -4,7 +4,6 @@ package de.derrop.minecraft.proxy.logging.animations;
  */
 
 import de.derrop.minecraft.proxy.logging.AbstractConsoleAnimation;
-import de.derrop.minecraft.proxy.logging.ILogger;
 import lombok.Getter;
 import lombok.Setter;
 

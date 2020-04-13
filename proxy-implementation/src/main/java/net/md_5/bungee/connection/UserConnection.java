@@ -7,7 +7,6 @@ import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.api.Proxy;
 import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
-import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.PlayerUniqueTabList;
 import lombok.Getter;
 import lombok.NonNull;

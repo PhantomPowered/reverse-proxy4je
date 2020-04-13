@@ -7,7 +7,6 @@ import de.derrop.minecraft.proxy.api.command.Command;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
 import de.derrop.minecraft.proxy.command.DefaultCommandMap;
 import de.derrop.minecraft.proxy.api.command.CommandSender;
-import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.api.util.MCCredentials;
 import de.derrop.minecraft.proxy.api.util.NetworkAddress;
 import de.derrop.minecraft.proxy.api.util.ChatMessageType;

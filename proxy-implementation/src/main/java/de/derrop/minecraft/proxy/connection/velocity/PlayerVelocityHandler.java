@@ -3,7 +3,6 @@ package de.derrop.minecraft.proxy.connection.velocity;
 import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
 import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
-import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
 import de.derrop.minecraft.proxy.connection.ConnectedProxyClient;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.DestroyEntities;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.spawn.PositionedPacket;

@@ -1,6 +1,5 @@
 package de.derrop.minecraft.proxy.util.chunk;
 
-import com.google.common.collect.Lists;
 import de.derrop.minecraft.proxy.connection.cache.packet.world.ChunkData;
 import de.derrop.minecraft.proxy.util.BlockPos;
 import de.derrop.minecraft.proxy.util.chunk.DefaultBlockStates;
