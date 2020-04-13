@@ -5,18 +5,18 @@ import de.derklaro.minecraft.proxy.connections.basic.BasicServiceConnection;
 import de.derrop.minecraft.proxy.Constants;
 import de.derrop.minecraft.proxy.MCProxy;
 import de.derrop.minecraft.proxy.api.Proxy;
+import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
+import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
 import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
 import de.derrop.minecraft.proxy.api.connection.ServiceConnection;
+import de.derrop.minecraft.proxy.api.util.ChatMessageType;
+import de.derrop.minecraft.proxy.api.util.Title;
 import de.derrop.minecraft.proxy.connection.PlayerUniqueTabList;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.md_5.bungee.ChatComponentTransformer;
 import net.md_5.bungee.api.BungeeTitle;
-import de.derrop.minecraft.proxy.api.util.ChatMessageType;
-import de.derrop.minecraft.proxy.api.util.Title;
-import de.derrop.minecraft.proxy.api.chat.component.BaseComponent;
-import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
@@ -26,8 +26,6 @@ import net.md_5.bungee.tab.TabList;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.UUID;
 
 public final class UserConnection implements ProxiedPlayer {
@@ -56,8 +54,8 @@ public final class UserConnection implements ProxiedPlayer {
     @Getter
     private TabList tabListHandler;
     /*========================================================================*/
-    @Getter
-    private final Collection<UUID> sentBossBars = new HashSet<>();
+    /*@Getter
+    private final Collection<UUID> sentBossBars = new HashSet<>();*/
     private boolean autoReconnect = true;
     /*========================================================================*/
     @Getter
@@ -167,11 +165,11 @@ public final class UserConnection implements ProxiedPlayer {
             this.connectedClient.getClient().free();
         }
 
-        for (UUID bossbarId : this.sentBossBars) {
+        /*for (UUID bossbarId : this.sentBossBars) {
             // Send remove bossbar packet
             this.sendPacket(new net.md_5.bungee.protocol.packet.BossBar(bossbarId, 1));
         }
-        this.sentBossBars.clear();
+        this.sentBossBars.clear();*/
 
         this.tabListHandler.onServerChange();
 

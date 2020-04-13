@@ -5,7 +5,9 @@ import com.google.common.collect.Iterables;
 import de.derrop.minecraft.proxy.connection.PacketConstants;
 import de.derrop.minecraft.proxy.connection.cache.packet.ResourcePackSend;
 import de.derrop.minecraft.proxy.connection.cache.packet.ResourcePackStatusResponse;
-import de.derrop.minecraft.proxy.connection.cache.packet.entity.*;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.DestroyEntities;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityMetadata;
+import de.derrop.minecraft.proxy.connection.cache.packet.entity.EntityTeleport;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.EntityEffect;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.effect.RemoveEntityEffect;
 import de.derrop.minecraft.proxy.connection.cache.packet.entity.player.Camera;
@@ -76,11 +78,11 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_14, 0x3A),
                     map(ProtocolConstants.MINECRAFT_1_15, 0x3B)
             );
-            TO_CLIENT.registerPacket(
+            /*TO_CLIENT.registerPacket(
                     BossBar.class,
                     map(ProtocolConstants.MINECRAFT_1_9, 0x0C),
                     map(ProtocolConstants.MINECRAFT_1_15, 0x0D)
-            );
+            );*/
             TO_CLIENT.registerPacket(
                     PlayerListItem.class, // PlayerInfo
                     map(ProtocolConstants.MINECRAFT_1_8, 0x38),

@@ -7,8 +7,8 @@ import de.derrop.minecraft.proxy.api.chat.component.TextComponent;
 import de.derrop.minecraft.proxy.api.connection.Connection;
 import de.derrop.minecraft.proxy.api.connection.ProtocolDirection;
 import de.derrop.minecraft.proxy.api.connection.ProxiedPlayer;
-import de.derrop.minecraft.proxy.api.events.connection.PluginMessageEvent;
 import de.derrop.minecraft.proxy.api.events.connection.ChatEvent;
+import de.derrop.minecraft.proxy.api.events.connection.PluginMessageEvent;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.Disconnect;
 import de.derrop.minecraft.proxy.connection.cache.packet.system.JoinGame;
 import net.md_5.bungee.Util;
@@ -186,24 +186,6 @@ public class DownstreamBridge extends PacketHandler {
         }
 
         throw CancelSendSignal.INSTANCE;*/
-    }
-
-    @Override
-    public void handle(BossBar bossBar) {
-        // TODO Implement this using a MappedPacketCache in the PacketCache class
-        /*if (this.con() == null) {
-            return;
-        }
-        switch (bossBar.getAction()) {
-            // Handle add bossbar
-            case 0:
-                ((UserConnection) this.con()).getSentBossBars().add(bossBar.getUuid());
-                break;
-            // Handle remove bossbar
-            case 1:
-                this.con().getSentBossBars().remove(bossBar.getUuid());
-                break;
-        }*/
     }
 
     @Override
