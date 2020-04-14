@@ -3,7 +3,7 @@ package com.github.derrop.proxy.plugins.test;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.connection.cache.packet.world.BlockUpdate;
 
@@ -25,7 +25,7 @@ public class AStarPathFinder {
     }
 
     // This can take pretty long with paths that aren't straight forward
-    public boolean findPath(ProxiedPlayer player, boolean visualize, long visualizeMillis, BlockAccess access, BlockPos start, BlockPos end) {
+    public boolean findPath(Player player, boolean visualize, long visualizeMillis, BlockAccess access, BlockPos start, BlockPos end) {
 
         PathPoint startPoint = new PathPoint(0, 0, 0);
         PathPoint endPoint = new PathPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
@@ -42,7 +42,7 @@ public class AStarPathFinder {
 
 
         Collection<PathPoint> visitedPoints = new ArrayList<>();
-        Queue<PathPoint> frontier = new ConcurrentLinkedQueue<>(Arrays.asList(startPoint.getNeighbors()));
+        Queue<PathPoint> frontier = new ConcurrentLinkedQueue<>(Arrays.asList(this.loadNeighbors(startPoint)));
 
         BlockPos lastPos = null;
 
@@ -124,8 +124,7 @@ public class AStarPathFinder {
                 return true;
             }
 
-            this.loadNeighbors(point);
-            frontier.addAll(Arrays.asList(point.getNeighbors()));
+            frontier.addAll(Arrays.asList(this.loadNeighbors(point)));
         }
 
         if (lastPos != null && visualize) {
@@ -135,23 +134,27 @@ public class AStarPathFinder {
         return false;
     }
 
-    private void loadNeighbors(PathPoint point) {
+    private PathPoint[] loadNeighbors(PathPoint point) {
         // TODO the priority of the straight paths should be higher than the priority of the diagonal paths
-        point.getNeighbors()[0] = new PathPoint(point.getX() + 1, point.getY() + 0, point.getZ() + 0, point);
-        point.getNeighbors()[1] = new PathPoint(point.getX() + 0, point.getY() + 1, point.getZ() + 0, point);
-        point.getNeighbors()[2] = new PathPoint(point.getX() + 0, point.getY() + 0, point.getZ() + 1, point);
-        point.getNeighbors()[3] = new PathPoint(point.getX() + -1, point.getY() + 0, point.getZ() + 0, point);
-        point.getNeighbors()[4] = new PathPoint(point.getX() + 0, point.getY() + -1, point.getZ() + 0, point);
-        point.getNeighbors()[5] = new PathPoint(point.getX() + 0, point.getY() + 0, point.getZ() + -1, point);
+        PathPoint[] neighbors = new PathPoint[14];
 
-        point.getNeighbors()[6] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + 1, point);
-        point.getNeighbors()[7] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + -1, point);
-        point.getNeighbors()[8] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + -1, point);
-        point.getNeighbors()[9] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + 1, point);
-        point.getNeighbors()[10] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + 1, point);
-        point.getNeighbors()[11] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + -1, point);
-        point.getNeighbors()[12] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + -1, point);
-        point.getNeighbors()[13] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + 1, point);
+        neighbors[0] = new PathPoint(point.getX() + 1, point.getY() + 0, point.getZ() + 0, point);
+        neighbors[1] = new PathPoint(point.getX() + 0, point.getY() + 1, point.getZ() + 0, point);
+        neighbors[2] = new PathPoint(point.getX() + 0, point.getY() + 0, point.getZ() + 1, point);
+        neighbors[3] = new PathPoint(point.getX() + -1, point.getY() + 0, point.getZ() + 0, point);
+        neighbors[4] = new PathPoint(point.getX() + 0, point.getY() + -1, point.getZ() + 0, point);
+        neighbors[5] = new PathPoint(point.getX() + 0, point.getY() + 0, point.getZ() + -1, point);
+
+        neighbors[6] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + 1, point);
+        neighbors[7] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + -1, point);
+        neighbors[8] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + -1, point);
+        neighbors[9] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + 1, point);
+        neighbors[10] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + 1, point);
+        neighbors[11] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + -1, point);
+        neighbors[12] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + -1, point);
+        neighbors[13] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + 1, point);
+
+        return neighbors;
     }
 
 }

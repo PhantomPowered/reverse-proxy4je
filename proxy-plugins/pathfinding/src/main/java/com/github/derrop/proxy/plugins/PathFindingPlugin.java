@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins;
 
-import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.handler.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.plugin.Plugin;
@@ -11,7 +11,7 @@ public class PathFindingPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        super.getServiceRegistry().getProviderUnchecked(Proxy.class).getEventManager().registerListener(this);
+        super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(this);
     }
 
     @Listener

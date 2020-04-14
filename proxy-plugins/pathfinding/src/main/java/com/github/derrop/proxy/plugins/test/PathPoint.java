@@ -6,7 +6,6 @@ public class PathPoint {
 
     private double x, y, z;
     private PathPoint previousPoint;
-    private PathPoint[] neighbors = new PathPoint[14];
 
     public PathPoint(double x, double y, double z) {
         this(x, y, z, null);
@@ -45,10 +44,6 @@ public class PathPoint {
 
     public void setPreviousPoint(PathPoint previousPoint) {
         this.previousPoint = previousPoint;
-    }
-
-    public PathPoint[] getNeighbors() {
-        return neighbors;
     }
 
     public PathPoint getPreviousPoint() {
