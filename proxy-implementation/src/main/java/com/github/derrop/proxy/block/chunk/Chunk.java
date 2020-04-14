@@ -14,7 +14,7 @@ public class Chunk {
     private PacketPlayServerChunkData lastChunkData;
 
     public void fillChunk(PacketPlayServerChunkData chunkData) {
-        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isB());
+        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isHasSky());
         this.lastChunkData = chunkData;
     }
 
@@ -39,14 +39,14 @@ public class Chunk {
         }
     }
 
-    public void fillChunkData(PacketPlayServerChunkData chunkData) {
+    public PacketPlayServerChunkData.Extracted getBytes() {
         if (this.lastChunkData == null) {
-            return;
+            return null;
         }
 
         int maxLength = 65535;
         boolean fullChunk = true;
-        boolean hasSky = this.lastChunkData.isB();
+        boolean hasSky = this.lastChunkData.isHasSky();
 
         ExtendedBlockStorage[] storages = this.storageArrays;
         PacketPlayServerChunkData.Extracted extracted = new PacketPlayServerChunkData.Extracted();
@@ -87,10 +87,7 @@ public class Chunk {
             copyArray(p_179756_0_.getBiomeArray(), extracted.data, j);
         }*/
 
-        chunkData.setB(this.lastChunkData.isB());
-        chunkData.setExtracted(extracted);
-        chunkData.setX(this.lastChunkData.getX());
-        chunkData.setZ(this.lastChunkData.getZ());
+        return extracted;
     }
 
     private static int copyArray(byte[] sourceArray, byte[] targetArray, int copyAmount) {

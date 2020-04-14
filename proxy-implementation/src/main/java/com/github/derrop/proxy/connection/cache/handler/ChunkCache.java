@@ -15,7 +15,6 @@ import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerChunkD
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMultiBlockUpdate;
 import net.md_5.bungee.protocol.DefinedPacket;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -154,16 +153,19 @@ public class ChunkCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender sender) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk. Now fixed?
-        for (Chunk chunk : new ArrayList<>(this.chunks)) {
-            PacketPlayServerChunkData chunkData = new PacketPlayServerChunkData();
-            chunk.fillChunkData(chunkData);
-            con.sendPacket(chunkData);
+
+        if (sender instanceof Player) {
+            this.connectedPlayer = (Player) sender;
         }
 
-        if (con instanceof Player) {
-            this.connectedPlayer = (Player) con;
+        for (Chunk chunk : this.chunks) {
+            if (chunk.getLastChunkData() == null) {
+                continue;
+            }
+            PacketPlayServerChunkData data = new PacketPlayServerChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isHasSky(), chunk.getBytes());
+            sender.sendPacket(data);
         }
     }
 
