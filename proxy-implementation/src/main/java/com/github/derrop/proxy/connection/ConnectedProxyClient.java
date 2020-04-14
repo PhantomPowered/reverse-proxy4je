@@ -20,6 +20,7 @@ import com.github.derrop.proxy.connection.cache.packet.entity.spawn.PositionedPa
 import com.github.derrop.proxy.connection.cache.packet.entity.spawn.SpawnPosition;
 import com.github.derrop.proxy.connection.velocity.*;
 import com.github.derrop.proxy.exception.KickedException;
+import com.github.derrop.proxy.protocol.Handshake;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
@@ -40,8 +41,7 @@ import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
-import net.md_5.bungee.protocol.packet.Handshake;
-import net.md_5.bungee.protocol.packet.LoginRequest;
+import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -175,7 +175,7 @@ public class ConnectedProxyClient {
 
                 this.channelWrapper.write(new Handshake(47, address.getHost(), address.getPort(), 2));
                 this.channelWrapper.setProtocol(Protocol.LOGIN);
-                this.channelWrapper.write(new LoginRequest(this.getAccountName()));
+                this.channelWrapper.write(new PacketLoginLoginRequest(this.getAccountName()));
                 future.complete(true);
             } else {
                 future1.channel().close();

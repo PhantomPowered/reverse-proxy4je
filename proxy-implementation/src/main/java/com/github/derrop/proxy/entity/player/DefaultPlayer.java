@@ -16,14 +16,18 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.protocol.client.PacketS08PlayerPosLook;
-import com.github.derrop.proxy.protocol.server.PacketPlayOutEntityTeleport;
+import com.github.derrop.proxy.protocol.play.client.PacketS08PlayerPosLook;
+import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
-import net.md_5.bungee.protocol.packet.*;
 import net.md_5.bungee.tab.TabList;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +46,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
         if (!channelWrapper.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
             this.compression = compressionThreshold;
-            this.sendPacket(new SetCompression(compressionThreshold));
+            this.sendPacket(new PacketLoginSetCompression(compressionThreshold));
             channelWrapper.setCompressionThreshold(compressionThreshold);
         }
 
@@ -116,8 +120,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     @Override
     public void sendActionBar(int units, BaseComponent... message) {
         if (this.connectedClient != null) {
-            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof Chat
-                            && ((Chat) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
+            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayChatMessage
+                            && ((PacketPlayChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
                     System.currentTimeMillis() + (units * 100)
             );
         }
@@ -137,7 +141,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public void sendData(String channel, byte[] data) {
-        this.sendPacket(new PluginMessage(channel, data, false));
+        this.sendPacket(new PacketPlayPluginMessage(channel, data, false));
     }
 
     @Override
@@ -204,14 +208,14 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public void chat(String message) {
-        this.connectedClient.sendPacket(new Chat(message));
+        this.connectedClient.sendPacket(new PacketPlayChatMessage(message));
     }
 
     // TODO: replace all tablist method
 
     @Override
     public void setTabHeader(BaseComponent header, BaseComponent footer) {
-        this.sendPacket(new PlayerListHeaderFooter(
+        this.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
                 ComponentSerializer.toString(header),
                 ComponentSerializer.toString(footer)
         ));
@@ -219,7 +223,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public void setTabHeader(BaseComponent[] header, BaseComponent[] footer) {
-        this.sendPacket(new PlayerListHeaderFooter(
+        this.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
                 ComponentSerializer.toString(header),
                 ComponentSerializer.toString(footer)
         ));
@@ -227,6 +231,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public void resetTabHeader() {
+        this.setTabHeader(new BaseComponent[0], new BaseComponent[0]);
     }
 
     @Override
@@ -386,7 +391,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {
-        this.sendPacket(new Chat(message, (byte) position.ordinal()));
+        this.sendPacket(new PacketPlayChatMessage(message, (byte) position.ordinal()));
     }
 
     public void disconnect0(BaseComponent... reason) {
@@ -403,7 +408,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
             reason = event.getReason();
         }
 
-        channelWrapper.close(new Kick(ComponentSerializer.toString(reason)));
+        channelWrapper.close(new PacketPlayKickPlayer(ComponentSerializer.toString(reason)));
         if (this.connectedClient != null) {
             this.connectedClient.getClient().free();
         }
@@ -415,7 +420,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     private void handleLocationUpdate() {
-        this.sendPacket(new PacketPlayOutEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
+        this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
         this.connectedClient.sendPacket(new PacketS08PlayerPosLook(this.location, Collections.emptySet()));
     }
 

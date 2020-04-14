@@ -9,10 +9,10 @@ import com.github.derrop.proxy.scoreboard.minecraft.*;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.packet.ScoreboardDisplay;
-import net.md_5.bungee.protocol.packet.ScoreboardObjective;
-import net.md_5.bungee.protocol.packet.ScoreboardScore;
-import net.md_5.bungee.protocol.packet.Team;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardDisplay;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardObjective;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardScore;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardTeam;
 
 import java.util.function.Consumer;
 
@@ -37,8 +37,8 @@ public class ScoreboardCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         DefinedPacket packet = newPacket.getDeserializedPacket();
 
-        if (packet instanceof ScoreboardObjective) {
-            ScoreboardObjective objective = (ScoreboardObjective) packet;
+        if (packet instanceof PacketPlayServerScoreboardObjective) {
+            PacketPlayServerScoreboardObjective objective = (PacketPlayServerScoreboardObjective) packet;
 
             if (objective.getAction() == 0) {
                 ScoreObjective scoreobjective = scoreboard.addScoreObjective(objective.getName(), IScoreObjectiveCriteria.DUMMY);
@@ -54,8 +54,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                     scoreobjective1.setRenderType(objective.getType());
                 }
             }
-        } else if (packet instanceof ScoreboardScore) {
-            ScoreboardScore scorePacket = (ScoreboardScore) packet;
+        } else if (packet instanceof PacketPlayServerScoreboardScore) {
+            PacketPlayServerScoreboardScore scorePacket = (PacketPlayServerScoreboardScore) packet;
 
             ScoreObjective scoreobjective = scoreboard.getObjective(scorePacket.getObjectiveName());
 
@@ -69,8 +69,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                     scoreboard.removeObjectiveFromEntity(scorePacket.getItemName(), scoreobjective);
                 }
             }
-        } else if (packet instanceof ScoreboardDisplay) {
-            ScoreboardDisplay display = (ScoreboardDisplay) packet;
+        } else if (packet instanceof PacketPlayServerScoreboardDisplay) {
+            PacketPlayServerScoreboardDisplay display = (PacketPlayServerScoreboardDisplay) packet;
 
             if (display.getName().isEmpty()) {
                 scoreboard.setObjectiveInDisplaySlot(display.getPosition(), null);
@@ -78,8 +78,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                 ScoreObjective scoreobjective = scoreboard.getObjective(display.getName());
                 scoreboard.setObjectiveInDisplaySlot(display.getPosition(), scoreobjective);
             }
-        } else if (packet instanceof Team) {
-            Team team = (Team) packet;
+        } else if (packet instanceof PacketPlayServerScoreboardTeam) {
+            PacketPlayServerScoreboardTeam team = (PacketPlayServerScoreboardTeam) packet;
 
             ScorePlayerTeam scoreplayerteam;
 
@@ -143,7 +143,7 @@ public class ScoreboardCache implements PacketCacheHandler {
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), objective.getName()));
+            con.sendPacket(new PacketPlayServerScoreboardDisplay((byte) objective.getDisplaySlot(), objective.getName()));
         }
     }
 
@@ -158,11 +158,11 @@ public class ScoreboardCache implements PacketCacheHandler {
         }
 
         for (ScorePlayerTeam team : this.scoreboard.getTeams()) {
-            this.sendTeamUpdate(con, new Team(team.getRegisteredName()));
+            this.sendTeamUpdate(con, new PacketPlayServerScoreboardTeam(team.getRegisteredName()));
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
-            con.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
+            con.sendPacket(new PacketPlayServerScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
         }
     }
 
@@ -177,7 +177,7 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     private void sendScoreUpdate(PacketSender sender, String score, String objective, int value) {
-        sender.sendPacket(new ScoreboardScore(score, (byte) 0, objective, value));
+        sender.sendPacket(new PacketPlayServerScoreboardScore(score, (byte) 0, objective, value));
     }
 
     public void sendScoreDestroy(String score, String objective) {
@@ -187,18 +187,18 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     private void sendScoreDestroy(PacketSender sender, String score, String objective) {
-        sender.sendPacket(new ScoreboardScore(score, objective));
+        sender.sendPacket(new PacketPlayServerScoreboardScore(score, objective));
     }
 
     public void sendCreatedObjective(ScoreObjective objective) {
         if (this.connectedPlayer != null) {
             this.sendCreatedObjective(this.connectedPlayer, objective);
-            this.connectedPlayer.sendPacket(new ScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
+            this.connectedPlayer.sendPacket(new PacketPlayServerScoreboardDisplay((byte) objective.getDisplaySlot(), ""));
         }
     }
 
     private void sendCreatedObjective(PacketSender sender, ScoreObjective objective) {
-        sender.sendPacket(new ScoreboardObjective(objective.getName(), objective.getDisplayName(), objective.getRenderType(), (byte) 0));
+        sender.sendPacket(new PacketPlayServerScoreboardObjective(objective.getName(), objective.getDisplayName(), objective.getRenderType(), (byte) 0));
     }
 
     public void sendDeletedObjective(String name) {
@@ -208,7 +208,7 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     private void sendDeletedObjective(PacketSender sender, String name) {
-        sender.sendPacket(new ScoreboardObjective(name));
+        sender.sendPacket(new PacketPlayServerScoreboardObjective(name));
     }
 
     public void sendTeamCreation(ScorePlayerTeam team) {
@@ -228,20 +228,20 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     private void sendTeamUpdate(byte mode, PacketSender sender, ScorePlayerTeam team) {
-        this.sendTeamUpdate(sender, new Team(
+        this.sendTeamUpdate(sender, new PacketPlayServerScoreboardTeam(
                 team.getRegisteredName(), mode, team.getTeamName(), team.getColorPrefix(), team.getColorSuffix(),
                 team.getNameTagVisibility().toString().toLowerCase(), null, team.getChatFormat(),
                 (byte) 0, team.getMembershipCollection().toArray(new String[0])
         ));
     }
 
-    public void sendTeamUpdate(Team team) {
+    public void sendTeamUpdate(PacketPlayServerScoreboardTeam team) {
         if (this.connectedPlayer != null) {
             this.sendTeamUpdate(this.connectedPlayer, team);
         }
     }
 
-    private void sendTeamUpdate(PacketSender sender, Team team) {
+    private void sendTeamUpdate(PacketSender sender, PacketPlayServerScoreboardTeam team) {
         sender.sendPacket(team);
     }
 

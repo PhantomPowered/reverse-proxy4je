@@ -12,12 +12,19 @@ import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
 import com.github.derrop.proxy.connection.cache.packet.system.JoinGame;
+import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
-import net.md_5.bungee.protocol.packet.*;
 
 public class DownstreamBridge extends PacketHandler {
 
@@ -87,20 +94,20 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(KeepAlive alive) throws Exception {
+    public void handle(PacketPlayKeepAlive alive) throws Exception {
         this.connection.sendPacket(alive);
         this.connection.getClient().setLastAlivePacket(System.currentTimeMillis());
         throw CancelSendSignal.INSTANCE;
     }
 
     @Override
-    public void handle(Login login) throws Exception {
+    public void handle(PacketPlayServerLogin login) throws Exception {
         this.connection.getClient().setEntityId(login.getEntityId());
         this.connection.getClient().connectionSuccess();
     }
 
     @Override
-    public void handle(PluginMessage pluginMessage) throws Exception {
+    public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(this.connection, ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
         if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
@@ -119,7 +126,7 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(Kick kick) throws Exception {
+    public void handle(PacketPlayKickPlayer kick) throws Exception {
         this.connection.getClient().setLastKickReason(ComponentSerializer.parse(kick.getMessage()));
         MCProxy.getInstance().unregisterConnection(this.connection);
         BasicServiceConnection proxyClient = MCProxy.getInstance().findBestConnection(null);
@@ -132,7 +139,7 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(Chat chat) throws Exception {
+    public void handle(PacketPlayChatMessage chat) throws Exception {
         ChatEvent event = new ChatEvent(this.connection, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
         if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
@@ -142,11 +149,11 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(SetCompression setCompression) throws Exception {
+    public void handle(PacketLoginSetCompression setCompression) throws Exception {
     }
 
     @Override
-    public void handle(TabCompleteResponse tabCompleteResponse) throws Exception {
+    public void handle(PacketPlayServerTabCompleteResponse tabCompleteResponse) throws Exception {
         /*List<String> commands = tabCompleteResponse.getCommands();
         if ( commands == null )
         {
@@ -192,33 +199,8 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(Respawn respawn) {
+    public void handle(PacketPlayServerRespawn respawn) {
         this.connection.getClient().setDimension(respawn.getDimension());
-    }
-
-    @Override
-    public void handle(Commands commands) throws Exception {
-        /*boolean modified = false;
-
-        for ( Map.Entry<String, Command> command : bungee.getPluginManager().getCommands() )
-        {
-            if ( !bungee.getDisabledCommands().contains( command.getKey() ) && commands.getRoot().getChild( command.getKey() ) == null && command.getValue().hasPermission( con ) )
-            {
-                LiteralCommandNode dummy = LiteralArgumentBuilder.literal( command.getKey() )
-                        .then( RequiredArgumentBuilder.argument( "args", StringArgumentType.greedyString() )
-                                .suggests( Commands.SuggestionRegistry.ASK_SERVER ) )
-                        .build();
-                commands.getRoot().addChild( dummy );
-
-                modified = true;
-            }
-        }
-
-        if ( modified )
-        {
-            con.sendPacket( commands );
-            throw CancelSendSignal.INSTANCE;
-        }*/
     }
 
     @Override

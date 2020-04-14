@@ -28,7 +28,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.ChatComponentTransformer;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.protocol.packet.Chat;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -128,12 +128,12 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public void chat(@NotNull String message) {
-        this.client.getChannelWrapper().write(new Chat(message));
+        this.client.getChannelWrapper().write(new PacketPlayChatMessage(message));
     }
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull String message) {
-        this.client.getChannelWrapper().write(new Chat(message, (byte) type.ordinal()));
+        this.client.getChannelWrapper().write(new PacketPlayChatMessage(message, (byte) type.ordinal()));
     }
 
     @Override

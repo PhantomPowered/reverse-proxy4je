@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import net.md_5.bungee.protocol.packet.LegacyHandshake;
-import net.md_5.bungee.protocol.packet.LegacyPing;
+import com.github.derrop.proxy.protocol.legacy.PacketLegacyHandshake;
+import com.github.derrop.proxy.protocol.legacy.PacketLegacyPing;
 
 import java.util.List;
 
@@ -21,11 +21,11 @@ public class LegacyDecoder extends ByteToMessageDecoder {
         short packetID = in.readUnsignedByte();
 
         if (packetID == 0xFE) {
-            out.add(new PacketWrapper(new LegacyPing(in.isReadable() && in.readUnsignedByte() == 0x01), packetID, Unpooled.EMPTY_BUFFER));
+            out.add(new PacketWrapper(new PacketLegacyPing(in.isReadable() && in.readUnsignedByte() == 0x01), packetID, Unpooled.EMPTY_BUFFER));
             return;
         } else if (packetID == 0x02 && in.isReadable()) {
             in.skipBytes(in.readableBytes());
-            out.add(new PacketWrapper(new LegacyHandshake(), packetID, Unpooled.EMPTY_BUFFER));
+            out.add(new PacketWrapper(new PacketLegacyHandshake(), packetID, Unpooled.EMPTY_BUFFER));
             return;
         }
 

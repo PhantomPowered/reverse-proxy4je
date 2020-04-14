@@ -6,13 +6,13 @@ import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import net.md_5.bungee.protocol.packet.EntityStatus;
-import net.md_5.bungee.protocol.packet.Login;
-import net.md_5.bungee.protocol.packet.Respawn;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerEntityStatus;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 
 public class LoginCache implements PacketCacheHandler {
 
-    private Login lastLogin;
+    private PacketPlayServerLogin lastLogin;
 
     @Override
     public int[] getPacketIDs() {
@@ -21,10 +21,10 @@ public class LoginCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        if (!(newPacket.getDeserializedPacket() instanceof Login)) {
+        if (!(newPacket.getDeserializedPacket() instanceof PacketPlayServerLogin)) {
             return;
         }
-        this.lastLogin = (Login) newPacket.getDeserializedPacket();
+        this.lastLogin = (PacketPlayServerLogin) newPacket.getDeserializedPacket();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class LoginCache implements PacketCacheHandler {
         if (con instanceof Player) {
             Player player = (Player) con;
             if (player.getConnectedClient() == null) {
-                Login login = new Login(
+                PacketPlayServerLogin login = new PacketPlayServerLogin(
                         this.lastLogin.getEntityId(),
                         (short) 0,
                         this.lastLogin.getDimension(),
@@ -69,16 +69,16 @@ public class LoginCache implements PacketCacheHandler {
                 return;
             }
 
-            EntityStatus entityStatus = new EntityStatus(
+            PacketPlayServerEntityStatus entityStatus = new PacketPlayServerEntityStatus(
                     player.getEntityId(),
-                    this.lastLogin.isReducedDebugInfo() ? EntityStatus.DEBUG_INFO_REDUCED : EntityStatus.DEBUG_INFO_NORMAL
+                    this.lastLogin.isReducedDebugInfo() ? PacketPlayServerEntityStatus.DEBUG_INFO_REDUCED : PacketPlayServerEntityStatus.DEBUG_INFO_NORMAL
             );
             player.sendPacket(entityStatus);
             player.setDimensionChange(true);
         }
 
         if (!(con instanceof Player) || this.lastLogin.getDimension() == ((Player) con).getDimension()) {
-            con.sendPacket(new Respawn(
+            con.sendPacket(new PacketPlayServerRespawn(
                     (this.lastLogin.getDimension() >= 0 ? -1 : 0),
                     this.lastLogin.getSeed(),
                     this.lastLogin.getDifficulty(),
@@ -87,7 +87,7 @@ public class LoginCache implements PacketCacheHandler {
             ));
         }
 
-        con.sendPacket(new Respawn(
+        con.sendPacket(new PacketPlayServerRespawn(
                 this.lastLogin.getDimension(),
                 this.lastLogin.getSeed(),
                 this.lastLogin.getDifficulty(),
