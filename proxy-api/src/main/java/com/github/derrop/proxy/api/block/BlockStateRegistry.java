@@ -8,7 +8,16 @@ public interface BlockStateRegistry {
     @NotNull
     int[] getValidBlockStateIDs(@Nullable Material material);
 
+    @NotNull
+    BlockState[] getValidStates(@Nullable Material material);
+
     int getDefaultBlockState(@Nullable Material material);
+
+    @NotNull
+    BlockState getExactDefaultBlockState(@Nullable Material material);
+
+    @NotNull
+    BlockState getExactBlockState(int blockStateId);
 
     @NotNull
     Material getMaterial(int blockStateId);

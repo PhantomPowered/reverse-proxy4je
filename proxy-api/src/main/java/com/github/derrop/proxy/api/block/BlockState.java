@@ -1,0 +1,32 @@
+package com.github.derrop.proxy.api.block;
+
+import com.github.derrop.proxy.api.util.EnumFacing;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public interface BlockState {
+
+    int getId();
+
+    @NotNull
+    Material getMaterial();
+
+    boolean isPowered();
+
+    boolean isOpen();
+
+    @Nullable
+    SubMaterial getSubMaterial();
+
+    @Nullable
+    HingePosition getHingePosition();
+
+    @Nullable
+    EnumFacing getFacing();
+
+    @Nullable
+    TrapdoorPosition getHalf();
+
+    boolean isPassable();
+
+}

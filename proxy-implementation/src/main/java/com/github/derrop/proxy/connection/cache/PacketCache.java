@@ -140,4 +140,6 @@ public class PacketCache {
         this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getProxy(), chunkCache);
     }
 
+    // TODO cache the held item slot
+
 }
