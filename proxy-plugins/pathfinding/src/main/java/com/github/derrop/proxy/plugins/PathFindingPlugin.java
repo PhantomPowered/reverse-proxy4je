@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.event.handler.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.plugin.Plugin;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.plugins.test.AStarPathFinder;
+import com.github.derrop.proxy.plugins.astar.AStarPathFinder;
 
 public class PathFindingPlugin extends Plugin {
 

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.plugins.test;
+package com.github.derrop.proxy.plugins.astar;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.plugins.test;
+package com.github.derrop.proxy.plugins.astar;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
