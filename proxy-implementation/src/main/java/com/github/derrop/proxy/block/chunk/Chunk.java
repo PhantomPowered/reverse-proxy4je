@@ -127,7 +127,7 @@ public class Chunk {
     public int[][][] getAllBlockStates() {
         int[][][] result = new int[16][256][16];
 
-        this.forEachBlockStates((x, y, z, state) -> result[x][y][z] = state);
+        this.forEachBlockStates((x, y, z, oldState, state) -> result[x][y][z] = state);
 
         return result;
     }
@@ -135,7 +135,7 @@ public class Chunk {
     public Collection<BlockPos> getPositionsByState(int allowedState) {
         Collection<BlockPos> result = new ArrayList<>();
 
-        this.forEachBlockStates((x, y, z, state) -> {
+        this.forEachBlockStates((x, y, z, oldState, state) -> {
             if (state == allowedState) {
                 result.add(new BlockPos(x, y, z));
             }
@@ -147,7 +147,7 @@ public class Chunk {
     public Collection<BlockPos> getPositionsByStates(int[] allowedStates) {
         Collection<BlockPos> result = new ArrayList<>();
 
-        this.forEachBlockStates((x, y, z, state) -> {
+        this.forEachBlockStates((x, y, z, oldState, state) -> {
             for (int allowedState : allowedStates) {
                 if (allowedState == state) {
                     result.add(new BlockPos(x, y, z));
@@ -165,7 +165,7 @@ public class Chunk {
                 for (int x = 0; x < 16; x++) {
                     for (int cY = 0; cY < 16; cY++) {
                         for (int z = 0; z < 16; z++) {
-                            consumer.accept(x, cY + (y * 16), z, 0);
+                            consumer.accept(x, cY + (y * 16), z, -1, 0);
                         }
                     }
                 }
@@ -175,7 +175,7 @@ public class Chunk {
             for (int x = 0; x < 16; x++) {
                 for (int cY = 0; cY < 16; cY++) {
                     for (int z = 0; z < 16; z++) {
-                        consumer.accept(x, cY + (y * 16), z, storage.get(x, cY, z));
+                        consumer.accept(x, cY + (y * 16), z, -1, storage.get(x, cY, z));
                     }
                 }
             }

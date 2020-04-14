@@ -1,6 +1,10 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.block.DefaultBlockAccess;
+import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
@@ -9,9 +13,6 @@ import com.github.derrop.proxy.connection.cache.packet.world.BlockUpdate;
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkBulk;
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
 import com.github.derrop.proxy.connection.cache.packet.world.MultiBlockUpdate;
-import com.github.derrop.proxy.api.util.BlockPos;
-import com.github.derrop.proxy.block.chunk.Chunk;
-import com.github.derrop.proxy.api.connection.PacketSender;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;
@@ -23,6 +24,12 @@ public class ChunkCache implements PacketCacheHandler {
     private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
 
     private Player connectedPlayer;
+
+    private DefaultBlockAccess blockAccess;
+
+    public void setBlockAccess(DefaultBlockAccess blockAccess) {
+        this.blockAccess = blockAccess;
+    }
 
     @Override
     public int[] getPacketIDs() {
@@ -51,21 +58,14 @@ public class ChunkCache implements PacketCacheHandler {
 
             BlockUpdate blockUpdate = (BlockUpdate) packet;
 
-            Chunk chunk = this.getChunk(blockUpdate.getPos());
-            if (chunk != null) {
-                chunk.setBlockStateAt(blockUpdate.getPos().getX(), blockUpdate.getPos().getY(), blockUpdate.getPos().getZ(), blockUpdate.getBlockState());
-            }
+            this.handleBlockUpdate(blockUpdate.getPos(), blockUpdate.getBlockState());
 
         } else if (packet instanceof MultiBlockUpdate) {
 
             MultiBlockUpdate multiBlockUpdate = (MultiBlockUpdate) packet;
 
             for (MultiBlockUpdate.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
-                BlockPos pos = updateData.getPos();
-                Chunk chunk = this.getChunk(pos);
-                if (chunk != null) {
-                    chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), updateData.getBlockState());
-                }
+                this.handleBlockUpdate(updateData.getPos(), updateData.getBlockState());
             }
 
         }
@@ -84,14 +84,36 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
+    private void handleBlockUpdate(BlockPos pos, int newBlockState) {
+        if (this.blockAccess != null) {
+            this.blockAccess.handleBlockUpdate(pos, this.getBlockStateAt(pos), newBlockState);
+        }
+
+        Chunk chunk = this.getChunk(pos);
+        if (chunk != null) {
+            chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), newBlockState);
+        }
+    }
+
     private void load(ChunkData chunkData) {
         Chunk chunk = new Chunk();
         chunk.fillChunk(chunkData);
         this.chunks.add(chunk);
+
+        if (this.blockAccess != null) {
+            this.blockAccess.handleChunkLoad(chunk);
+        }
     }
 
     private void unload(int x, int z) {
-        this.chunks.removeIf(chunkData -> chunkData.getX() == x && chunkData.getZ() == z);
+        for (Chunk chunk : this.chunks) {
+            if (chunk.getX() == x && chunk.getZ() == z) {
+                if (this.blockAccess != null) {
+                    this.blockAccess.handleChunkUnload(chunk);
+                }
+                this.chunks.remove(chunk);
+            }
+        }
     }
 
     public void setBlockStateAt(BlockPos pos, int blockState) {

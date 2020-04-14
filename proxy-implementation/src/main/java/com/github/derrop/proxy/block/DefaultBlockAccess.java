@@ -2,6 +2,7 @@ package com.github.derrop.proxy.block;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.util.BlockPos;
@@ -10,18 +11,97 @@ import com.github.derrop.proxy.connection.cache.handler.ChunkCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultBlockAccess implements BlockAccess {
 
     private final Proxy proxy;
+    private final BlockStateRegistry registry;
     private final ChunkCache chunkCache;
+
+    private final Map<UUID, BlockConsumer> blockTrackers = new ConcurrentHashMap<>();
 
     public DefaultBlockAccess(Proxy proxy, ChunkCache chunkCache) {
         this.proxy = proxy;
+        this.registry = proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class);
         this.chunkCache = chunkCache;
+        chunkCache.setBlockAccess(this);
+    }
+
+    public void handleBlockUpdate(BlockPos pos, int oldState, int newState) {
+        if (oldState != newState && !this.blockTrackers.isEmpty()) {
+            for (BlockConsumer consumer : this.blockTrackers.values()) {
+                consumer.accept(pos.getX(), pos.getY(), pos.getZ(), oldState, newState);
+            }
+        }
+    }
+
+    public void handleChunkLoad(Chunk chunk) {
+        if (this.blockTrackers.isEmpty()) {
+            return;
+        }
+
+        this.forEachStates(chunk, (x, y, z, oldState, state) -> {
+            for (BlockConsumer consumer : this.blockTrackers.values()) {
+                consumer.accept(x, y, z, oldState, state);
+            }
+        });
+    }
+
+    public void handleChunkUnload(Chunk chunk) {
+        if (this.blockTrackers.isEmpty()) {
+            return;
+        }
+
+        this.forEachStates(chunk, (x, y, z, oldState, state) -> {
+            for (BlockConsumer consumer : this.blockTrackers.values()) {
+                consumer.accept(x, y, z, state, -1);
+            }
+        });
+    }
+
+    private void forEachStates(Chunk chunk, BlockConsumer consumer) {
+        int[][][] states = chunk.getAllBlockStates();
+        for (int x = 0; x < states.length; x++) {
+            for (int y = 0; y < states[x].length; y++) {
+                for (int z = 0; z < states[x][y].length; z++) {
+                    consumer.accept(x + (chunk.getX() << 4), y, z + (chunk.getZ() << 4), -1, states[x][y][z]);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void trackBlockUpdates(UUID trackerId, int[] states, BlockConsumer consumer) {
+        this.blockTrackers.put(trackerId, (x, y, z, oldState, state) -> {
+            for (int allowedState : states) {
+                if (allowedState == state || allowedState == oldState) {
+                    consumer.accept(x, y, z, oldState, state);
+                }
+            }
+        });
+
+        for (int state : states) {
+            for (BlockPos position : this.getPositions(state)) {
+                consumer.accept(position.getX(), position.getY(), position.getZ(), -1, state);
+            }
+        }
+    }
+
+    @Override
+    public void trackBlockUpdates(UUID trackerId, Material material, BlockConsumer consumer) {
+        int[] states = this.registry.getValidBlockStateIDs(material);
+        if (states.length == 0) {
+            return;
+        }
+
+        this.trackBlockUpdates(trackerId, states, consumer);
+    }
+
+    @Override
+    public void untrackBlockUpdates(UUID trackerId) {
+        this.blockTrackers.remove(trackerId);
     }
 
     private Collection<BlockPos> mapPositionsByChunk(Chunk chunk, Collection<BlockPos> input) {
@@ -58,7 +138,7 @@ public class DefaultBlockAccess implements BlockAccess {
 
     @Override
     public Collection<BlockPos> getPositions(Material material) {
-        int[] states = this.getValidBlockStates(material);
+        int[] states = this.registry.getValidBlockStateIDs(material);
         if (states.length == 0) {
             return Collections.emptySet();
         }
@@ -71,27 +151,10 @@ public class DefaultBlockAccess implements BlockAccess {
         return this.chunkCache.getBlockStateAt(pos);
     }
 
-    @Override
-    public @NotNull int[] getValidBlockStates(@Nullable Material material) {
-        return material == null ? new int[0] : this.proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getValidBlockStateIDs(material);
-    }
-
-    @Override
-    public int getDefaultBlockState(@Nullable Material material) {
-        int[] ids = this.getValidBlockStates(material);
-        return ids.length != 0 ? ids[0] : 0;
-    }
-
     @NotNull
     @Override
     public Material getMaterial(@NotNull BlockPos pos) {
-        return this.getMaterial(this.getBlockState(pos));
-    }
-
-    @Override
-    public @NotNull Material getMaterial(int blockState) {
-        Material material = this.proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getMaterial(blockState);
-        return material != null ? material : Material.AIR;
+        return this.registry.getMaterial(this.getBlockState(pos));
     }
 
     @Override
@@ -117,11 +180,16 @@ public class DefaultBlockAccess implements BlockAccess {
 
     @Override
     public void setMaterial(@NotNull BlockPos pos, @Nullable Material material) {
-        this.setBlockState(pos, this.getDefaultBlockState(material));
+        this.setBlockState(pos, this.registry.getDefaultBlockState(material));
     }
 
     @Override
     public void setBlockState(@NotNull BlockPos pos, int blockState) {
         this.chunkCache.setBlockStateAt(pos, blockState);
+    }
+
+    @Override
+    public BlockStateRegistry getBlockStateRegistry() {
+        return this.registry;
     }
 }

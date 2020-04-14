@@ -26,6 +26,7 @@ public class AStarPathFinder {
 
     // This can take pretty long with paths that aren't straight forward
     public boolean findPath(Player player, boolean visualize, long visualizeMillis, BlockAccess access, BlockPos start, BlockPos end) {
+        // TODO The visualization blocks are sometimes not removed
 
         PathPoint startPoint = new PathPoint(0, 0, 0);
         PathPoint endPoint = new PathPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
@@ -49,11 +50,6 @@ public class AStarPathFinder {
         while (!frontier.isEmpty()) {
             PathPoint point = frontier.poll();
 
-            if (visitedPoints.contains(point)) {
-                continue;
-            }
-            visitedPoints.add(point);
-
             if (lastPos != null && visualize) {
                 if (visualizeMillis > 0) {
                     try {
@@ -63,7 +59,13 @@ public class AStarPathFinder {
                     }
                 }
                 player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
+                lastPos = null;
             }
+
+            if (visitedPoints.contains(point)) {
+                continue;
+            }
+            visitedPoints.add(point);
 
             BlockPos absolutePoint = new BlockPos(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
             lastPos = absolutePoint;
