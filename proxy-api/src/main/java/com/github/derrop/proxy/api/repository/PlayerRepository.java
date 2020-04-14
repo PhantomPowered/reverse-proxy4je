@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.api.player;
+package com.github.derrop.proxy.api.repository;
 
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.entity.player.OfflinePlayer;

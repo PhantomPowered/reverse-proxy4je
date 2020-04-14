@@ -1438,7 +1438,7 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
     }
 
     @Override
-    public boolean isMaterial(int blockStateId, Material material) {
+    public boolean isMaterial(int blockStateId, @NotNull Material material) {
         return BLOCK_STATE_IDS.get(blockStateId) == material;
     }
 }

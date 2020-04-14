@@ -4,7 +4,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
-import com.github.derrop.proxy.api.player.PlayerRepository;
+import com.github.derrop.proxy.api.repository.PlayerRepository;
 
 import java.util.Collection;
 import java.util.Objects;

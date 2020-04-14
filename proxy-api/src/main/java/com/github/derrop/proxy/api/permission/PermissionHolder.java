@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.api.entity.permission;
+package com.github.derrop.proxy.api.permission;
 
 import org.jetbrains.annotations.NotNull;
 

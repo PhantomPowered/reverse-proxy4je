@@ -368,7 +368,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void disconnect(String reason) {
+    public void disconnect(@NotNull String reason) {
         if (canSendKickMessage()) {
             disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + reason));
         } else {
@@ -386,7 +386,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void disconnect(BaseComponent reason) {
+    public void disconnect(@NotNull BaseComponent reason) {
         disconnect(new BaseComponent[]{reason});
     }
 
@@ -401,7 +401,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public SocketAddress getSocketAddress() {
+    public @NotNull SocketAddress getSocketAddress() {
         return ch.getRemoteAddress();
     }
 
@@ -416,11 +416,6 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
         Preconditions.checkState(thisState == State.USERNAME, "Can only set uuid while state is username");
         Preconditions.checkState(!onlineMode, "Can only set uuid when online mode is false");
         this.uniqueId = uuid;
-    }
-
-    @Override
-    public String getUUID() {
-        return uniqueId.toString().replace("-", "");
     }
 
     @Override

@@ -1,11 +1,18 @@
 package com.github.derrop.proxy.api.block;
 
-public class BlockUtils {
+import org.jetbrains.annotations.NotNull;
 
-    public static boolean isPassable(BlockAccess blockAccess, int blockState) {
+// TODO: @derrop move this to impl?
+public final class BlockUtils {
+
+    private BlockUtils() {
+        throw new UnsupportedOperationException();
+    }
+
+    public static boolean isPassable(@NotNull BlockAccess blockAccess, int blockState) {
         Material material = blockAccess.getMaterial(blockState);
 
-        if (material == Material.AIR ||
+        return material == Material.AIR ||
                 material == Material.SIGN_POST || material == Material.WALL_SIGN ||
                 material == Material.GOLD_PLATE || material == Material.IRON_PLATE || material == Material.STONE_PLATE || material == Material.WOOD_PLATE ||
                 material == Material.STANDING_BANNER || material == Material.WALL_BANNER ||
@@ -13,11 +20,6 @@ public class BlockUtils {
                 ((material == Material.TRAP_DOOR || material == Material.IRON_TRAPDOOR) /* && blockState.isOpen TODO */) ||
                 (material.isDoor() /* && blockState.isOpen TODO */) ||
                 (material.isFenceGate() /* && blockState.isOpen TODO */) ||
-                (material == Material.SNOW /* && blockState.layers < 5 */)) {
-            return true;
-        }
-
-        return false;
+                (material == Material.SNOW /* && blockState.layers < 5 */);
     }
-
 }

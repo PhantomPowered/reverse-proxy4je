@@ -30,13 +30,11 @@ import java.util.zip.ZipInputStream;
 public class DefaultPluginManager implements PluginManager {
 
     private final Gson gson = new Gson();
-    private final Proxy proxy;
 
     private Map<String, Plugin> enabledPlugins = new HashMap<>();
     private Collection<PluginDescription> loadedPlugins = new ArrayList<>();
 
     public DefaultPluginManager(Proxy proxy) {
-        this.proxy = proxy;
     }
 
     private PluginDescription loadDescription(InputStream inputStream) throws IOException {

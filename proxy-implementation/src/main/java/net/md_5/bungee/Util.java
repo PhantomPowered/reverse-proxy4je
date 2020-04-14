@@ -17,6 +17,7 @@ import java.util.UUID;
 /**
  * Series of utility classes to perform various operations.
  */
+@Deprecated
 public class Util {
 
     public static final Gson GSON = new GsonBuilder()
@@ -28,7 +29,7 @@ public class Util {
             .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
             .registerTypeAdapter(ServerPing.PlayerInfo.class, new PlayerInfoSerializer())
             .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter()).create();
-    public static final int DEFAULT_PORT = 25565;
+    @Deprecated public static final int DEFAULT_PORT = 25565; // TODO: unused and remove
 
     /**
      * Method to transform human readable addresses into usable address objects.
@@ -79,6 +80,7 @@ public class Util {
      * @param t the {@link Throwable} to format.
      * @return a string representing information about the {@link Throwable}
      */
+    // TODO: move elsewhere
     public static String exception(Throwable t) {
         StackTraceElement[] trace = t.getStackTrace();
         return t.getClass().getSimpleName() + " : " + t.getMessage()
@@ -89,6 +91,7 @@ public class Util {
         return format(objects, ", ");
     }
 
+    // TODO: Check if really required
     public static String format(Iterable<?> objects, String separators) {
         return Joiner.on(separators).join(objects);
     }
@@ -99,6 +102,7 @@ public class Util {
      * @param uuid The string to be converted
      * @return The result
      */
+    // TODO: Looks unsafe, remove or remove
     public static UUID getUUID(String uuid) {
         return new UUID(UnsignedLongs.parseUnsignedLong(uuid.substring(0, 16), 16), UnsignedLongs.parseUnsignedLong(uuid.substring(16), 16));
     }

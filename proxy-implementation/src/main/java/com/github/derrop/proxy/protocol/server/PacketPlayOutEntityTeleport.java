@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol;
+package com.github.derrop.proxy.protocol.server;
 
 import com.github.derrop.proxy.api.location.Location;
 import io.netty.buffer.ByteBuf;

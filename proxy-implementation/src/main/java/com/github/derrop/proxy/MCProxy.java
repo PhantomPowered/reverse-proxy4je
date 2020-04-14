@@ -8,7 +8,7 @@ import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.player.PlayerRepository;
+import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;

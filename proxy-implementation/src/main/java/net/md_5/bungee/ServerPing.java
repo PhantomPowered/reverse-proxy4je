@@ -19,7 +19,8 @@ import java.util.UUID;
 @ToString(exclude = "favicon")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServerPing {
+@Deprecated
+public class ServerPing {  // TODO: replace with own impl
 
     private Protocol version;
 

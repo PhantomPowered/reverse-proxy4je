@@ -1,7 +1,5 @@
 package com.github.derrop.proxy.api.scoreboard;
 
-import com.github.derrop.proxy.api.util.ChatColor;
-
 import java.util.Set;
 
 public interface Team {

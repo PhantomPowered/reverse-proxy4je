@@ -1,8 +1,8 @@
 package com.github.derrop.proxy.api;
 
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.player.PlayerRepository;
+import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
@@ -14,11 +14,13 @@ import org.jetbrains.annotations.Nullable;
 public abstract class Proxy {
 
     @NotNull
+    @Deprecated // TODO: as service
     public abstract PlayerRepository getPlayerRepository();
 
     @NotNull
     public abstract ProvidedTitle createTitle();
 
+    @Deprecated // TODO: as service
     @NotNull
     public abstract ServiceConnection createConnection(MCCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException;
 

@@ -53,7 +53,7 @@ public class BasicScoreboard implements Scoreboard {
     }
 
     @Override
-    public ServiceConnection getAssociatedConnection() {
+    public @NotNull ServiceConnection getAssociatedConnection() {
         return this.connection;
     }
 

@@ -5,6 +5,8 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
+// TODO: the hell?
+@Deprecated
 public class PlayerInfoSerializer implements JsonSerializer<ServerPing.PlayerInfo>, JsonDeserializer<ServerPing.PlayerInfo> {
 
     @Override

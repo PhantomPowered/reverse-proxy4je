@@ -8,8 +8,8 @@ import java.util.Set;
 
 public interface Scoreboard {
 
+    @NotNull
     ServiceConnection getAssociatedConnection();
-
 
     void clearSlot(@NotNull DisplaySlot displaySlot);
 
@@ -21,7 +21,6 @@ public interface Scoreboard {
 
     @NotNull
     Objective registerNewObjective(@NotNull String name);
-
 
     @NotNull
     Set<Team> getTeams();

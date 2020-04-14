@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import lombok.NoArgsConstructor;
 
+@Deprecated // TODO: remove
 @NoArgsConstructor
 public class BufUtil {
 

@@ -254,12 +254,12 @@ public class BasicServiceConnection implements ServiceConnection {
     }
 
     @Override
-    public SocketAddress getSocketAddress() {
+    public @NotNull SocketAddress getSocketAddress() {
         return this.client.getChannelWrapper().getHandle().remoteAddress();
     }
 
     @Override
-    public void disconnect(String reason) {
+    public void disconnect(@NotNull String reason) {
         this.close();
     }
 
@@ -269,7 +269,7 @@ public class BasicServiceConnection implements ServiceConnection {
     }
 
     @Override
-    public void disconnect(BaseComponent reason) {
+    public void disconnect(@NotNull BaseComponent reason) {
         this.close();
     }
 
@@ -324,7 +324,7 @@ public class BasicServiceConnection implements ServiceConnection {
             return;
         }
 
-        this.client.getRedirector().sendPacket(packet);
+        this.client.getChannelWrapper().write(packet);
     }
 
     @Override
@@ -333,7 +333,7 @@ public class BasicServiceConnection implements ServiceConnection {
             return;
         }
 
-        this.client.getRedirector().sendPacket(byteBuf);
+        this.client.getChannelWrapper().write(byteBuf);
     }
 
     @Override
@@ -341,7 +341,7 @@ public class BasicServiceConnection implements ServiceConnection {
         return new NetworkUnsafe() {
             @Override
             public void sendPacket(@NotNull Object packet) {
-                client.getRedirector().networkUnsafe().sendPacket(packet);
+                client.getChannelWrapper().write(packet);
             }
         };
     }

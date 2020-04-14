@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  * {@link ScoreComponent#getValue()} is not present.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Deprecated // TODO: remove
 public final class ChatComponentTransformer {
 
     private static final ChatComponentTransformer INSTANCE = new ChatComponentTransformer();
@@ -47,6 +48,7 @@ public final class ChatComponentTransformer {
      * TextComponent if the components are null or empty
      * @throws IllegalArgumentException if an entity selector pattern is present
      */
+
     public BaseComponent[] transform(Player player, BaseComponent... component) {
         if (component == null || component.length < 1 || (component.length == 1 && component[0] == null)) {
             return new BaseComponent[]

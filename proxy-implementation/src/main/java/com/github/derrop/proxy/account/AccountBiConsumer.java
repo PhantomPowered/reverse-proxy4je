@@ -28,13 +28,13 @@ public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddre
                 @Override
                 public void onFailure(@NotNull Task<Boolean> task) {
                     Throwable lastException = task.getException();
-                    if (lastException == null) {
+                    if (lastException == null || lastException.getMessage() == null) {
                         System.err.println("Got kicked from " + connection.getServerAddress() + " as " + connection.getCredentials());
                         return;
                     }
 
                     System.err.println("Got kicked from " + connection.getServerAddress()
-                            + " as " + connection.getCredentials() + ": " );//+ lastException.getMessage().replace('\n', ' '));
+                            + " as " + connection.getCredentials() + ": " + lastException.getMessage().replace('\n', ' '));
                 }
 
                 @Override

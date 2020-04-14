@@ -6,7 +6,6 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.PacketSender;
-import com.github.derrop.proxy.api.connection.PendingConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.packet.Packet;
 import com.github.derrop.proxy.api.entity.EntityLiving;
@@ -17,7 +16,8 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.protocol.PacketPlayOutEntityTeleport;
+import com.github.derrop.proxy.protocol.client.PacketS08PlayerPosLook;
+import com.github.derrop.proxy.protocol.server.PacketPlayOutEntityTeleport;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
@@ -28,6 +28,7 @@ import net.md_5.bungee.tab.TabList;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
+import java.util.Collections;
 
 public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
@@ -261,12 +262,12 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     @Override
-    public SocketAddress getSocketAddress() {
+    public @NotNull SocketAddress getSocketAddress() {
         return this.initialHandler.getSocketAddress();
     }
 
     @Override
-    public void disconnect(String reason) {
+    public void disconnect(@NotNull String reason) {
         this.disconnect(TextComponent.fromLegacyText(reason));
     }
 
@@ -276,7 +277,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     @Override
-    public void disconnect(BaseComponent reason) {
+    public void disconnect(@NotNull BaseComponent reason) {
         this.disconnect0(reason);
     }
 
@@ -411,6 +412,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     private void handleLocationUpdate() {
         this.sendPacket(new PacketPlayOutEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
+        this.connectedClient.sendPacket(new PacketS08PlayerPosLook(this.location, Collections.emptySet()));
     }
 
     public EntityMap getEntityMap() {

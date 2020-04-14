@@ -13,6 +13,6 @@ public interface BlockStateRegistry {
     @Nullable
     Material getMaterial(int blockStateId);
 
-    boolean isMaterial(int blockStateId, Material material);
+    boolean isMaterial(int blockStateId, @NotNull Material material);
 
 }
