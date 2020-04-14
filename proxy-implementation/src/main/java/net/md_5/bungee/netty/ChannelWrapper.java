@@ -1,6 +1,6 @@
 package net.md_5.bungee.netty;
 
-import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -86,7 +86,7 @@ public class ChannelWrapper {
         }
     }
 
-    public void delayedClose(final PacketPlayKickPlayer kick) {
+    public void delayedClose(final PacketPlayServerKickPlayer kick) {
         if (!closing) {
             closing = true;
 

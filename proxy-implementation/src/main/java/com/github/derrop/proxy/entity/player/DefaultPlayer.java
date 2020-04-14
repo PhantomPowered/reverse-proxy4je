@@ -3,6 +3,7 @@ package com.github.derrop.proxy.entity.player;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.PacketSender;
@@ -13,13 +14,12 @@ import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.protocol.play.client.PacketS08PlayerPosLook;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.client.PacketS08PlayerPosLook;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
@@ -408,7 +408,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
             reason = event.getReason();
         }
 
-        channelWrapper.close(new PacketPlayKickPlayer(ComponentSerializer.toString(reason)));
+        channelWrapper.close(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
         if (this.connectedClient != null) {
             this.connectedClient.getClient().free();
         }

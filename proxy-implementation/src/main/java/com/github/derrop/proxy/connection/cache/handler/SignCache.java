@@ -7,14 +7,14 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.connection.cache.packet.world.UpdateSign;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerUpdateSign;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SignCache implements PacketCacheHandler {
 
-    private Map<BlockPos, UpdateSign> signUpdates = new ConcurrentHashMap<>();
+    private Map<BlockPos, PacketPlayServerUpdateSign> signUpdates = new ConcurrentHashMap<>();
 
     private PacketCache packetCache;
 
@@ -27,13 +27,13 @@ public class SignCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         this.packetCache = packetCache;
 
-        UpdateSign sign = (UpdateSign) newPacket.getDeserializedPacket();
+        PacketPlayServerUpdateSign sign = (PacketPlayServerUpdateSign) newPacket.getDeserializedPacket();
         this.signUpdates.put(sign.getPos(), sign);
     }
 
     @Override
     public void sendCached(PacketSender con) {
-        for (Map.Entry<BlockPos, UpdateSign> entry : this.signUpdates.entrySet()) {
+        for (Map.Entry<BlockPos, PacketPlayServerUpdateSign> entry : this.signUpdates.entrySet()) {
             Material material = this.packetCache.getMaterialAt(entry.getKey());
 
             if (material != Material.SIGN && material != Material.SIGN_POST) {

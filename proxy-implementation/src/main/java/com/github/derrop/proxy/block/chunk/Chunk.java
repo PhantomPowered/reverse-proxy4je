@@ -2,7 +2,7 @@ package com.github.derrop.proxy.block.chunk;
 
 import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerChunkData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,9 +11,9 @@ import java.util.List;
 public class Chunk {
 
     private ExtendedBlockStorage[] storageArrays = new ExtendedBlockStorage[16];
-    private ChunkData lastChunkData;
+    private PacketPlayServerChunkData lastChunkData;
 
-    public void fillChunk(ChunkData chunkData) {
+    public void fillChunk(PacketPlayServerChunkData chunkData) {
         this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isB());
         this.lastChunkData = chunkData;
     }
@@ -39,7 +39,7 @@ public class Chunk {
         }
     }
 
-    public void fillChunkData(ChunkData chunkData) {
+    public void fillChunkData(PacketPlayServerChunkData chunkData) {
         if (this.lastChunkData == null) {
             return;
         }
@@ -49,7 +49,7 @@ public class Chunk {
         boolean hasSky = this.lastChunkData.isB();
 
         ExtendedBlockStorage[] storages = this.storageArrays;
-        ChunkData.Extracted extracted = new ChunkData.Extracted();
+        PacketPlayServerChunkData.Extracted extracted = new PacketPlayServerChunkData.Extracted();
         List<ExtendedBlockStorage> list = new ArrayList<>();
 
         for (int i = 0; i < storages.length; ++i) {
@@ -61,7 +61,7 @@ public class Chunk {
             }
         }
 
-        extracted.data = new byte[ChunkData.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
+        extracted.data = new byte[PacketPlayServerChunkData.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
         int j = 0;
 
         for (ExtendedBlockStorage extendedblockstorage1 : list) {
@@ -183,7 +183,7 @@ public class Chunk {
         }
     }
 
-    public ChunkData getLastChunkData() {
+    public PacketPlayServerChunkData getLastChunkData() {
         return lastChunkData;
     }
 

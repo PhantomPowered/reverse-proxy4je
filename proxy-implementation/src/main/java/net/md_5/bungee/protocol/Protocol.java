@@ -1,22 +1,22 @@
 package net.md_5.bungee.protocol;
 
 import com.github.derrop.proxy.connection.PacketConstants;
-import com.github.derrop.proxy.connection.cache.packet.ResourcePackSend;
-import com.github.derrop.proxy.connection.cache.packet.ResourcePackStatusResponse;
-import com.github.derrop.proxy.connection.cache.packet.entity.DestroyEntities;
-import com.github.derrop.proxy.connection.cache.packet.entity.EntityMetadata;
-import com.github.derrop.proxy.connection.cache.packet.entity.EntityTeleport;
-import com.github.derrop.proxy.connection.cache.packet.entity.effect.EntityEffect;
-import com.github.derrop.proxy.connection.cache.packet.entity.effect.RemoveEntityEffect;
-import com.github.derrop.proxy.connection.cache.packet.entity.player.Camera;
-import com.github.derrop.proxy.connection.cache.packet.entity.player.GameStateChange;
-import com.github.derrop.proxy.connection.cache.packet.entity.player.PlayerAbilities;
-import com.github.derrop.proxy.connection.cache.packet.entity.player.UpdateHealth;
-import com.github.derrop.proxy.connection.cache.packet.entity.spawn.*;
-import com.github.derrop.proxy.connection.cache.packet.inventory.SetSlot;
-import com.github.derrop.proxy.connection.cache.packet.inventory.WindowItems;
-import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
-import com.github.derrop.proxy.connection.cache.packet.world.*;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayClientResourcePackStatusResponse;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerDestroyEntities;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
+import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerCamera;
+import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerGameStateChange;
+import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerPlayerAbilities;
+import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerUpdateHealth;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
+import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
+import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
+import com.github.derrop.proxy.protocol.play.server.world.*;
 import com.github.derrop.proxy.connection.velocity.*;
 import com.github.derrop.proxy.protocol.Handshake;
 import com.github.derrop.proxy.protocol.login.*;
@@ -150,7 +150,7 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_15, 0x19)
             );
             TO_CLIENT.registerPacket(
-                    PacketPlayKickPlayer.class,
+                    PacketPlayServerKickPlayer.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 0x40),
                     map(ProtocolConstants.MINECRAFT_1_9, 0x1A),
                     map(ProtocolConstants.MINECRAFT_1_13, 0x1B),
@@ -186,91 +186,91 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_15, 0x1C)
             );
             TO_CLIENT.registerPacket(
-                    ChunkData.class,
+                    PacketPlayServerChunkData.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.CHUNK_DATA)
             );
             TO_CLIENT.registerPacket(
-                    ChunkBulk.class,
+                    PacketPlayServerChunkBulk.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.CHUNK_BULK)
             );
             TO_CLIENT.registerPacket(
-                    WindowItems.class,
+                    PacketPlayServerWindowItems.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.WINDOW_ITEMS)
             );
             TO_CLIENT.registerPacket(
-                    SetSlot.class,
+                    PacketPlayServerSetSlot.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SET_SLOT)
             );
             TO_CLIENT.registerPacket(
-                    SpawnPlayer.class,
+                    PacketPlayServerSpawnPlayer.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_PLAYER)
             );
             TO_CLIENT.registerPacket(
-                    BlockUpdate.class,
+                    PacketPlayServerBlockUpdate.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.BLOCK_UPDATE)
             );
             TO_CLIENT.registerPacket(
-                    MultiBlockUpdate.class,
+                    PacketPlayServerMultiBlockUpdate.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.MULTI_BLOCK_UPDATE)
             );
             TO_CLIENT.registerPacket(
-                    PlayerAbilities.class,
+                    PacketPlayServerPlayerAbilities.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.PLAYER_ABILITIES)
             );
             TO_CLIENT.registerPacket(
-                    EntityTeleport.class,
+                    PacketPlayServerEntityTeleport.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_TELEPORT)
             );
             TO_CLIENT.registerPacket(
-                    SpawnGlobalEntity.class,
+                    PacketPlayServerSpawnGlobalEntity.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.GLOBAL_ENTITY_SPAWN)
             );
             TO_CLIENT.registerPacket(
-                    SpawnObject.class,
+                    PacketPlayServerSpawnObject.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_OBJECT)
             );
             TO_CLIENT.registerPacket(
-                    SpawnMob.class,
+                    PacketPlayServerSpawnMob.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.SPAWN_MOB)
             );
             TO_CLIENT.registerPacket(
-                    EntityMetadata.class,
+                    PacketPlayServerEntityMetadata.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_METADATA)
             );
             TO_CLIENT.registerPacket(
-                    DestroyEntities.class,
+                    PacketPlayServerDestroyEntities.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DESTROY_ENTITIES)
             );
             TO_CLIENT.registerPacket(
-                    WorldBorder.class,
+                    PacketPlayServerWorldBorder.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.WORLD_BORDER)
             );
             TO_CLIENT.registerPacket(
-                    EntityEffect.class,
+                    PacketPlayServerEntityEffect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_EFFECT)
             );
             TO_CLIENT.registerPacket(
-                    RemoveEntityEffect.class,
+                    PacketPlayServerRemoveEntityEffect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.REMOVE_ENTITY_EFFECT)
             );
             TO_CLIENT.registerPacket(
-                    Camera.class,
+                    PacketPlayServerCamera.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.CAMERA)
             );
             TO_CLIENT.registerPacket(
-                    UpdateSign.class,
+                    PacketPlayServerUpdateSign.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.UPDATE_SIGN)
             );
             TO_CLIENT.registerPacket(
-                    Maps.class,
+                    PacketPlayServerMaps.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.MAPS)
             );
             TO_CLIENT.registerPacket(
-                    TimeUpdate.class,
+                    PacketPlayServerTimeUpdate.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.TIME_UPDATE)
             );
             TO_CLIENT.registerPacket(
-                    GameStateChange.class,
+                    PacketPlayServerGameStateChange.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.GAME_STATE_CHANGE)
             );
             TO_CLIENT.registerPacket(
@@ -282,20 +282,16 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, 27)
             );
             TO_CLIENT.registerPacket(
-                    SpawnPosition.class,
+                    PacketPlayServerSpawnPosition.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 5)
             );
             TO_CLIENT.registerPacket(
-                    UpdateHealth.class,
+                    PacketPlayServerUpdateHealth.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.UPDATE_HEALTH)
             );
             TO_CLIENT.registerPacket(
-                    ResourcePackSend.class,
+                    PacketPlayServerResourcePackSend.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.RESOURCE_PACK_SEND)
-            );
-            TO_CLIENT.registerPacket(
-                    Disconnect.class,
-                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );
 
             TO_SERVER.registerPacket(
@@ -358,7 +354,7 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, 6)
             );
             TO_SERVER.registerPacket(
-                    ResourcePackStatusResponse.class,
+                    PacketPlayClientResourcePackStatusResponse.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 25)
             );
         }
@@ -391,7 +387,7 @@ public enum Protocol {
 
         {
             TO_CLIENT.registerPacket(
-                    PacketPlayKickPlayer.class,
+                    PacketPlayServerKickPlayer.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 0x00)
             );
             TO_CLIENT.registerPacket(

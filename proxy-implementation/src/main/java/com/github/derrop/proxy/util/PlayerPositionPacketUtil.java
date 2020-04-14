@@ -3,7 +3,7 @@ package com.github.derrop.proxy.util;
 public class PlayerPositionPacketUtil {
 
     public static byte getFixRotation(float in) {
-        return (byte) (in * 256F / 360F);
+        return (byte) ((int) (in * 256F / 360F));
     }
 
     public static int getFixLocation(double in) {

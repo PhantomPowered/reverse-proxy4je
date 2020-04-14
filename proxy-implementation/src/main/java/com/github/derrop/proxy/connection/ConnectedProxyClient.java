@@ -13,11 +13,11 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
-import com.github.derrop.proxy.connection.cache.packet.ResourcePackSend;
-import com.github.derrop.proxy.connection.cache.packet.ResourcePackStatusResponse;
-import com.github.derrop.proxy.connection.cache.packet.entity.EntityMetadata;
-import com.github.derrop.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
-import com.github.derrop.proxy.connection.cache.packet.entity.spawn.SpawnPosition;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayClientResourcePackStatusResponse;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.connection.velocity.*;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.protocol.Handshake;
@@ -75,7 +75,7 @@ public class ConnectedProxyClient {
     public int posX, posY, posZ;
     private boolean onGround;
 
-    private EntityMetadata entityMetadata;
+    private PacketPlayServerEntityMetadata entityMetadata;
 
     private Consumer<PacketWrapper> clientPacketHandler;
 
@@ -282,7 +282,7 @@ public class ConnectedProxyClient {
         return redirector;
     }
 
-    public EntityMetadata getEntityMetadata() {
+    public PacketPlayServerEntityMetadata getEntityMetadata() {
         return entityMetadata;
     }
 
@@ -341,9 +341,9 @@ public class ConnectedProxyClient {
             return;
         }
 
-        if (deserialized instanceof ResourcePackSend) {
-            this.channelWrapper.write(new ResourcePackStatusResponse(((ResourcePackSend) deserialized).getHash(), ResourcePackStatusResponse.Action.ACCEPTED));
-            this.channelWrapper.write(new ResourcePackStatusResponse(((ResourcePackSend) deserialized).getHash(), ResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
+        if (deserialized instanceof PacketPlayServerResourcePackSend) {
+            this.channelWrapper.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.ACCEPTED));
+            this.channelWrapper.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
             throw CancelSendSignal.INSTANCE;
         }
 
@@ -390,13 +390,13 @@ public class ConnectedProxyClient {
                 this.posY = ((PositionedPacket) deserialized).getY();
                 this.posZ = ((PositionedPacket) deserialized).getZ();
             }
-        } else if (deserialized instanceof SpawnPosition) {
-            BlockPos pos = ((SpawnPosition) deserialized).getSpawnPosition();
+        } else if (deserialized instanceof PacketPlayServerSpawnPosition) {
+            BlockPos pos = ((PacketPlayServerSpawnPosition) deserialized).getSpawnPosition();
             this.posX = pos.getX();
             this.posY = pos.getY();
             this.posZ = pos.getZ();
-        } else if (deserialized instanceof EntityMetadata) {
-            this.entityMetadata = (EntityMetadata) deserialized;
+        } else if (deserialized instanceof PacketPlayServerEntityMetadata) {
+            this.entityMetadata = (PacketPlayServerEntityMetadata) deserialized;
         }
     }
 

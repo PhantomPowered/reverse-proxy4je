@@ -4,9 +4,9 @@ import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.packet.entity.DestroyEntities;
-import com.github.derrop.proxy.connection.cache.packet.entity.spawn.PositionedPacket;
-import com.github.derrop.proxy.connection.cache.packet.entity.spawn.SpawnPlayer;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerDestroyEntities;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
@@ -46,11 +46,11 @@ public class PlayerVelocityHandler {
             } else if (packet instanceof EntityAttach) {
                 this.ridingEntityId = ((EntityAttach) packet).getVehicleEntityId();
                 this.ridingEntity = true;
-            } else if (packet instanceof DestroyEntities) {
-                if (Arrays.stream(((DestroyEntities) packet).getEntityIds()).anyMatch(i -> i == this.ridingEntityId)) {
+            } else if (packet instanceof PacketPlayServerDestroyEntities) {
+                if (Arrays.stream(((PacketPlayServerDestroyEntities) packet).getEntityIds()).anyMatch(i -> i == this.ridingEntityId)) {
                     this.ridingEntity = false;
                 }
-            } else if (packet instanceof SpawnPlayer) {
+            } else if (packet instanceof PacketPlayServerSpawnPlayer) {
                 if (((PositionedPacket) packet).getEntityId() == this.proxyClient.getEntityId()) {
                     this.posX = ((PositionedPacket) packet).getX();
                     this.posY = ((PositionedPacket) packet).getY();
