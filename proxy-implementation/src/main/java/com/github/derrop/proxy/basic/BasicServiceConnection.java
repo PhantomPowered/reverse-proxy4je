@@ -289,7 +289,7 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public Scoreboard getScoreboard() {
-        return null; // TODO
+        return this.client.getScoreboard();
     }
 
     @Override
