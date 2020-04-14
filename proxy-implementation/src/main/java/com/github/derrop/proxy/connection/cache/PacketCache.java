@@ -120,7 +120,6 @@ public class PacketCache {
                 // THE ORDER IS IMPORTANT
                 new LoginCache(),
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
-                new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
                 new SimplePacketCache(PacketConstants.TIME_UPDATE),
                 new SimplePacketCache(PacketConstants.UPDATE_HEALTH),
                 new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, PacketPlayServerGameStateChange::getState, gameStateChange -> false),
@@ -134,7 +133,8 @@ public class PacketCache {
                 new EntityEffectCache(),
                 new MiniMapCache(),
                 new SignCache(),
-                new ScoreboardCache()
+                new ScoreboardCache(),
+                new CameraCache()
         ));
 
         this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getProxy(), chunkCache);
