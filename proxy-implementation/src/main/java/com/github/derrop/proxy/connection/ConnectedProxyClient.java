@@ -20,6 +20,7 @@ import com.github.derrop.proxy.connection.cache.packet.entity.spawn.PositionedPa
 import com.github.derrop.proxy.connection.cache.packet.entity.spawn.SpawnPosition;
 import com.github.derrop.proxy.connection.velocity.*;
 import com.github.derrop.proxy.exception.KickedException;
+import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
@@ -413,8 +414,8 @@ public class ConnectedProxyClient {
             this.posZ = ((PositionedPacket) deserialized).getZ();
         }
 
-        if (packetWrapper.packet instanceof PlayerPosLook) {
-            this.onGround = ((PlayerPosLook) packetWrapper.packet).isOnGround();
+        if (packetWrapper.packet instanceof PacketC06PlayerPosLook) {
+            this.onGround = ((PacketC06PlayerPosLook) packetWrapper.packet).isOnGround();
         } else if (packetWrapper.packet instanceof PlayerLook) {
             this.onGround = ((PlayerLook) packetWrapper.packet).isOnGround();
         } else if (packetWrapper.packet instanceof PlayerPosition) {

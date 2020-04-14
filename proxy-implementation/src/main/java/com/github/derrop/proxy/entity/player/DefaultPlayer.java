@@ -16,7 +16,7 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.protocol.client.PacketS08PlayerPosLook;
+import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
 import com.github.derrop.proxy.protocol.server.PacketPlayOutEntityTeleport;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -412,7 +412,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     private void handleLocationUpdate() {
         this.sendPacket(new PacketPlayOutEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
-        this.connectedClient.sendPacket(new PacketS08PlayerPosLook(this.location, Collections.emptySet()));
+        this.connectedClient.sendPacket(new PacketC06PlayerPosLook(this));
     }
 
     public EntityMap getEntityMap() {
@@ -424,6 +424,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
         @Override
         public void setLocationUnchecked(@NotNull Location locationUnchecked) {
             DefaultPlayer.this.location = locationUnchecked;
+            DefaultPlayer.this.handleLocationUpdate();
         }
     }
 
@@ -432,7 +433,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
         @Override
         public void sendPacket(@NotNull Object packet) {
             DefaultPlayer.this.channelWrapper.write(packet);
-            DefaultPlayer.this.handleLocationUpdate();
         }
     }
 }

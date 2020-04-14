@@ -228,6 +228,8 @@ public class MCProxy extends Proxy {
         commandMap.registerCommand(null, new CommandList(), "list", "glist");
         commandMap.registerCommand(null, new CommandSwitch(), "switch");
 
+        commandMap.registerCommand(null, new CommandAdf(), "adf");
+
         this.serviceRegistry.setProvider(null, CommandMap.class, commandMap, false, true);
     }
 
@@ -235,6 +237,5 @@ public class MCProxy extends Proxy {
     //  Or maybe an extra program (like a labymod addon) or a standalone program which can be opened on a second screen (or the mobile?) to display some information
     //  Or maybe just a website for that?
     //  And add bac click limit disable
-    //  Service registry
 
 }

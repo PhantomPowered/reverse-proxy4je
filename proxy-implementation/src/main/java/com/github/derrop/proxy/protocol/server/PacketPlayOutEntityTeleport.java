@@ -1,19 +1,22 @@
 package com.github.derrop.proxy.protocol.server;
 
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
+@NoArgsConstructor
 public class PacketPlayOutEntityTeleport extends DefinedPacket {
 
     private int entityId;
-    private double x;
-    private double y;
-    private double z;
+    private int x;
+    private int y;
+    private int z;
     private byte yaw;
     private byte pitch;
     private boolean ground;
@@ -21,20 +24,19 @@ public class PacketPlayOutEntityTeleport extends DefinedPacket {
     public PacketPlayOutEntityTeleport(int entityId, @NotNull Location location, boolean ground) {
         this.entityId = entityId;
         this.ground = ground;
-
-        this.x = location.getX();
-        this.y = location.getY();
-        this.z = location.getZ();
+        this.x = PlayerPositionPacketUtil.getFixLocation(location.getX());
+        this.y = PlayerPositionPacketUtil.getFixLocation(location.getY());
+        this.z = PlayerPositionPacketUtil.getFixLocation(location.getZ());
         this.yaw = (byte) ((int) (location.getYaw() * 256.0F / 360.0F));
         this.pitch = (byte) ((int) (location.getPitch() * 256.0F / 360.0F));
     }
 
     @Override
     public void write(ByteBuf buf) {
-        buf.writeInt(this.entityId);
-        buf.writeDouble(this.x);
-        buf.writeDouble(this.y);
-        buf.writeDouble(this.z);
+        writeVarInt(this.entityId, buf);
+        buf.writeInt(this.x);
+        buf.writeInt(this.y);
+        buf.writeInt(this.z);
         buf.writeByte(this.yaw);
         buf.writeByte(this.pitch);
         buf.writeBoolean(this.ground);
@@ -42,10 +44,10 @@ public class PacketPlayOutEntityTeleport extends DefinedPacket {
 
     @Override
     public void read(ByteBuf buf) {
-        this.entityId = buf.readInt();
-        this.x = buf.readDouble();
-        this.y = buf.readDouble();
-        this.z = buf.readDouble();
+        this.entityId = readVarInt(buf);
+        this.x = buf.readInt();
+        this.y = buf.readInt();
+        this.z = buf.readInt();
         this.yaw = buf.readByte();
         this.pitch = buf.readByte();
         this.ground = buf.readBoolean();

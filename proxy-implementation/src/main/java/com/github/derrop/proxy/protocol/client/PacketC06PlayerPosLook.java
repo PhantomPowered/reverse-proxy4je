@@ -1,16 +1,17 @@
-package com.github.derrop.proxy.connection.velocity;
+package com.github.derrop.proxy.protocol.client;
 
+import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
-@Data
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class PlayerPosLook extends DefinedPacket {
+public class PacketC06PlayerPosLook extends DefinedPacket {
 
     private double x;
     private double y;
@@ -18,6 +19,15 @@ public class PlayerPosLook extends DefinedPacket {
     private float yaw;
     private float pitch;
     private boolean onGround;
+
+    public PacketC06PlayerPosLook(@NotNull Player player) {
+        this.x = player.getLocation().getX();
+        this.y = player.getLocation().getY();
+        this.z = player.getLocation().getZ();
+        this.yaw = PlayerPositionPacketUtil.getFixLocation(player.getLocation().getYaw());
+        this.pitch = PlayerPositionPacketUtil.getFixLocation(player.getLocation().getPitch());
+        this.onGround = player.isOnGround();
+    }
 
     @Override
     public void read(ByteBuf buf) {
@@ -41,5 +51,6 @@ public class PlayerPosLook extends DefinedPacket {
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
+
     }
 }

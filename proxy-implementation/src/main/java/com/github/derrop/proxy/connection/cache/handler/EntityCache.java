@@ -8,6 +8,7 @@ import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.packet.entity.*;
 import com.github.derrop.proxy.connection.cache.packet.entity.spawn.*;
 import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.protocol.server.PacketPlayOutEntityTeleport;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.*;
@@ -32,9 +33,9 @@ public class EntityCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         DefinedPacket packet = newPacket.getDeserializedPacket();
 
-        if (packet instanceof EntityTeleport) {
+        if (packet instanceof PacketPlayOutEntityTeleport) {
 
-            EntityTeleport entityTeleport = (EntityTeleport) packet;
+            PacketPlayOutEntityTeleport entityTeleport = (PacketPlayOutEntityTeleport) packet;
 
             if (this.entities.containsKey(entityTeleport.getEntityId())) {
                 PositionedPacket entity = this.entities.get(entityTeleport.getEntityId());
