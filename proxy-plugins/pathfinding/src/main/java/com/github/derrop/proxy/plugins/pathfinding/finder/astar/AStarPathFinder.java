@@ -1,16 +1,11 @@
-package com.github.derrop.proxy.plugins.astar;
+package com.github.derrop.proxy.plugins.pathfinding.finder.astar;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
-import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.connection.cache.packet.world.BlockUpdate;
+import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AStarPathFinder {
@@ -18,16 +13,10 @@ public class AStarPathFinder {
     // TODO players can jump over wholes, implement this
     // TODO Just MAYBE this could build bridges if the player has blocks in their inventory?
 
-    private Queue<PathPoint> points = new ConcurrentLinkedQueue<>();
-
-    public Queue<PathPoint> getPoints() {
-        return this.points;
-    }
+    private static final Queue<PathPoint> EMPTY_QUEUE = new ConcurrentLinkedQueue<>();
 
     // This can take pretty long with paths that aren't straight forward
-    public boolean findPath(Player player, boolean visualize, long visualizeMillis, BlockAccess access, BlockPos start, BlockPos end) {
-        // TODO The visualization blocks are sometimes not removed
-
+    public Queue<PathPoint> findPath(BlockAccess access, BlockPos start, BlockPos end) {
         PathPoint startPoint = new PathPoint(0, 0, 0);
         PathPoint endPoint = new PathPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
 
@@ -45,22 +34,9 @@ public class AStarPathFinder {
         Collection<PathPoint> visitedPoints = new ArrayList<>();
         Queue<PathPoint> frontier = new ConcurrentLinkedQueue<>(Arrays.asList(this.loadNeighbors(startPoint)));
 
-        BlockPos lastPos = null;
 
         while (!frontier.isEmpty()) {
             PathPoint point = frontier.poll();
-
-            if (lastPos != null && visualize) {
-                if (visualizeMillis > 0) {
-                    try {
-                        Thread.sleep(visualizeMillis);
-                    } catch (InterruptedException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-                player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
-                lastPos = null;
-            }
 
             if (visitedPoints.contains(point)) {
                 continue;
@@ -68,14 +44,9 @@ public class AStarPathFinder {
             visitedPoints.add(point);
 
             BlockPos absolutePoint = new BlockPos(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
-            lastPos = absolutePoint;
 
             if (absolutePoint.distanceSq(end) > maxDistanceSquared) {
                 continue;
-            }
-
-            if (visualize) {
-                player.sendPacket(new BlockUpdate(absolutePoint, player.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getDefaultBlockState(Material.LAPIS_BLOCK))); // TODO player.sendBlockUpdate(BlockPos, Material/BlockState)
             }
 
             int solidDown = -1;
@@ -108,32 +79,39 @@ public class AStarPathFinder {
             }
 
             if (point.equals(endPoint)) {
-                if (visualize) {
-                    player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
-                }
-
                 System.out.println("FOUND " + endPoint);
                 PathPoint previous = point;
                 previous.setY(previous.getY() + 1.3);
+
+                Queue<PathPoint> points = new ConcurrentLinkedQueue<>();
+
                 do {
-                    this.points.add(previous);
+                    points.add(previous);
                     System.out.println("Point: " + previous);
                     BlockPos pos = new BlockPos(start.getX() + previous.getX(), start.getY() + previous.getY(), start.getZ() + previous.getZ());
                     System.out.println("-> " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
                     access.setMaterial(pos, Material.EMERALD_BLOCK); // TODO remove this debug
                 } while ((previous = previous.getPreviousPoint()) != startPoint);
-                System.out.println("Success: " + this.points);
-                return true;
+                System.out.println("Success: " + points);
+
+                return this.reverse(points);
             }
 
             frontier.addAll(Arrays.asList(this.loadNeighbors(point)));
         }
 
-        if (lastPos != null && visualize) {
-            player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
+        return EMPTY_QUEUE;
+    }
+
+    private Queue<PathPoint> reverse(Queue<PathPoint> points) {
+        PathPoint[] array = points.toArray(new PathPoint[0]);
+        Queue<PathPoint> result = new ConcurrentLinkedQueue<>();
+
+        for (int i = array.length - 1; i >= 0; i++) {
+            result.add(array[i]);
         }
 
-        return false;
+        return result;
     }
 
     private PathPoint[] loadNeighbors(PathPoint point) {

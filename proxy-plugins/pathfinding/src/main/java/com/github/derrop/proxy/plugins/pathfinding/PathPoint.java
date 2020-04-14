@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.plugins.astar;
+package com.github.derrop.proxy.plugins.pathfinding;
 
 import java.util.Objects;
 
