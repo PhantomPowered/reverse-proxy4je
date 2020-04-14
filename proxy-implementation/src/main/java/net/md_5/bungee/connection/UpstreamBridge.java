@@ -38,6 +38,10 @@ public class UpstreamBridge extends PacketHandler {
     @Override
     public void disconnected(ChannelWrapper channel) {
         this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(this.con));
+        this.con.setConnected(false);
+        if (this.con.getConnectedClient() != null) {
+            this.con.getConnectedClient().getClient().free();
+        }
     }
 
     @Override

@@ -286,6 +286,10 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
         return this.connected;
     }
 
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
     @Override
     public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason) {
         if (!this.connected) {
