@@ -1427,6 +1427,12 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
     }
 
     @Override
+    public int getDefaultBlockState(@NotNull Material material) {
+        int[] ids = this.getValidBlockStateIDs(material);
+        return ids.length != 0 ? ids[0] : 0;
+    }
+
+    @Override
     public Material getMaterial(int blockStateId) {
         return BLOCK_STATE_IDS.get(blockStateId);
     }

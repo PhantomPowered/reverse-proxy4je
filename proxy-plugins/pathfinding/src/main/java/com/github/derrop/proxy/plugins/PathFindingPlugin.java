@@ -19,7 +19,7 @@ public class PathFindingPlugin extends Plugin {
         System.out.println("Login: " + event.getPlayer().getName());
         new Thread(() -> {
             AStarPathFinder finder = new AStarPathFinder();
-            System.out.println("Found path: " + finder.findPath(event.getTargetConnection().getBlockAccess(), new BlockPos(-389, 66, 450), new BlockPos(-379, 66, 458)));
+            System.out.println("Found path: " + finder.findPath(event.getPlayer(), true, 0, event.getTargetConnection().getBlockAccess(), new BlockPos(-389, 66, 450), new BlockPos(-379, 66, 458)));
         }).start();
     }
 

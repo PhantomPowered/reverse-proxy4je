@@ -1,8 +1,11 @@
 package com.github.derrop.proxy.plugins.test;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.connection.cache.packet.world.BlockUpdate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +25,7 @@ public class AStarPathFinder {
     }
 
     // This can take pretty long with paths that aren't straight forward
-    public boolean findPath(BlockAccess access, BlockPos start, BlockPos end) {
+    public boolean findPath(ProxiedPlayer player, boolean visualize, long visualizeMillis, BlockAccess access, BlockPos start, BlockPos end) {
 
         PathPoint startPoint = new PathPoint(0, 0, 0);
         PathPoint endPoint = new PathPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
@@ -41,6 +44,8 @@ public class AStarPathFinder {
         Collection<PathPoint> visitedPoints = new ArrayList<>();
         Queue<PathPoint> frontier = new ConcurrentLinkedQueue<>(Arrays.asList(startPoint.getNeighbors()));
 
+        BlockPos lastPos = null;
+
         while (!frontier.isEmpty()) {
             PathPoint point = frontier.poll();
 
@@ -49,10 +54,26 @@ public class AStarPathFinder {
             }
             visitedPoints.add(point);
 
+            if (lastPos != null && visualize) {
+                if (visualizeMillis > 0) {
+                    try {
+                        Thread.sleep(visualizeMillis);
+                    } catch (InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+                player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
+            }
+
             BlockPos absolutePoint = new BlockPos(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
+            lastPos = absolutePoint;
 
             if (absolutePoint.distanceSq(end) > maxDistanceSquared) {
                 continue;
+            }
+
+            if (visualize) {
+                player.sendPacket(new BlockUpdate(absolutePoint, player.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getDefaultBlockState(Material.LAPIS_BLOCK))); // TODO player.sendBlockUpdate(BlockPos, Material/BlockState)
             }
 
             int solidDown = -1;
@@ -85,6 +106,10 @@ public class AStarPathFinder {
             }
 
             if (point.equals(endPoint)) {
+                if (visualize) {
+                    player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
+                }
+
                 System.out.println("FOUND " + endPoint);
                 PathPoint previous = point;
                 previous.setY(previous.getY() + 1.3);
@@ -101,6 +126,10 @@ public class AStarPathFinder {
 
             this.loadNeighbors(point);
             frontier.addAll(Arrays.asList(point.getNeighbors()));
+        }
+
+        if (lastPos != null && visualize) {
+            player.sendPacket(new BlockUpdate(lastPos, access.getBlockState(lastPos)));
         }
 
         return false;
