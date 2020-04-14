@@ -5,9 +5,14 @@ import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.cache.handler.ChunkCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class DefaultBlockAccess implements BlockAccess {
 
@@ -17,6 +22,48 @@ public class DefaultBlockAccess implements BlockAccess {
     public DefaultBlockAccess(Proxy proxy, ChunkCache chunkCache) {
         this.proxy = proxy;
         this.chunkCache = chunkCache;
+    }
+
+    private Collection<BlockPos> mapPositionsByChunk(Chunk chunk, Collection<BlockPos> input) {
+        Collection<BlockPos> result = new ArrayList<>(input.size());
+
+        for (BlockPos pos : input) {
+            result.add(pos.add(chunk.getX() << 4, 0, chunk.getZ() << 4));
+        }
+
+        return result;
+    }
+
+    @Override
+    public Collection<BlockPos> getPositions(int state) {
+        Collection<BlockPos> result = new ArrayList<>();
+
+        for (Chunk chunk : this.chunkCache.getChunks()) {
+            result.addAll(this.mapPositionsByChunk(chunk, chunk.getPositionsByState(state)));
+        }
+
+        return result;
+    }
+
+    @Override
+    public Collection<BlockPos> getPositions(int[] states) {
+        Collection<BlockPos> result = new ArrayList<>();
+
+        for (Chunk chunk : this.chunkCache.getChunks()) {
+            result.addAll(this.mapPositionsByChunk(chunk, chunk.getPositionsByStates(states)));
+        }
+
+        return result;
+    }
+
+    @Override
+    public Collection<BlockPos> getPositions(Material material) {
+        int[] states = this.getValidBlockStates(material);
+        if (states.length == 0) {
+            return Collections.emptySet();
+        }
+
+        return this.getPositions(states);
     }
 
     @Override

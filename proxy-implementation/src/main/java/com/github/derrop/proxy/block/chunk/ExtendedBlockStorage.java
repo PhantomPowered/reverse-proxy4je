@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.chunk;
+package com.github.derrop.proxy.block.chunk;
 
 import java.util.Arrays;
 

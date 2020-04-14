@@ -5,7 +5,15 @@ import com.github.derrop.proxy.api.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+
 public interface BlockAccess {
+
+    Collection<BlockPos> getPositions(int state);
+
+    Collection<BlockPos> getPositions(int[] states);
+
+    Collection<BlockPos> getPositions(Material material);
 
     int getBlockState(@NotNull BlockPos pos);
 

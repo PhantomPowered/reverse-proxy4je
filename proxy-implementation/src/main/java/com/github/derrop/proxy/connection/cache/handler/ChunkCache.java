@@ -10,7 +10,7 @@ import com.github.derrop.proxy.connection.cache.packet.world.ChunkBulk;
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
 import com.github.derrop.proxy.connection.cache.packet.world.MultiBlockUpdate;
 import com.github.derrop.proxy.api.util.BlockPos;
-import com.github.derrop.proxy.util.chunk.Chunk;
+import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -113,6 +113,10 @@ public class ChunkCache implements PacketCacheHandler {
         }
 
         return chunk.getBlockStateAt(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public Collection<Chunk> getChunks() {
+        return this.chunks;
     }
 
     public Chunk getChunk(int x, int z) {

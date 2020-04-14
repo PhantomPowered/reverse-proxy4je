@@ -1,9 +1,11 @@
-package com.github.derrop.proxy.util.chunk;
+package com.github.derrop.proxy.block.chunk;
 
+import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Chunk {
@@ -120,6 +122,65 @@ public class Chunk {
         }
 
         storage.set(x & 15, y & 15, z & 15, state);
+    }
+
+    public int[][][] getAllBlockStates() {
+        int[][][] result = new int[16][256][16];
+
+        this.forEachBlockStates((x, y, z, state) -> result[x][y][z] = state);
+
+        return result;
+    }
+
+    public Collection<BlockPos> getPositionsByState(int allowedState) {
+        Collection<BlockPos> result = new ArrayList<>();
+
+        this.forEachBlockStates((x, y, z, state) -> {
+            if (state == allowedState) {
+                result.add(new BlockPos(x, y, z));
+            }
+        });
+
+        return result;
+    }
+
+    public Collection<BlockPos> getPositionsByStates(int[] allowedStates) {
+        Collection<BlockPos> result = new ArrayList<>();
+
+        this.forEachBlockStates((x, y, z, state) -> {
+            for (int allowedState : allowedStates) {
+                if (allowedState == state) {
+                    result.add(new BlockPos(x, y, z));
+                }
+            }
+        });
+
+        return result;
+    }
+
+    private void forEachBlockStates(BlockConsumer consumer) {
+        for (int y = 0; y < this.storageArrays.length; y++) {
+            ExtendedBlockStorage storage = this.storageArrays[y];
+            if (storage == null) {
+                for (int x = 0; x < 16; x++) {
+                    for (int cY = 0; cY < 16; cY++) {
+                        for (int z = 0; z < 16; z++) {
+                            consumer.accept(x, cY + (y * 16), z, 0);
+                        }
+                    }
+                }
+                continue;
+            }
+
+            for (int x = 0; x < 16; x++) {
+                for (int cY = 0; cY < 16; cY++) {
+                    for (int z = 0; z < 16; z++) {
+                        consumer.accept(x, cY + (y * 16), z, storage.get(x, cY, z));
+                    }
+                }
+            }
+
+        }
     }
 
     public ChunkData getLastChunkData() {
