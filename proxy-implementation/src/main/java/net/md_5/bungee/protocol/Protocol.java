@@ -1,7 +1,5 @@
 package net.md_5.bungee.protocol;
 
-import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
-import com.github.derrop.proxy.protocol.server.PacketPlayOutEntityTeleport;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.github.derrop.proxy.connection.PacketConstants;
@@ -9,6 +7,7 @@ import com.github.derrop.proxy.connection.cache.packet.ResourcePackSend;
 import com.github.derrop.proxy.connection.cache.packet.ResourcePackStatusResponse;
 import com.github.derrop.proxy.connection.cache.packet.entity.DestroyEntities;
 import com.github.derrop.proxy.connection.cache.packet.entity.EntityMetadata;
+import com.github.derrop.proxy.connection.cache.packet.entity.EntityTeleport;
 import com.github.derrop.proxy.connection.cache.packet.entity.effect.EntityEffect;
 import com.github.derrop.proxy.connection.cache.packet.entity.effect.RemoveEntityEffect;
 import com.github.derrop.proxy.connection.cache.packet.entity.player.Camera;
@@ -231,6 +230,10 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.PLAYER_ABILITIES)
             );
             TO_CLIENT.registerPacket(
+                    EntityTeleport.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_TELEPORT)
+            );
+            TO_CLIENT.registerPacket(
                     SpawnGlobalEntity.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.GLOBAL_ENTITY_SPAWN)
             );
@@ -306,10 +309,6 @@ public enum Protocol {
                     Disconnect.class,
                     map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.DISCONNECT)
             );
-            TO_CLIENT.registerPacket(
-                    PacketPlayOutEntityTeleport.class,
-                    Protocol.map(ProtocolConstants.MINECRAFT_1_8, PacketConstants.ENTITY_TELEPORT)
-            );
 
             TO_SERVER.registerPacket(
                     KeepAlive.class,
@@ -367,12 +366,12 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, 5)
             );
             TO_SERVER.registerPacket(
-                    ResourcePackStatusResponse.class,
-                    map(ProtocolConstants.MINECRAFT_1_8, 25)
+                    PlayerPosLook.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 6)
             );
             TO_SERVER.registerPacket(
-                    PacketC06PlayerPosLook.class,
-                    Protocol.map(ProtocolConstants.MINECRAFT_1_8, 6)
+                    ResourcePackStatusResponse.class,
+                    map(ProtocolConstants.MINECRAFT_1_8, 25)
             );
         }
     },

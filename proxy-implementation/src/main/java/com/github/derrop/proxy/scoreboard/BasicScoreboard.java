@@ -8,8 +8,8 @@ import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
 import com.github.derrop.proxy.scoreboard.minecraft.ScoreObjective;
 import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
-import net.md_5.bungee.protocol.packet.ScoreboardDisplay;
-import net.md_5.bungee.protocol.packet.ScoreboardObjective;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardDisplay;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardObjective;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ public class BasicScoreboard implements Scoreboard {
         this.cache = cache;
 
         cache.setPacketHandler(packet -> {
-            if (packet instanceof ScoreboardObjective || packet instanceof ScoreboardDisplay) {
+            if (packet instanceof PacketPlayServerScoreboardObjective || packet instanceof PacketPlayServerScoreboardDisplay) {
                 for (BasicObjective objective : this.registeredObjectives) {
                     objective.ensureRegistered();
                 }

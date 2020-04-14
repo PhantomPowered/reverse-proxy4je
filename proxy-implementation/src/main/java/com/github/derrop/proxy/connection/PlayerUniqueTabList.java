@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.connection;
 
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListItem;
 import net.md_5.bungee.netty.ChannelWrapper;
-import net.md_5.bungee.protocol.packet.PlayerListItem;
 import net.md_5.bungee.tab.TabList;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ public class PlayerUniqueTabList extends TabList {
     }
 
     @Override
-    public void onUpdate(PlayerListItem playerListItem) {
-        for (PlayerListItem.Item item : playerListItem.getItems()) {
-            if (playerListItem.getAction() == PlayerListItem.Action.ADD_PLAYER) {
+    public void onUpdate(PacketPlayServerPlayerListItem playerListItem) {
+        for (PacketPlayServerPlayerListItem.Item item : playerListItem.getItems()) {
+            if (playerListItem.getAction() == PacketPlayServerPlayerListItem.Action.ADD_PLAYER) {
                 this.uuids.add(item.getUuid());
-            } else if (playerListItem.getAction() == PlayerListItem.Action.REMOVE_PLAYER) {
+            } else if (playerListItem.getAction() == PacketPlayServerPlayerListItem.Action.REMOVE_PLAYER) {
                 this.uuids.remove(item.getUuid());
             }
         }
@@ -36,11 +36,11 @@ public class PlayerUniqueTabList extends TabList {
         if (this.uuids.isEmpty()) {
             return;
         }
-        PlayerListItem playerListItem = new PlayerListItem();
-        playerListItem.setAction(PlayerListItem.Action.REMOVE_PLAYER);
-        PlayerListItem.Item[] items = new PlayerListItem.Item[this.uuids.size()];
+        PacketPlayServerPlayerListItem playerListItem = new PacketPlayServerPlayerListItem();
+        playerListItem.setAction(PacketPlayServerPlayerListItem.Action.REMOVE_PLAYER);
+        PacketPlayServerPlayerListItem.Item[] items = new PacketPlayServerPlayerListItem.Item[this.uuids.size()];
         for (int i = 0; i < items.length; i++) {
-            items[i] = new PlayerListItem.Item();
+            items[i] = new PacketPlayServerPlayerListItem.Item();
             items[i].setUuid(this.uuids.get(i));
         }
 

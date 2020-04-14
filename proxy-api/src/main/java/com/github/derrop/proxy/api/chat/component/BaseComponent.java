@@ -3,7 +3,7 @@ package com.github.derrop.proxy.api.chat.component;
 import com.github.derrop.proxy.api.chat.ClickEvent;
 import com.github.derrop.proxy.api.chat.ComponentBuilder;
 import com.github.derrop.proxy.api.chat.HoverEvent;
-import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.api.chat.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;

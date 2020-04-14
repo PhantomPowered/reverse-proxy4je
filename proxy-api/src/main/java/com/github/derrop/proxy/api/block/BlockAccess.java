@@ -1,24 +1,33 @@
 package com.github.derrop.proxy.api.block;
 
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.UUID;
+
 public interface BlockAccess {
+
+    // the consumer will be called with -1 when a chunk is unloaded
+    void trackBlockUpdates(UUID trackerId, int[] states, BlockConsumer consumer);
+
+    // the consumer will be called with -1 when a chunk is unloaded
+    void trackBlockUpdates(UUID trackerId, Material material, BlockConsumer consumer);
+
+    void untrackBlockUpdates(UUID trackerId);
+
+    Collection<BlockPos> getPositions(int state);
+
+    Collection<BlockPos> getPositions(int[] states);
+
+    Collection<BlockPos> getPositions(Material material);
 
     int getBlockState(@NotNull BlockPos pos);
 
-    int getDefaultBlockState(@Nullable Material material);
-
-    @NotNull
-    int[] getValidBlockStates(@Nullable Material material);
-
     @NotNull
     Material getMaterial(@NotNull BlockPos pos);
-
-    @NotNull
-    Material getMaterial(int blockState);
 
     /**
      * Checks to see if an air block exists at the provided location. Note that this only checks to see if the blocks
@@ -37,5 +46,7 @@ public interface BlockAccess {
     void setMaterial(@NotNull BlockPos pos, @Nullable Material material);
 
     void setBlockState(@NotNull BlockPos pos, int blockState);
+
+    BlockStateRegistry getBlockStateRegistry();
 
 }

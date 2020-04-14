@@ -12,13 +12,17 @@ import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientSettings;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import net.md_5.bungee.protocol.packet.*;
 import org.jetbrains.annotations.NotNull;
 
 public class UpstreamBridge extends PacketHandler {
@@ -38,6 +42,10 @@ public class UpstreamBridge extends PacketHandler {
     @Override
     public void disconnected(ChannelWrapper channel) {
         this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(this.con));
+        this.con.setConnected(false);
+        if (this.con.getConnectedClient() != null) {
+            this.con.getConnectedClient().getClient().free();
+        }
     }
 
     @Override
@@ -64,11 +72,11 @@ public class UpstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(KeepAlive alive) throws Exception {
+    public void handle(PacketPlayKeepAlive alive) throws Exception {
     }
 
     @Override
-    public void handle(Chat chat) throws Exception {
+    public void handle(PacketPlayChatMessage chat) throws Exception {
         int maxLength = (con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
             throw CancelSendSignal.INSTANCE;
@@ -97,7 +105,7 @@ public class UpstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(TabCompleteRequest tabComplete) throws Exception {
+    public void handle(PacketPlayClientTabCompleteRequest tabComplete) throws Exception {
         /*List<String> suggestions = new ArrayList<>();
 
         if ( tabComplete.getCursor().startsWith( "/" ) )
@@ -140,11 +148,11 @@ public class UpstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(ClientSettings settings) throws Exception {
+    public void handle(PacketPlayClientSettings settings) throws Exception {
     }
 
     @Override
-    public void handle(PluginMessage pluginMessage) throws Exception {
+    public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
         if (this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
@@ -153,7 +161,7 @@ public class UpstreamBridge extends PacketHandler {
         pluginMessage.setTag(event.getTag());
         pluginMessage.setData(event.getData());
 
-        if (PluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
+        if (PacketPlayPluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
             this.con.getPendingConnection().getRelayMessages().add(pluginMessage);
         }
     }

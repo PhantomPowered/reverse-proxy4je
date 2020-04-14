@@ -1,5 +1,10 @@
 package com.github.derrop.proxy.connection;
 
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
+import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.minecraft.CryptManager;
@@ -17,7 +22,6 @@ import net.md_5.bungee.netty.cipher.CipherDecoder;
 import net.md_5.bungee.netty.cipher.CipherEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
-import net.md_5.bungee.protocol.packet.*;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -55,7 +59,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(Kick kick) throws Exception {
+    public void handle(PacketPlayKickPlayer kick) throws Exception {
         if (this.proxyClient == null) {
             return;
         }
@@ -65,7 +69,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(EncryptionRequest request) throws Exception {
+    public void handle(PacketLoginEncryptionRequest request) throws Exception {
         if (this.proxyClient.getCredentials().isOffline()) {
             throw new IllegalStateException("Joined with an offline account on an online mode server");
         }
@@ -83,7 +87,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
         byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretKey.getEncoded());
         byte[] verifyTokenEncrypted = CryptManager.encryptData(publicKey, request.getVerifyToken());
-        this.proxyClient.getChannelWrapper().write(new EncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
+        this.proxyClient.getChannelWrapper().write(new PacketLoginEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
 
         BungeeCipher decrypt = EncryptionUtil.getCipher(false, secretKey);
         BungeeCipher encrypt = EncryptionUtil.getCipher(true, secretKey);
@@ -92,15 +96,11 @@ public class ProxyClientLoginHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(LoginSuccess loginSuccess) throws Exception {
+    public void handle(PacketPlayServerLoginSuccess loginSuccess) throws Exception {
         this.proxyClient.getChannelWrapper().setProtocol(Protocol.GAME);
 
         this.proxyClient.getChannelWrapper().getHandle().pipeline().get(HandlerBoss.class).setHandler(new DownstreamBridge(this.connection));
         throw CancelSendSignal.INSTANCE; // without this, the LoginSuccess would be recorded by ConnectedProxyClient#redirectPacket
-    }
-
-    @Override
-    public void handle(KeepAlive keepAlive) throws Exception {
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(SetCompression setCompression) throws Exception {
+    public void handle(PacketLoginSetCompression setCompression) throws Exception {
         this.proxyClient.getChannelWrapper().setCompressionThreshold(setCompression.getThreshold());
     }
 }

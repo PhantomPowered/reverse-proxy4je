@@ -1,5 +1,6 @@
 package net.md_5.bungee.netty;
 
+import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -13,7 +14,6 @@ import net.md_5.bungee.protocol.MinecraftDecoder;
 import net.md_5.bungee.protocol.MinecraftEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
-import net.md_5.bungee.protocol.packet.Kick;
 
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -86,7 +86,7 @@ public class ChannelWrapper {
         }
     }
 
-    public void delayedClose(final Kick kick) {
+    public void delayedClose(final PacketPlayKickPlayer kick) {
         if (!closing) {
             closing = true;
 

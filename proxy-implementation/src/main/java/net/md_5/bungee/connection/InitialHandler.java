@@ -2,6 +2,7 @@ package net.md_5.bungee.connection;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.PendingConnection;
@@ -10,9 +11,20 @@ import com.github.derrop.proxy.api.connection.packet.Packet;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.util.Callback;
-import com.github.derrop.proxy.api.util.ChatColor;
 import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.protocol.Handshake;
+import com.github.derrop.proxy.protocol.legacy.PacketLegacyHandshake;
+import com.github.derrop.proxy.protocol.legacy.PacketLegacyPing;
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
+import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
+import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
+import com.github.derrop.proxy.protocol.status.PacketStatusPing;
+import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
+import com.github.derrop.proxy.protocol.status.PacketStatusResponse;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
@@ -33,7 +45,6 @@ import net.md_5.bungee.netty.cipher.CipherEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import net.md_5.bungee.protocol.packet.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
@@ -55,10 +66,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     @Getter
     private Handshake handshake;
     @Getter
-    private LoginRequest loginRequest;
-    private EncryptionRequest request;
+    private PacketLoginLoginRequest loginRequest;
+    private PacketLoginEncryptionRequest request;
     @Getter
-    private final List<PluginMessage> relayMessages = new ArrayList<>();
+    private final List<PacketPlayPluginMessage> relayMessages = new ArrayList<>();
     private State thisState = State.HANDSHAKE;
     @Getter
     private boolean onlineMode = true;
@@ -136,20 +147,20 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void handle(PluginMessage pluginMessage) throws Exception {
-        if (PluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
+    public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
+        if (PacketPlayPluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
             relayMessages.add(pluginMessage);
         }
     }
 
     @Override
-    public void handle(LegacyHandshake legacyHandshake) throws Exception {
+    public void handle(PacketLegacyHandshake legacyHandshake) throws Exception {
         this.legacy = true;
         ch.close("outdated client");
     }
 
     @Override
-    public void handle(LegacyPing ping) throws Exception {
+    public void handle(PacketLegacyPing ping) throws Exception {
         this.legacy = true;
         final boolean v1_5 = ping.isV1_5();
 
@@ -191,19 +202,19 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void handle(StatusRequest statusRequest) throws Exception {
+    public void handle(PacketStatusRequest statusRequest) throws Exception {
         Preconditions.checkState(thisState == State.STATUS, "Not expecting STATUS");
 
         final String motd = "§7To join: Contact §6Schul_Futzi#4633 §7on §9Discord\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
         final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) ? handshake.getProtocolVersion() : 578;
 
-        this.ch.write(new StatusResponse(Util.GSON.toJson(getPingInfo(motd, protocol))));
+        this.ch.write(new PacketStatusResponse(Util.GSON.toJson(getPingInfo(motd, protocol))));
 
         thisState = State.PING;
     }
 
     @Override
-    public void handle(PingPacket ping) throws Exception {
+    public void handle(PacketStatusPing ping) throws Exception {
         Preconditions.checkState(thisState == State.PING, "Not expecting PING");
         this.ch.write(ping);
         disconnect("");
@@ -258,7 +269,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void handle(LoginRequest loginRequest) throws Exception {
+    public void handle(PacketLoginLoginRequest loginRequest) throws Exception {
         Preconditions.checkState(thisState == State.USERNAME, "Not expecting USERNAME");
         this.loginRequest = loginRequest;
 
@@ -277,7 +288,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void handle(final EncryptionResponse encryptResponse) throws Exception {
+    public void handle(final PacketLoginEncryptionResponse encryptResponse) throws Exception {
         Preconditions.checkState(thisState == State.ENCRYPT, "Not expecting ENCRYPT");
 
         SecretKey sharedKey = EncryptionUtil.getSecret(encryptResponse, request);
@@ -334,7 +345,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
             if (!ch.isClosing()) {
                 DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(ch), ch, InitialHandler.this, 256);
 
-                this.ch.write(new LoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
+                this.ch.write(new PacketPlayServerLoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
                 ch.setProtocol(Protocol.GAME);
                 ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(player));
 
@@ -363,11 +374,6 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void handle(LoginPayloadResponse response) throws Exception {
-        disconnect("Unexpected custom LoginPayloadResponse");
-    }
-
-    @Override
     public void disconnect(@NotNull String reason) {
         if (canSendKickMessage()) {
             disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + reason));
@@ -379,7 +385,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     @Override
     public void disconnect(final BaseComponent... reason) {
         if (canSendKickMessage()) {
-            ch.delayedClose(new Kick(ComponentSerializer.toString(reason)));
+            ch.delayedClose(new PacketPlayKickPlayer(ComponentSerializer.toString(reason)));
         } else {
             ch.close();
         }

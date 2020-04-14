@@ -10,7 +10,7 @@ public final class BlockUtils {
     }
 
     public static boolean isPassable(@NotNull BlockAccess blockAccess, int blockState) {
-        Material material = blockAccess.getMaterial(blockState);
+        Material material = blockAccess.getBlockStateRegistry().getMaterial(blockState);
 
         return material == Material.AIR ||
                 material == Material.SIGN_POST || material == Material.WALL_SIGN ||

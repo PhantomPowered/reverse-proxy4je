@@ -5,8 +5,8 @@ import net.md_5.bungee.jni.NativeCode;
 import net.md_5.bungee.jni.cipher.BungeeCipher;
 import net.md_5.bungee.jni.cipher.JavaCipher;
 import net.md_5.bungee.jni.cipher.NativeCipher;
-import net.md_5.bungee.protocol.packet.EncryptionRequest;
-import net.md_5.bungee.protocol.packet.EncryptionResponse;
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -37,15 +37,15 @@ public class EncryptionUtil {
         }
     }
 
-    public static EncryptionRequest encryptRequest() {
+    public static PacketLoginEncryptionRequest encryptRequest() {
         String hash = Long.toString(random.nextLong(), 16);
         byte[] pubKey = keys.getPublic().getEncoded();
         byte[] verify = new byte[4];
         random.nextBytes(verify);
-        return new EncryptionRequest(hash, pubKey, verify);
+        return new PacketLoginEncryptionRequest(hash, pubKey, verify);
     }
 
-    public static SecretKey getSecret(EncryptionResponse resp, EncryptionRequest request) throws GeneralSecurityException {
+    public static SecretKey getSecret(PacketLoginEncryptionResponse resp, PacketLoginEncryptionRequest request) throws GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
         byte[] decrypted = cipher.doFinal(resp.getVerifyToken());
@@ -65,7 +65,7 @@ public class EncryptionUtil {
         return cipher;
     }
 
-    public static PublicKey getPubkey(EncryptionRequest request) throws GeneralSecurityException {
+    public static PublicKey getPubkey(PacketLoginEncryptionRequest request) throws GeneralSecurityException {
         return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(request.getPublicKey()));
     }
 

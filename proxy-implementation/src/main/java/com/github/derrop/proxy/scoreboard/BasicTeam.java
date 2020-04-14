@@ -4,6 +4,7 @@ import com.github.derrop.proxy.api.scoreboard.NameTagVisibility;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardTeam;
 
 import java.util.Collections;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class BasicTeam implements Team {
             return;
         }
         this.scoreboard.getHandle().addPlayerToTeam(entry, this.name);
-        this.scoreboard.getCache().sendTeamUpdate(new net.md_5.bungee.protocol.packet.Team(
+        this.scoreboard.getCache().sendTeamUpdate(new PacketPlayServerScoreboardTeam(
                 this.name, (byte) 3, null, null, null, null, null, 0, (byte) 0,
                 new String[]{entry}
         ));
@@ -74,7 +75,7 @@ public class BasicTeam implements Team {
             return;
         }
         this.scoreboard.getHandle().removePlayerFromTeam(entry, this.handle);
-        this.scoreboard.getCache().sendTeamUpdate(new net.md_5.bungee.protocol.packet.Team(
+        this.scoreboard.getCache().sendTeamUpdate(new PacketPlayServerScoreboardTeam(
                 this.name, (byte) 4, null, null, null, null, null, 0, (byte) 0,
                 new String[]{entry}
         ));
@@ -107,7 +108,7 @@ public class BasicTeam implements Team {
     public void unregister() {
         if (this.handle != null) {
             this.scoreboard.getHandle().removeTeam(this.handle);
-            this.scoreboard.getCache().sendTeamUpdate(new net.md_5.bungee.protocol.packet.Team(this.name));
+            this.scoreboard.getCache().sendTeamUpdate(new PacketPlayServerScoreboardTeam(this.name));
         }
     }
 

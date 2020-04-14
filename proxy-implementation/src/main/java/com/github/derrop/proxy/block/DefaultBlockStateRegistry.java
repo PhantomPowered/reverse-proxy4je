@@ -3,6 +3,7 @@ package com.github.derrop.proxy.block;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -1416,8 +1417,8 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
 
     @NotNull
     @Override
-    public int[] getValidBlockStateIDs(@NotNull Material material) {
-        if (material == Material.AIR) {
+    public int[] getValidBlockStateIDs(@Nullable Material material) {
+        if (material == null || material == Material.AIR) {
             return new int[]{0};
         }
         return BLOCK_STATE_IDS.entrySet().stream()
@@ -1427,14 +1428,15 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
     }
 
     @Override
-    public int getDefaultBlockState(@NotNull Material material) {
+    public int getDefaultBlockState(@Nullable Material material) {
         int[] ids = this.getValidBlockStateIDs(material);
         return ids.length != 0 ? ids[0] : 0;
     }
 
+    @NotNull
     @Override
     public Material getMaterial(int blockStateId) {
-        return BLOCK_STATE_IDS.get(blockStateId);
+        return BLOCK_STATE_IDS.getOrDefault(blockStateId, Material.AIR);
     }
 
     @Override

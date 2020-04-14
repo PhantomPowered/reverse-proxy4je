@@ -4,7 +4,7 @@ import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.reconnect.ReconnectProfile;
-import net.md_5.bungee.protocol.packet.KeepAlive;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +19,7 @@ public final class EntityTickHandler {
             for (BasicServiceConnection onlineClient : MCProxy.getInstance().getOnlineClients()) {
                 onlineClient.getClient().keepAliveTick();
                 if (onlineClient.getPlayer() != null) {
-                    onlineClient.getPlayer().sendPacket(new KeepAlive(System.nanoTime())); // TODO: wait for result (if no, disconnect)
+                    onlineClient.getPlayer().sendPacket(new PacketPlayKeepAlive(System.nanoTime())); // TODO: wait for result (if no, disconnect)
                 }
             }
 

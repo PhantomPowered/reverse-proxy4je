@@ -1,6 +1,7 @@
 package net.md_5.bungee.connection;
 
 import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.protocol.Handshake;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BufUtil;
 import net.md_5.bungee.ServerPing;
@@ -13,9 +14,8 @@ import net.md_5.bungee.protocol.MinecraftDecoder;
 import net.md_5.bungee.protocol.MinecraftEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
-import net.md_5.bungee.protocol.packet.Handshake;
-import net.md_5.bungee.protocol.packet.StatusRequest;
-import net.md_5.bungee.protocol.packet.StatusResponse;
+import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
+import com.github.derrop.proxy.protocol.status.PacketStatusResponse;
 
 @RequiredArgsConstructor
 public class PingHandler extends PacketHandler {
@@ -36,7 +36,7 @@ public class PingHandler extends PacketHandler {
         channel.write(new Handshake(protocol, this.targetAddress.getHost(), this.targetAddress.getPort(), 1));
 
         encoder.setProtocol(Protocol.STATUS);
-        channel.write(new StatusRequest());
+        channel.write(new PacketStatusRequest());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PingHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(StatusResponse statusResponse) throws Exception {
+    public void handle(PacketStatusResponse statusResponse) throws Exception {
         ServerPing serverPing = Util.GSON.fromJson(statusResponse.getResponse(), ServerPing.class);
         callback.done(serverPing, null);
         channel.close();

@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection.cache.packet.world;
 
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.location.BlockPos;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
