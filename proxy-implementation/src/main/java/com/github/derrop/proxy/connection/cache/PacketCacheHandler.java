@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.connection.cache;
 
 import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.connection.UserConnection;
+import com.github.derrop.proxy.api.entity.player.Player;
 
 public interface PacketCacheHandler {
 
@@ -15,7 +15,7 @@ public interface PacketCacheHandler {
         return true;
     }
 
-    default void onClientSwitch(UserConnection con) {
+    default void onClientSwitch(Player con) {
     }
 
 }

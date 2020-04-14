@@ -3,15 +3,14 @@ package com.github.derrop.proxy.connection.cache;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.connection.cache.packet.entity.player.GameStateChange;
-import com.github.derrop.proxy.connection.cache.packet.world.UpdateSign;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;
@@ -57,12 +56,15 @@ public class PacketCache {
     public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
         packet.markReaderIndex();
 
+        /*
         if (deserialized instanceof UpdateSign) {
-            Material material = this.getMaterialAt(((UpdateSign) deserialized).getPos());
-            if (material != Material.SIGN_POST && material != Material.SIGN) {
+            int state = this.getBlockStateAt(((UpdateSign) deserialized).getPos());
+            if (Arrays.stream(DefaultBlockStateRegistry.SIGNS).noneMatch(i -> i == state)) {
                 return;
             }
         }
+
+         */
 
         int receivedPacketId = DefinedPacket.readVarInt(packet);
 
@@ -95,7 +97,7 @@ public class PacketCache {
         return targetProxyClient;
     }
 
-    public void send(UserConnection connection, boolean switched) {
+    public void send(Player connection, boolean switched) {
         for (PacketCacheHandler handler : this.handlers) {
             if (!switched || handler.sendOnSwitch()) {
                 handler.sendCached(connection);
@@ -103,7 +105,7 @@ public class PacketCache {
         }
     }
 
-    public void handleFree(UserConnection connection) {
+    public void handleFree(Player connection) {
         for (PacketCacheHandler handler : this.handlers) {
             handler.onClientSwitch(connection);
         }

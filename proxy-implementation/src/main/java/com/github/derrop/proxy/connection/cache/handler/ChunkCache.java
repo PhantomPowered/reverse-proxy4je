@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
@@ -11,7 +12,6 @@ import com.github.derrop.proxy.connection.cache.packet.world.MultiBlockUpdate;
 import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.util.chunk.Chunk;
 import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
 
-    private UserConnection connectedPlayer;
+    private Player connectedPlayer;
 
     @Override
     public int[] getPacketIDs() {
@@ -136,13 +136,13 @@ public class ChunkCache implements PacketCacheHandler {
             con.sendPacket(chunkData);
         }
 
-        if (con instanceof UserConnection) {
-            this.connectedPlayer = (UserConnection) con;
+        if (con instanceof Player) {
+            this.connectedPlayer = (Player) con;
         }
     }
 
     @Override
-    public void onClientSwitch(UserConnection con) {
+    public void onClientSwitch(Player con) {
         /*for (Chunk chunk : this.chunks) {
             ChunkData modChunk = new ChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isB(), new ChunkData.Extracted());
             modChunk.getExtracted().dataLength = 0;

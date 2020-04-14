@@ -8,7 +8,6 @@ import java.util.Set;
 
 public class ComponentSerializer implements JsonDeserializer<BaseComponent> {
 
-    private static final JsonParser JSON_PARSER = new JsonParser();
     private static final Gson gson = new GsonBuilder().
             registerTypeAdapter(BaseComponent.class, new ComponentSerializer()).
             registerTypeAdapter(TextComponent.class, new TextComponentSerializer()).
@@ -18,18 +17,18 @@ public class ComponentSerializer implements JsonDeserializer<BaseComponent> {
             registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer()).
             create();
 
-    public static final ThreadLocal<Set<BaseComponent>> serializedComponents = new ThreadLocal<Set<BaseComponent>>();
+    public static final ThreadLocal<Set<BaseComponent>> serializedComponents = new ThreadLocal<>();
 
     public static BaseComponent[] parse(String json) {
-        JsonElement jsonElement = JSON_PARSER.parse(json);
-
-        if (jsonElement.isJsonArray()) {
-            return gson.fromJson(jsonElement, BaseComponent[].class);
-        } else {
-            return new BaseComponent[]
-                    {
-                            gson.fromJson(jsonElement, BaseComponent.class)
-                    };
+        try {
+            JsonElement jsonElement = JsonParser.parseString(json);
+            if (jsonElement.isJsonArray()) {
+                return gson.fromJson(jsonElement, BaseComponent[].class);
+            } else {
+                return new BaseComponent[]{gson.fromJson(jsonElement, BaseComponent.class)};
+            }
+        } catch (final Throwable ex) {
+            return new BaseComponent[0];
         }
     }
 

@@ -1,5 +1,6 @@
 package net.md_5.bungee.protocol;
 
+import com.github.derrop.proxy.connection.cache.packet.entity.EntityTeleport;
 import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
 import net.md_5.bungee.protocol.packet.*;
 
@@ -111,5 +112,8 @@ public abstract class AbstractPacketHandler {
     }
 
     public void handle(GameState gameState) throws Exception {
+    }
+
+    public void handle(EntityTeleport teleport) throws Exception {
     }
 }

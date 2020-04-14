@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
@@ -7,7 +8,6 @@ import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.scoreboard.minecraft.*;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.packet.ScoreboardDisplay;
 import net.md_5.bungee.protocol.packet.ScoreboardObjective;
@@ -18,11 +18,11 @@ import java.util.function.Consumer;
 
 public class ScoreboardCache implements PacketCacheHandler {
 
-    private Scoreboard scoreboard = new Scoreboard();
+    private final Scoreboard scoreboard = new Scoreboard();
 
     private Consumer<DefinedPacket> packetHandler;
 
-    private UserConnection connectedPlayer;
+    private Player connectedPlayer;
 
     public Scoreboard getScoreboard() {
         return this.scoreboard;
@@ -126,8 +126,8 @@ public class ScoreboardCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(PacketSender con) {
-        if (con instanceof UserConnection) {
-            this.connectedPlayer = (UserConnection) con;
+        if (con instanceof Player) {
+            this.connectedPlayer = (Player) con;
         }
 
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
@@ -148,7 +148,7 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     @Override
-    public void onClientSwitch(UserConnection con) {
+    public void onClientSwitch(Player con) {
         for (ScoreObjective objective : this.scoreboard.getScoreObjectives()) {
             this.sendDeletedObjective(con, objective.getName());
         }

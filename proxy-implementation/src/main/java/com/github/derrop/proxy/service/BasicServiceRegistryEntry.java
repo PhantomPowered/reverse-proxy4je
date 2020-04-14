@@ -7,11 +7,12 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BasicServiceRegistryEntry<T> implements ServiceRegistryEntry<T> {
 
-    BasicServiceRegistryEntry(Class<T> service, T provider, Plugin plugin, boolean immutable) {
+    BasicServiceRegistryEntry(Class<T> service, T provider, Plugin plugin, boolean immutable, boolean needsReplacement) {
         this.service = service;
         this.provider = provider;
         this.plugin = plugin;
         this.immutable = immutable;
+        this.needsReplacement = needsReplacement;
     }
 
     private final Class<T> service;
@@ -21,6 +22,8 @@ public final class BasicServiceRegistryEntry<T> implements ServiceRegistryEntry<
     private final Plugin plugin;
 
     private final boolean immutable;
+
+    private final boolean needsReplacement;
 
     @Override
     public @NotNull Class<T> getService() {
@@ -41,5 +44,10 @@ public final class BasicServiceRegistryEntry<T> implements ServiceRegistryEntry<
     @Override
     public boolean isImmutable() {
         return this.immutable;
+    }
+
+    @Override
+    public boolean needsReplacement() {
+        return this.needsReplacement;
     }
 }

@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.api.connection;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.UUID;
 
 /**

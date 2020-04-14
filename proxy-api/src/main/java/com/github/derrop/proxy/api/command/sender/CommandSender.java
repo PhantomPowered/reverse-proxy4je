@@ -15,7 +15,7 @@ public interface CommandSender {
 
     void sendMessages(@NotNull String... messages);
 
-    boolean hasPermission(@NotNull String permission);
+    boolean checkPermission(@NotNull String permission);
 
     @NotNull
     String getName();

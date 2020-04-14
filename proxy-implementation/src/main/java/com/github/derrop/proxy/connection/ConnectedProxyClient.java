@@ -1,17 +1,18 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.api.scoreboard.Scoreboard;
-import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
-import com.github.derrop.proxy.scoreboard.BasicScoreboard;
-import com.mojang.authlib.UserAuthentication;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.session.ProvidedSessionService;
+import com.github.derrop.proxy.api.task.Task;
+import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
+import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
 import com.github.derrop.proxy.connection.cache.packet.ResourcePackSend;
 import com.github.derrop.proxy.connection.cache.packet.ResourcePackStatusResponse;
 import com.github.derrop.proxy.connection.cache.packet.entity.EntityMetadata;
@@ -19,11 +20,12 @@ import com.github.derrop.proxy.connection.cache.packet.entity.spawn.PositionedPa
 import com.github.derrop.proxy.connection.cache.packet.entity.spawn.SpawnPosition;
 import com.github.derrop.proxy.connection.velocity.*;
 import com.github.derrop.proxy.exception.KickedException;
-import com.github.derrop.proxy.api.util.MCCredentials;
-import com.github.derrop.proxy.minecraft.SessionUtils;
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.scoreboard.BasicScoreboard;
+import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.mojang.authlib.UserAuthentication;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -32,10 +34,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import net.md_5.bungee.connection.CancelSendSignal;
-import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
@@ -58,12 +57,12 @@ public class ConnectedProxyClient {
     private final BasicServiceConnection connection;
 
     private NetworkAddress address;
-    private MinecraftSessionService sessionService = SessionUtils.SERVICE.createMinecraftSessionService();
+    private final MinecraftSessionService sessionService = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).createSessionService();
     private UserAuthentication authentication;
     private MCCredentials credentials;
 
     private ChannelWrapper channelWrapper;
-    private UserConnection redirector;
+    private com.github.derrop.proxy.api.entity.player.Player redirector;
     private Channel channel;
 
     private PacketCache packetCache;
@@ -107,8 +106,9 @@ public class ConnectedProxyClient {
             this.credentials = credentials;
             return true;
         }
+
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword());
+        this.authentication = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
         this.credentials = credentials;
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
         return true;
@@ -176,6 +176,7 @@ public class ConnectedProxyClient {
                 this.channelWrapper.write(new Handshake(47, address.getHost(), address.getPort(), 2));
                 this.channelWrapper.setProtocol(Protocol.LOGIN);
                 this.channelWrapper.write(new LoginRequest(this.getAccountName()));
+                future.complete(true);
             } else {
                 future1.channel().close();
                 future.complete(false);
@@ -211,6 +212,10 @@ public class ConnectedProxyClient {
 
     public void disableGlobal() {
         this.globalAccount = false;
+    }
+
+    public boolean isOnGround() {
+        return onGround;
     }
 
     public MCProxy getProxy() {
@@ -273,7 +278,7 @@ public class ConnectedProxyClient {
         return this.channelWrapper != null && !this.channelWrapper.isClosing() && !this.channelWrapper.isClosed();
     }
 
-    public UserConnection getRedirector() {
+    public com.github.derrop.proxy.api.entity.player.Player getRedirector() {
         return redirector;
     }
 
@@ -369,9 +374,9 @@ public class ConnectedProxyClient {
 
                 deserialized.write(buf, ProtocolConstants.Direction.TO_CLIENT, 47);
 
-                this.redirector.getCh().write(buf);
+                this.redirector.sendPacket(buf);
             } else {
-                this.redirector.getCh().write(packet);
+                this.redirector.sendPacket(packet);
             }
 
             if (!this.redirector.isConnected()) {
@@ -419,7 +424,7 @@ public class ConnectedProxyClient {
         }
     }
 
-    public void redirectPackets(UserConnection con, boolean switched) {
+    public void redirectPackets(com.github.derrop.proxy.api.entity.player.Player con, boolean switched) {
         this.packetCache.send(con, switched);
         this.redirector = con;
     }

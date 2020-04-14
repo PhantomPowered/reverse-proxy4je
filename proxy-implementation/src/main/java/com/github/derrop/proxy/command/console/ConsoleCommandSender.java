@@ -35,7 +35,7 @@ public class ConsoleCommandSender implements CommandSender {
     }
 
     @Override
-    public boolean hasPermission(@NotNull String permission) {
+    public boolean checkPermission(@NotNull String permission) {
         return true;
     }
 

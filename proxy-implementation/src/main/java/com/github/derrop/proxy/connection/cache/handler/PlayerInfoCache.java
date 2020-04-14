@@ -1,10 +1,10 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.connection.UserConnection;
 import net.md_5.bungee.protocol.packet.PlayerListItem;
 
 import java.util.ArrayList;
@@ -56,15 +56,15 @@ public class PlayerInfoCache implements PacketCacheHandler {
         playerListItem.setAction(PlayerListItem.Action.ADD_PLAYER);
         playerListItem.setItems(this.items.toArray(new PlayerListItem.Item[0]));
 
-        if (con instanceof UserConnection) {
-            this.replaceOwn((UserConnection) con, playerListItem);
+        if (con instanceof Player) {
+            this.replaceOwn((Player) con, playerListItem);
         }
 
         con.sendPacket(playerListItem);
     }
 
     @Override
-    public void onClientSwitch(UserConnection con) {
+    public void onClientSwitch(Player con) {
         PlayerListItem playerListItem = new PlayerListItem();
 
         playerListItem.setAction(PlayerListItem.Action.REMOVE_PLAYER);
@@ -75,7 +75,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
         con.sendPacket(playerListItem);
     }
 
-    private void replaceOwn(UserConnection con, PlayerListItem playerListItem) {
+    private void replaceOwn(Player con, PlayerListItem playerListItem) {
         for (int i = 0; i < playerListItem.getItems().length; i++) {
             PlayerListItem.Item item = playerListItem.getItems()[i];
             if (item.getUuid().equals(this.packetCache.getTargetProxyClient().getAccountUUID())) {

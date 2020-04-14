@@ -1,19 +1,26 @@
 package net.md_5.bungee.connection;
 
-import com.github.derrop.proxy.api.connection.packet.Packet;
-import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.PendingConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.connection.PlayerUniqueTabList;
+import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
+import io.netty.buffer.ByteBuf;
 import lombok.Getter;
-import net.md_5.bungee.*;
+import net.md_5.bungee.BufUtil;
+import net.md_5.bungee.EncryptionUtil;
+import net.md_5.bungee.ServerPing;
+import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.http.HttpClient;
 import net.md_5.bungee.jni.cipher.BungeeCipher;
@@ -39,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Deprecated
 public class InitialHandler extends PacketHandler implements PendingConnection {
 
     private final MCProxy proxy;
@@ -80,6 +88,21 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     @Override
     public void sendPacket(@NotNull Packet packet) {
         this.ch.write(packet);
+    }
+
+    @Override
+    public void sendPacket(@NotNull ByteBuf byteBuf) {
+        this.ch.write(byteBuf);
+    }
+
+    @Override
+    public @NotNull NetworkUnsafe networkUnsafe() {
+        return new NetworkUnsafe() {
+            @Override
+            public void sendPacket(@NotNull Object packet) {
+                ch.write(packet);
+            }
+        };
     }
 
     private enum State {
@@ -309,20 +332,19 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
 
         ch.getHandle().eventLoop().execute(() -> {
             if (!ch.isClosing()) {
-                UserConnection userCon = new UserConnection(this.proxy, ch, getName(), InitialHandler.this);
-                userCon.setCompressionThreshold(256);
-                userCon.init();
+                DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(ch), ch, InitialHandler.this, 256);
 
                 this.ch.write(new LoginSuccess(getUniqueId().toString(), getName())); // With dashes in between
                 ch.setProtocol(Protocol.GAME);
-                ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(userCon));
+                ch.getHandle().pipeline().get(HandlerBoss.class).setHandler(new UpstreamBridge(player));
 
-                ServiceConnection client = MCProxy.getInstance().findBestConnection(userCon);
+                ServiceConnection client = MCProxy.getInstance().findBestConnection(player);
 
-                PlayerLoginEvent event = this.proxy.getEventManager().callEvent(new PlayerLoginEvent(userCon, client));
+                PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player, client));
                 if (!this.isConnected()) {
                     return;
                 }
+
                 if (event.isCancelled()) {
                     this.disconnect(event.getCancelReason() == null ? TextComponent.fromLegacyText("§cNo reason given") : event.getCancelReason());
                     return;
@@ -334,8 +356,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                     return;
                 }
 
-                userCon.useClient(client);
-
+                player.useClient(client);
                 thisState = State.FINISHED;
             }
         });
@@ -422,5 +443,9 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     @Override
     public boolean isConnected() {
         return !ch.isClosed();
+    }
+
+    @Override
+    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason) {
     }
 }

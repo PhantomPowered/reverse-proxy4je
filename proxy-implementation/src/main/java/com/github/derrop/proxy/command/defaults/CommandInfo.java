@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +17,8 @@ public class CommandInfo extends NonTabCompleteableCommandCallback {
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
-        if (commandSender instanceof ProxiedPlayer) {
-            ServiceConnection client = ((ProxiedPlayer) commandSender).getConnectedClient();
+        if (commandSender instanceof Player) {
+            ServiceConnection client = ((Player) commandSender).getConnectedClient();
             commandSender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
         }
 

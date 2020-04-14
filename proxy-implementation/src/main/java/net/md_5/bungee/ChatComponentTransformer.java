@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.ScoreComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -47,7 +47,7 @@ public final class ChatComponentTransformer {
      * TextComponent if the components are null or empty
      * @throws IllegalArgumentException if an entity selector pattern is present
      */
-    public BaseComponent[] transform(ProxiedPlayer player, BaseComponent... component) {
+    public BaseComponent[] transform(Player player, BaseComponent... component) {
         if (component == null || component.length < 1 || (component.length == 1 && component[0] == null)) {
             return new BaseComponent[]
                     {
@@ -75,7 +75,7 @@ public final class ChatComponentTransformer {
      * @param player    the player to use for the component's name
      * @param component the component to transform
      */
-    private void transformScoreComponent(ProxiedPlayer player, ScoreComponent component) {
+    private void transformScoreComponent(Player player, ScoreComponent component) {
         Preconditions.checkArgument(!isSelectorPattern(component.getName()), "Cannot transform entity selector patterns");
 
         if (component.getValue() != null && !component.getValue().isEmpty()) {

@@ -1,17 +1,18 @@
 package com.github.derrop.proxy.api.player;
 
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 
 import java.util.Collection;
 import java.util.UUID;
 
 public interface PlayerRepository {
 
-    Collection<ProxiedPlayer> getOnlinePlayers();
+    Collection<Player> getOnlinePlayers();
 
-    ProxiedPlayer getOnlinePlayer(String name);
+    Player getOnlinePlayer(String name);
 
-    ProxiedPlayer getOnlinePlayer(UUID uniqueId);
+    Player getOnlinePlayer(UUID uniqueId);
 
 
     Collection<OfflinePlayer> getOfflinePlayers();

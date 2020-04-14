@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,10 +28,10 @@ public class CommandList extends NonTabCompleteableCommandCallback {
 
         commandSender.sendMessage(" ");
 
-        Collection<ProxiedPlayer> players = MCProxy.getInstance().getPlayerRepository().getOnlinePlayers();
+        Collection<Player> players = MCProxy.getInstance().getPlayerRepository().getOnlinePlayers();
         commandSender.sendMessage("Connected users: (" + players.size() + ")");
 
-        for (ProxiedPlayer player : players) {
+        for (Player player : players) {
             commandSender.sendMessage("- §e" + player.getName() + " §7(on: " + (player.getConnectedClient() == null ? "§cnone" : "§7" + player.getConnectedClient().getName()) + "§7)");
         }
 

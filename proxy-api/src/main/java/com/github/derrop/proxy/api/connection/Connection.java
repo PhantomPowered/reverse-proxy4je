@@ -1,6 +1,8 @@
 package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
 
@@ -20,7 +22,7 @@ public interface Connection extends PacketSender {
 
     /**
      * Disconnects this end of the connection for the specified reason. If this
-     * is an {@link ProxiedPlayer} the respective server connection will be
+     * is an {@link Player} the respective server connection will be
      * closed too.
      *
      * @param reason the reason shown to the player / sent to the server on
@@ -30,7 +32,7 @@ public interface Connection extends PacketSender {
 
     /**
      * Disconnects this end of the connection for the specified reason. If this
-     * is an {@link ProxiedPlayer} the respective server connection will be
+     * is an {@link Player} the respective server connection will be
      * closed too.
      *
      * @param reason the reason shown to the player / sent to the server on
@@ -40,7 +42,7 @@ public interface Connection extends PacketSender {
 
     /**
      * Disconnects this end of the connection for the specified reason. If this
-     * is an {@link ProxiedPlayer} the respective server connection will be
+     * is an {@link Player} the respective server connection will be
      * closed too.
      *
      * @param reason the reason shown to the player / sent to the server on
@@ -55,4 +57,6 @@ public interface Connection extends PacketSender {
      * @return current connection status
      */
     boolean isConnected();
+
+    void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason);
 }

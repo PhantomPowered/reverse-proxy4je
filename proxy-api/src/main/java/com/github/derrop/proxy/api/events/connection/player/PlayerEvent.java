@@ -1,21 +1,21 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
 import com.github.derrop.proxy.api.events.connection.ConnectionEvent;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class PlayerEvent extends ConnectionEvent {
 
-    public PlayerEvent(@NotNull ProxiedPlayer player) {
+    public PlayerEvent(@NotNull Player player) {
         super(player);
         this.player = player;
     }
 
-    private final ProxiedPlayer player;
+    private final Player player;
 
     @NotNull
-    public ProxiedPlayer getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 

@@ -34,7 +34,7 @@ public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddre
                     }
 
                     System.err.println("Got kicked from " + connection.getServerAddress()
-                            + " as " + connection.getCredentials() + ": " + lastException.getMessage().replace('\n', ' '));
+                            + " as " + connection.getCredentials() + ": " );//+ lastException.getMessage().replace('\n', ' '));
                 }
 
                 @Override

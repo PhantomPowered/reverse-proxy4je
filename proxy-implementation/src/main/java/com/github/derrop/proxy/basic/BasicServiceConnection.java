@@ -6,10 +6,11 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.packet.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.ChatMessageType;
@@ -18,14 +19,13 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.exception.KickedException;
-import com.github.derrop.proxy.minecraft.SessionUtils;
-import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.ChatComponentTransformer;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.packet.Chat;
@@ -58,7 +58,7 @@ public class BasicServiceConnection implements ServiceConnection {
         }
 
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = SessionUtils.logIn(credentials.getEmail(), credentials.getPassword());
+        this.authentication = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
     }
 
@@ -79,8 +79,8 @@ public class BasicServiceConnection implements ServiceConnection {
     }
 
     @Override
-    public @Nullable ProxiedPlayer getPlayer() {
-        return this.client.getRedirector();
+    public @Nullable Player getPlayer() {
+        return this.client == null ? null : this.client.getRedirector();
     }
 
     @Override
@@ -106,6 +106,11 @@ public class BasicServiceConnection implements ServiceConnection {
     @Override
     public int getEntityId() {
         return this.client.getEntityId();
+    }
+
+    @Override
+    public boolean isOnGround() {
+        return this.client.isOnGround();
     }
 
     public ConnectedProxyClient getClient() {
@@ -189,11 +194,7 @@ public class BasicServiceConnection implements ServiceConnection {
             this.client = new ConnectedProxyClient(this.proxy, this);
 
             try {
-                if (!client.performMojangLogin(this.credentials)) {
-                    task.complete(false);
-                    this.client = null;
-                    return;
-                }
+                this.client.setAuthentication(this.authentication, this.credentials);
 
                 Boolean result = this.client.connect(this.networkAddress, null).get(5, TimeUnit.SECONDS);
                 if (result != null && result) {
@@ -202,8 +203,6 @@ public class BasicServiceConnection implements ServiceConnection {
                 } else {
                     task.complete(false);
                 }
-            } catch (final AuthenticationException ex) {
-                task.completeExceptionally(ex);
             } catch (final InterruptedException | ExecutionException | TimeoutException exception) {
                 task.completeExceptionally(exception);
                 this.client = null;
@@ -280,13 +279,17 @@ public class BasicServiceConnection implements ServiceConnection {
     }
 
     @Override
+    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason) {
+    }
+
+    @Override
     public void unregister() {
         this.proxy.unregisterConnection(this);
     }
 
     @Override
     public Scoreboard getScoreboard() {
-        return this.client.getScoreboard();
+        return null; // TODO
     }
 
     @Override
@@ -317,6 +320,29 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
-        this.client.getChannelWrapper().write(packet);
+        if (this.client == null || this.client.getRedirector() == null) {
+            return;
+        }
+
+        this.client.getRedirector().sendPacket(packet);
+    }
+
+    @Override
+    public void sendPacket(@NotNull ByteBuf byteBuf) {
+        if (this.client == null || this.client.getRedirector() == null) {
+            return;
+        }
+
+        this.client.getRedirector().sendPacket(byteBuf);
+    }
+
+    @Override
+    public @NotNull NetworkUnsafe networkUnsafe() {
+        return new NetworkUnsafe() {
+            @Override
+            public void sendPacket(@NotNull Object packet) {
+                client.getRedirector().networkUnsafe().sendPacket(packet);
+            }
+        };
     }
 }

@@ -17,4 +17,5 @@ public interface ServiceRegistryEntry<T> {
 
     boolean isImmutable();
 
+    boolean needsReplacement();
 }

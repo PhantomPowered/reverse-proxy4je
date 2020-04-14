@@ -18,6 +18,7 @@ import net.md_5.bungee.protocol.packet.Kick;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
+@Deprecated // TODO replace this shit
 public class ChannelWrapper {
 
     private final Channel ch;

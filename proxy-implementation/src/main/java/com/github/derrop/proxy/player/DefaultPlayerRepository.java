@@ -1,9 +1,9 @@
 package com.github.derrop.proxy.player;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.PlayerRepository;
 
 import java.util.Collection;
@@ -20,17 +20,17 @@ public class DefaultPlayerRepository implements PlayerRepository {
     }
 
     @Override
-    public Collection<ProxiedPlayer> getOnlinePlayers() {
+    public Collection<Player> getOnlinePlayers() {
         return this.proxy.getOnlineClients().stream().map(ServiceConnection::getPlayer).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
-    public ProxiedPlayer getOnlinePlayer(String name) {
+    public Player getOnlinePlayer(String name) {
         return this.proxy.getOnlineClients().stream().map(ServiceConnection::getPlayer).filter(Objects::nonNull).filter(connection -> connection.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     @Override
-    public ProxiedPlayer getOnlinePlayer(UUID uniqueId) {
+    public Player getOnlinePlayer(UUID uniqueId) {
         return this.proxy.getOnlineClients().stream().map(ServiceConnection::getPlayer).filter(Objects::nonNull).filter(connection -> connection.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
     }
 

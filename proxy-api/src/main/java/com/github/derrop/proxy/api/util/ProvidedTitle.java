@@ -2,7 +2,7 @@ package com.github.derrop.proxy.api.util;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface ProvidedTitle {
@@ -107,14 +107,14 @@ public interface ProvidedTitle {
 
     /**
      * Send this title configuration to the specified player. This is the same
-     * as calling {@link ProxiedPlayer#sendTitle(ProvidedTitle)}.
+     * as calling {@link Player#sendTitle(ProvidedTitle)}.
      *
      * @param player The player to send the title to.
      */
-    void send(@NotNull ProxiedPlayer player);
+    void send(@NotNull Player player);
 
-    default void send(@NotNull ProxiedPlayer... players) {
-        for (ProxiedPlayer player : players) {
+    default void send(@NotNull Player... players) {
+        for (Player player : players) {
             this.send(player);
         }
     }

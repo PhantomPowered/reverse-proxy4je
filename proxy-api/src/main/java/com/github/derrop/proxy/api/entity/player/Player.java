@@ -1,21 +1,21 @@
-package com.github.derrop.proxy.api.connection;
+package com.github.derrop.proxy.api.entity.player;
 
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.connection.Connection;
+import com.github.derrop.proxy.api.connection.PendingConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.EntityLiving;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.scoreboard.Scoreboard;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a player who's connection is being connected to somewhere else,
  * whether it be a remote or embedded server.
  */
-public interface ProxiedPlayer extends Connection, CommandSender {
+public interface Player extends OfflinePlayer, Connection, CommandSender, EntityLiving {
 
     /**
      * Represents the player's chat state.
@@ -94,13 +94,12 @@ public interface ProxiedPlayer extends Connection, CommandSender {
 
     void useClient(ServiceConnection connection);
 
+    @Nullable
     ServiceConnection getConnectedClient();
 
     void disableAutoReconnect();
 
     void enableAutoReconnect();
-
-    @NotNull String getName();
 
     /**
      * Get the pending connection that belongs to this player.
@@ -115,22 +114,6 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      * @param message the message to say
      */
     void chat(String message);
-
-    /**
-     * Get this connection's UUID, if set.
-     *
-     * @return the UUID
-     * @deprecated In favour of {@link #getUniqueId()}
-     */
-    @Deprecated
-    String getUUID();
-
-    /**
-     * Get this connection's UUID, if set.
-     *
-     * @return the UUID
-     */
-    @NotNull UUID getUniqueId();
 
     /**
      * Set the header and footer displayed in the tab player list.
@@ -155,13 +138,10 @@ public interface ProxiedPlayer extends Connection, CommandSender {
 
     /**
      * Sends a {@link ProvidedTitle} to this player. This is the same as calling
-     * {@link ProvidedTitle#send(ProxiedPlayer)}.
+     * {@link ProvidedTitle#send(Player)}.
      *
      * @param providedTitle The title to send to the player.
      * @see ProvidedTitle
      */
     void sendTitle(ProvidedTitle providedTitle);
-
-    void teleport(BlockPos pos);
-
 }

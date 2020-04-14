@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,7 @@ public class PlayerKickEvent extends PlayerEvent implements Cancelable {
     private boolean cancel;
     private BaseComponent[] reason;
 
-    public PlayerKickEvent(@NotNull ProxiedPlayer player, @Nullable BaseComponent[] reason) {
+    public PlayerKickEvent(@NotNull Player player, @Nullable BaseComponent[] reason) {
         super(player);
         this.reason = reason;
     }

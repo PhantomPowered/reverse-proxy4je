@@ -4,6 +4,7 @@ import com.github.derrop.proxy.api.plugin.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.service.ServiceRegistryEntry;
 import com.github.derrop.proxy.api.service.exception.ProviderImmutableException;
+import com.github.derrop.proxy.api.service.exception.ProviderNeedsReplacementException;
 import com.github.derrop.proxy.api.service.exception.ProviderNotRegisteredException;
 import com.google.common.collect.MapMaker;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +22,8 @@ public final class BasicServiceRegistry implements ServiceRegistry {
             .makeMap();
 
     @Override
-    public <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable) {
-        this.entries.put(service, new BasicServiceRegistryEntry<>(service, provider, plugin, immutable));
+    public <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable, boolean needsReplacement) {
+        this.entries.put(service, new BasicServiceRegistryEntry<>(service, provider, plugin, immutable, needsReplacement));
     }
 
     @Override
@@ -64,7 +65,7 @@ public final class BasicServiceRegistry implements ServiceRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void unregisterService(@NotNull Class<T> service) throws ProviderImmutableException {
+    public <T> void unregisterService(@NotNull Class<T> service, @Nullable T replacement) throws ProviderNotRegisteredException, ProviderImmutableException, ProviderNeedsReplacementException {
         ServiceRegistryEntry<T> entry = (ServiceRegistryEntry<T>) this.entries.get(service);
         if (entry == null) {
             throw new ProviderNotRegisteredException(service);
@@ -72,6 +73,10 @@ public final class BasicServiceRegistry implements ServiceRegistry {
 
         if (entry.isImmutable()) {
             throw new ProviderImmutableException(service);
+        }
+
+        if (entry.needsReplacement() && replacement == null) {
+            throw new ProviderNeedsReplacementException(service);
         }
 
         this.entries.remove(service);

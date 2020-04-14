@@ -2,6 +2,7 @@ package com.github.derrop.proxy.api.service;
 
 import com.github.derrop.proxy.api.plugin.Plugin;
 import com.github.derrop.proxy.api.service.exception.ProviderImmutableException;
+import com.github.derrop.proxy.api.service.exception.ProviderNeedsReplacementException;
 import com.github.derrop.proxy.api.service.exception.ProviderNotRegisteredException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,11 @@ public interface ServiceRegistry {
         this.setProvider(plugin, service, provider, false);
     }
 
-    <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable);
+    default <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable) {
+        this.setProvider(plugin, service, provider, immutable, false);
+    }
+
+    <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable, boolean needsReplacement);
 
     @NotNull <T> Optional<T> getProvider(@NotNull Class<T> service);
 
@@ -26,7 +31,11 @@ public interface ServiceRegistry {
     @NotNull
     Collection<ServiceRegistryEntry<?>> getPluginRegisteredServices(@NotNull Plugin plugin);
 
-    <T> void unregisterService(@NotNull Class<T> service) throws ProviderImmutableException;
+    default <T> void unregisterService(@NotNull Class<T> service) throws ProviderNotRegisteredException, ProviderImmutableException, ProviderNeedsReplacementException {
+        this.unregisterService(service, null);
+    }
+
+    <T> void unregisterService(@NotNull Class<T> service, @Nullable T replacement) throws ProviderNotRegisteredException, ProviderImmutableException, ProviderNeedsReplacementException;
 
     default boolean isRegistered(@NotNull Class<?> service) {
         return this.getProvider(service).isPresent();

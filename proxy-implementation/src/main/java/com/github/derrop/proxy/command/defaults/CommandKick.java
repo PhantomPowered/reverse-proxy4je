@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public class CommandKick extends NonTabCompleteableCommandCallback {
             return CommandResult.BREAK;
         }
 
-        ProxiedPlayer player = MCProxy.getInstance().getPlayerRepository().getOnlinePlayer(arguments[0]);
+        Player player = MCProxy.getInstance().getPlayerRepository().getOnlinePlayer(arguments[0]);
         if (player == null) {
             commandSender.sendMessage("§cThat player isn't online");
             return CommandResult.BREAK;

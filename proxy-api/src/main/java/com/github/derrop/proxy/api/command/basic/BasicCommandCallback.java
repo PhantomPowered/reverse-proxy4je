@@ -20,7 +20,7 @@ public abstract class BasicCommandCallback implements CommandCallback {
 
     @Override
     public boolean testPermission(@NotNull CommandSender commandSender) {
-        return commandSender.hasPermission(this.permission);
+        return commandSender.checkPermission(this.permission);
     }
 
     @Override

@@ -76,8 +76,7 @@ public class CryptManager {
             EncodedKeySpec encodedkeyspec = new X509EncodedKeySpec(encodedKey);
             KeyFactory keyfactory = KeyFactory.getInstance("RSA");
             return keyfactory.generatePublic(encodedkeyspec);
-        } catch (NoSuchAlgorithmException var3) {
-        } catch (InvalidKeySpecException var4) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException var3) {
         }
 
         return null;
@@ -127,27 +126,12 @@ public class CryptManager {
             Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(opMode, key);
             return cipher;
-        } catch (InvalidKeyException invalidkeyexception) {
+        } catch (InvalidKeyException | NoSuchAlgorithmException invalidkeyexception) {
             invalidkeyexception.printStackTrace();
-        } catch (NoSuchAlgorithmException nosuchalgorithmexception) {
-            nosuchalgorithmexception.printStackTrace();
         } catch (NoSuchPaddingException nosuchpaddingexception) {
             nosuchpaddingexception.printStackTrace();
         }
 
         return null;
-    }
-
-    /**
-     * Creates an Cipher instance using the AES/CFB8/NoPadding algorithm. Used for protocol encryption.
-     */
-    public static Cipher createNetCipherInstance(int opMode, Key key) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
-            cipher.init(opMode, key, new IvParameterSpec(key.getEncoded()));
-            return cipher;
-        } catch (GeneralSecurityException generalsecurityexception) {
-            throw new RuntimeException(generalsecurityexception);
-        }
     }
 }

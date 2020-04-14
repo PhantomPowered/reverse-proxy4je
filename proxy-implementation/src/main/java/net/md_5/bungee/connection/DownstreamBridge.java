@@ -1,14 +1,15 @@
 package net.md_5.bungee.connection;
 
-import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
 import com.github.derrop.proxy.connection.cache.packet.system.JoinGame;
 import net.md_5.bungee.Util;
@@ -27,7 +28,7 @@ public class DownstreamBridge extends PacketHandler {
         this.connection = connection;
     }
 
-    private ProxiedPlayer con() {
+    private Player con() {
         return this.connection != null ? this.connection.getPlayer() : null;
     }
 
@@ -62,10 +63,11 @@ public class DownstreamBridge extends PacketHandler {
         System.out.println("Disconnected " + this.connection.getCredentials() + " (" + this.connection.getName() + "#" + this.connection.getUniqueId() + ") with " + TextComponent.toPlainText(reason));
 
         if (this.connection.getPlayer() != null) {
-            ProxiedPlayer con = this.connection.getPlayer();
+            Player con = this.connection.getPlayer();
             this.connection.getClient().free();
-            ((UserConnection) con).handleDisconnected(this.connection, reason);
+            con.handleDisconnected(this.connection, reason);
         }
+
         this.connection.getClient().setLastKickReason(reason);
         this.connection.getClient().connectionFailed();
     }
@@ -100,7 +102,7 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(PluginMessage pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(this.connection, ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
-        if (this.connection.getProxy().getEventManager().callEvent(event).isCancelled()) {
+        if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
 
@@ -132,9 +134,10 @@ public class DownstreamBridge extends PacketHandler {
     @Override
     public void handle(Chat chat) throws Exception {
         ChatEvent event = new ChatEvent(this.connection, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
-        if (this.connection.getProxy().getEventManager().callEvent(event).isCancelled()) {
+        if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelSendSignal.INSTANCE;
         }
+
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
     }
 

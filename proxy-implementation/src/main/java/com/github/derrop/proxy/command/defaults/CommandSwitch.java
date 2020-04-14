@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
-        if (!(commandSender instanceof ProxiedPlayer)) {
+        if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You have to be a player to execute this command");
             return CommandResult.BREAK;
         }
@@ -49,7 +49,7 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
             return CommandResult.END;
         }
 
-        MCProxy.getInstance().switchClientSafe((ProxiedPlayer) commandSender, optionalClient.get());
+        MCProxy.getInstance().switchClientSafe((Player) commandSender, optionalClient.get());
         return CommandResult.END;
     }
 }

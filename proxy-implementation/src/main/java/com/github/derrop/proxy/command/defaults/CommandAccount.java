@@ -9,7 +9,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
@@ -57,7 +57,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 }
 
                 sender.sendMessage(success ? ("§aSuccessfully connected as §e" + credentials.getEmail() + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
-                if (sender instanceof ProxiedPlayer) {
+                if (sender instanceof Player) {
                     TextComponent component = new TextComponent(Constants.MESSAGE_PREFIX + "§aClick to connect");
                     component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + client.getName()));
                     component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));

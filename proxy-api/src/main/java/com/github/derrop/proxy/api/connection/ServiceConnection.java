@@ -3,6 +3,7 @@ package com.github.derrop.proxy.api.connection;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
@@ -22,7 +23,7 @@ public interface ServiceConnection extends Connection, AutoCloseable {
     Proxy getProxy();
 
     @Nullable
-    ProxiedPlayer getPlayer();
+    Player getPlayer();
 
     @NotNull
     MCCredentials getCredentials();
@@ -37,6 +38,8 @@ public interface ServiceConnection extends Connection, AutoCloseable {
     String getName();
 
     int getEntityId();
+
+    boolean isOnGround();
 
     @NotNull
     NetworkAddress getServerAddress();

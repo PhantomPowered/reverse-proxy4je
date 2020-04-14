@@ -7,7 +7,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.ProxiedPlayer;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
@@ -29,7 +29,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             return CompletableFuture.completedFuture(null);
         }
 
-        ProxiedPlayer player = connection.getPlayer();
+        Player player = connection.getPlayer();
 
         if (player != null) {
             player.disableAutoReconnect();
@@ -77,7 +77,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         return CompletableFuture.completedFuture(null);
     }
 
-    private void fallback(ProxiedPlayer player, ServiceConnection oldClient, Throwable reason) {
+    private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
         ServiceConnection nextClient = MCProxy.getInstance().findBestConnection(player);
         if (nextClient == null || nextClient.equals(oldClient)) {
             player.disconnect(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason"));
@@ -99,13 +99,13 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             return CommandResult.BREAK;
         }
 
-        if (arguments.length != 2 && !(commandSender instanceof ProxiedPlayer)) {
+        if (arguments.length != 2 && !(commandSender instanceof Player)) {
             commandSender.sendMessage("This command is only available for players");
             return CommandResult.BREAK;
         }
 
         if (arguments.length == 1) {
-            ProxiedPlayer player = (ProxiedPlayer) commandSender;
+            Player player = (Player) commandSender;
 
             ServiceConnection proxyClient = player.getConnectedClient();
             if (proxyClient == null) {

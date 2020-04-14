@@ -1,7 +1,8 @@
 package com.github.derrop.proxy.player;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -20,18 +21,30 @@ public class DefaultOfflinePlayer implements OfflinePlayer {
     }
 
     @Override
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return this.uniqueId;
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return this.name;
     }
 
+    // TODO:
+
     @Override
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(@NotNull String permission) {
         return this.proxy.getPermissionProvider().hasPermission(this.uniqueId, permission);
+    }
+
+    @Override
+    public void addPermission(@NotNull String permission, boolean set) {
+
+    }
+
+    @Override
+    public void removePermission(@NotNull String permission) {
+
     }
 
     @Override
