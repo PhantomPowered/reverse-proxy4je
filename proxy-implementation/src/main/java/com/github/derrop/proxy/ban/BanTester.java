@@ -7,7 +7,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 
 import java.io.BufferedReader;

@@ -2,7 +2,7 @@ package com.github.derrop.proxy.command.console;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 

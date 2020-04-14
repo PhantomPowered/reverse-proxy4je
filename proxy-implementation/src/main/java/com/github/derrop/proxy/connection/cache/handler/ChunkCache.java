@@ -2,7 +2,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.PacketConstants;

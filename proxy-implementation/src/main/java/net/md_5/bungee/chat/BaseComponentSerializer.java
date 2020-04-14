@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.ClickEvent;
 import com.github.derrop.proxy.api.chat.HoverEvent;

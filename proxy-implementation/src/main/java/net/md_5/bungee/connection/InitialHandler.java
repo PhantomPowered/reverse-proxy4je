@@ -10,7 +10,7 @@ import com.github.derrop.proxy.api.connection.packet.Packet;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.util.Callback;
-import com.github.derrop.proxy.api.util.ChatColor;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.google.common.base.Charsets;

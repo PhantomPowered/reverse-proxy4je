@@ -1,5 +1,8 @@
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.api.location;
 
+import com.github.derrop.proxy.api.util.EnumFacing;
+import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.util.Vec3i;
 import com.google.common.collect.AbstractIterator;
 
 import java.util.Iterator;

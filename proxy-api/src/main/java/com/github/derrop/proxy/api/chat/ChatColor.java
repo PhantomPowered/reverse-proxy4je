@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.api.chat;
 
 import lombok.Getter;
 

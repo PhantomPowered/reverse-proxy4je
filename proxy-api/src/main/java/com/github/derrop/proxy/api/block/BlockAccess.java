@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.block;
 
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.util.BlockPos;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.connection.cache.packet.world.BlockUpdate;
 
 import java.util.ArrayList;

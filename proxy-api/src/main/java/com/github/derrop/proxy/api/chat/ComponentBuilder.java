@@ -2,7 +2,6 @@ package com.github.derrop.proxy.api.chat;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
-import com.github.derrop.proxy.api.util.ChatColor;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.PendingConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityLiving;
-import com.github.derrop.proxy.api.util.ChatMessageType;
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import org.jetbrains.annotations.Nullable;
 
