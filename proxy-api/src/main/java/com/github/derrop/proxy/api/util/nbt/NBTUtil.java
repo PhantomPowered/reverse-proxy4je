@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.nbt;
+package com.github.derrop.proxy.api.util.nbt;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

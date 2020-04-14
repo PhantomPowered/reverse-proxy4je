@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.nbt;
+package com.github.derrop.proxy.api.util.nbt;
 
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;

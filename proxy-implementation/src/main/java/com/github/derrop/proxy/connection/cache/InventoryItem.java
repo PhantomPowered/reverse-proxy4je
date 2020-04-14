@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection.cache;
 
-import com.github.derrop.proxy.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 
 public class InventoryItem {
 

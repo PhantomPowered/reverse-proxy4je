@@ -1026,4 +1026,64 @@ public enum Material {
                 return false;
         }
     }
+
+    public boolean isDoor() {
+        switch (this) {
+            case DARK_OAK_DOOR:
+            case ACACIA_DOOR:
+            case BIRCH_DOOR:
+            case IRON_DOOR:
+            case JUNGLE_DOOR:
+            case SPRUCE_DOOR:
+            case WOOD_DOOR:
+            case WOODEN_DOOR:
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isWooden() {
+        switch (this) {
+            case WOODEN_DOOR:
+            case TRAP_DOOR:
+            case HUGE_MUSHROOM_1:
+            case HUGE_MUSHROOM_2:
+            case SPRUCE_DOOR:
+            case BIRCH_DOOR:
+            case JUNGLE_DOOR:
+            case ACACIA_DOOR:
+            case DARK_OAK_DOOR:
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isFence() {
+        switch (this) {
+            case FENCE:
+            case COBBLE_WALL:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case JUNGLE_FENCE:
+            case DARK_OAK_FENCE:
+            case SPRUCE_FENCE:
+            case NETHER_FENCE:
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isFenceGate() {
+        switch (this) {
+            case FENCE_GATE:
+            case ACACIA_FENCE_GATE:
+            case BIRCH_FENCE_GATE:
+            case JUNGLE_FENCE_GATE:
+            case DARK_OAK_FENCE_GATE:
+            case SPRUCE_FENCE_GATE:
+                return true;
+        }
+        return false;
+    }
+
 }

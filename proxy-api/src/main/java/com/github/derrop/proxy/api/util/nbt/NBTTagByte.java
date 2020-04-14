@@ -1,21 +1,19 @@
-package com.github.derrop.proxy.util.nbt;
-
-import com.github.derrop.proxy.api.util.MathHelper;
+package com.github.derrop.proxy.api.util.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class NBTTagFloat extends NBTBase.NBTPrimitive {
+public class NBTTagByte extends NBTBase.NBTPrimitive {
     /**
-     * The float value for the tag.
+     * The byte value for the tag.
      */
-    private float data;
+    private byte data;
 
-    NBTTagFloat() {
+    NBTTagByte() {
     }
 
-    public NBTTagFloat(float data) {
+    public NBTTagByte(byte data) {
         this.data = data;
     }
 
@@ -23,59 +21,59 @@ public class NBTTagFloat extends NBTBase.NBTPrimitive {
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     void write(DataOutput output) throws IOException {
-        output.writeFloat(this.data);
+        output.writeByte(this.data);
     }
 
     void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
-        sizeTracker.read(96L);
-        this.data = input.readFloat();
+        sizeTracker.read(72L);
+        this.data = input.readByte();
     }
 
     /**
      * Gets the type byte for the tag.
      */
     public byte getId() {
-        return (byte) 5;
+        return (byte) 1;
     }
 
     public String toString() {
-        return "" + this.data + "f";
+        return "" + this.data + "b";
     }
 
     /**
      * Creates a clone of the tag.
      */
     public NBTBase copy() {
-        return new NBTTagFloat(this.data);
+        return new NBTTagByte(this.data);
     }
 
     public boolean equals(Object p_equals_1_) {
         if (super.equals(p_equals_1_)) {
-            NBTTagFloat nbttagfloat = (NBTTagFloat) p_equals_1_;
-            return this.data == nbttagfloat.data;
+            NBTTagByte nbttagbyte = (NBTTagByte) p_equals_1_;
+            return this.data == nbttagbyte.data;
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return super.hashCode() ^ Float.floatToIntBits(this.data);
+        return super.hashCode() ^ this.data;
     }
 
     public long getLong() {
-        return (long) this.data;
+        return this.data;
     }
 
     public int getInt() {
-        return MathHelper.floor_float(this.data);
+        return this.data;
     }
 
     public short getShort() {
-        return (short) (MathHelper.floor_float(this.data) & 65535);
+        return this.data;
     }
 
     public byte getByte() {
-        return (byte) (MathHelper.floor_float(this.data) & 255);
+        return this.data;
     }
 
     public double getDouble() {

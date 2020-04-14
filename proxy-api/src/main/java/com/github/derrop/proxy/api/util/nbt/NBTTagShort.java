@@ -1,19 +1,19 @@
-package com.github.derrop.proxy.util.nbt;
+package com.github.derrop.proxy.api.util.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class NBTTagLong extends NBTBase.NBTPrimitive {
+public class NBTTagShort extends NBTBase.NBTPrimitive {
     /**
-     * The long value for the tag.
+     * The short value for the tag.
      */
-    private long data;
+    private short data;
 
-    NBTTagLong() {
+    public NBTTagShort() {
     }
 
-    public NBTTagLong(long data) {
+    public NBTTagShort(short data) {
         this.data = data;
     }
 
@@ -21,43 +21,43 @@ public class NBTTagLong extends NBTBase.NBTPrimitive {
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     void write(DataOutput output) throws IOException {
-        output.writeLong(this.data);
+        output.writeShort(this.data);
     }
 
     void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
-        sizeTracker.read(128L);
-        this.data = input.readLong();
+        sizeTracker.read(80L);
+        this.data = input.readShort();
     }
 
     /**
      * Gets the type byte for the tag.
      */
     public byte getId() {
-        return (byte) 4;
+        return (byte) 2;
     }
 
     public String toString() {
-        return "" + this.data + "L";
+        return "" + this.data + "s";
     }
 
     /**
      * Creates a clone of the tag.
      */
     public NBTBase copy() {
-        return new NBTTagLong(this.data);
+        return new NBTTagShort(this.data);
     }
 
     public boolean equals(Object p_equals_1_) {
         if (super.equals(p_equals_1_)) {
-            NBTTagLong nbttaglong = (NBTTagLong) p_equals_1_;
-            return this.data == nbttaglong.data;
+            NBTTagShort nbttagshort = (NBTTagShort) p_equals_1_;
+            return this.data == nbttagshort.data;
         } else {
             return false;
         }
     }
 
     public int hashCode() {
-        return super.hashCode() ^ (int) (this.data ^ this.data >>> 32);
+        return super.hashCode() ^ this.data;
     }
 
     public long getLong() {
@@ -65,22 +65,22 @@ public class NBTTagLong extends NBTBase.NBTPrimitive {
     }
 
     public int getInt() {
-        return (int) (this.data & -1L);
+        return this.data;
     }
 
     public short getShort() {
-        return (short) ((int) (this.data & 65535L));
+        return this.data;
     }
 
     public byte getByte() {
-        return (byte) ((int) (this.data & 255L));
+        return (byte) (this.data & 255);
     }
 
     public double getDouble() {
-        return (double) this.data;
+        return this.data;
     }
 
     public float getFloat() {
-        return (float) this.data;
+        return this.data;
     }
 }

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.nbt;
+package com.github.derrop.proxy.api.util.nbt;
 
 public class NBTException extends Exception {
     public NBTException(String p_i45136_1_) {

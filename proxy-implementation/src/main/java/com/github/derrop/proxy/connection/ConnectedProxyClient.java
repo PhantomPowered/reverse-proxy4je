@@ -66,7 +66,7 @@ public class ConnectedProxyClient {
     private UserConnection redirector;
     private Channel channel;
 
-    private PacketCache packetCache = new PacketCache(this);
+    private PacketCache packetCache;
     private EntityMap entityMap = EntityMap.getEntityMap(47);
     private Scoreboard scoreboard;
 
@@ -98,6 +98,7 @@ public class ConnectedProxyClient {
         this.proxy = proxy;
         this.connection = connection;
 
+        this.packetCache = new PacketCache(this);
         this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
     }
 

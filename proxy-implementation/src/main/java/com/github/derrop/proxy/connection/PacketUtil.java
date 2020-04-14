@@ -1,9 +1,9 @@
 package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.connection.cache.InventoryItem;
-import com.github.derrop.proxy.util.nbt.CompressedStreamTools;
-import com.github.derrop.proxy.util.nbt.NBTSizeTracker;
-import com.github.derrop.proxy.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.util.nbt.CompressedStreamTools;
+import com.github.derrop.proxy.api.util.nbt.NBTSizeTracker;
+import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;

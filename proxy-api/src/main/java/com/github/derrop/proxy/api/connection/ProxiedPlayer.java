@@ -2,6 +2,7 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
@@ -160,5 +161,7 @@ public interface ProxiedPlayer extends Connection, CommandSender {
      * @see ProvidedTitle
      */
     void sendTitle(ProvidedTitle providedTitle);
+
+    void teleport(BlockPos pos);
 
 }

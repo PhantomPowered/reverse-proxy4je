@@ -1,7 +1,7 @@
 package net.md_5.bungee.entitymap;
 
-import com.github.derrop.proxy.util.nbt.CompressedStreamTools;
-import com.github.derrop.proxy.util.nbt.NBTSizeTracker;
+import com.github.derrop.proxy.api.util.nbt.CompressedStreamTools;
+import com.github.derrop.proxy.api.util.nbt.NBTSizeTracker;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import lombok.AccessLevel;

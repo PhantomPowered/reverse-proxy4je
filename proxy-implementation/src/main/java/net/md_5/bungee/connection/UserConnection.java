@@ -9,10 +9,13 @@ import com.github.derrop.proxy.api.connection.ProxiedPlayer;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.packet.Packet;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
+import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.api.util.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.PlayerUniqueTabList;
+import com.github.derrop.proxy.connection.cache.packet.entity.EntityTeleport;
+import com.github.derrop.proxy.connection.velocity.PlayerPosition;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
@@ -391,6 +394,11 @@ public final class UserConnection implements ProxiedPlayer {
     @Override
     public void sendTitle(ProvidedTitle providedTitle) {
         providedTitle.send(this);
+    }
+
+    @Override
+    public void teleport(BlockPos pos) {
+        this.sendPacket(new EntityTeleport(this.getClientEntityId(), pos.getX(), pos.getY(), pos.getZ(), (byte) 0, (byte) 0, true));
     }
 
     public void setCompressionThreshold(int compressionThreshold) {

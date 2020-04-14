@@ -1,0 +1,6 @@
+{
+  "name": "PathFinding",
+  "version": "1.0",
+  "authors": ["derrop", "derklaro"],
+  "main": "com.github.derrop.proxy.plugins.PathFindingPlugin"
+}

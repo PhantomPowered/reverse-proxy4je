@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.util;
 
-import com.github.derrop.proxy.util.nbt.NBTTagFloat;
-import com.github.derrop.proxy.util.nbt.NBTTagList;
+import com.github.derrop.proxy.api.util.nbt.NBTTagFloat;
+import com.github.derrop.proxy.api.util.nbt.NBTTagList;
 
 public class Rotations {
 

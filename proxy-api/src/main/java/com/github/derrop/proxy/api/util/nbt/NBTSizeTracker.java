@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.util.nbt;
+package com.github.derrop.proxy.api.util.nbt;
 
 public class NBTSizeTracker {
     public static final NBTSizeTracker INFINITE = new NBTSizeTracker(0L) {

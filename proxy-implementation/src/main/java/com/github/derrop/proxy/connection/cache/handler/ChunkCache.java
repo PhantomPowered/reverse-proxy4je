@@ -22,6 +22,8 @@ public class ChunkCache implements PacketCacheHandler {
 
     private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
 
+    private UserConnection connectedPlayer;
+
     @Override
     public int[] getPacketIDs() {
         return new int[]{PacketConstants.CHUNK_DATA, PacketConstants.CHUNK_BULK, PacketConstants.BLOCK_UPDATE, PacketConstants.MULTI_BLOCK_UPDATE};
@@ -92,6 +94,18 @@ public class ChunkCache implements PacketCacheHandler {
         this.chunks.removeIf(chunkData -> chunkData.getX() == x && chunkData.getZ() == z);
     }
 
+    public void setBlockStateAt(BlockPos pos, int blockState) {
+        Chunk chunk = this.getChunk(pos);
+        if (chunk == null) {
+            return;
+        }
+        chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), blockState);
+
+        if (this.connectedPlayer != null) {
+            this.connectedPlayer.sendPacket(new BlockUpdate(pos, blockState));
+        }
+    }
+
     public int getBlockStateAt(BlockPos pos) {
         Chunk chunk = this.getChunk(pos);
         if (chunk == null) {
@@ -120,6 +134,10 @@ public class ChunkCache implements PacketCacheHandler {
             ChunkData chunkData = new ChunkData();
             chunk.fillChunkData(chunkData);
             con.sendPacket(chunkData);
+        }
+
+        if (con instanceof UserConnection) {
+            this.connectedPlayer = (UserConnection) con;
         }
     }
 

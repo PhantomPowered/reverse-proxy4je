@@ -14,7 +14,7 @@ public abstract class PlayerEvent extends ConnectionEvent {
 
     private final ProxiedPlayer player;
 
-    @Nullable
+    @NotNull
     public ProxiedPlayer getPlayer() {
         return player;
     }
