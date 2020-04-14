@@ -19,12 +19,12 @@ public class PacketPlayServerChunkData extends DefinedPacket {
     private boolean b;
     private Extracted extracted;
 
-    public static int getArraySize(int a, boolean b, boolean c) {
-        int i = a * 2 * 16 * 16 * 16;
-        int j = a * 16 * 16 * 16 / 2;
-        int k = b ? a * 16 * 16 * 16 / 2 : 0;
-        int l = c ? 256 : 0;
-        return i + j + k + l;
+    public static int getArraySize(int dataLengthBits, boolean hasSky, boolean fullChunk) {
+        int blockStateBytes = dataLengthBits * 2 * 16 * 16 * 16;
+        int blockLightBytes = dataLengthBits * 16 * 16 * 16 / 2;
+        int skyLightBytes = hasSky ? dataLengthBits * 16 * 16 * 16 / 2 : 0;
+        int biomeBytes = fullChunk ? 256 : 0;
+        return blockStateBytes + blockLightBytes + skyLightBytes + biomeBytes;
     }
 
     @Override
