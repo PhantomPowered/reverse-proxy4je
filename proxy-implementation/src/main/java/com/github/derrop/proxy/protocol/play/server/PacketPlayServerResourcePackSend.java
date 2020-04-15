@@ -3,7 +3,6 @@ package com.github.derrop.proxy.protocol.play.server;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,10 +26,6 @@ public class PacketPlayServerResourcePackSend extends DefinedPacket {
     public void write(@NotNull ByteBuf buf) {
         writeString(this.url, buf);
         writeString(this.hash, buf);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

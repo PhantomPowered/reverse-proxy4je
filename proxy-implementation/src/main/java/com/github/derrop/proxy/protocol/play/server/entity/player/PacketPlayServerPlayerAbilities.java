@@ -3,7 +3,6 @@ package com.github.derrop.proxy.protocol.play.server.entity.player;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,10 +54,6 @@ public class PacketPlayServerPlayerAbilities extends DefinedPacket {
         buf.writeByte(b0);
         buf.writeFloat(this.flySpeed);
         buf.writeFloat(this.walkSpeed);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

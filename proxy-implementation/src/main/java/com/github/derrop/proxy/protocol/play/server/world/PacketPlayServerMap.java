@@ -4,7 +4,6 @@ import com.github.derrop.proxy.api.util.Vec4b;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,10 +64,6 @@ public class PacketPlayServerMap extends DefinedPacket {
             buf.writeByte(this.mapMinY);
             writeArray(this.mapDataBytes, buf);
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

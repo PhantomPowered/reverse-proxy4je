@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,11 +36,6 @@ public class PacketPlayPluginMessage extends DefinedPacket {
     public void write(@NotNull ByteBuf buf) {
         writeString(tag, buf);
         buf.writeBytes(data);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
 
     public DataInput getStream() {

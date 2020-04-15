@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,10 +45,6 @@ public class PacketPlayServerMapChunk extends DefinedPacket {
         buf.writeBoolean(this.fullChunk);
         buf.writeShort(this.extracted.dataLength);
         writeArrayNoLimit(this.extracted.data, buf);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

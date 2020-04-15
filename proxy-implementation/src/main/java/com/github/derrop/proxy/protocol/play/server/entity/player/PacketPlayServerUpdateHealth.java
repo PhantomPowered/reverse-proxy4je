@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,10 +31,6 @@ public class PacketPlayServerUpdateHealth extends DefinedPacket {
         buf.writeFloat(this.health);
         writeVarInt(this.foodLevel, buf);
         buf.writeFloat(this.saturationLevel);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

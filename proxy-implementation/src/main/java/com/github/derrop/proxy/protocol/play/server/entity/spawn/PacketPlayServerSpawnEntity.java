@@ -3,7 +3,6 @@ package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,10 +59,6 @@ public class PacketPlayServerSpawnEntity extends DefinedPacket implements Positi
             buf.writeShort(this.speedY);
             buf.writeShort(this.speedZ);
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

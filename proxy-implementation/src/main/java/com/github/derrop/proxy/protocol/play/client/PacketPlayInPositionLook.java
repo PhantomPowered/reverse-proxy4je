@@ -6,7 +6,6 @@ import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,11 +50,6 @@ public class PacketPlayInPositionLook extends DefinedPacket {
         buf.writeFloat(this.yaw);
         buf.writeFloat(this.pitch);
         buf.writeByte(EnumFlags.write(this.flags));
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-
     }
 
     @Override
