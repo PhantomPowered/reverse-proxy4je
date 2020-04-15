@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.api.block;
 
-import com.github.derrop.proxy.api.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +31,7 @@ public interface BlockState {
     HingePosition getHingePosition();
 
     @Nullable
-    EnumFacing getFacing();
+    Facing getFacing();
 
     @Nullable
     TrapdoorPosition getHalf();

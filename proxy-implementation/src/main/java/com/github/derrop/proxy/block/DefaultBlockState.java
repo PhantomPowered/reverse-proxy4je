@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.block;
 
 import com.github.derrop.proxy.api.block.*;
-import com.github.derrop.proxy.api.util.EnumFacing;
+import com.github.derrop.proxy.api.block.Facing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class DefaultBlockState implements BlockState {
     private double height;
     private double thickness;
     private int redstonePower;
-    private EnumFacing facing;
+    private Facing facing;
     private HingePosition hingePosition;
     private TrapdoorPosition half;
 
@@ -37,7 +37,7 @@ public class DefaultBlockState implements BlockState {
         return this;
     }
 
-    DefaultBlockState facing(EnumFacing facing) {
+    DefaultBlockState facing(Facing facing) {
         this.facing = facing;
         return this;
     }
@@ -119,7 +119,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @Override
-    public EnumFacing getFacing() {
+    public Facing getFacing() {
         return this.facing;
     }
 
