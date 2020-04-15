@@ -11,6 +11,7 @@ import com.github.derrop.proxy.minecraft.CryptManager;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
+import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
@@ -19,6 +20,7 @@ import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.connection.ServerChannelListener;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -68,9 +70,9 @@ public class ProxyClientLoginHandler {
         );
     }
     @PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.FIRST)
-    private void handle(NetworkChannel channel, PacketPlayServerLoginSuccess loginSuccess) throws Exception {
-        channel.setProtocolState(ProtocolState.PLAY);
-        //channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setHandler(new DownstreamBridge(this.connection));
+    private void handle(ConnectedProxyClient client, PacketPlayServerLoginSuccess loginSuccess) throws Exception {
+        client.setProtocolState(ProtocolState.PLAY);
+        client.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ServerChannelListener(client));
         throw CancelProceedException.INSTANCE; // without this, the LoginSuccess would be recorded by ConnectedProxyClient#redirectPacket
     }
 

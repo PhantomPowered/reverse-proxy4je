@@ -440,4 +440,24 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         }
     }
 
+    private boolean receivedServerDisconnect = false;
+
+    public void handleDisconnect(BaseComponent[] reason) {
+        if (this.receivedServerDisconnect) {
+            return;
+        }
+        this.receivedServerDisconnect = true;
+
+        System.out.println("Disconnected " + this.getCredentials() + " (" + this.getAccountName() + "#" + this.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
+
+        if (this.getRedirector() != null) {
+            com.github.derrop.proxy.api.entity.player.Player con = this.getRedirector();
+            this.connection.getClient().free();
+            con.handleDisconnected(this.connection, reason);
+        }
+
+        this.connection.getClient().setLastKickReason(reason);
+        this.connection.getClient().connectionFailed();
+    }
+
 }

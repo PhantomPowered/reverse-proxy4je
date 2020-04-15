@@ -2,10 +2,8 @@ package net.md_5.bungee.connection;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
@@ -20,49 +18,9 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayChat;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
-import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 public class ServerPacketHandler {
-
-    @Override
-    public void exception(Throwable t) throws Exception {
-        System.err.println("Exception on proxy client " + this.connection.getName() + "!");
-        t.printStackTrace();
-        MCProxy.getInstance().unregisterConnection(this.connection);
-        this.disconnectReceiver(TextComponent.fromLegacyText("§c" + Util.exception(t)));
-        connection.close();
-    }
-
-    @Override
-    public void disconnected(ChannelWrapper channel) throws Exception {
-        // We lost connection to the server
-        MCProxy.getInstance().unregisterConnection(this.connection);
-        this.disconnectReceiver(TextComponent.fromLegacyText("§cNo reason given"));
-    }
-
-    private void disconnectReceiver(BaseComponent[] reason) {
-        if (this.connection == null || this.disconnected) {
-            return;
-        }
-        this.disconnected = true;
-
-        System.out.println("Disconnected " + this.connection.getCredentials() + " (" + this.connection.getName() + "#" + this.connection.getUniqueId() + ") with " + TextComponent.toPlainText(reason));
-
-        if (this.connection.getPlayer() != null) {
-            Player con = this.connection.getPlayer();
-            this.connection.getClient().free();
-            con.handleDisconnected(this.connection, reason);
-        }
-
-        this.connection.getClient().setLastKickReason(reason);
-        this.connection.getClient().connectionFailed();
-    }
-
-    @Override
-    public boolean shouldHandle(PacketWrapper packet) throws Exception {
-        return true;
-    }
 
     @PacketHandler
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
@@ -107,7 +65,7 @@ public class ServerPacketHandler {
     @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.KICK_DISCONNECT)
     public void handleKick(ConnectedProxyClient client, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
-        this.disconnectReceiver(reason);
+        client.handleDisconnect(reason);
 
         client.setLastKickReason(reason);
         MCProxy.getInstance().unregisterConnection(client.getConnection());
