@@ -12,13 +12,15 @@ public class Chunk {
 
     private ExtendedBlockStorage[] storageArrays = new ExtendedBlockStorage[16];
     private PacketPlayServerChunkData lastChunkData;
+    private byte[] biomeArray = new byte[256];
+    private boolean hasSky;
 
     public void fillChunk(PacketPlayServerChunkData chunkData) {
-        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isHasSky());
+        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isFullChunk());
         this.lastChunkData = chunkData;
     }
 
-    private void fillChunk(byte[] data, int chunkSize, boolean b) {
+    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk) { // TODO this doesn't work in the nether, but hasSky works perfectly
         int i = 0;
 
         for (int j = 0; j < this.storageArrays.length; ++j) {
@@ -33,10 +35,31 @@ public class Chunk {
                     achar[k] = (char) ((data[i + 1] & 255) << 8 | data[i] & 255);
                     i += 2;
                 }
-            } else if (b && this.storageArrays[j] != null) {
+            } else if (fullChunk && this.storageArrays[j] != null) {
                 this.storageArrays[j] = null;
             }
         }
+
+        for (int j = 0; j < this.storageArrays.length; j++) {
+            if (this.storageArrays[j] != null) {
+                i += 2048; // skip block light data
+            }
+        }
+        int oldI = i;
+        for (int j = 0; j < this.storageArrays.length; j++) {
+            if (this.storageArrays[j] != null) {
+                i += 2048; // skip sky light data
+            }
+        }
+        this.hasSky = data.length - i == (fullChunk ? 256 : 0); // has the packet skylight data? (256 = biome data -> sent if fullChunk is true)
+        if (!hasSky) {
+            i = oldI;
+        }
+
+        if (fullChunk) {
+            System.arraycopy(data, i, this.biomeArray, 0, 256);
+        }
+
     }
 
     public PacketPlayServerChunkData.Extracted getBytes() {
@@ -45,8 +68,7 @@ public class Chunk {
         }
 
         int maxLength = 65535;
-        boolean fullChunk = true;
-        boolean hasSky = this.lastChunkData.isHasSky();
+        boolean fullChunk = this.lastChunkData.isFullChunk();
 
         ExtendedBlockStorage[] storages = this.storageArrays;
         PacketPlayServerChunkData.Extracted extracted = new PacketPlayServerChunkData.Extracted();
@@ -77,15 +99,15 @@ public class Chunk {
             j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
         }
 
-        if (hasSky) {
+        if (this.hasSky) {
             for (ExtendedBlockStorage extendedblockstorage3 : list) {
                 j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
             }
         }
 
-        /*if (fullChunk) { TODO biomes
-            copyArray(p_179756_0_.getBiomeArray(), extracted.data, j);
-        }*/
+        if (fullChunk) {
+            copyArray(this.biomeArray, extracted.data, j);
+        }
 
         return extracted;
     }

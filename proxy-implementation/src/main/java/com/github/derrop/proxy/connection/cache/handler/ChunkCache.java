@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChunkCache implements PacketCacheHandler {
 
-    private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
+    private Collection<Chunk> chunks = new CopyOnWriteArrayList<>(); // TODO Reset on Dimension Change
 
     private Player connectedPlayer;
 
@@ -164,7 +164,7 @@ public class ChunkCache implements PacketCacheHandler {
             if (chunk.getLastChunkData() == null) {
                 continue;
             }
-            PacketPlayServerChunkData data = new PacketPlayServerChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isHasSky(), chunk.getBytes());
+            PacketPlayServerChunkData data = new PacketPlayServerChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isFullChunk(), chunk.getBytes());
             sender.sendPacket(data);
         }
     }
