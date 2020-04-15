@@ -17,6 +17,8 @@ public interface BlockState {
 
     int getLayers();
 
+    double getHeight();
+
     boolean isPassable();
 
     @Nullable

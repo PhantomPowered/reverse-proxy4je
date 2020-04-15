@@ -516,14 +516,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1243, Material.WOOD_BUTTON);
         registerState(1244, Material.WOOD_BUTTON);
         registerState(1245, Material.WOOD_BUTTON);
-        registerState(1248, Material.SNOW);
-        registerState(1249, Material.SNOW);
-        registerState(1250, Material.SNOW);
-        registerState(1251, Material.SNOW);
-        registerState(1252, Material.SNOW);
-        registerState(1253, Material.SNOW);
-        registerState(1254, Material.SNOW);
-        registerState(1255, Material.SNOW);
+        registerState(1248, Material.SNOW).layers(1).height(0.125D); // complete
+        registerState(1249, Material.SNOW).layers(2).height(0.25D); // complete
+        registerState(1250, Material.SNOW).layers(3).height(0.325D); // complete
+        registerState(1251, Material.SNOW).layers(4).height(0.5D); // complete
+        registerState(1252, Material.SNOW).layers(5).height(0.625D); // complete
+        registerState(1253, Material.SNOW).layers(6).height(0.75D); // complete
+        registerState(1254, Material.SNOW).layers(7).height(0.875D); // complete
+        registerState(1255, Material.SNOW).layers(8); // complete
         registerState(1264, Material.ICE); // complete
         registerState(1280, Material.SNOW_BLOCK); // complete
         registerState(1296, Material.CACTUS);
