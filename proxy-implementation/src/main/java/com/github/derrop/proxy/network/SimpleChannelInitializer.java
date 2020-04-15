@@ -2,6 +2,7 @@ package com.github.derrop.proxy.network;
 
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.network.length.LengthFrameDecoder;
+import com.github.derrop.proxy.network.listener.InitialListener;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -22,5 +23,7 @@ public final class SimpleChannelInitializer extends ChannelInitializer<Channel> 
                 .addLast(NetworkUtils.LENGTH_DECODER, new LengthFrameDecoder())
                 .addLast(NetworkUtils.LENGTH_ENCODER, NetworkUtils.LENGTH_FRAME_ENCODER)
                 .addLast(NetworkUtils.ENDPOINT, new HandlerEndpoint(null));
+
+        channel.pipeline().get(HandlerEndpoint.class).setChannelListener(new InitialListener());
     }
 }

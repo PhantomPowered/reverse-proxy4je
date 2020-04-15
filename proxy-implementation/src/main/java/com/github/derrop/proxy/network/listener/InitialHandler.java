@@ -48,9 +48,9 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.UUID;
 
-public class InitialHandler implements ChannelListener {
+public class InitialHandler {
 
-    private static final String INIT_STATE = "initialState";
+    static final String INIT_STATE = "initialState";
     
     private final MCProxy proxy;
 
@@ -58,27 +58,8 @@ public class InitialHandler implements ChannelListener {
         this.proxy = proxy;
     }
 
-    private enum State {
+    enum State {
         HANDSHAKE, STATUS, PING, USERNAME, ENCRYPT, FINISHED
-    }
-
-    private boolean canSendKickMessage(NetworkChannel channel) {
-        State state = channel.getProperty(INIT_STATE);
-        return state == State.USERNAME || state == State.ENCRYPT || state == State.FINISHED;
-    }
-
-    @Override
-    public void handleChannelActive(@NotNull NetworkChannel channel) {
-        System.out.println("InitialHandler connected -> " + channel.getAddress());
-    }
-
-    @Override
-    public void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
-        if (this.canSendKickMessage(channel)) {
-            this.disconnect(channel, ChatColor.RED + Util.exception(cause));
-        } else {
-            channel.close();
-        }
     }
 
     private ServerPing getPingInfo(String motd, int protocol) {
@@ -224,13 +205,13 @@ public class InitialHandler implements ChannelListener {
 
     private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
         if (MCProxy.getInstance().getPlayerRepository().getOnlinePlayer(uniqueId) != null) {
-            this.disconnect(channel, "Already connected");
+            disconnect(channel, "Already connected");
             return;
         }
 
         channel.getWrappedChannel().eventLoop().execute(() -> {
             if (!channel.isClosing()) {
-                DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(channel), uniqueId, result, channel, channel.getProperty("sentVersion"), 256);
+                DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(channel), uniqueId, result, channel, channel.getProperty("sentProtocol"), 256);
 
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
@@ -245,13 +226,13 @@ public class InitialHandler implements ChannelListener {
                 }
 
                 if (event.isCancelled()) {
-                    this.disconnect(channel, event.getCancelReason() == null ? TextComponent.fromLegacyText("§cNo reason given") : event.getCancelReason());
+                    disconnect(channel, event.getCancelReason() == null ? TextComponent.fromLegacyText("§cNo reason given") : event.getCancelReason());
                     return;
                 }
 
                 client = event.getTargetConnection();
                 if (client == null) {
-                    this.disconnect(channel, TextComponent.fromLegacyText("§7No client found"));
+                    disconnect(channel, TextComponent.fromLegacyText("§7No client found"));
                     return;
                 }
 
@@ -261,7 +242,12 @@ public class InitialHandler implements ChannelListener {
         });
     }
 
-    public void disconnect(NetworkChannel channel, @NotNull String reason) {
+    static boolean canSendKickMessage(NetworkChannel channel) {
+        State state = channel.getProperty(INIT_STATE);
+        return state == State.USERNAME || state == State.ENCRYPT || state == State.FINISHED;
+    }
+
+    static void disconnect(NetworkChannel channel, @NotNull String reason) {
         if (canSendKickMessage(channel)) {
             disconnect(channel, TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + reason));
         } else {
@@ -269,7 +255,7 @@ public class InitialHandler implements ChannelListener {
         }
     }
 
-    public void disconnect(NetworkChannel channel, final BaseComponent... reason) {
+    static void disconnect(NetworkChannel channel, final BaseComponent... reason) {
         if (canSendKickMessage(channel)) {
             channel.delayedClose(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
         } else {

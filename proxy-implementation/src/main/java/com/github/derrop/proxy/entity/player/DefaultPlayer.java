@@ -44,14 +44,15 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         this.tabList = tabList;
         this.displayName = loginResult.getName();
 
+        this.channel = channel;
+        this.version = version;
+
         if (!channel.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
             this.compression = compressionThreshold;
             this.sendPacket(new PacketLoginOutSetCompression(compressionThreshold));
             channel.setCompression(compression);
         }
 
-        this.channel = channel;
-        this.version = version;
         this.entityMap = EntityMap.getEntityMap(version);
         MCProxy.getInstance().getUUIDStorage().createMapping(this.getUniqueId(), this.getName());
     }
