@@ -160,7 +160,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
-                NetworkUtils.BASE.initChannel(ConnectedProxyClient.super.getWrappedChannel());
+                NetworkUtils.BASE.initChannel(ch);
 
                 if (proxy != null) {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
@@ -188,15 +188,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
         this.connectionHandler = future;
 
-        super.setChannel(new Bootstrap()
+        new Bootstrap()
                 .channel(NettyUtils.getSocketChannelClass())
                 .group(NettyUtils.newEventLoopGroup())
                 .handler(initializer)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))
                 .addListener(listener)
-                .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
-                .channel());
+                .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 
         return future;
     }

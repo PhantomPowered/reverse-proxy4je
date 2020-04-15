@@ -59,7 +59,6 @@ public class InitialHandler implements ChannelListener {
     }
 
     private enum State {
-
         HANDSHAKE, STATUS, PING, USERNAME, ENCRYPT, FINISHED
     }
 

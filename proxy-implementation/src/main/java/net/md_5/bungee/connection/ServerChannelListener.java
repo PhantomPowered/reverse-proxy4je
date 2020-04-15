@@ -8,6 +8,8 @@ import com.github.derrop.proxy.network.channel.ChannelListener;
 import net.md_5.bungee.Util;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public class ServerChannelListener implements ChannelListener {
 
     private ConnectedProxyClient client;
@@ -19,7 +21,9 @@ public class ServerChannelListener implements ChannelListener {
     @Override
     public void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
         System.err.println("Exception on proxy client " + this.client.getAccountName() + "!");
-        cause.printStackTrace();
+        if (!(cause instanceof IOException)) {
+            cause.printStackTrace();
+        }
         MCProxy.getInstance().unregisterConnection(this.client.getConnection());
         this.client.handleDisconnect(TextComponent.fromLegacyText("§c" + Util.exception(cause)));
         this.client.getConnection().close();

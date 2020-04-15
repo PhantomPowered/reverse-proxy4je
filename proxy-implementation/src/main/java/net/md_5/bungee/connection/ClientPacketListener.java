@@ -8,6 +8,8 @@ import com.github.derrop.proxy.network.channel.ChannelListener;
 import net.md_5.bungee.Util;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public class ClientPacketListener implements ChannelListener {
 
     private final DefaultPlayer player;
@@ -18,8 +20,10 @@ public class ClientPacketListener implements ChannelListener {
 
     @Override
     public void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
-        cause.printStackTrace();
-        this.player.sendMessage("Unexpected exception, check log for more details: " + Util.exception(cause));
+        if (!(cause instanceof IOException)) {
+            this.player.sendMessage("Unexpected exception, check log for more details: " + Util.exception(cause));
+            cause.printStackTrace();
+        }
     }
 
     @Override

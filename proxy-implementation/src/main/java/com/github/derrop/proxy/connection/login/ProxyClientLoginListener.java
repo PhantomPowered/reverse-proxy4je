@@ -5,6 +5,8 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public class ProxyClientLoginListener implements ChannelListener {
 
     private ConnectedProxyClient client;
@@ -20,7 +22,9 @@ public class ProxyClientLoginListener implements ChannelListener {
 
     @Override
     public void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
-        cause.printStackTrace();
+        if (!(cause instanceof IOException)) {
+            cause.printStackTrace();
+        }
     }
 
     @Override
