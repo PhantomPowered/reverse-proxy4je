@@ -8,10 +8,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class PacketPlayCustomPayload extends PacketPlayPluginMessage {
+    public PacketPlayCustomPayload(String tag, byte[] data, boolean allowExtendedPacket) {
+        super(tag, data, allowExtendedPacket);
+    }
 
     @Override
     public int getId() {

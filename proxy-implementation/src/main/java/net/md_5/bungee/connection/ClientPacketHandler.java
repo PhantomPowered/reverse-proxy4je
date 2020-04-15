@@ -17,7 +17,7 @@ import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayCustomPayload;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
@@ -69,7 +69,7 @@ public class ClientPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CUSTOM_PAYLOAD, protocolState = ProtocolState.PLAY)
-    private void handlePluginMessage(DefaultPlayer player, PacketPlayPluginMessage pluginMessage) throws Exception {
+    private void handlePluginMessage(DefaultPlayer player, PacketPlayCustomPayload pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(player, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
