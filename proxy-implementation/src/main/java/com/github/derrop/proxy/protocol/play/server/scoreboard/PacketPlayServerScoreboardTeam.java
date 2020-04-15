@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -42,7 +43,7 @@ public class PacketPlayServerScoreboardTeam extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         name = readString(buf);
         mode = buf.readByte();
         if (mode == 0 || mode == 2) {
@@ -72,7 +73,7 @@ public class PacketPlayServerScoreboardTeam extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         writeString(name, buf);
         buf.writeByte(mode);
         if (mode == 0 || mode == 2) {

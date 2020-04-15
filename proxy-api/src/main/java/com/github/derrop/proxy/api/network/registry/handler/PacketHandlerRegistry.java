@@ -4,6 +4,7 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.util.Identifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +13,7 @@ import java.util.Collection;
 
 public interface PacketHandlerRegistry {
 
-    @Nullable <T extends Packet> T handlePacketReceive(@NotNull T packet, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel);
+    @Nullable <T extends Identifiable> T handlePacketReceive(@NotNull T packet, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel);
 
     default void registerPacketHandlerClass(@Nullable Plugin plugin, @NotNull Class<?> clazz) {
         try {

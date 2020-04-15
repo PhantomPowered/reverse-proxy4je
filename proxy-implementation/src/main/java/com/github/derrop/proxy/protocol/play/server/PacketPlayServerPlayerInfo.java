@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class PacketPlayServerPlayerInfo extends DefinedPacket {
     private Item[] items;
 
     @Override
-    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         action = Action.values()[DefinedPacket.readVarInt(buf)];
         items = new Item[DefinedPacket.readVarInt(buf)];
         for (int i = 0; i < items.length; i++) {
@@ -69,7 +70,7 @@ public class PacketPlayServerPlayerInfo extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         DefinedPacket.writeVarInt(action.ordinal(), buf);
         DefinedPacket.writeVarInt(items.length, buf);
         for (Item item : items) {

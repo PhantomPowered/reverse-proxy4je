@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -33,7 +34,7 @@ public class PacketPlayServerScoreboardScore extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         itemName = readString(buf);
         action = buf.readByte();
         objectiveName = readString(buf);
@@ -43,7 +44,7 @@ public class PacketPlayServerScoreboardScore extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         writeString(itemName, buf);
         buf.writeByte(action);
         writeString(objectiveName, buf);

@@ -5,6 +5,7 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
+import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.haproxy.HAProxyMessage;
@@ -74,11 +75,11 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        if (msg instanceof Packet) {
-            Packet result = this.getHandlers().handlePacketReceive((Packet) msg, this.networkChannel.getProtocolState(), this.networkChannel);
-
-            if (result != null && this.channelListener != null) {
-                this.channelListener.handleFinishedProceed(result);
+        if (msg instanceof DecodedPacket) {
+            DecodedPacket packet = (DecodedPacket) msg;
+            if (packet.getPacket() != null) {
+                this.getHandlers().handlePacketReceive(packet.getPacket(), this.networkChannel.getProtocolState(), this.networkChannel);
+                this.getHandlers().handlePacketReceive(packet, this.networkChannel.getProtocolState(), this.networkChannel);
             }
         }
     }

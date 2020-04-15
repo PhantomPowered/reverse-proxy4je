@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class PacketPlayClientSettings extends DefinedPacket {
     private int mainHand;
 
     @Override
-    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         locale = readString(buf);
         viewDistance = buf.readByte();
         chatFlags = protocolVersion >= ProtocolConstants.MINECRAFT_1_9 ? DefinedPacket.readVarInt(buf) : buf.readUnsignedByte();
@@ -38,7 +39,7 @@ public class PacketPlayClientSettings extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         writeString(locale, buf);
         buf.writeByte(viewDistance);
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_9) {

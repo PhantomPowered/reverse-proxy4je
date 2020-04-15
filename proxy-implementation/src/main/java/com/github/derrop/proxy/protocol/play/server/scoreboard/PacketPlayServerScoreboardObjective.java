@@ -8,6 +8,7 @@ import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -33,7 +34,7 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         name = readString(buf);
         action = buf.readByte();
         if (action == 0 || action == 2) {
@@ -47,7 +48,7 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         writeString(name, buf);
         buf.writeByte(action);
         if (action == 0 || action == 2) {

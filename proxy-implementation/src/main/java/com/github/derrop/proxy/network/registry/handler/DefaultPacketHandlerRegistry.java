@@ -8,6 +8,8 @@ import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistryEntry;
 import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.util.Identifiable;
+import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -23,7 +25,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
     private final BiMap<Byte, PacketHandlerRegistryEntry> entries = HashBiMap.create();
 
     @Override
-    public <T extends Packet> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
+    public <T extends Identifiable> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
         SortedMap<Byte, PacketHandlerRegistryEntry> sorted = new TreeMap<>(Byte::compare);
         this.entries.forEach((k, v) -> sorted.put(k, v));
 
@@ -37,7 +39,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                     continue;
                 }
 
-                if (!packet.getClass().isInstance(entryEntry.getMethod().getParameterTypes()[1])) {
+                if (!packet.getClass().isAssignableFrom(entryEntry.getMethod().getParameterTypes()[1])) {
                     continue;
                 }
 
@@ -98,13 +100,13 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                 continue;
             }
 
-            if (!parameters[0].isInstance(NetworkChannel.class)) {
+            if (!NetworkChannel.class.isAssignableFrom(parameters[0])) {
                 System.err.println("First argument has to be a network channel @" + declaredMethod.getName() + "->" + clazz.getClass().getName());
                 continue;
             }
 
-            if (!parameters[1].isInstance(Packet.class)) {
-                System.err.println("First argument has to be a packet @" + declaredMethod.getName() + "->" + clazz.getClass().getName());
+            if (!Packet.class.isAssignableFrom(parameters[1]) && !DecodedPacket.class.isAssignableFrom(parameters[1])) {
+                System.err.println("Second argument has to be a packet or decoded packet @" + declaredMethod.getName() + "->" + clazz.getClass().getName());
                 continue;
             }
 

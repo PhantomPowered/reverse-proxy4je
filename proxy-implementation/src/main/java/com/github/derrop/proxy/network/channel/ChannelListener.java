@@ -17,7 +17,4 @@ public interface ChannelListener {
 
     default void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
     }
-
-    default void handleFinishedProceed(@NotNull Packet packet) {
-    }
 }

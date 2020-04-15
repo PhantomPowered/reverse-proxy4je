@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +35,7 @@ public class PacketPlayClientTabCompleteRequest extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
             transactionId = readVarInt(buf);
         }
@@ -52,7 +53,7 @@ public class PacketPlayClientTabCompleteRequest extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
             writeVarInt(transactionId, buf);
         }
