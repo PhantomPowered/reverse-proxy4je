@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.connection;
+package com.github.derrop.proxy.connection.login;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.ProtocolState;
@@ -6,6 +6,7 @@ import com.github.derrop.proxy.api.event.priority.EventPriority;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.minecraft.CryptManager;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
@@ -24,23 +25,6 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 
 public class ProxyClientLoginHandler {
-
-    @Override
-    public void disconnected(ChannelWrapper channel) throws Exception {
-        if (this.connection != null) {
-            this.proxyClient.getProxy().unregisterConnection(this.connection);
-        }
-    }
-
-    @Override
-    public void exception(Throwable t) throws Exception {
-        t.printStackTrace();
-    }
-
-    @Override
-    public void connected(ChannelWrapper channel) throws Exception {
-        System.out.println("Connected to " + this.proxyClient.getServerAddress() + " with the account " + this.proxyClient.getAccountName());
-    }
 
     @PacketHandler(packetIds = {ProtocolIds.ClientBound.Play.KICK_DISCONNECT}, protocolState = ProtocolState.PLAY)
     private void handle(ConnectedProxyClient proxyClient, PacketPlayServerKickPlayer kick) throws Exception {

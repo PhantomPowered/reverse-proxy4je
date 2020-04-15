@@ -22,7 +22,7 @@ import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
-import com.github.derrop.proxy.connection.ProxyClientLoginHandler;
+import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
