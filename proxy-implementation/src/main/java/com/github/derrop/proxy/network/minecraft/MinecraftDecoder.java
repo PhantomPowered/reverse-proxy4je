@@ -32,7 +32,7 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
         int id = ByteBufUtils.readVarInt(copy);
         Packet packet = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, id);
         if (packet == null) {
-            byteBuf.skipBytes(byteBuf.readableBytes());
+            list.add(new DecodedPacket(byteBuf, null));
             return;
         }
 
