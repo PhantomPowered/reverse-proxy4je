@@ -1,25 +1,23 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.minecraft.CryptManager;
+import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
+import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
 import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.minecraft.CryptManager;
-import net.md_5.bungee.EncryptionUtil;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.connection.DownstreamBridge;
-import net.md_5.bungee.jni.cipher.BungeeCipher;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.netty.PipelineUtils;
-import net.md_5.bungee.netty.cipher.CipherDecoder;
-import net.md_5.bungee.netty.cipher.CipherEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
 
@@ -89,10 +87,16 @@ public class ProxyClientLoginHandler extends PacketHandler {
         byte[] verifyTokenEncrypted = CryptManager.encryptData(publicKey, request.getVerifyToken());
         this.proxyClient.getChannelWrapper().write(new PacketLoginEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
 
-        BungeeCipher decrypt = EncryptionUtil.getCipher(false, secretKey);
-        BungeeCipher encrypt = EncryptionUtil.getCipher(true, secretKey);
-        this.proxyClient.getChannelWrapper().getHandle().pipeline().addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.DECRYPT_HANDLER, new CipherDecoder(decrypt));
-        this.proxyClient.getChannelWrapper().getHandle().pipeline().addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.ENCRYPT_HANDLER, new CipherEncoder(encrypt));
+        this.proxyClient.getChannelWrapper().getHandle().pipeline().addBefore(
+                PipelineUtils.FRAME_DECODER,
+                PipelineUtils.DECRYPT_HANDLER,
+                new PacketCipherDecoder(secretKey)
+        );
+        this.proxyClient.getChannelWrapper().getHandle().pipeline().addBefore(
+                PipelineUtils.FRAME_PREPENDER,
+                PipelineUtils.ENCRYPT_HANDLER,
+                new PacketCipherEncoder(secretKey)
+        );
     }
 
     @Override

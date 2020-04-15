@@ -13,6 +13,8 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
+import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyHandshake;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyPing;
@@ -35,13 +37,10 @@ import net.md_5.bungee.ServerPing;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.http.HttpClient;
-import net.md_5.bungee.jni.cipher.BungeeCipher;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PacketHandler;
 import net.md_5.bungee.netty.PipelineUtils;
-import net.md_5.bungee.netty.cipher.CipherDecoder;
-import net.md_5.bungee.netty.cipher.CipherEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
 import net.md_5.bungee.protocol.ProtocolConstants;
@@ -292,10 +291,9 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
         Preconditions.checkState(thisState == State.ENCRYPT, "Not expecting ENCRYPT");
 
         SecretKey sharedKey = EncryptionUtil.getSecret(encryptResponse, request);
-        BungeeCipher decrypt = EncryptionUtil.getCipher(false, sharedKey);
-        ch.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.DECRYPT_HANDLER, new CipherDecoder(decrypt));
-        BungeeCipher encrypt = EncryptionUtil.getCipher(true, sharedKey);
-        ch.addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.ENCRYPT_HANDLER, new CipherEncoder(encrypt));
+
+        ch.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.DECRYPT_HANDLER, new PacketCipherDecoder(sharedKey));
+        ch.addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.ENCRYPT_HANDLER, new PacketCipherEncoder(sharedKey));
 
         String encName = URLEncoder.encode(InitialHandler.this.getName(), "UTF-8");
 

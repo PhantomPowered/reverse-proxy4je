@@ -4,6 +4,7 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 @Getter
+@NoArgsConstructor
 public class PacketPlayInPositionLook extends DefinedPacket {
 
     private double x;

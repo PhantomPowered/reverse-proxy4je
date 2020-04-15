@@ -1,18 +1,16 @@
 package net.md_5.bungee;
 
-import lombok.Getter;
-import net.md_5.bungee.jni.NativeCode;
-import net.md_5.bungee.jni.cipher.BungeeCipher;
-import net.md_5.bungee.jni.cipher.JavaCipher;
-import net.md_5.bungee.jni.cipher.NativeCipher;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
+import lombok.Getter;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.*;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -25,7 +23,6 @@ public class EncryptionUtil {
     public static final KeyPair keys;
     @Getter
     private static final SecretKey secret = new SecretKeySpec(new byte[16], "AES");
-    public static final NativeCode<BungeeCipher> nativeFactory = new NativeCode<>("native-cipher", JavaCipher.class, NativeCipher.class);
 
     static {
         try {
@@ -56,22 +53,5 @@ public class EncryptionUtil {
 
         cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
         return new SecretKeySpec(cipher.doFinal(resp.getSharedSecret()), "AES");
-    }
-
-    public static BungeeCipher getCipher(boolean forEncryption, SecretKey shared) throws GeneralSecurityException {
-        BungeeCipher cipher = nativeFactory.newInstance();
-
-        cipher.init(forEncryption, shared);
-        return cipher;
-    }
-
-    public static PublicKey getPubkey(PacketLoginEncryptionRequest request) throws GeneralSecurityException {
-        return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(request.getPublicKey()));
-    }
-
-    public static byte[] encrypt(Key key, byte[] b) throws GeneralSecurityException {
-        Cipher hasher = Cipher.getInstance("RSA");
-        hasher.init(Cipher.ENCRYPT_MODE, key);
-        return hasher.doFinal(b);
     }
 }

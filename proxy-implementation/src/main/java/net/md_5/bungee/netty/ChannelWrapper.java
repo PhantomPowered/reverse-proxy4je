@@ -1,5 +1,7 @@
 package net.md_5.bungee.netty;
 
+import com.github.derrop.proxy.network.compression.PacketCompressor;
+import com.github.derrop.proxy.network.compression.PacketDeCompressor;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
@@ -8,8 +10,6 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import lombok.Setter;
-import net.md_5.bungee.compress.PacketCompressor;
-import net.md_5.bungee.compress.PacketDecompressor;
 import net.md_5.bungee.protocol.MinecraftDecoder;
 import net.md_5.bungee.protocol.MinecraftEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
@@ -115,19 +115,21 @@ public class ChannelWrapper {
 
     public void setCompressionThreshold(int compressionThreshold) {
         if (ch.pipeline().get(PacketCompressor.class) == null && compressionThreshold != -1) {
-            addBefore(PipelineUtils.PACKET_ENCODER, "compress", new PacketCompressor());
+            this.addBefore(PipelineUtils.PACKET_ENCODER, "compressor", new PacketCompressor(compressionThreshold));
         }
+
         if (compressionThreshold != -1) {
             ch.pipeline().get(PacketCompressor.class).setThreshold(compressionThreshold);
         } else {
-            ch.pipeline().remove("compress");
+            ch.pipeline().remove("compressor");
         }
 
-        if (ch.pipeline().get(PacketDecompressor.class) == null && compressionThreshold != -1) {
-            addBefore(PipelineUtils.PACKET_DECODER, "decompress", new PacketDecompressor());
+        if (ch.pipeline().get(PacketDeCompressor.class) == null && compressionThreshold != -1) {
+            this.addBefore(PipelineUtils.PACKET_DECODER, "decompressor", new PacketDeCompressor(compressionThreshold));
         }
+
         if (compressionThreshold == -1) {
-            ch.pipeline().remove("decompress");
+            ch.pipeline().remove("decompressor");
         }
     }
 }
