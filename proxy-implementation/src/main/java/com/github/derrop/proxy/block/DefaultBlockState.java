@@ -15,6 +15,7 @@ public class DefaultBlockState implements BlockState {
     private int layers;
     private double height;
     private double thickness;
+    private int redstonePower;
     private EnumFacing facing;
     private HingePosition hingePosition;
     private TrapdoorPosition half;
@@ -68,6 +69,11 @@ public class DefaultBlockState implements BlockState {
 
     DefaultBlockState thick(double thickness) {
         this.thickness = thickness;
+        return this;
+    }
+
+    DefaultBlockState power(int redstonePower) {
+        this.redstonePower = redstonePower;
         return this;
     }
 
@@ -138,5 +144,10 @@ public class DefaultBlockState implements BlockState {
                 (this.material.isDoor() && this.isOpen()) ||
                 (this.material.isFenceGate() && this.isOpen()) ||
                 (this.material == Material.SNOW && this.getLayers() < 5);
+    }
+
+    @Override
+    public int getRedstonePower() {
+        return this.redstonePower;
     }
 }

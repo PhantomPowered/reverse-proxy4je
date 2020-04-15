@@ -23,6 +23,8 @@ public interface BlockState {
 
     boolean isPassable();
 
+    int getRedstonePower();
+
     @Nullable
     SubMaterial getSubMaterial();
 

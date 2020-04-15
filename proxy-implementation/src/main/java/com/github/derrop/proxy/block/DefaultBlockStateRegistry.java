@@ -363,22 +363,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(867, Material.CHEST);
         registerState(868, Material.CHEST);
         registerState(869, Material.CHEST);
-        registerState(880, Material.REDSTONE_WIRE);
-        registerState(881, Material.REDSTONE_WIRE);
-        registerState(882, Material.REDSTONE_WIRE);
-        registerState(883, Material.REDSTONE_WIRE);
-        registerState(884, Material.REDSTONE_WIRE);
-        registerState(885, Material.REDSTONE_WIRE);
-        registerState(886, Material.REDSTONE_WIRE);
-        registerState(887, Material.REDSTONE_WIRE);
-        registerState(888, Material.REDSTONE_WIRE);
-        registerState(889, Material.REDSTONE_WIRE);
-        registerState(890, Material.REDSTONE_WIRE);
-        registerState(891, Material.REDSTONE_WIRE);
-        registerState(892, Material.REDSTONE_WIRE);
-        registerState(893, Material.REDSTONE_WIRE);
-        registerState(894, Material.REDSTONE_WIRE);
-        registerState(895, Material.REDSTONE_WIRE);
+        registerState(880, Material.REDSTONE_WIRE).power(0); // complete
+        registerState(881, Material.REDSTONE_WIRE).power(1); // complete
+        registerState(882, Material.REDSTONE_WIRE).power(2); // complete
+        registerState(883, Material.REDSTONE_WIRE).power(3); // complete
+        registerState(884, Material.REDSTONE_WIRE).power(4); // complete
+        registerState(885, Material.REDSTONE_WIRE).power(5); // complete
+        registerState(886, Material.REDSTONE_WIRE).power(6); // complete
+        registerState(887, Material.REDSTONE_WIRE).power(7); // complete
+        registerState(888, Material.REDSTONE_WIRE).power(8); // complete
+        registerState(889, Material.REDSTONE_WIRE).power(9); // complete
+        registerState(890, Material.REDSTONE_WIRE).power(10); // complete
+        registerState(891, Material.REDSTONE_WIRE).power(11); // complete
+        registerState(892, Material.REDSTONE_WIRE).power(12); // complete
+        registerState(893, Material.REDSTONE_WIRE).power(13); // complete
+        registerState(894, Material.REDSTONE_WIRE).power(14); // complete
+        registerState(895, Material.REDSTONE_WIRE).power(15); // complete
         registerState(896, Material.DIAMOND_ORE); // complete
         registerState(912, Material.DIAMOND_BLOCK); // complete
         registerState(928, Material.WORKBENCH); // complete
