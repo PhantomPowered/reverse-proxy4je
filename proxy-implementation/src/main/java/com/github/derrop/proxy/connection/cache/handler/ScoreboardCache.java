@@ -7,10 +7,10 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardDisplay;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardObjective;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardScore;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardTeam;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 import com.github.derrop.proxy.scoreboard.minecraft.*;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 

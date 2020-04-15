@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.play.server;
+package com.github.derrop.proxy.protocol.play.server.scoreboard;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;

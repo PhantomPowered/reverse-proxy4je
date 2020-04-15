@@ -142,7 +142,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void sendData(String channel, byte[] data) {
-        this.sendPacket(new PacketPlayPluginMessage(channel, data, false));
+        this.sendPacket(new PacketPlayPluginMessage(channel, data));
     }
 
     @Override

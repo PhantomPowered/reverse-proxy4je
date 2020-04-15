@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.shared;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -24,19 +25,19 @@ public class PacketPlayChat extends DefinedPacket {
     }
 
     @Override
-    public void read(@NotNull ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction) {
         message = readString(buf);
 
-        if (this.getId() == ProtocolIds.ToClient.Play.CHAT) {
+        if (direction == ProtocolDirection.TO_CLIENT) {
             position = buf.readByte();
         }
     }
 
     @Override
-    public void write(@NotNull ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction) {
         writeString(message, buf);
 
-        if (this.getId() == ProtocolIds.ToClient.Play.CHAT) {
+        if (direction == ProtocolDirection.TO_CLIENT) {
             buf.writeByte(position);
         }
     }

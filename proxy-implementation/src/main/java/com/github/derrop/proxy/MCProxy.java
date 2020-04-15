@@ -34,6 +34,7 @@ import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
 import com.github.derrop.proxy.permission.PermissionProvider;
 import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
+import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.session.BasicProvidedSessionService;
@@ -210,6 +211,8 @@ public class MCProxy extends Proxy {
     }
 
     public void bootstrap(int port) throws IOException {
+        PacketRegistrar.registerPackets();
+
         this.proxyServer.start(new InetSocketAddress(port)); // TODO: service + config
 
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);

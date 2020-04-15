@@ -62,6 +62,7 @@ public class ProtocolConstants {
             ProtocolConstants.MINECRAFT_1_15_2*/
     );
 
+    @Deprecated
     public enum Direction {
 
         TO_CLIENT, TO_SERVER

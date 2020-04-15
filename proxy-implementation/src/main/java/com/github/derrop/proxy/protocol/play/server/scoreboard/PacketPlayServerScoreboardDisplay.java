@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.play.server;
+package com.github.derrop.proxy.protocol.play.server.scoreboard;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;

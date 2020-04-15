@@ -5,7 +5,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.protocol.client.PacketPlayOutPlayerPositionLook;
+import com.github.derrop.proxy.protocol.client.PacketPlayInPlayerPositionLook;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
@@ -72,13 +72,13 @@ public class PlayerVelocityHandler {
                 this.rotPitch = ((PlayerLook) packet).getPitch();
                 this.rotYaw = ((PlayerLook) packet).getYaw();
                 this.onGround = ((PlayerLook) packet).isOnGround();
-            } else if (packet instanceof PacketPlayOutPlayerPositionLook) {
-                this.posX = ((PacketPlayOutPlayerPositionLook) packet).getX();
-                this.posY = ((PacketPlayOutPlayerPositionLook) packet).getY();
-                this.posZ = ((PacketPlayOutPlayerPositionLook) packet).getZ();
-                this.rotPitch = ((PacketPlayOutPlayerPositionLook) packet).getPitch();
-                this.rotYaw = ((PacketPlayOutPlayerPositionLook) packet).getYaw();
-                this.onGround = ((PacketPlayOutPlayerPositionLook) packet).isOnGround();
+            } else if (packet instanceof PacketPlayInPlayerPositionLook) {
+                this.posX = ((PacketPlayInPlayerPositionLook) packet).getX();
+                this.posY = ((PacketPlayInPlayerPositionLook) packet).getY();
+                this.posZ = ((PacketPlayInPlayerPositionLook) packet).getZ();
+                this.rotPitch = ((PacketPlayInPlayerPositionLook) packet).getPitch();
+                this.rotYaw = ((PacketPlayInPlayerPositionLook) packet).getYaw();
+                this.onGround = ((PacketPlayInPlayerPositionLook) packet).isOnGround();
             }*/
             this.moveEntity(this.posX, this.posY, this.posZ);
         }

@@ -8,8 +8,8 @@ import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
 import com.github.derrop.proxy.scoreboard.minecraft.ScoreObjective;
 import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardDisplay;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardObjective;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

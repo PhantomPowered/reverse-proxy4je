@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Getter
 @NoArgsConstructor
-public class PacketPlayOutPlayerPositionLook extends DefinedPacket {
+public class PacketPlayInPlayerPositionLook extends DefinedPacket {
 
     private double x;
     private double y;
@@ -21,7 +21,7 @@ public class PacketPlayOutPlayerPositionLook extends DefinedPacket {
     private float pitch;
     private boolean onGround;
 
-    public PacketPlayOutPlayerPositionLook(@NotNull Player player) {
+    public PacketPlayInPlayerPositionLook(@NotNull Player player) {
         this.x = player.getLocation().getX();
         this.y = player.getLocation().getY();
         this.z = player.getLocation().getZ();

@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.scoreboard.NameTagVisibility;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerScoreboardTeam;
+import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 
 import java.util.Collections;
 import java.util.Set;
