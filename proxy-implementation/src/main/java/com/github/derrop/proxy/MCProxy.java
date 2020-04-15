@@ -40,8 +40,8 @@ import com.github.derrop.proxy.session.BasicProvidedSessionService;
 import com.github.derrop.proxy.storage.UUIDStorage;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.md_5.bungee.connection.DownstreamBridge;
-import net.md_5.bungee.connection.UpstreamBridge;
+import net.md_5.bungee.connection.ServerPacketHandler;
+import net.md_5.bungee.connection.ClientPacketHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,8 +86,8 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
-        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new UpstreamBridge());
-        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new DownstreamBridge());
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ClientPacketHandler());
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ServerPacketHandler());
 
         this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));

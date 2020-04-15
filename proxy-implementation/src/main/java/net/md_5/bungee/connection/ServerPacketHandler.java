@@ -23,7 +23,7 @@ import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 
-public class DownstreamBridge {
+public class ServerPacketHandler {
 
     @Override
     public void exception(Throwable t) throws Exception {

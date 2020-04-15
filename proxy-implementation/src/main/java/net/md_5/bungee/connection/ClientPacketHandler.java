@@ -23,7 +23,7 @@ import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
-public class UpstreamBridge {
+public class ClientPacketHandler {
 
     @Override
     public void exception(Throwable t) {
