@@ -3,12 +3,10 @@ package com.github.derrop.proxy.connection;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
-import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
@@ -26,9 +24,6 @@ import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
-import com.github.derrop.proxy.network.handler.HandlerEndpoint;
-import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
-import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
 import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
@@ -62,7 +57,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ConnectedProxyClient {
+public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     private final MCProxy proxy;
     private final BasicServiceConnection connection;
@@ -72,9 +67,7 @@ public class ConnectedProxyClient {
     private UserAuthentication authentication;
     private MCCredentials credentials;
 
-    private NetworkChannel networkChannel;
     private com.github.derrop.proxy.api.entity.player.Player redirector;
-    private Channel channel;
 
     private PacketCache packetCache;
     private EntityMap entityMap = EntityMap.getEntityMap(47);
@@ -131,13 +124,11 @@ public class ConnectedProxyClient {
     }
 
     public void disconnect() {
-        if (this.channel == null || this.networkChannel == null) {
+        if (super.getWrappedChannel() == null) {
             return;
         }
 
-        this.networkChannel.close();
-        this.channel = null;
-        this.networkChannel = null;
+        super.close();
         this.address = null;
         this.packetCache.reset();
 
@@ -168,7 +159,7 @@ public class ConnectedProxyClient {
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
-                NetworkUtils.BASE.initChannel(channel);
+                NetworkUtils.BASE.initChannel(ConnectedProxyClient.super.getWrappedChannel());
 
                 if (proxy != null) {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
@@ -182,12 +173,12 @@ public class ConnectedProxyClient {
         };
         ChannelFutureListener listener = future1 -> {
             if (future1.isSuccess()) {
-                this.networkChannel = new DefaultNetworkChannel(future1.channel());
+                super.setChannel(future1.channel());
                 this.address = address;
 
-                this.networkChannel.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
-                this.networkChannel.setProtocolState(ProtocolState.LOGIN);
-                this.networkChannel.write(new PacketLoginLoginRequest(this.getAccountName()));
+                super.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
+                super.setProtocolState(ProtocolState.LOGIN);
+                super.write(new PacketLoginLoginRequest(this.getAccountName()));
                 future.complete(true);
             } else {
                 future1.channel().close();
@@ -197,7 +188,7 @@ public class ConnectedProxyClient {
 
         this.connectionHandler = future;
 
-        this.channel = new Bootstrap()
+        super.setChannel(new Bootstrap()
                 .channel(NettyUtils.getSocketChannelClass())
                 .group(NettyUtils.newEventLoopGroup())
                 .handler(initializer)
@@ -205,7 +196,7 @@ public class ConnectedProxyClient {
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))
                 .addListener(listener)
                 .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
-                .channel();
+                .channel());
 
         return future;
     }
@@ -238,8 +229,8 @@ public class ConnectedProxyClient {
         return connection;
     }
 
-    public NetworkAddress getAddress() {
-        return address;
+    public NetworkAddress getServerAddress() {
+        return this.address;
     }
 
     public UserAuthentication getAuthentication() {
@@ -280,19 +271,6 @@ public class ConnectedProxyClient {
 
     public MCCredentials getCredentials() {
         return credentials;
-    }
-
-    @Deprecated
-    public NetworkChannel getChannelWrapper() {
-        return networkChannel;
-    }
-
-    public NetworkChannel getNetworkChannel() {
-        return networkChannel;
-    }
-
-    public boolean isConnected() {
-        return this.networkChannel != null && !this.networkChannel.isClosing() && !this.networkChannel.isClosed();
     }
 
     public com.github.derrop.proxy.api.entity.player.Player getRedirector() {
@@ -351,7 +329,7 @@ public class ConnectedProxyClient {
     }
 
     public void redirectPacket(ByteBuf packet, Packet deserialized) {
-        if (this.networkChannel == null || this.networkChannel.getProtocolState() != ProtocolState.PLAY) {
+        if (!this.isConnected() || super.getProtocolState() != ProtocolState.PLAY) {
             return;
         }
         if (packet == null) {
@@ -359,8 +337,8 @@ public class ConnectedProxyClient {
         }
 
         if (deserialized instanceof PacketPlayServerResourcePackSend) {
-            this.networkChannel.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.ACCEPTED));
-            this.networkChannel.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
+            super.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.ACCEPTED));
+            super.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
             throw CancelProceedException.INSTANCE;
         }
 

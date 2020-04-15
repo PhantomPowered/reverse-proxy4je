@@ -4,11 +4,13 @@ import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.priority.EventPriority;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.minecraft.CryptManager;
 import com.github.derrop.proxy.network.NetworkUtils;
+import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
@@ -28,7 +30,7 @@ import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.security.PublicKey;
 
-public class ProxyClientLoginHandler extends PacketHandler {
+public class ProxyClientLoginHandler {
     private final ConnectedProxyClient proxyClient;
     private final BasicServiceConnection connection;
 
@@ -51,43 +53,18 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
     @Override
     public void connected(ChannelWrapper channel) throws Exception {
-        System.out.println("Connected to " + this.proxyClient.getAddress() + " with the account " + this.proxyClient.getAccountName());
+        System.out.println("Connected to " + this.proxyClient.getServerAddress() + " with the account " + this.proxyClient.getAccountName());
     }
 
-    @Override
-    public boolean shouldHandle(PacketWrapper packet) throws Exception {
-        return true;
-    }
-
-    @Override
-    public void handle(@NotNull Packet packet) throws Exception {
-        if (packet instanceof PacketPlayServerKickPlayer) {
-            this.handle((PacketPlayServerKickPlayer) packet);
-            return;
-        }
-
-        if (packet instanceof PacketLoginEncryptionRequest) {
-            this.handle((PacketLoginEncryptionRequest) packet);
-            return;
-        }
-
-        if (packet instanceof PacketPlayServerLoginSuccess) {
-            this.handle((PacketPlayServerLoginSuccess) packet);
-            return;
-        }
-
-        if (packet instanceof )
-    }
-
-    private void handle(PacketPlayServerKickPlayer kick) throws Exception {
-        if (this.proxyClient == null) {
-            return;
-        }
+    @PacketHandler(packetIds = {ProtocolIds.ClientBound.Play.KICK_DISCONNECT}, protocolState = ProtocolState.PLAY)
+    private void handle(ConnectedProxyClient proxyClient, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
-        this.proxyClient.setLastKickReason(reason);
-        this.proxyClient.connectionFailed();
+        proxyClient.setLastKickReason(reason);
+        proxyClient.connectionFailed();
     }
 
+    @PacketHandler(packetIds = {ProtocolIds.ServerBound.Login.ENCRYPTION_BEGIN}, protocolState = ProtocolState.LOGIN)
+    // TODO can't we just use the packetId (if not defined) out of the Packet in the parameters?
     private void handle(PacketLoginEncryptionRequest request) throws Exception {
         if (this.proxyClient.getCredentials().isOffline()) {
             throw new IllegalStateException("Joined with an offline account on an online mode server");
@@ -106,33 +83,33 @@ public class ProxyClientLoginHandler extends PacketHandler {
 
         byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretKey.getEncoded());
         byte[] verifyTokenEncrypted = CryptManager.encryptData(publicKey, request.getVerifyToken());
-        this.proxyClient.getChannelWrapper().write(new PacketLoginEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
+        this.proxyClient.write(new PacketLoginEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
 
-        this.proxyClient.getChannelWrapper().getHandle().pipeline().addBefore(
+        this.proxyClient.getWrappedChannel().pipeline().addBefore(
                 NetworkUtils.LENGTH_DECODER,
                 NetworkUtils.DECRYPT,
                 new PacketCipherDecoder(secretKey)
         );
-        this.proxyClient.getChannelWrapper().getHandle().pipeline().addBefore(
+        this.proxyClient.getWrappedChannel().pipeline().addBefore(
                 NetworkUtils.LENGTH_ENCODER,
                 NetworkUtils.ENCRYPT,
                 new PacketCipherEncoder(secretKey)
         );
     }
-    @com.github.derrop.proxy.api.network.PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.FIRST)
+    @PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.FIRST)
     private void handle(NetworkChannel channel, PacketPlayServerLoginSuccess loginSuccess) throws Exception {
         channel.setProtocolState(ProtocolState.PLAY);
         channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setHandler(new DownstreamBridge(this.connection));
         throw CancelProceedException.INSTANCE; // without this, the LoginSuccess would be recorded by ConnectedProxyClient#redirectPacket
     }
 
-    @com.github.derrop.proxy.api.network.PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SET_COMPRESSION}, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SET_COMPRESSION}, protocolState = ProtocolState.LOGIN)
     private void handle(NetworkChannel channel, PacketLoginSetCompression setCompression) {
         channel.setCompression(setCompression.getThreshold());
     }
 
     @Override
     public String toString() {
-        return "ProxyClient -> " + this.proxyClient.getAddress();
+        return "ProxyClient -> " + this.proxyClient.getServerAddress();
     }
 }

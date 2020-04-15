@@ -118,7 +118,7 @@ public class BasicServiceConnection implements ServiceConnection {
     }
 
     public void sendPacket(Object packet) {
-        this.client.getChannelWrapper().write(packet);
+        this.client.write(packet);
     }
 
     @Override
@@ -128,12 +128,12 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public void chat(@NotNull String message) {
-        this.client.getChannelWrapper().write(new PacketPlayChatMessage(message));
+        this.client.write(new PacketPlayChatMessage(message, (byte) 0));
     }
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull String message) {
-        this.client.getChannelWrapper().write(new PacketPlayChatMessage(message, (byte) type.ordinal()));
+        this.client.write(new PacketPlayChatMessage(message, (byte) type.ordinal()));
     }
 
     @Override
@@ -255,7 +255,7 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public @NotNull SocketAddress getSocketAddress() {
-        return this.client.getChannelWrapper().getHandle().remoteAddress();
+        return this.client.getWrappedChannel().remoteAddress();
     }
 
     @Override
@@ -324,7 +324,7 @@ public class BasicServiceConnection implements ServiceConnection {
             return;
         }
 
-        this.client.getChannelWrapper().write(packet);
+        this.client.write(packet);
     }
 
     @Override
@@ -333,16 +333,11 @@ public class BasicServiceConnection implements ServiceConnection {
             return;
         }
 
-        this.client.getChannelWrapper().write(byteBuf);
+        this.client.write(byteBuf);
     }
 
     @Override
     public @NotNull NetworkUnsafe networkUnsafe() {
-        return new NetworkUnsafe() {
-            @Override
-            public void sendPacket(@NotNull Object packet) {
-                client.getChannelWrapper().write(packet);
-            }
-        };
+        return packet -> client.write(packet);
     }
 }

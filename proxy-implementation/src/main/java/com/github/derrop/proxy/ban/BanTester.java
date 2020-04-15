@@ -87,7 +87,7 @@ public class BanTester {
 
             try {
                 if (proxyClient.connect(address, proxy).get(5, TimeUnit.SECONDS)) {
-                    proxyClient.getChannelWrapper().close();
+                    proxyClient.close();
                     System.out.println("Account " + credentials.getEmail() + " is not banned on " + address);
                     return false;
                 }

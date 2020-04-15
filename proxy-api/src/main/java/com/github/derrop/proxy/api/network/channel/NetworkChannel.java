@@ -32,10 +32,12 @@ public interface NetworkChannel extends AutoCloseable {
 
     boolean isClosing();
 
+    boolean isConnected();
+
     @Override
     default void close() {
         this.close(null);
     }
 
-    @NotNull Channel getWrappedChannel();
+    Channel getWrappedChannel();
 }

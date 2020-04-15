@@ -9,9 +9,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class PacketPlayChatMessage extends PacketPlayChat {
+
+    public PacketPlayChatMessage(String message, byte position) {
+        super(message, position);
+    }
 
     @Override
     public int getId() {

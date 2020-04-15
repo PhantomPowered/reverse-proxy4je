@@ -22,12 +22,14 @@ import java.util.concurrent.TimeUnit;
 public class DefaultNetworkChannel implements NetworkChannel {
 
     private SocketAddress address;
-
-    private final Channel channel;
+    private Channel channel;
 
     private boolean closing = false;
 
     private boolean closed = false;
+
+    public DefaultNetworkChannel() {
+    }
 
     public DefaultNetworkChannel(@NotNull ChannelHandlerContext channelHandlerContext) {
         this(channelHandlerContext.channel());
@@ -36,6 +38,11 @@ public class DefaultNetworkChannel implements NetworkChannel {
     public DefaultNetworkChannel(@NotNull Channel channel) {
         this.channel = channel;
         this.address = (this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress();
+    }
+
+    protected void setChannel(@Nullable Channel channel) {
+        this.channel = channel;
+        this.address = channel == null ? null : (this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress();
     }
 
     @Override
@@ -61,8 +68,9 @@ public class DefaultNetworkChannel implements NetworkChannel {
         return this.channel.pipeline().get(MinecraftDecoder.class).getProtocolState();
     }
 
+    @NotNull
     @Override
-    public @NotNull SocketAddress getAddress() {
+    public SocketAddress getAddress() {
         return this.address;
     }
 
@@ -76,6 +84,9 @@ public class DefaultNetworkChannel implements NetworkChannel {
             } else {
                 this.channel.flush().close();
             }
+
+            this.channel = null;
+            this.address = null;
         }
     }
 
@@ -119,7 +130,12 @@ public class DefaultNetworkChannel implements NetworkChannel {
     }
 
     @Override
-    public @NotNull Channel getWrappedChannel() {
+    public boolean isConnected() {
+        return this.channel != null && !this.isClosed() && !this.isClosing();
+    }
+
+    @Override
+    public Channel getWrappedChannel() {
         return this.channel;
     }
 

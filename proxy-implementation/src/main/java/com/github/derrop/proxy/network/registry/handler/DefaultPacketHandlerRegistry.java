@@ -29,7 +29,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
 
         for (Map.Entry<Byte, PacketHandlerRegistryEntry> entry : ImmutableBiMap.copyOf(sorted).entrySet()) {
             for (PacketHandlerRegistryEntry.RegisteredEntry entryEntry : entry.getValue().getEntries()) {
-                if (Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
+                if (entryEntry.getHandledPackets().length == 0 || Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
                     continue;
                 }
 

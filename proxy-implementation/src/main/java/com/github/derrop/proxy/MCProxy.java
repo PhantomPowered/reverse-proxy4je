@@ -21,11 +21,13 @@ import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
+import com.github.derrop.proxy.connection.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.logging.ILogger;
 import com.github.derrop.proxy.minecraft.AccountReader;
+import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.permission.PermissionProvider;
 import com.github.derrop.proxy.player.DefaultPlayerRepository;
@@ -36,6 +38,8 @@ import com.github.derrop.proxy.session.BasicProvidedSessionService;
 import com.github.derrop.proxy.storage.UUIDStorage;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import net.md_5.bungee.connection.DownstreamBridge;
+import net.md_5.bungee.connection.UpstreamBridge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,6 +80,11 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
+
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new UpstreamBridge());
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new DownstreamBridge());
 
         this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
