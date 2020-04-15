@@ -1,22 +1,22 @@
 package net.md_5.bungee.protocol;
 
-import com.github.derrop.proxy.connection.cache.packet.entity.EntityTeleport;
-import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
-import com.github.derrop.proxy.protocol.Handshake;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyHandshake;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyPing;
 import com.github.derrop.proxy.protocol.login.*;
-import com.github.derrop.proxy.protocol.play.client.*;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientSettings;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
 import com.github.derrop.proxy.protocol.play.server.*;
-import com.github.derrop.proxy.protocol.play.shared.*;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import com.github.derrop.proxy.protocol.status.PacketStatusPing;
 import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
 import com.github.derrop.proxy.protocol.status.PacketStatusResponse;
 
 public abstract class AbstractPacketHandler {
-
-    public void handle(Disconnect disconnect) throws Exception {
-    }
 
     public void handle(PacketLegacyPing ping) throws Exception {
     }
@@ -33,7 +33,7 @@ public abstract class AbstractPacketHandler {
     public void handle(PacketStatusResponse statusResponse) throws Exception {
     }
 
-    public void handle(Handshake handshake) throws Exception {
+    public void handle(PacketHandshakingInSetProtocol packetHandshakingInSetProtocol) throws Exception {
     }
 
     public void handle(PacketPlayKeepAlive keepAlive) throws Exception {
@@ -84,7 +84,7 @@ public abstract class AbstractPacketHandler {
     public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
     }
 
-    public void handle(PacketPlayKickPlayer kick) throws Exception {
+    public void handle(PacketPlayServerKickPlayer kick) throws Exception {
     }
 
     public void handle(PacketLoginEncryptionResponse encryptionResponse) throws Exception {
@@ -102,6 +102,6 @@ public abstract class AbstractPacketHandler {
     public void handle(PacketPlayServerEntityStatus status) throws Exception {
     }
 
-    public void handle(EntityTeleport teleport) throws Exception {
+    public void handle(PacketPlayServerEntityTeleport teleport) throws Exception {
     }
 }

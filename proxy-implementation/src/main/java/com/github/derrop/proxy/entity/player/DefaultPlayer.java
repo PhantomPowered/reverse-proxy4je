@@ -18,7 +18,7 @@ import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
-import com.github.derrop.proxy.protocol.play.client.PacketS08PlayerPosLook;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayInPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
@@ -421,7 +421,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     private void handleLocationUpdate() {
         this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
-        this.connectedClient.sendPacket(new PacketS08PlayerPosLook(this.location, Collections.emptySet()));
+        this.connectedClient.sendPacket(new PacketPlayInPositionLook(this.location, Collections.emptySet()));
     }
 
     public EntityMap getEntityMap() {

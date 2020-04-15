@@ -4,22 +4,28 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.BlockPos;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayClientResourcePackStatusResponse;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
-import com.github.derrop.proxy.connection.velocity.*;
+import com.github.derrop.proxy.connection.velocity.Player;
+import com.github.derrop.proxy.connection.velocity.PlayerLook;
+import com.github.derrop.proxy.connection.velocity.PlayerPosition;
+import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.exception.KickedException;
+import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
+import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayClientResourcePackStatusResponse;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
@@ -40,8 +46,6 @@ import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
-import net.md_5.bungee.protocol.packet.Handshake;
-import net.md_5.bungee.protocol.packet.LoginRequest;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -173,9 +177,9 @@ public class ConnectedProxyClient {
                 this.channelWrapper = new ChannelWrapper(future1.channel());
                 this.address = address;
 
-                this.channelWrapper.write(new Handshake(47, address.getHost(), address.getPort(), 2));
+                this.channelWrapper.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
                 this.channelWrapper.setProtocol(Protocol.LOGIN);
-                this.channelWrapper.write(new LoginRequest(this.getAccountName()));
+                this.channelWrapper.write(new PacketLoginLoginRequest(this.getAccountName()));
                 future.complete(true);
             } else {
                 future1.channel().close();
@@ -413,8 +417,8 @@ public class ConnectedProxyClient {
             this.posZ = ((PositionedPacket) deserialized).getZ();
         }
 
-        if (packetWrapper.packet instanceof PlayerPosLook) {
-            this.onGround = ((PlayerPosLook) packetWrapper.packet).isOnGround();
+        if (packetWrapper.packet instanceof PacketC06PlayerPosLook) {
+            this.onGround = ((PacketC06PlayerPosLook) packetWrapper.packet).isOnGround();
         } else if (packetWrapper.packet instanceof PlayerLook) {
             this.onGround = ((PlayerLook) packetWrapper.packet).isOnGround();
         } else if (packetWrapper.packet instanceof PlayerPosition) {

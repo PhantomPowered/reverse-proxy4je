@@ -18,7 +18,7 @@ import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWi
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.derrop.proxy.protocol.play.server.world.*;
 import com.github.derrop.proxy.connection.velocity.*;
-import com.github.derrop.proxy.protocol.Handshake;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.login.*;
 import com.github.derrop.proxy.protocol.play.client.*;
 import com.github.derrop.proxy.protocol.play.server.*;
@@ -44,7 +44,7 @@ public enum Protocol {
 
         {
             TO_SERVER.registerPacket(
-                    Handshake.class,
+                    PacketHandshakingInSetProtocol.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 0x00)
             );
         }
@@ -350,7 +350,7 @@ public enum Protocol {
                     map(ProtocolConstants.MINECRAFT_1_8, 5)
             );
             TO_SERVER.registerPacket(
-                    PlayerPosLook.class,
+                    PacketPlayInPositionLook.class,
                     map(ProtocolConstants.MINECRAFT_1_8, 6)
             );
             TO_SERVER.registerPacket(

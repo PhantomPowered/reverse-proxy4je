@@ -1,7 +1,7 @@
 package net.md_5.bungee.connection;
 
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.protocol.Handshake;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BufUtil;
 import net.md_5.bungee.ServerPing;
@@ -33,7 +33,7 @@ public class PingHandler extends PacketHandler {
         channel.getHandle().pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.STATUS, false, 578));
         channel.getHandle().pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, encoder);
 
-        channel.write(new Handshake(protocol, this.targetAddress.getHost(), this.targetAddress.getPort(), 1));
+        channel.write(new PacketHandshakingInSetProtocol(protocol, this.targetAddress.getHost(), this.targetAddress.getPort(), 1));
 
         encoder.setProtocol(Protocol.STATUS);
         channel.write(new PacketStatusRequest());

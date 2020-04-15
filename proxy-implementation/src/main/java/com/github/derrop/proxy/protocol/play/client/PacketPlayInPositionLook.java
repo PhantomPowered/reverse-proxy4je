@@ -12,7 +12,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 @Getter
-public class PacketS08PlayerPosLook extends DefinedPacket {
+public class PacketPlayInPositionLook extends DefinedPacket {
 
     private double x;
     private double y;
@@ -21,7 +21,7 @@ public class PacketS08PlayerPosLook extends DefinedPacket {
     private float pitch;
     private Set<EnumFlags> flags;
 
-    public PacketS08PlayerPosLook(Location location, Set<EnumFlags> flags) {
+    public PacketPlayInPositionLook(Location location, Set<EnumFlags> flags) {
         this.x = location.getX();
         this.y = location.getY();
         this.z = location.getZ();

@@ -13,7 +13,7 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
-import com.github.derrop.proxy.protocol.Handshake;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyHandshake;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyPing;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
@@ -64,7 +64,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
 
     private ChannelWrapper ch;
     @Getter
-    private Handshake handshake;
+    private PacketHandshakingInSetProtocol packetHandshakingInSetProtocol;
     @Getter
     private PacketLoginLoginRequest loginRequest;
     private PacketLoginEncryptionRequest request;
@@ -206,7 +206,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
         Preconditions.checkState(thisState == State.STATUS, "Not expecting STATUS");
 
         final String motd = "§7To join: Contact §6Schul_Futzi#4633 §7on §9Discord\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
-        final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) ? handshake.getProtocolVersion() : 578;
+        final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(packetHandshakingInSetProtocol.getProtocolVersion())) ? packetHandshakingInSetProtocol.getProtocolVersion() : 578;
 
         this.ch.write(new PacketStatusResponse(Util.GSON.toJson(getPingInfo(motd, protocol))));
 
@@ -221,30 +221,30 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     }
 
     @Override
-    public void handle(Handshake handshake) throws Exception {
+    public void handle(PacketHandshakingInSetProtocol packetHandshakingInSetProtocol) throws Exception {
         Preconditions.checkState(thisState == State.HANDSHAKE, "Not expecting HANDSHAKE");
-        this.handshake = handshake;
-        ch.setVersion(handshake.getProtocolVersion());
+        this.packetHandshakingInSetProtocol = packetHandshakingInSetProtocol;
+        ch.setVersion(packetHandshakingInSetProtocol.getProtocolVersion());
 
         // Starting with FML 1.8, a "\0FML\0" token is appended to the handshake. This interferes
         // with Bungee's IP forwarding, so we detect it, and remove it from the host string, for now.
         // We know FML appends \00FML\00. However, we need to also consider that other systems might
         // add their own data to the end of the string. So, we just take everything from the \0 character
         // and save it for later.
-        if (handshake.getHost().contains("\0")) {
-            String[] split = handshake.getHost().split("\0", 2);
-            handshake.setHost(split[0]);
+        if (packetHandshakingInSetProtocol.getHost().contains("\0")) {
+            String[] split = packetHandshakingInSetProtocol.getHost().split("\0", 2);
+            packetHandshakingInSetProtocol.setHost(split[0]);
             extraDataInHandshake = "\0" + split[1];
         }
 
         // SRV records can end with a . depending on DNS / client.
-        if (handshake.getHost().endsWith(".")) {
-            handshake.setHost(handshake.getHost().substring(0, handshake.getHost().length() - 1));
+        if (packetHandshakingInSetProtocol.getHost().endsWith(".")) {
+            packetHandshakingInSetProtocol.setHost(packetHandshakingInSetProtocol.getHost().substring(0, packetHandshakingInSetProtocol.getHost().length() - 1));
         }
 
-        this.virtualHost = InetSocketAddress.createUnresolved(handshake.getHost(), handshake.getPort());
+        this.virtualHost = InetSocketAddress.createUnresolved(packetHandshakingInSetProtocol.getHost(), packetHandshakingInSetProtocol.getPort());
 
-        switch (handshake.getRequestedProtocol()) {
+        switch (packetHandshakingInSetProtocol.getRequestedProtocol()) {
             case 1:
                 // Ping
                 thisState = State.STATUS;
@@ -258,13 +258,13 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
                 ch.setProtocol(Protocol.LOGIN);
                 //System.out.println("Connect: " + this);
 
-                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
+                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(packetHandshakingInSetProtocol.getProtocolVersion())) {
                     disconnect("We only support 1.8");
                     return;
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Cannot request protocol " + handshake.getRequestedProtocol());
+                throw new IllegalArgumentException("Cannot request protocol " + packetHandshakingInSetProtocol.getRequestedProtocol());
         }
     }
 
@@ -403,7 +403,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
 
     @Override
     public int getVersion() {
-        return (handshake == null) ? -1 : handshake.getProtocolVersion();
+        return (packetHandshakingInSetProtocol == null) ? -1 : packetHandshakingInSetProtocol.getProtocolVersion();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.block;
 
-import jdk.internal.jline.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BlockMaterialHandler implements BlockConsumer {
 

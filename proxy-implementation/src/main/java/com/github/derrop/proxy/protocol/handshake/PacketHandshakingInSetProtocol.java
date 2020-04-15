@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol;
+package com.github.derrop.proxy.protocol.handshake;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import net.md_5.bungee.protocol.DefinedPacket;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Handshake extends DefinedPacket {
+public class PacketHandshakingInSetProtocol extends DefinedPacket { // TODO: rename
 
     private int protocolVersion;
     private String host;
