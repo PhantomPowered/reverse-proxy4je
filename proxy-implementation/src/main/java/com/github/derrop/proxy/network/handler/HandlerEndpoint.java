@@ -2,6 +2,7 @@ package com.github.derrop.proxy.network.handler;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
@@ -16,7 +17,7 @@ import java.net.InetSocketAddress;
 
 public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
 
-    private DefaultNetworkChannel networkChannel;
+    private NetworkChannel networkChannel;
 
     private ChannelListener channelListener;
 
@@ -28,9 +29,15 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
         this.channelListener = channelListener;
     }
 
+    public void setNetworkChannel(@NotNull NetworkChannel networkChannel) {
+        this.networkChannel = networkChannel;
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        this.networkChannel = new DefaultNetworkChannel(ctx);
+        if (this.networkChannel == null) {
+            this.networkChannel = new DefaultNetworkChannel(ctx);
+        }
 
         if (this.channelListener != null) {
             this.channelListener.handleChannelActive(this.networkChannel);
@@ -43,7 +50,9 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
             this.channelListener.handleChannelInactive(this.networkChannel);
         }
 
-        this.networkChannel.markClosed();
+        if (this.networkChannel instanceof DefaultNetworkChannel) {
+            ((DefaultNetworkChannel) this.networkChannel).markClosed();
+        }
     }
 
     @Override
@@ -71,7 +80,9 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
             HAProxyMessage proxy = (HAProxyMessage) msg;
             InetSocketAddress newAddress = new InetSocketAddress(proxy.sourceAddress(), proxy.sourcePort());
 
-            this.networkChannel.setAddress(newAddress);
+            if (this.networkChannel instanceof DefaultNetworkChannel) {
+                ((DefaultNetworkChannel) this.networkChannel).setAddress(newAddress);
+            }
             return;
         }
 

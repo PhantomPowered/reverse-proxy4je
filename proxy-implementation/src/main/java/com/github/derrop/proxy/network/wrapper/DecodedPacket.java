@@ -19,11 +19,6 @@ public final class DecodedPacket implements Identifiable {
 
     @NotNull
     public ByteBuf getByteBuf() {
-        return this.byteBuf.copy();
-    }
-
-    @NotNull
-    public ByteBuf getRealByteBuf() {
         return this.byteBuf;
     }
 

@@ -69,7 +69,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
 
     @Override
     public @NotNull ProtocolState getProtocolState() {
-        return this.channel.pipeline().get(MinecraftDecoder.class).getProtocolState();
+        return/* this.channel == null ? null : */this.channel.pipeline().get(MinecraftDecoder.class).getProtocolState();
     }
 
     @NotNull

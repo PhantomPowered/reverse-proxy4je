@@ -234,6 +234,7 @@ public class InitialHandler implements ChannelListener {
 
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
+                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientPacketListener(player));
 
                 ServiceConnection client = MCProxy.getInstance().findBestConnection(player);

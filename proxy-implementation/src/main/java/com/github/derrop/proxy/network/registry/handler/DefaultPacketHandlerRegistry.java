@@ -20,38 +20,47 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
 
-    private final BiMap<Byte, PacketHandlerRegistryEntry> entries = HashBiMap.create();
+    private final BiMap<Byte, Collection<PacketHandlerRegistryEntry>> entries = HashBiMap.create();
 
     @Override
     public <T extends Identifiable> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
-        SortedMap<Byte, PacketHandlerRegistryEntry> sorted = new TreeMap<>(Byte::compare);
-        this.entries.forEach((k, v) -> sorted.put(k, v));
+        SortedMap<Byte, Collection<PacketHandlerRegistryEntry>> sorted = new TreeMap<>(Byte::compare);
+        this.entries.forEach(sorted::put);
 
-        for (Map.Entry<Byte, PacketHandlerRegistryEntry> entry : ImmutableBiMap.copyOf(sorted).entrySet()) {
-            for (PacketHandlerRegistryEntry.RegisteredEntry entryEntry : entry.getValue().getEntries()) {
-                if (!(packet instanceof DecodedPacket)) {
-                    if (entryEntry.getHandledPackets().length == 0 || Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
+        for (Map.Entry<Byte, Collection<PacketHandlerRegistryEntry>> entry : ImmutableBiMap.copyOf(sorted).entrySet()) {
+            for (PacketHandlerRegistryEntry registryEntry : entry.getValue()) {
+                for (PacketHandlerRegistryEntry.RegisteredEntry entryEntry : registryEntry.getEntries()) {
+                    if (!(packet instanceof DecodedPacket)) {
+                        if (entryEntry.getHandledPackets().length == 0 || Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
+                            continue;
+                        }
+                    }
+
+                    if (entryEntry.getState() != protocolState) {
                         continue;
                     }
-                }
 
-                if (entryEntry.getState() != protocolState) {
-                    continue;
-                }
+                    if (!packet.getClass().isAssignableFrom(entryEntry.getMethod().getParameterTypes()[1])) {
+                        continue;
+                    }
+                    if (!entryEntry.getMethod().getParameterTypes()[0].isInstance(channel)) {
+                        continue;
+                    }
 
-                if (!packet.getClass().isAssignableFrom(entryEntry.getMethod().getParameterTypes()[1])) {
-                    continue;
-                }
-
-                try {
-                    entryEntry.getMethod().invoke(entry.getValue().getSource(), channel, packet);
-                } catch (final IllegalAccessException | InvocationTargetException ex) {
-                    ex.printStackTrace();
-                } catch (final CancelProceedException ex) {
-                    return null;
+                    try {
+                        entryEntry.getMethod().invoke(registryEntry.getSource(), channel, packet);
+                    } catch (final IllegalAccessException | InvocationTargetException ex) {
+                        if (ex.getCause() instanceof CancelProceedException) {
+                            return null;
+                        }
+                        ex.printStackTrace();
+                    } catch (final CancelProceedException ex) {
+                        return null;
+                    }
                 }
             }
         }
@@ -61,25 +70,39 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
 
     @Override
     public void registerPacketHandlerClass(@Nullable Plugin plugin, @NotNull Object handler) {
-        Map<Byte, PacketHandlerRegistryEntry.RegisteredEntry> entries = this.getEntries(handler);
-        for (Map.Entry<Byte, PacketHandlerRegistryEntry.RegisteredEntry> byteRegisteredEntryEntry : entries.entrySet()) {
-            this.entries.put(byteRegisteredEntryEntry.getKey(), new DefaultPacketHandlerRegistryEntry(plugin, handler, entries.values()));
+        Map<Byte, PacketHandlerRegistryEntry> result = new HashMap<>();
+
+        Map<Byte, Collection<PacketHandlerRegistryEntry.RegisteredEntry>> entries = this.getEntries(handler);
+        for (Map.Entry<Byte, Collection<PacketHandlerRegistryEntry.RegisteredEntry>> entry : entries.entrySet()) {
+            if (result.containsKey(entry.getKey())) {
+                result.get(entry.getKey()).getEntries().addAll(entry.getValue());
+            } else {
+                result.put(entry.getKey(), new DefaultPacketHandlerRegistryEntry(plugin, handler, entry.getValue()));
+            }
+        }
+
+        for (Map.Entry<Byte, PacketHandlerRegistryEntry> entry : result.entrySet()) {
+            this.entries.computeIfAbsent(entry.getKey(), priority -> new ArrayList<>()).add(entry.getValue());
         }
     }
 
     @Override
     public void unregisterPacketHandlerClass(@NotNull Object handler) {
-        this.entries.values().removeIf(e -> e.getSource() == handler);
+        for (Collection<PacketHandlerRegistryEntry> value : this.entries.values()) {
+            value.removeIf(e -> e.getSource() == handler);
+        }
     }
 
     @Override
     public @NotNull Collection<PacketHandlerRegistryEntry> getRegisteredEntries() {
-        return Collections.unmodifiableCollection(this.entries.values());
+        return Collections.unmodifiableCollection(this.entries.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
     }
 
     @Override
     public void unregisterAll(@NotNull Plugin plugin) {
-        this.entries.values().removeIf(entry -> entry.getPlugin() != null && entry.getPlugin().equals(plugin));
+        for (Collection<PacketHandlerRegistryEntry> value : this.entries.values()) {
+            value.removeIf(entry -> entry.getPlugin() != null && entry.getPlugin().equals(plugin));
+        }
     }
 
     @Override
@@ -88,8 +111,8 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
     }
 
     @NotNull
-    private Map<Byte, PacketHandlerRegistryEntry.RegisteredEntry> getEntries(@NotNull Object clazz) {
-        Map<Byte, PacketHandlerRegistryEntry.RegisteredEntry> out = new TreeMap<>(Byte::compare);
+    private Map<Byte, Collection<PacketHandlerRegistryEntry.RegisteredEntry>> getEntries(@NotNull Object clazz) {
+        Map<Byte, Collection<PacketHandlerRegistryEntry.RegisteredEntry>> out = new TreeMap<>(Byte::compare);
         for (Method declaredMethod : clazz.getClass().getDeclaredMethods()) {
             PacketHandler packetHandler = declaredMethod.getAnnotation(PacketHandler.class);
             if (packetHandler == null) {
@@ -113,7 +136,10 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                 continue;
             }
 
-            out.put(packetHandler.priority().getPriority(), new DefaultRegisteredEntry(packetHandler.packetIds(), declaredMethod, packetHandler.protocolState()));
+            declaredMethod.setAccessible(true);
+
+            out.computeIfAbsent(packetHandler.priority().getPriority(), priority -> new ArrayList<>())
+                    .add(new DefaultRegisteredEntry(packetHandler.packetIds(), declaredMethod, packetHandler.protocolState()));
         }
 
         return out;
