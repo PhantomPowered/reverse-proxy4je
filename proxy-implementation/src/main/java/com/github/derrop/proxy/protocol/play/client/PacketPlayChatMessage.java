@@ -16,6 +16,10 @@ public class PacketPlayChatMessage extends PacketPlayChat {
         super(message, position);
     }
 
+    public PacketPlayChatMessage(String message) {
+        super(message);
+    }
+
     @Override
     public int getId() {
         return ProtocolIds.ServerBound.Play.CHAT;

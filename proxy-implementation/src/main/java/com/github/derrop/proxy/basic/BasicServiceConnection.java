@@ -128,7 +128,7 @@ public class BasicServiceConnection implements ServiceConnection {
 
     @Override
     public void chat(@NotNull String message) {
-        this.client.write(new PacketPlayChatMessage(message, (byte) 0));
+        this.client.write(new PacketPlayChatMessage(message));
     }
 
     @Override

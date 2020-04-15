@@ -3,11 +3,12 @@ package com.github.derrop.proxy.api.connection;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
 
-public interface Connection extends PacketSender {
+public interface Connection extends PacketSender, NetworkChannel {
 
     /**
      * Gets the remote address of this connection.

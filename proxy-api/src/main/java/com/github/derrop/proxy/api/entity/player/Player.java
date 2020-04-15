@@ -1,13 +1,12 @@
 package com.github.derrop.proxy.api.entity.player;
 
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
-import com.github.derrop.proxy.api.connection.PendingConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityLiving;
-import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,16 +96,11 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
     @Nullable
     ServiceConnection getConnectedClient();
 
+    int getVersion();
+
     void disableAutoReconnect();
 
     void enableAutoReconnect();
-
-    /**
-     * Get the pending connection that belongs to this player.
-     *
-     * @return the pending connection that this player used
-     */
-    PendingConnection getPendingConnection();
 
     /**
      * Make this player chat (say something), to the server he is currently on.

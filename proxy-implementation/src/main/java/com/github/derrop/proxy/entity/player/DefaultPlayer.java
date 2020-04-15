@@ -8,61 +8,62 @@ import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.entity.EntityLiving;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayInPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
-import com.github.derrop.proxy.network.listener.InitialHandler;
+import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.entitymap.EntityMap;
-import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.tab.TabList;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
 import java.util.Collections;
+import java.util.UUID;
 
-public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
+public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
 
-    public DefaultPlayer(MCProxy proxy, TabList tabList, ChannelWrapper channelWrapper, InitialHandler initialHandler, int compressionThreshold) {
-        super(initialHandler.getUniqueId(), initialHandler.getName(), System.currentTimeMillis());
+    public DefaultPlayer(MCProxy proxy, TabList tabList, UUID uniqueId, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
+        super(uniqueId, loginResult.getName(), System.currentTimeMillis(), version);
         this.proxy = proxy;
         this.tabList = tabList;
-        this.channelWrapper = channelWrapper;
-        this.initialHandler = initialHandler;
-        this.displayName = initialHandler.getName();
+        this.displayName = loginResult.getName();
 
-        if (!channelWrapper.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
+        if (!channel.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
             this.compression = compressionThreshold;
             this.sendPacket(new PacketLoginSetCompression(compressionThreshold));
-            channelWrapper.setCompressionThreshold(compressionThreshold);
+            channel.setCompression(compression);
         }
 
-        this.entityMap = EntityMap.getEntityMap(initialHandler.getVersion());
+        this.channel = channel;
+        this.version = version;
+        this.entityMap = EntityMap.getEntityMap(version);
         MCProxy.getInstance().getUUIDStorage().createMapping(this.getUniqueId(), this.getName());
     }
 
-    private final EntityMap entityMap;
 
     private final MCProxy proxy;
 
     private final TabList tabList;
 
-    private final ChannelWrapper channelWrapper; // TODO: replace with another class
-
-    private final InitialHandler initialHandler; // TODO: replace this with another class
+    private final EntityMap entityMap;
+    private final NetworkChannel channel;
+    private final int version;
 
     private BasicServiceConnection connectedClient;
 
@@ -156,7 +157,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public void useClient(ServiceConnection connection) {
-        if (this.channelWrapper.isClosing() || this.channelWrapper.isClosed()) {
+        if (!this.channel.isConnected()) {
             return;
         }
 
@@ -192,6 +193,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     @Override
+    public int getVersion() {
+        return this.version;
+    }
+
+    @Override
     public void disableAutoReconnect() {
         this.autoReconnect = false;
     }
@@ -202,13 +208,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     @Override
-    public InitialHandler getPendingConnection() {
-        return this.initialHandler;
-    }
-
-    @Override
     public void chat(String message) {
-        this.connectedClient.sendPacket(new PacketPlayChatMessage(message));
+        this.connectedClient.chat(message);
     }
 
     // TODO: replace all tablist method
@@ -268,7 +269,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public @NotNull SocketAddress getSocketAddress() {
-        return this.initialHandler.getSocketAddress();
+        return this.channel.getAddress();
     }
 
     @Override
@@ -284,6 +285,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     @Override
     public void disconnect(@NotNull BaseComponent reason) {
         this.disconnect0(reason);
+    }
+
+    @Override
+    public NetworkChannel getWrappedNetworkChannel() {
+        return this.channel;
     }
 
     @Override
@@ -330,12 +336,12 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
-        this.channelWrapper.write(packet);
+        this.channel.write(packet);
     }
 
     @Override
     public void sendPacket(@NotNull ByteBuf byteBuf) {
-        this.channelWrapper.write(byteBuf);
+        this.channel.write(byteBuf);
     }
 
     @Override
@@ -395,7 +401,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
     }
 
     public void disconnect0(BaseComponent... reason) {
-        if (channelWrapper.isClosing()) {
+        if (this.channel.isClosing()) {
             return;
         }
 
@@ -408,15 +414,10 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
             reason = event.getReason();
         }
 
-        channelWrapper.close(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
+        this.channel.close(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
         if (this.connectedClient != null) {
             this.connectedClient.getClient().free();
         }
-    }
-
-    @Deprecated
-    public ChannelWrapper getChannelWrapper() {
-        return channelWrapper;
     }
 
     private void handleLocationUpdate() {
@@ -440,7 +441,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player {
 
         @Override
         public void sendPacket(@NotNull Object packet) {
-            DefaultPlayer.this.channelWrapper.write(packet);
+            DefaultPlayer.this.channel.write(packet);
             DefaultPlayer.this.handleLocationUpdate();
         }
     }

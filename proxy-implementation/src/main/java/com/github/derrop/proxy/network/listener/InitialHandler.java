@@ -228,7 +228,7 @@ public class InitialHandler implements ChannelListener {
 
         channel.getWrappedChannel().eventLoop().execute(() -> {
             if (!channel.isClosing()) {
-                DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(channel), channel, InitialHandler.this, 256);
+                DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(channel), uniqueId, result, channel, channel.getProperty("sentVersion"), 256);
 
                 channel.write(new PacketPlayServerLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);

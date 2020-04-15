@@ -61,7 +61,7 @@ public class UpstreamBridge extends PacketHandler {
         if (con.getConnectedClient() != null && con.getConnectedClient().isConnected()) {
             con.getConnectedClient().getClient().handleClientPacket(packet);
 
-            con.getEntityMap().rewriteServerbound(packet.buf, con.getEntityId(), con.getEntityId(), con.getPendingConnection().getVersion());
+            con.getEntityMap().rewriteServerbound(packet.buf, con.getEntityId(), con.getEntityId(), con.getVersion());
             if (packet.packet != null) {
                 con.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.packet);
             }
@@ -83,7 +83,7 @@ public class UpstreamBridge extends PacketHandler {
     }
 
     private void handleChat(PacketPlayChatMessage chat) throws Exception {
-        int maxLength = (con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
+        int maxLength = (con.getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
             throw CancelProceedException.INSTANCE;
         }

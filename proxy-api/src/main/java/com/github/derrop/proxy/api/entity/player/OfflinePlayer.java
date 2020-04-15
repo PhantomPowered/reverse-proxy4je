@@ -13,4 +13,6 @@ public interface OfflinePlayer extends PermissionHolder {
 
     long getLastLogin();
 
+    int getLastVersion();
+
 }

@@ -8,17 +8,17 @@ import java.util.UUID;
 
 public class DefaultOfflinePlayer extends DefaultPermissionHolder implements OfflinePlayer {
 
-    public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin) {
+    public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin, int lastVersion) {
         this.uniqueID = uniqueID;
         this.name = name;
         this.lastLogin = lastLogin;
+        this.lastVersion = lastVersion;
     }
 
     private final UUID uniqueID;
-
     private final String name;
-
     private final long lastLogin;
+    private final int lastVersion;
 
     @Override
     public @NotNull UUID getUniqueId() {
@@ -33,5 +33,10 @@ public class DefaultOfflinePlayer extends DefaultPermissionHolder implements Off
     @Override
     public long getLastLogin() {
         return this.lastLogin;
+    }
+
+    @Override
+    public int getLastVersion() {
+        return this.lastVersion;
     }
 }
