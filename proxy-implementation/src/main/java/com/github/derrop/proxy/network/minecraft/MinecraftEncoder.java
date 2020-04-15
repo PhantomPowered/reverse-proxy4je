@@ -18,6 +18,6 @@ public final class MinecraftEncoder extends MessageToByteEncoder<Packet> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
         ByteBufUtils.writeVarInt(packet.getId(), byteBuf);
-        packet.write(byteBuf, this.direction);
+        packet.write(byteBuf, this.direction, 47);
     }
 }

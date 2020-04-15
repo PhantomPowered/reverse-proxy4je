@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class PacketPlayServerTitle extends DefinedPacket {
     private int fadeOut;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         int index = readVarInt(buf);
 
         // If we're working on 1.10 or lower, increment the value of the index so we pull out the correct value.
@@ -48,7 +49,7 @@ public class PacketPlayServerTitle extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         int index = action.ordinal();
 
         // If we're working on 1.10 or lower, increment the value of the index so we pull out the correct value.

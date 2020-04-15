@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class PacketPlayServerPlayerInfo extends DefinedPacket {
     private Item[] items;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         action = Action.values()[DefinedPacket.readVarInt(buf)];
         items = new Item[DefinedPacket.readVarInt(buf)];
         for (int i = 0; i < items.length; i++) {
@@ -68,7 +69,7 @@ public class PacketPlayServerPlayerInfo extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         DefinedPacket.writeVarInt(action.ordinal(), buf);
         DefinedPacket.writeVarInt(items.length, buf);
         for (Item item : items) {

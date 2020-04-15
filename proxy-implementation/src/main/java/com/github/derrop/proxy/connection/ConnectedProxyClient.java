@@ -19,9 +19,6 @@ import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
-import com.github.derrop.proxy.connection.velocity.Player;
-import com.github.derrop.proxy.connection.velocity.PlayerLook;
-import com.github.derrop.proxy.connection.velocity.PlayerPosition;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.network.NetworkUtils;
@@ -29,7 +26,6 @@ import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
-import com.github.derrop.proxy.protocol.client.PacketPlayOutPlayerPositionLook;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
@@ -410,7 +406,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             this.posZ = ((PositionedPacket) packetWrapper).getZ();
         }
 
-        if (packetWrapper instanceof PacketPlayOutPlayerPositionLook) {
+        // TODO
+        /*if (packetWrapper instanceof PacketPlayOutPlayerPositionLook) {
             this.onGround = ((PacketPlayOutPlayerPositionLook) packetWrapper).isOnGround();
         } else if (packetWrapper instanceof PlayerLook) {
             this.onGround = ((PlayerLook) packetWrapper).isOnGround();
@@ -418,7 +415,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             this.onGround = ((PlayerPosition) packetWrapper).isOnGround();
         } else if (packetWrapper instanceof Player) {
             this.onGround = ((Player) packetWrapper).isOnGround();
-        }
+        }*/
     }
 
     public void redirectPackets(com.github.derrop.proxy.api.entity.player.Player con, boolean switched) {

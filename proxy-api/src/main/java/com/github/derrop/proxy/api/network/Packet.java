@@ -10,13 +10,13 @@ public interface Packet {
 
     void read(@NotNull ByteBuf byteBuf);
 
-    default void read(@NotNull ByteBuf byteBuf, @NotNull ProtocolDirection direction) {
+    default void read(@NotNull ByteBuf byteBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.read(byteBuf);
     }
 
     void write(@NotNull ByteBuf byteBuf);
 
-    default void write(@NotNull ByteBuf byteBuf, @NotNull ProtocolDirection direction) {
+    default void write(@NotNull ByteBuf byteBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.write(byteBuf);
     }
 

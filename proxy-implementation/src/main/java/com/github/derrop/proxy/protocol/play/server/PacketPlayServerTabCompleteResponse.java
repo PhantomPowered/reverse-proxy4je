@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.StringRange;
@@ -36,7 +37,7 @@ public class PacketPlayServerTabCompleteResponse extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
             transactionId = readVarInt(buf);
             int start = readVarInt(buf);
@@ -61,7 +62,7 @@ public class PacketPlayServerTabCompleteResponse extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
             writeVarInt(transactionId, buf);
             writeVarInt(suggestions.getRange().getStart(), buf);

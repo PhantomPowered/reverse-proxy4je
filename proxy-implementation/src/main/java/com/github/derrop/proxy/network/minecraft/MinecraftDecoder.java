@@ -36,7 +36,7 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
             return;
         }
 
-        packet.read(byteBuf, this.direction);
+        packet.read(byteBuf, this.direction, 47);
         list.add(new DecodedPacket(copy, packet));
     }
 

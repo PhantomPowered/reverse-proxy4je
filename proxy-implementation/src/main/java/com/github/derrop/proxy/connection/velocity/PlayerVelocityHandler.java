@@ -40,14 +40,14 @@ public class PlayerVelocityHandler {
 
     public void handlePacket(ProtocolConstants.Direction direction, Packet packet) {
         if (direction == ProtocolConstants.Direction.TO_CLIENT) {
-            if (packet instanceof EntityVelocity) {
+            /*if (packet instanceof EntityVelocity) {
                 this.motionX = ((EntityVelocity) packet).getMotionX() / 8000D;
                 this.motionY = ((EntityVelocity) packet).getMotionY() / 8000D;
                 this.motionZ = ((EntityVelocity) packet).getMotionZ() / 8000D;
             } else if (packet instanceof EntityAttach) {
                 this.ridingEntityId = ((EntityAttach) packet).getVehicleEntityId();
                 this.ridingEntity = true;
-            } else if (packet instanceof PacketPlayServerEntityDestroy) {
+            } else */if (packet instanceof PacketPlayServerEntityDestroy) {
                 if (Arrays.stream(((PacketPlayServerEntityDestroy) packet).getEntityIds()).anyMatch(i -> i == this.ridingEntityId)) {
                     this.ridingEntity = false;
                 }
@@ -63,7 +63,7 @@ public class PlayerVelocityHandler {
             }
         } else if (direction == ProtocolConstants.Direction.TO_SERVER) {
             // todo idk if it is necessary to listen to the packets by the client for positions like they are sent below
-            if (packet instanceof PlayerPosition) {
+            /*if (packet instanceof PlayerPosition) {
                 this.posX = ((PlayerPosition) packet).getX();
                 this.posY = ((PlayerPosition) packet).getY();
                 this.posZ = ((PlayerPosition) packet).getZ();
@@ -79,7 +79,7 @@ public class PlayerVelocityHandler {
                 this.rotPitch = ((PacketPlayOutPlayerPositionLook) packet).getPitch();
                 this.rotYaw = ((PacketPlayOutPlayerPositionLook) packet).getYaw();
                 this.onGround = ((PacketPlayOutPlayerPositionLook) packet).isOnGround();
-            }
+            }*/
             this.moveEntity(this.posX, this.posY, this.posZ);
         }
     }
@@ -122,12 +122,12 @@ public class PlayerVelocityHandler {
                     boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || velocityHandler.positionUpdateTicks >= 20;
                     boolean flag3 = d3 != 0.0D || d4 != 0.0D;
 
-                    onlineClient.sendPacket(new PlayerPosition(
+                    /*onlineClient.sendPacket(new PlayerPosition(
                             velocityHandler.posX + (velocityHandler.motionX / 20),
                             velocityHandler.posY + (velocityHandler.motionY / 20),
                             velocityHandler.posZ + (velocityHandler.motionZ / 20),
                             velocityHandler.onGround
-                    ));
+                    ));*/
 
                     /*if (velocityHandler.ridingEntity) {
                         if (flag2 && flag3) {

@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.client;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class PacketPlayClientSettings extends DefinedPacket {
     private int mainHand;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         locale = readString(buf);
         viewDistance = buf.readByte();
         chatFlags = protocolVersion >= ProtocolConstants.MINECRAFT_1_9 ? DefinedPacket.readVarInt(buf) : buf.readUnsignedByte();
@@ -37,7 +38,7 @@ public class PacketPlayClientSettings extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         writeString(locale, buf);
         buf.writeByte(viewDistance);
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_9) {

@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class PacketPlayServerScoreboardScore extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf) {
         itemName = readString(buf);
         action = buf.readByte();
         objectiveName = readString(buf);
@@ -42,7 +43,7 @@ public class PacketPlayServerScoreboardScore extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf) {
         writeString(itemName, buf);
         buf.writeByte(action);
         writeString(objectiveName, buf);

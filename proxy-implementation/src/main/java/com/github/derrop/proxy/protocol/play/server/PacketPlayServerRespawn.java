@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class PacketPlayServerRespawn extends DefinedPacket {
     private String levelType;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         dimension = buf.readInt();
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
             seed = buf.readLong();
@@ -36,7 +37,7 @@ public class PacketPlayServerRespawn extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         buf.writeInt(dimension);
         if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
             buf.writeLong(seed);

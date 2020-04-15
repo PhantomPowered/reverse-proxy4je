@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import io.netty.buffer.ByteBuf;
@@ -32,7 +33,7 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         name = readString(buf);
         action = buf.readByte();
         if (action == 0 || action == 2) {
@@ -46,7 +47,7 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(ByteBuf buf, ProtocolDirection direction, int protocolVersion) {
         writeString(name, buf);
         buf.writeByte(action);
         if (action == 0 || action == 2) {
