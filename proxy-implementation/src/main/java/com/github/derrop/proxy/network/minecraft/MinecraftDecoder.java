@@ -27,9 +27,7 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) {
-        ByteBuf copy = byteBuf.copy();
-
-        int id = ByteBufUtils.readVarInt(copy);
+        int id = ByteBufUtils.readVarInt(byteBuf);
         Packet packet = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, id);
         if (packet == null) {
             list.add(new DecodedPacket(byteBuf, null));
@@ -37,7 +35,7 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
 
         packet.read(byteBuf, this.direction, 47);
-        list.add(new DecodedPacket(copy, packet));
+        list.add(new DecodedPacket(byteBuf, packet));
     }
 
     public void setProtocolState(@NotNull ProtocolState protocolState) {
