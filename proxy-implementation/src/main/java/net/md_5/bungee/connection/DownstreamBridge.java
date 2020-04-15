@@ -9,34 +9,21 @@ import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.network.wrapper.DecodedPacket;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChat;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.netty.ChannelWrapper;
-import net.md_5.bungee.netty.PacketHandler;
-import net.md_5.bungee.protocol.PacketWrapper;
 
-public class DownstreamBridge extends PacketHandler {
-
-    private BasicServiceConnection connection;
-    private boolean disconnected = false;
-
-    public DownstreamBridge(BasicServiceConnection connection) {
-        this.connection = connection;
-    }
-
-    private Player con() {
-        return this.connection != null ? this.connection.getPlayer() : null;
-    }
+public class DownstreamBridge {
 
     @Override
     public void exception(Throwable t) throws Exception {
@@ -77,39 +64,38 @@ public class DownstreamBridge extends PacketHandler {
         return true;
     }
 
-    @Override
-    public void handle(PacketWrapper packet) throws Exception {
-        this.connection.getClient().getEntityMap().rewriteClientbound(packet.buf, this.connection.getEntityId(), this.connection.getEntityId(), 47);
-        this.connection.getClient().redirectPacket(packet.buf, packet.packet);
-        /*if (packet.packet instanceof JoinGame) {
-            this.connection.getClient().setEntityId(((JoinGame) packet.packet).getEntityId());
-        }*/
+    @PacketHandler
+    public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
+        client.getEntityMap().rewriteClientbound(packet.getRealByteBuf(), client.getEntityId(), client.getEntityId(), 47);
+        client.redirectPacket(packet.getByteBuf(), packet.getPacket());
     }
 
-    @Override
-    public void handle(PacketPlayKeepAlive alive) throws Exception {
-        this.connection.sendPacket(alive);
-        this.connection.getClient().setLastAlivePacket(System.currentTimeMillis());
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.KEEP_ALIVE)
+    public void handleKeepAlive(ConnectedProxyClient client, PacketPlayKeepAlive alive) {
+        client.write(alive);
+        client.setLastAlivePacket(System.currentTimeMillis());
         throw CancelProceedException.INSTANCE;
     }
 
-    @Override
-    public void handle(PacketPlayServerLogin login) throws Exception {
-        this.connection.getClient().setEntityId(login.getEntityId());
-        this.connection.getClient().connectionSuccess();
+
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.LOGIN)
+    public void handleLogin(ConnectedProxyClient client, PacketPlayServerLogin login) {
+        client.setEntityId(login.getEntityId());
+        client.connectionSuccess();
     }
 
-    @Override
-    public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
-        PluginMessageEvent event = new PluginMessageEvent(this.connection, ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
-        if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CUSTOM_PAYLOAD)
+    public void handlePluginMessage(ConnectedProxyClient client, PacketPlayPluginMessage pluginMessage) {
+        PluginMessageEvent event = new PluginMessageEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
+        if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
         pluginMessage.setTag(event.getTag());
         pluginMessage.setData(event.getData());
 
-        Connection connection = this.con();
+        Connection connection = client.getRedirector();
         if (connection == null) {
             return;
         }
@@ -118,92 +104,31 @@ public class DownstreamBridge extends PacketHandler {
         throw CancelProceedException.INSTANCE;
     }
 
-    @Override
-    public void handle(PacketPlayServerKickPlayer kick) throws Exception {
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.KICK_DISCONNECT)
+    public void handleKick(ConnectedProxyClient client, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
         this.disconnectReceiver(reason);
 
-        this.connection.getClient().setLastKickReason(reason);
-        MCProxy.getInstance().unregisterConnection(this.connection);
-        BasicServiceConnection proxyClient = MCProxy.getInstance().findBestConnection(null);
-        if (proxyClient == null) {
-            //con.disconnect0(ComponentSerializer.parse(kick.getMessage()));
-            return;
-        }
-        this.connection = proxyClient;
+        client.setLastKickReason(reason);
+        MCProxy.getInstance().unregisterConnection(client.getConnection());
+
         throw CancelProceedException.INSTANCE;
     }
 
-    @Override
-    public void handle(PacketPlayChatMessage chat) throws Exception {
-        ChatEvent event = new ChatEvent(this.connection, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
-        if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CHAT)
+    public void handle(ConnectedProxyClient client, PacketPlayChat chat) throws Exception {
+        ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
+        if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
     }
 
-    @Override
-    public void handle(PacketLoginSetCompression setCompression) throws Exception {
-    }
+    // TODO Implement TabComplete response?
 
-    @Override
-    public void handle(PacketPlayServerTabCompleteResponse tabCompleteResponse) throws Exception {
-        /*List<String> commands = tabCompleteResponse.getCommands();
-        if ( commands == null )
-        {
-            commands = Lists.transform( tabCompleteResponse.getSuggestions().getList(), new Function<Suggestion, String>()
-            {
-                @Override
-                public String apply(Suggestion input)
-                {
-                    return input.getText();
-                }
-            } );
-        }
-
-        TabCompleteResponseEvent tabCompleteResponseEvent = new TabCompleteResponseEvent( server, con, new ArrayList<>( commands ) );
-        if ( !bungee.getPluginManager().callEvent( tabCompleteResponseEvent ).isCancelled() )
-        {
-            // Take action only if modified
-            if ( !commands.equals( tabCompleteResponseEvent.getSuggestions() ) )
-            {
-                if ( tabCompleteResponse.getCommands() != null )
-                {
-                    // Classic style
-                    tabCompleteResponse.setCommands( tabCompleteResponseEvent.getSuggestions() );
-                } else
-                {
-                    // Brigadier style
-                    final StringRange range = tabCompleteResponse.getSuggestions().getRange();
-                    tabCompleteResponse.setSuggestions( new Suggestions( range, Lists.transform( tabCompleteResponseEvent.getSuggestions(), new Function<String, Suggestion>()
-                    {
-                        @Override
-                        public Suggestion apply(String input)
-                        {
-                            return new Suggestion( range, input );
-                        }
-                    } ) ) );
-                }
-            }
-
-            con.sendPacket( tabCompleteResponse );
-        }
-
-        throw CancelSendSignal.INSTANCE;*/
-    }
-
-    @Override
-    public void handle(PacketPlayServerRespawn respawn) {
-        this.connection.getClient().setDimension(respawn.getDimension());
-    }
-
-    @Override
-    public String toString() {
-        if (this.connection == null) {
-            return "[] <-> DownstreamBridge <-> []";
-        }
-        return "[" + this.connection.getName() + "] <-> DownstreamBridge <-> [" + this.connection.getCredentials().getEmail() + "]";
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.RESPAWN)
+    public void handle(ConnectedProxyClient client, PacketPlayServerRespawn respawn) {
+        client.setDimension(respawn.getDimension());
     }
 }

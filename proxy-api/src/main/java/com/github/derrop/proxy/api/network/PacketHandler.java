@@ -11,9 +11,9 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface PacketHandler {
 
-    int[] packetIds();
+    int[] packetIds() default {};
 
-    @NotNull ProtocolState protocolState();
+    @NotNull ProtocolState protocolState() default ProtocolState.PLAY;
 
     @NotNull EventPriority priority() default EventPriority.NORMAL;
 }
