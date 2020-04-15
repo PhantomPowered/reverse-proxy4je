@@ -13,6 +13,7 @@ import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
+import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +32,10 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
 
         for (Map.Entry<Byte, PacketHandlerRegistryEntry> entry : ImmutableBiMap.copyOf(sorted).entrySet()) {
             for (PacketHandlerRegistryEntry.RegisteredEntry entryEntry : entry.getValue().getEntries()) {
-                if (entryEntry.getHandledPackets().length == 0 || Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
-                    continue;
+                if (!(packet instanceof DecodedPacket)) {
+                    if (entryEntry.getHandledPackets().length == 0 || Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
+                        continue;
+                    }
                 }
 
                 if (entryEntry.getState() != protocolState) {
