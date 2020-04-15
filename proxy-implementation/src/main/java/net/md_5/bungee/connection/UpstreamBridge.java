@@ -49,8 +49,8 @@ public class UpstreamBridge {
         return packet.id != 27; // disconnect packet from the client, the proxy should stay connected
     }
 
+    @PacketHandler(packetIds = {}, protocolState = ProtocolState.PLAY)
     public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
-        //TODO @PacketHandler
         if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
             if (packet.getPacket() != null) {
                 player.getConnectedClient().getClient().handleClientPacket(packet.getPacket());
