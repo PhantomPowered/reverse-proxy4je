@@ -12,6 +12,7 @@ public class DefaultBlockState implements BlockState {
     private SubMaterial subMaterial;
     private boolean open;
     private boolean powered;
+    private int layers;
     private EnumFacing facing;
     private HingePosition hingePosition;
     private TrapdoorPosition half;
@@ -51,6 +52,11 @@ public class DefaultBlockState implements BlockState {
         return this;
     }
 
+    DefaultBlockState layers(int layers) {
+        this.layers = layers;
+        return this;
+    }
+
     @Override
     public int getId() {
         return this.id;
@@ -65,6 +71,11 @@ public class DefaultBlockState implements BlockState {
     @Override
     public boolean isOpen() {
         return this.open;
+    }
+
+    @Override
+    public int getLayers() {
+        return this.layers;
     }
 
     @Override
@@ -101,7 +112,7 @@ public class DefaultBlockState implements BlockState {
                 this.material == Material.WATER || this.material == Material.STATIONARY_WATER ||
                 ((this.material == Material.TRAP_DOOR || this.material == Material.IRON_TRAPDOOR) && this.isOpen()) ||
                 (this.material.isDoor() && this.isOpen()) ||
-                (this.material.isFenceGate() /* && blockState.isOpen TODO */) ||
+                (this.material.isFenceGate() && this.isOpen()) ||
                 (this.material == Material.SNOW /* && blockState.layers < 5 */);
     }
 }

@@ -15,6 +15,10 @@ public interface BlockState {
 
     boolean isOpen();
 
+    int getLayers();
+
+    boolean isPassable();
+
     @Nullable
     SubMaterial getSubMaterial();
 
@@ -26,7 +30,5 @@ public interface BlockState {
 
     @Nullable
     TrapdoorPosition getHalf();
-
-    boolean isPassable();
 
 }

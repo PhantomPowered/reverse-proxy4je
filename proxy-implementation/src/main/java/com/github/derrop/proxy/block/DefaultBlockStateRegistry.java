@@ -717,22 +717,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1709, Material.VINE);
         registerState(1710, Material.VINE);
         registerState(1711, Material.VINE);
-        registerState(1712, Material.FENCE_GATE);
-        registerState(1713, Material.FENCE_GATE);
-        registerState(1714, Material.FENCE_GATE);
-        registerState(1715, Material.FENCE_GATE);
-        registerState(1716, Material.FENCE_GATE);
-        registerState(1717, Material.FENCE_GATE);
-        registerState(1718, Material.FENCE_GATE);
-        registerState(1719, Material.FENCE_GATE);
-        registerState(1720, Material.FENCE_GATE);
-        registerState(1721, Material.FENCE_GATE);
-        registerState(1722, Material.FENCE_GATE);
-        registerState(1723, Material.FENCE_GATE);
-        registerState(1724, Material.FENCE_GATE);
-        registerState(1725, Material.FENCE_GATE);
-        registerState(1726, Material.FENCE_GATE);
-        registerState(1727, Material.FENCE_GATE);
+        registerState(1712, Material.FENCE_GATE).facing(EnumFacing.SOUTH); // complete
+        registerState(1713, Material.FENCE_GATE).facing(EnumFacing.WEST); // complete
+        registerState(1714, Material.FENCE_GATE).facing(EnumFacing.NORTH); // complete
+        registerState(1715, Material.FENCE_GATE).facing(EnumFacing.EAST); // complete
+        registerState(1716, Material.FENCE_GATE).facing(EnumFacing.SOUTH).open(); // complete
+        registerState(1717, Material.FENCE_GATE).facing(EnumFacing.WEST).open(); // complete
+        registerState(1718, Material.FENCE_GATE).facing(EnumFacing.NORTH).open(); // complete
+        registerState(1719, Material.FENCE_GATE).facing(EnumFacing.EAST).open(); // complete
+        registerState(1720, Material.FENCE_GATE).facing(EnumFacing.SOUTH).powered(); // complete
+        registerState(1721, Material.FENCE_GATE).facing(EnumFacing.WEST).powered(); // complete
+        registerState(1722, Material.FENCE_GATE).facing(EnumFacing.NORTH).powered(); // complete
+        registerState(1723, Material.FENCE_GATE).facing(EnumFacing.EAST).powered(); // complete
+        registerState(1724, Material.FENCE_GATE).facing(EnumFacing.SOUTH).open().powered(); // complete
+        registerState(1725, Material.FENCE_GATE).facing(EnumFacing.WEST).open().powered(); // complete
+        registerState(1726, Material.FENCE_GATE).facing(EnumFacing.NORTH).open().powered(); // complete
+        registerState(1727, Material.FENCE_GATE).facing(EnumFacing.EAST).open().powered(); // complete
         registerState(1728, Material.BRICK_STAIRS);
         registerState(1729, Material.BRICK_STAIRS);
         registerState(1730, Material.BRICK_STAIRS);
@@ -1266,86 +1266,86 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2904, Material.DOUBLE_STONE_SLAB2);
         registerState(2912, Material.STONE_SLAB2);
         registerState(2920, Material.STONE_SLAB2);
-        registerState(2928, Material.SPRUCE_FENCE_GATE);
-        registerState(2929, Material.SPRUCE_FENCE_GATE);
-        registerState(2930, Material.SPRUCE_FENCE_GATE);
-        registerState(2931, Material.SPRUCE_FENCE_GATE);
-        registerState(2932, Material.SPRUCE_FENCE_GATE);
-        registerState(2933, Material.SPRUCE_FENCE_GATE);
-        registerState(2934, Material.SPRUCE_FENCE_GATE);
-        registerState(2935, Material.SPRUCE_FENCE_GATE);
-        registerState(2936, Material.SPRUCE_FENCE_GATE);
-        registerState(2937, Material.SPRUCE_FENCE_GATE);
-        registerState(2938, Material.SPRUCE_FENCE_GATE);
-        registerState(2939, Material.SPRUCE_FENCE_GATE);
-        registerState(2940, Material.SPRUCE_FENCE_GATE);
-        registerState(2941, Material.SPRUCE_FENCE_GATE);
-        registerState(2942, Material.SPRUCE_FENCE_GATE);
-        registerState(2943, Material.SPRUCE_FENCE_GATE);
-        registerState(2944, Material.BIRCH_FENCE_GATE);
-        registerState(2945, Material.BIRCH_FENCE_GATE);
-        registerState(2946, Material.BIRCH_FENCE_GATE);
-        registerState(2947, Material.BIRCH_FENCE_GATE);
-        registerState(2948, Material.BIRCH_FENCE_GATE);
-        registerState(2949, Material.BIRCH_FENCE_GATE);
-        registerState(2950, Material.BIRCH_FENCE_GATE);
-        registerState(2951, Material.BIRCH_FENCE_GATE);
-        registerState(2952, Material.BIRCH_FENCE_GATE);
-        registerState(2953, Material.BIRCH_FENCE_GATE);
-        registerState(2954, Material.BIRCH_FENCE_GATE);
-        registerState(2955, Material.BIRCH_FENCE_GATE);
-        registerState(2956, Material.BIRCH_FENCE_GATE);
-        registerState(2957, Material.BIRCH_FENCE_GATE);
-        registerState(2958, Material.BIRCH_FENCE_GATE);
-        registerState(2959, Material.BIRCH_FENCE_GATE);
-        registerState(2960, Material.JUNGLE_FENCE_GATE);
-        registerState(2961, Material.JUNGLE_FENCE_GATE);
-        registerState(2962, Material.JUNGLE_FENCE_GATE);
-        registerState(2963, Material.JUNGLE_FENCE_GATE);
-        registerState(2964, Material.JUNGLE_FENCE_GATE);
-        registerState(2965, Material.JUNGLE_FENCE_GATE);
-        registerState(2966, Material.JUNGLE_FENCE_GATE);
-        registerState(2967, Material.JUNGLE_FENCE_GATE);
-        registerState(2968, Material.JUNGLE_FENCE_GATE);
-        registerState(2969, Material.JUNGLE_FENCE_GATE);
-        registerState(2970, Material.JUNGLE_FENCE_GATE);
-        registerState(2971, Material.JUNGLE_FENCE_GATE);
-        registerState(2972, Material.JUNGLE_FENCE_GATE);
-        registerState(2973, Material.JUNGLE_FENCE_GATE);
-        registerState(2974, Material.JUNGLE_FENCE_GATE);
-        registerState(2975, Material.JUNGLE_FENCE_GATE);
-        registerState(2976, Material.DARK_OAK_FENCE_GATE);
-        registerState(2977, Material.DARK_OAK_FENCE_GATE);
-        registerState(2978, Material.DARK_OAK_FENCE_GATE);
-        registerState(2979, Material.DARK_OAK_FENCE_GATE);
-        registerState(2980, Material.DARK_OAK_FENCE_GATE);
-        registerState(2981, Material.DARK_OAK_FENCE_GATE);
-        registerState(2982, Material.DARK_OAK_FENCE_GATE);
-        registerState(2983, Material.DARK_OAK_FENCE_GATE);
-        registerState(2984, Material.DARK_OAK_FENCE_GATE);
-        registerState(2985, Material.DARK_OAK_FENCE_GATE);
-        registerState(2986, Material.DARK_OAK_FENCE_GATE);
-        registerState(2987, Material.DARK_OAK_FENCE_GATE);
-        registerState(2988, Material.DARK_OAK_FENCE_GATE);
-        registerState(2989, Material.DARK_OAK_FENCE_GATE);
-        registerState(2990, Material.DARK_OAK_FENCE_GATE);
-        registerState(2991, Material.DARK_OAK_FENCE_GATE);
-        registerState(2992, Material.ACACIA_FENCE_GATE);
-        registerState(2993, Material.ACACIA_FENCE_GATE);
-        registerState(2994, Material.ACACIA_FENCE_GATE);
-        registerState(2995, Material.ACACIA_FENCE_GATE);
-        registerState(2996, Material.ACACIA_FENCE_GATE);
-        registerState(2997, Material.ACACIA_FENCE_GATE);
-        registerState(2998, Material.ACACIA_FENCE_GATE);
-        registerState(2999, Material.ACACIA_FENCE_GATE);
-        registerState(3000, Material.ACACIA_FENCE_GATE);
-        registerState(3001, Material.ACACIA_FENCE_GATE);
-        registerState(3002, Material.ACACIA_FENCE_GATE);
-        registerState(3003, Material.ACACIA_FENCE_GATE);
-        registerState(3004, Material.ACACIA_FENCE_GATE);
-        registerState(3005, Material.ACACIA_FENCE_GATE);
-        registerState(3006, Material.ACACIA_FENCE_GATE);
-        registerState(3007, Material.ACACIA_FENCE_GATE);
+        registerState(2928, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.SOUTH); // complete
+        registerState(2929, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.WEST); // complete
+        registerState(2930, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.NORTH); // complete
+        registerState(2931, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.EAST); // complete
+        registerState(2932, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.SOUTH).open(); // complete
+        registerState(2933, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.WEST).open(); // complete
+        registerState(2934, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.NORTH).open(); // complete
+        registerState(2935, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.EAST).open(); // complete
+        registerState(2936, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.SOUTH).powered(); // complete
+        registerState(2937, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.WEST).powered(); // complete
+        registerState(2938, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.NORTH).powered(); // complete
+        registerState(2939, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.EAST).powered(); // complete
+        registerState(2940, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.SOUTH).open().powered(); // complete
+        registerState(2941, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.WEST).open().powered(); // complete
+        registerState(2942, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.NORTH).open().powered(); // complete
+        registerState(2943, Material.SPRUCE_FENCE_GATE).facing(EnumFacing.EAST).open().powered(); // complete
+        registerState(2944, Material.BIRCH_FENCE_GATE).facing(EnumFacing.SOUTH); // complete
+        registerState(2945, Material.BIRCH_FENCE_GATE).facing(EnumFacing.WEST); // complete
+        registerState(2946, Material.BIRCH_FENCE_GATE).facing(EnumFacing.NORTH); // complete
+        registerState(2947, Material.BIRCH_FENCE_GATE).facing(EnumFacing.EAST); // complete
+        registerState(2948, Material.BIRCH_FENCE_GATE).facing(EnumFacing.SOUTH).open(); // complete
+        registerState(2949, Material.BIRCH_FENCE_GATE).facing(EnumFacing.WEST).open(); // complete
+        registerState(2950, Material.BIRCH_FENCE_GATE).facing(EnumFacing.NORTH).open(); // complete
+        registerState(2951, Material.BIRCH_FENCE_GATE).facing(EnumFacing.EAST).open(); // complete
+        registerState(2952, Material.BIRCH_FENCE_GATE).facing(EnumFacing.SOUTH).powered(); // complete
+        registerState(2953, Material.BIRCH_FENCE_GATE).facing(EnumFacing.WEST).powered(); // complete
+        registerState(2954, Material.BIRCH_FENCE_GATE).facing(EnumFacing.NORTH).powered(); // complete
+        registerState(2955, Material.BIRCH_FENCE_GATE).facing(EnumFacing.EAST).powered(); // complete
+        registerState(2956, Material.BIRCH_FENCE_GATE).facing(EnumFacing.SOUTH).open().powered(); // complete
+        registerState(2957, Material.BIRCH_FENCE_GATE).facing(EnumFacing.WEST).open().powered(); // complete
+        registerState(2958, Material.BIRCH_FENCE_GATE).facing(EnumFacing.NORTH).open().powered(); // complete
+        registerState(2959, Material.BIRCH_FENCE_GATE).facing(EnumFacing.EAST).open().powered(); // complete
+        registerState(2960, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.SOUTH); // complete
+        registerState(2961, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.WEST); // complete
+        registerState(2962, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.NORTH); // complete
+        registerState(2963, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.EAST); // complete
+        registerState(2964, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.SOUTH).open(); // complete
+        registerState(2965, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.WEST).open(); // complete
+        registerState(2966, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.NORTH).open(); // complete
+        registerState(2967, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.EAST).open(); // complete
+        registerState(2968, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.SOUTH).powered(); // complete
+        registerState(2969, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.WEST).powered(); // complete
+        registerState(2970, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.NORTH).powered(); // complete
+        registerState(2971, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.EAST).powered(); // complete
+        registerState(2972, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.SOUTH).open().powered(); // complete
+        registerState(2973, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.WEST).open().powered(); // complete
+        registerState(2974, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.NORTH).open().powered(); // complete
+        registerState(2975, Material.JUNGLE_FENCE_GATE).facing(EnumFacing.EAST).open().powered(); // complete
+        registerState(2976, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.SOUTH); // complete
+        registerState(2977, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.WEST); // complete
+        registerState(2978, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.NORTH); // complete
+        registerState(2979, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.EAST); // complete
+        registerState(2980, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.SOUTH).open(); // complete
+        registerState(2981, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.WEST).open(); // complete
+        registerState(2982, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.NORTH).open(); // complete
+        registerState(2983, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.EAST).open(); // complete
+        registerState(2984, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.SOUTH).powered(); // complete
+        registerState(2985, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.WEST).powered(); // complete
+        registerState(2986, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.NORTH).powered(); // complete
+        registerState(2987, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.EAST).powered(); // complete
+        registerState(2988, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.SOUTH).open().powered(); // complete
+        registerState(2989, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.WEST).open().powered(); // complete
+        registerState(2990, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.NORTH).open().powered(); // complete
+        registerState(2991, Material.DARK_OAK_FENCE_GATE).facing(EnumFacing.EAST).open().powered(); // complete
+        registerState(2992, Material.ACACIA_FENCE_GATE).facing(EnumFacing.SOUTH); // complete
+        registerState(2993, Material.ACACIA_FENCE_GATE).facing(EnumFacing.WEST); // complete
+        registerState(2994, Material.ACACIA_FENCE_GATE).facing(EnumFacing.NORTH); // complete
+        registerState(2995, Material.ACACIA_FENCE_GATE).facing(EnumFacing.EAST); // complete
+        registerState(2996, Material.ACACIA_FENCE_GATE).facing(EnumFacing.SOUTH).open(); // complete
+        registerState(2997, Material.ACACIA_FENCE_GATE).facing(EnumFacing.WEST).open(); // complete
+        registerState(2998, Material.ACACIA_FENCE_GATE).facing(EnumFacing.NORTH).open(); // complete
+        registerState(2999, Material.ACACIA_FENCE_GATE).facing(EnumFacing.EAST).open(); // complete
+        registerState(3000, Material.ACACIA_FENCE_GATE).facing(EnumFacing.SOUTH).powered(); // complete
+        registerState(3001, Material.ACACIA_FENCE_GATE).facing(EnumFacing.WEST).powered(); // complete
+        registerState(3002, Material.ACACIA_FENCE_GATE).facing(EnumFacing.NORTH).powered(); // complete
+        registerState(3003, Material.ACACIA_FENCE_GATE).facing(EnumFacing.EAST).powered(); // complete
+        registerState(3004, Material.ACACIA_FENCE_GATE).facing(EnumFacing.SOUTH).open().powered(); // complete
+        registerState(3005, Material.ACACIA_FENCE_GATE).facing(EnumFacing.WEST).open().powered(); // complete
+        registerState(3006, Material.ACACIA_FENCE_GATE).facing(EnumFacing.NORTH).open().powered(); // complete
+        registerState(3007, Material.ACACIA_FENCE_GATE).facing(EnumFacing.EAST).open().powered(); // complete
         registerState(3008, Material.SPRUCE_FENCE); // complete
         registerState(3024, Material.BIRCH_FENCE); // complete
         registerState(3040, Material.JUNGLE_FENCE); // complete
