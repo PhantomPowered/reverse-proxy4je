@@ -1,10 +1,10 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.ArrayList;
 import java.util.Queue;
@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ListPacketCache implements PacketCacheHandler {
 
-    private Queue<DefinedPacket> lastPackets = new LinkedBlockingQueue<>();
+    private Queue<Packet> lastPackets = new LinkedBlockingQueue<>();
     private int packetId;
     private int limit = -1;
 
@@ -45,7 +45,7 @@ public class ListPacketCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(PacketSender con) {
-        for (DefinedPacket lastPacket : new ArrayList<>(this.lastPackets)) {
+        for (Packet lastPacket : new ArrayList<>(this.lastPackets)) {
             con.sendPacket(lastPacket);
         }
     }

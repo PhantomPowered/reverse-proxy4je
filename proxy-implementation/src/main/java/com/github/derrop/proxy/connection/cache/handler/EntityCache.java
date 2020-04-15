@@ -1,18 +1,20 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
-import com.github.derrop.proxy.api.connection.PacketSender;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
-import net.md_5.bungee.protocol.DefinedPacket;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityCache implements PacketCacheHandler {
@@ -32,7 +34,7 @@ public class EntityCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        DefinedPacket packet = newPacket.getDeserializedPacket();
+        Packet packet = newPacket.getDeserializedPacket();
 
         if (packet instanceof PacketPlayServerEntityTeleport) {
 

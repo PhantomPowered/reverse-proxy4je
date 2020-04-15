@@ -3,6 +3,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.PacketConstants;
@@ -10,10 +11,9 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockChange;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunkBulk;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunk;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunkBulk;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMultiBlockChange;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,7 +38,7 @@ public class ChunkCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         PacketPlayServerMapChunk[] data = null;
-        DefinedPacket packet = newPacket.getDeserializedPacket();
+        Packet packet = newPacket.getDeserializedPacket();
 
         if (packet instanceof PacketPlayServerMapChunk) {
 

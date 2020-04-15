@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.player;
+package com.github.derrop.proxy.entity.player;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.entity.player.Player;

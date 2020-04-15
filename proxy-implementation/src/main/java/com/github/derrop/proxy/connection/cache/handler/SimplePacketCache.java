@@ -1,16 +1,16 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 public class SimplePacketCache implements PacketCacheHandler {
 
     private int packetId;
 
-    private DefinedPacket lastPacket;
+    private Packet lastPacket;
     private boolean sendOnSwitch;
 
     public SimplePacketCache(int packetId) {
@@ -22,7 +22,7 @@ public class SimplePacketCache implements PacketCacheHandler {
         this.sendOnSwitch = sendOnSwitch;
     }
 
-    public DefinedPacket getLastPacket() {
+    public Packet getLastPacket() {
         return lastPacket;
     }
 

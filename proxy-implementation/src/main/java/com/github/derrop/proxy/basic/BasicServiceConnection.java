@@ -9,6 +9,7 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
@@ -19,6 +20,7 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.exception.KickedException;
+import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -38,7 +40,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class BasicServiceConnection implements ServiceConnection {
+public class BasicServiceConnection implements ServiceConnection, WrappedNetworkChannel {
 
     private static final Set<NetworkAddress> BANNED_ADDRESSES = new HashSet<>();
 
@@ -271,6 +273,11 @@ public class BasicServiceConnection implements ServiceConnection {
     @Override
     public void disconnect(@NotNull BaseComponent reason) {
         this.close();
+    }
+
+    @Override
+    public NetworkChannel getWrappedNetworkChannel() {
+        return this.client;
     }
 
     @Override

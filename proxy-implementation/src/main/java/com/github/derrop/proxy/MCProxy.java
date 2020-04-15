@@ -32,7 +32,7 @@ import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
 import com.github.derrop.proxy.permission.PermissionProvider;
-import com.github.derrop.proxy.player.DefaultPlayerRepository;
+import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
