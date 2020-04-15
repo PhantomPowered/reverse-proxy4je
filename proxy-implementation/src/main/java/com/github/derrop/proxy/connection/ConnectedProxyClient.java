@@ -3,6 +3,7 @@ package com.github.derrop.proxy.connection;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.location.BlockPos;
@@ -17,6 +18,7 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
+import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
 import com.github.derrop.proxy.connection.velocity.Player;
 import com.github.derrop.proxy.connection.velocity.PlayerLook;
 import com.github.derrop.proxy.connection.velocity.PlayerPosition;
@@ -24,9 +26,12 @@ import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
-import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
+import com.github.derrop.proxy.network.handler.HandlerEndpoint;
+import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
+import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
+import com.github.derrop.proxy.protocol.client.PacketPlayOutPlayerPositionLook;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
-import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
+import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
@@ -165,10 +170,9 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
                 }
 
-                //TODO: replace
-                //ch.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
-                //ch.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder());
-                //ch.pipeline().get(HandlerEndpoint.class).setHandler(new ProxyClientLoginHandler(ConnectedProxyClient.this, ConnectedProxyClient.this.connection));
+                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING));
+                ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
+                ch.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));
             }
         };
         ChannelFutureListener listener = future1 -> {
@@ -178,7 +182,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
                 super.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
                 super.setProtocolState(ProtocolState.LOGIN);
-                super.write(new PacketLoginLoginRequest(this.getAccountName()));
+                super.write(new PacketLoginInLoginRequest(this.getAccountName()));
                 future.complete(true);
             } else {
                 future1.channel().close();
@@ -406,8 +410,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             this.posZ = ((PositionedPacket) packetWrapper).getZ();
         }
 
-        if (packetWrapper instanceof PacketC06PlayerPosLook) {
-            this.onGround = ((PacketC06PlayerPosLook) packetWrapper).isOnGround();
+        if (packetWrapper instanceof PacketPlayOutPlayerPositionLook) {
+            this.onGround = ((PacketPlayOutPlayerPositionLook) packetWrapper).isOnGround();
         } else if (packetWrapper instanceof PlayerLook) {
             this.onGround = ((PlayerLook) packetWrapper).isOnGround();
         } else if (packetWrapper instanceof PlayerPosition) {
@@ -434,6 +438,26 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             this.connectionHandler.completeExceptionally(new KickedException(TextComponent.toLegacyText(this.lastKickReason)));
             this.connectionHandler = null;
         }
+    }
+
+    private boolean receivedServerDisconnect = false;
+
+    public void handleDisconnect(BaseComponent[] reason) {
+        if (this.receivedServerDisconnect) {
+            return;
+        }
+        this.receivedServerDisconnect = true;
+
+        System.out.println("Disconnected " + this.getCredentials() + " (" + this.getAccountName() + "#" + this.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
+
+        if (this.getRedirector() != null) {
+            com.github.derrop.proxy.api.entity.player.Player con = this.getRedirector();
+            this.connection.getClient().free();
+            con.handleDisconnected(this.connection, reason);
+        }
+
+        this.connection.getClient().setLastKickReason(reason);
+        this.connection.getClient().connectionFailed();
     }
 
 }
