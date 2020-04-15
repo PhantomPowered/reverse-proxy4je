@@ -40,4 +40,9 @@ public interface NetworkChannel extends AutoCloseable {
     }
 
     Channel getWrappedChannel();
+
+    <T> T getProperty(String key);
+
+    <T> void setProperty(String key, T value);
+
 }

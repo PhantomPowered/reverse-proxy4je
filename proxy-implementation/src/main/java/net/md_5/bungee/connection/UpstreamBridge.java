@@ -118,10 +118,6 @@ public class UpstreamBridge extends PacketHandler {
 
         pluginMessage.setTag(event.getTag());
         pluginMessage.setData(event.getData());
-
-        if (PacketPlayPluginMessage.SHOULD_RELAY.apply(pluginMessage)) {
-            this.con.getPendingConnection().getRelayMessages().add(pluginMessage);
-        }
     }
 
     @Override

@@ -17,9 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class DefaultNetworkChannel implements NetworkChannel {
+
+    private final Map<String, Object> properties = new ConcurrentHashMap<>();
 
     private SocketAddress address;
     private Channel channel;
@@ -137,6 +141,17 @@ public class DefaultNetworkChannel implements NetworkChannel {
     @Override
     public Channel getWrappedChannel() {
         return this.channel;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getProperty(String key) {
+        return (T) this.properties.get(key);
+    }
+
+    @Override
+    public <T> void setProperty(String key, T value) {
+        this.properties.put(key, value);
     }
 
     public void addBefore(String baseName, String name, ChannelHandler handler) {
