@@ -8,7 +8,7 @@ import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
@@ -28,7 +28,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.ChatComponentTransformer;
 import net.md_5.bungee.chat.ComponentSerializer;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

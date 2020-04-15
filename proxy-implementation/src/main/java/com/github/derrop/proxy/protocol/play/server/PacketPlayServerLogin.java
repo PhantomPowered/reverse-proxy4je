@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -85,5 +86,10 @@ public class PacketPlayServerLogin extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
         handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.LOGIN;
     }
 }

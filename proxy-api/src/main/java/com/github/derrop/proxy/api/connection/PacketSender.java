@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.network.Packet;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 

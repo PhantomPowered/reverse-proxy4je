@@ -1,10 +1,10 @@
 package net.md_5.bungee.tab;
 
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListItem;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 
 public abstract class TabList {
 
-    public abstract void onUpdate(PacketPlayServerPlayerListItem playerListItem);
+    public abstract void onUpdate(PacketPlayServerPlayerInfo playerListItem);
 
     public abstract void onPingChange(int ping);
 
@@ -14,7 +14,7 @@ public abstract class TabList {
 
     public abstract void onDisconnect();
 
-    public static PacketPlayServerPlayerListItem rewrite(PacketPlayServerPlayerListItem playerListItem) {
+    public static PacketPlayServerPlayerInfo rewrite(PacketPlayServerPlayerInfo playerListItem) {
         /*for ( PlayerListItem.Item item : playerListItem.getItems() )
         {
             if ( item.getUuid() == null ) // Old style ping

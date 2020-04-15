@@ -9,10 +9,10 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockUpdate;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerChunkBulk;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerChunkData;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMultiBlockUpdate;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockChange;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunkBulk;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunk;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMultiBlockChange;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.Collection;
@@ -37,33 +37,33 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        PacketPlayServerChunkData[] data = null;
+        PacketPlayServerMapChunk[] data = null;
         DefinedPacket packet = newPacket.getDeserializedPacket();
 
-        if (packet instanceof PacketPlayServerChunkData) {
+        if (packet instanceof PacketPlayServerMapChunk) {
 
-            data = new PacketPlayServerChunkData[]{(PacketPlayServerChunkData) packet};
+            data = new PacketPlayServerMapChunk[]{(PacketPlayServerMapChunk) packet};
 
-        } else if (packet instanceof PacketPlayServerChunkBulk) {
+        } else if (packet instanceof PacketPlayServerMapChunkBulk) {
 
-            PacketPlayServerChunkBulk chunkBulk = (PacketPlayServerChunkBulk) packet;
+            PacketPlayServerMapChunkBulk chunkBulk = (PacketPlayServerMapChunkBulk) packet;
 
-            data = new PacketPlayServerChunkData[chunkBulk.getX().length];
+            data = new PacketPlayServerMapChunk[chunkBulk.getX().length];
             for (int i = 0; i < data.length; i++) {
-                data[i] = new PacketPlayServerChunkData(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
+                data[i] = new PacketPlayServerMapChunk(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
             }
 
-        } else if (packet instanceof PacketPlayServerBlockUpdate) {
+        } else if (packet instanceof PacketPlayServerBlockChange) {
 
-            PacketPlayServerBlockUpdate blockUpdate = (PacketPlayServerBlockUpdate) packet;
+            PacketPlayServerBlockChange blockUpdate = (PacketPlayServerBlockChange) packet;
 
             this.handleBlockUpdate(blockUpdate.getPos(), blockUpdate.getBlockState());
 
-        } else if (packet instanceof PacketPlayServerMultiBlockUpdate) {
+        } else if (packet instanceof PacketPlayServerMultiBlockChange) {
 
-            PacketPlayServerMultiBlockUpdate multiBlockUpdate = (PacketPlayServerMultiBlockUpdate) packet;
+            PacketPlayServerMultiBlockChange multiBlockUpdate = (PacketPlayServerMultiBlockChange) packet;
 
-            for (PacketPlayServerMultiBlockUpdate.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
+            for (PacketPlayServerMultiBlockChange.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
                 this.handleBlockUpdate(updateData.getPos(), updateData.getBlockState());
             }
 
@@ -73,7 +73,7 @@ public class ChunkCache implements PacketCacheHandler {
             return;
         }
 
-        for (PacketPlayServerChunkData chunkData : data) {
+        for (PacketPlayServerMapChunk chunkData : data) {
             if (chunkData.getExtracted().dataLength == 0) {
                 this.unload(chunkData.getX(), chunkData.getZ());
                 continue;
@@ -94,7 +94,7 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
-    private void load(PacketPlayServerChunkData chunkData) {
+    private void load(PacketPlayServerMapChunk chunkData) {
         Chunk chunk = new Chunk();
         chunk.fillChunk(chunkData);
         this.chunks.add(chunk);
@@ -123,7 +123,7 @@ public class ChunkCache implements PacketCacheHandler {
         chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), blockState);
 
         if (this.connectedPlayer != null) {
-            this.connectedPlayer.sendPacket(new PacketPlayServerBlockUpdate(pos, blockState));
+            this.connectedPlayer.sendPacket(new PacketPlayServerBlockChange(pos, blockState));
         }
     }
 
@@ -164,7 +164,7 @@ public class ChunkCache implements PacketCacheHandler {
             if (chunk.getLastChunkData() == null) {
                 continue;
             }
-            PacketPlayServerChunkData data = new PacketPlayServerChunkData(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isFullChunk(), chunk.getBytes());
+            PacketPlayServerMapChunk data = new PacketPlayServerMapChunk(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isFullChunk(), chunk.getBytes());
             sender.sendPacket(data);
         }
     }

@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.title;
 
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.network.Packet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

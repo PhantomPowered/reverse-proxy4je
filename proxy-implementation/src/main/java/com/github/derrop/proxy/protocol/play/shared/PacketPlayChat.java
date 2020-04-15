@@ -1,0 +1,51 @@
+package com.github.derrop.proxy.protocol.play.shared;
+
+import com.github.derrop.proxy.protocol.ProtocolIds;
+import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import net.md_5.bungee.protocol.AbstractPacketHandler;
+import net.md_5.bungee.protocol.DefinedPacket;
+import net.md_5.bungee.protocol.ProtocolConstants;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class PacketPlayChat extends DefinedPacket {
+
+    private String message;
+    private byte position;
+
+    public PacketPlayChat(String message) {
+        this(message, (byte) 0);
+    }
+
+    @Override
+    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        message = readString(buf);
+        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
+            position = buf.readByte();
+        }
+    }
+
+    @Override
+    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+        writeString(message, buf);
+        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
+            buf.writeByte(position);
+        }
+    }
+
+    @Override
+    public void handle(AbstractPacketHandler handler) throws Exception {
+        handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.CHAT;
+    }
+}

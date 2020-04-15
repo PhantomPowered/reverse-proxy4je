@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 
-import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.network.Packet;
 
 public interface PositionedPacket extends Packet {
 

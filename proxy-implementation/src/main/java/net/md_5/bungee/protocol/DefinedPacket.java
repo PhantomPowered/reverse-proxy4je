@@ -1,9 +1,10 @@
 package net.md_5.bungee.protocol;
 
-import com.github.derrop.proxy.api.connection.packet.Packet;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -87,7 +88,7 @@ public abstract class DefinedPacket implements Packet {
         return ByteBufUtils.readUUID(input);
     }
 
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         throw new UnsupportedOperationException("Packet must implement read method");
     }
 
@@ -95,7 +96,7 @@ public abstract class DefinedPacket implements Packet {
         read(buf);
     }
 
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         throw new UnsupportedOperationException("Packet must implement write method");
     }
 

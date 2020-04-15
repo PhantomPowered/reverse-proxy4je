@@ -5,7 +5,7 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerDestroyEntities;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
 import com.github.derrop.proxy.api.connection.PacketSender;
@@ -47,27 +47,27 @@ public class EntityCache implements PacketCacheHandler {
                 entity.setPitch(entityTeleport.getPitch());
             }
 
-        } else if (packet instanceof PacketPlayServerSpawnPlayer) {
+        } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
 
-            PacketPlayServerSpawnPlayer spawnPlayer = (PacketPlayServerSpawnPlayer) packet;
+            PacketPlayServerNamedEntitySpawn spawnPlayer = (PacketPlayServerNamedEntitySpawn) packet;
 
             this.entities.put(spawnPlayer.getEntityId(), spawnPlayer);
 
-        } else if (packet instanceof PacketPlayServerSpawnMob) {
+        } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
 
-            PacketPlayServerSpawnMob spawnMob = (PacketPlayServerSpawnMob) packet;
+            PacketPlayServerSpawnLivingEntity spawnMob = (PacketPlayServerSpawnLivingEntity) packet;
 
             this.entities.put(spawnMob.getEntityId(), spawnMob);
 
-        } else if (packet instanceof PacketPlayServerSpawnObject) {
+        } else if (packet instanceof PacketPlayServerSpawnEntity) {
 
-            PacketPlayServerSpawnObject spawnObject = (PacketPlayServerSpawnObject) packet;
+            PacketPlayServerSpawnEntity spawnObject = (PacketPlayServerSpawnEntity) packet;
 
             this.entities.put(spawnObject.getEntityId(), spawnObject);
 
-        } else if (packet instanceof PacketPlayServerSpawnGlobalEntity) {
+        } else if (packet instanceof PacketPlayServerSpawnEntityWeather) {
 
-            PacketPlayServerSpawnGlobalEntity spawnGlobalEntity = (PacketPlayServerSpawnGlobalEntity) packet;
+            PacketPlayServerSpawnEntityWeather spawnGlobalEntity = (PacketPlayServerSpawnEntityWeather) packet;
 
             this.entities.put(spawnGlobalEntity.getEntityId(), spawnGlobalEntity);
 
@@ -75,9 +75,9 @@ public class EntityCache implements PacketCacheHandler {
 
             this.metadata.put(((PacketPlayServerEntityMetadata) packet).getEntityId(), (PacketPlayServerEntityMetadata) packet);
 
-        } else if (packet instanceof PacketPlayServerDestroyEntities) {
+        } else if (packet instanceof PacketPlayServerEntityDestroy) {
 
-            PacketPlayServerDestroyEntities destroyEntities = (PacketPlayServerDestroyEntities) packet;
+            PacketPlayServerEntityDestroy destroyEntities = (PacketPlayServerEntityDestroy) packet;
             for (int entityId : destroyEntities.getEntityIds()) {
                 this.entities.remove(entityId);
                 this.metadata.remove(entityId);
@@ -111,6 +111,6 @@ public class EntityCache implements PacketCacheHandler {
             entityIds[i++] = entityId;
         }
 
-        con.sendPacket(new PacketPlayServerDestroyEntities(entityIds));
+        con.sendPacket(new PacketPlayServerEntityDestroy(entityIds));
     }
 }

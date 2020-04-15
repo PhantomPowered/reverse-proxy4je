@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class EntityVelocity extends DefinedPacket {
     private int motionZ;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.entityId = readVarInt(buf);
         this.motionX = buf.readShort();
         this.motionY = buf.readShort();
@@ -26,7 +27,7 @@ public class EntityVelocity extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         writeVarInt(this.entityId, buf);
         buf.writeShort(this.motionX);
         buf.writeShort(this.motionY);

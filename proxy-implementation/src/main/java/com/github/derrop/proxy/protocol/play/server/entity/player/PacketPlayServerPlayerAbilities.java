@@ -1,9 +1,11 @@
 package com.github.derrop.proxy.protocol.play.server.entity.player;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class PacketPlayServerPlayerAbilities extends DefinedPacket {
     private float walkSpeed;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         byte b0 = buf.readByte();
         this.setInvulnerable((b0 & 1) > 0);
         this.setFlying((b0 & 2) > 0);
@@ -31,7 +33,7 @@ public class PacketPlayServerPlayerAbilities extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         byte b0 = 0;
 
         if (this.isInvulnerable()) {
@@ -57,5 +59,10 @@ public class PacketPlayServerPlayerAbilities extends DefinedPacket {
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.ABILITIES;
     }
 }

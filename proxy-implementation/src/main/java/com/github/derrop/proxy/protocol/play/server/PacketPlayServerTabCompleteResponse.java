@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
@@ -84,5 +85,10 @@ public class PacketPlayServerTabCompleteResponse extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
         handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.TAB_COMPLETE;
     }
 }

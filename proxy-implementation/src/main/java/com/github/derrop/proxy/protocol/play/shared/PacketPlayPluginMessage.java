@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.shared;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -81,5 +82,10 @@ public class PacketPlayPluginMessage extends DefinedPacket {
 
     public DataInput getStream() {
         return new DataInputStream(new ByteArrayInputStream(data));
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.CUSTOM_PAYLOAD;
     }
 }

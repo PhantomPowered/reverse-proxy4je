@@ -2,7 +2,7 @@ package com.github.derrop.proxy.block.chunk;
 
 import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerChunkData;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunk;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,11 +11,11 @@ import java.util.List;
 public class Chunk {
 
     private ExtendedBlockStorage[] storageArrays = new ExtendedBlockStorage[16];
-    private PacketPlayServerChunkData lastChunkData;
+    private PacketPlayServerMapChunk lastChunkData;
     private byte[] biomeArray = new byte[256];
     private boolean hasSky;
 
-    public void fillChunk(PacketPlayServerChunkData chunkData) {
+    public void fillChunk(PacketPlayServerMapChunk chunkData) {
         this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isFullChunk());
         this.lastChunkData = chunkData;
     }
@@ -62,7 +62,7 @@ public class Chunk {
 
     }
 
-    public PacketPlayServerChunkData.Extracted getBytes() {
+    public PacketPlayServerMapChunk.Extracted getBytes() {
         if (this.lastChunkData == null) {
             return null;
         }
@@ -71,7 +71,7 @@ public class Chunk {
         boolean fullChunk = this.lastChunkData.isFullChunk();
 
         ExtendedBlockStorage[] storages = this.storageArrays;
-        PacketPlayServerChunkData.Extracted extracted = new PacketPlayServerChunkData.Extracted();
+        PacketPlayServerMapChunk.Extracted extracted = new PacketPlayServerMapChunk.Extracted();
         List<ExtendedBlockStorage> list = new ArrayList<>();
 
         for (int i = 0; i < storages.length; ++i) {
@@ -83,7 +83,7 @@ public class Chunk {
             }
         }
 
-        extracted.data = new byte[PacketPlayServerChunkData.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
+        extracted.data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
         int j = 0;
 
         for (ExtendedBlockStorage extendedblockstorage1 : list) {
@@ -202,7 +202,7 @@ public class Chunk {
         }
     }
 
-    public PacketPlayServerChunkData getLastChunkData() {
+    public PacketPlayServerMapChunk getLastChunkData() {
         return lastChunkData;
     }
 

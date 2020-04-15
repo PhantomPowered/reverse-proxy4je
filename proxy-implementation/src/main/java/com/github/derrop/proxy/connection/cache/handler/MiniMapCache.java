@@ -4,7 +4,7 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMaps;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMap;
 import com.github.derrop.proxy.api.connection.PacketSender;
 
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MiniMapCache implements PacketCacheHandler {
 
-    private Map<Integer, PacketPlayServerMaps> maps = new ConcurrentHashMap<>();
+    private Map<Integer, PacketPlayServerMap> maps = new ConcurrentHashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -21,14 +21,14 @@ public class MiniMapCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        PacketPlayServerMaps maps = (PacketPlayServerMaps) newPacket.getDeserializedPacket();
+        PacketPlayServerMap maps = (PacketPlayServerMap) newPacket.getDeserializedPacket();
         if (!this.maps.containsKey(maps.getMapId())) {
             this.maps.put(maps.getMapId(), maps);
             return;
         }
 
         if (this.maps.containsKey(maps.getMapId())) {
-            PacketPlayServerMaps oldMaps = this.maps.get(maps.getMapId());
+            PacketPlayServerMap oldMaps = this.maps.get(maps.getMapId());
             oldMaps.setMapVisiblePlayersVec4b(maps.getMapVisiblePlayersVec4b());
             oldMaps.setMapScale(maps.getMapScale());
             if (maps.getMapMaxX() > 0) {
@@ -46,7 +46,7 @@ public class MiniMapCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(PacketSender con) {
-        for (PacketPlayServerMaps maps : this.maps.values()) {
+        for (PacketPlayServerMap maps : this.maps.values()) {
             con.sendPacket(maps);
         }
     }

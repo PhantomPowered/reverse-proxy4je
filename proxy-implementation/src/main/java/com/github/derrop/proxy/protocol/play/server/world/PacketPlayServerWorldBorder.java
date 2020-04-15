@@ -1,9 +1,11 @@
 package com.github.derrop.proxy.protocol.play.server.world;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class PacketPlayServerWorldBorder extends DefinedPacket {
     private int warningDistance;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.action = Action.values()[readVarInt(buf)];
 
         switch (this.action) {
@@ -65,7 +67,7 @@ public class PacketPlayServerWorldBorder extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         writeVarInt(this.action.ordinal(), buf);
 
         switch (this.action) {
@@ -107,6 +109,11 @@ public class PacketPlayServerWorldBorder extends DefinedPacket {
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.WORLD_BOARDER;
     }
 
     public enum Action {

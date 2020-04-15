@@ -158,7 +158,7 @@ public interface ProtocolIds {
 
             int SERVER_INFO = 0;
 
-            int OUT_PONG = 1;
+            int PONG = 1;
         }
 
         interface Login {

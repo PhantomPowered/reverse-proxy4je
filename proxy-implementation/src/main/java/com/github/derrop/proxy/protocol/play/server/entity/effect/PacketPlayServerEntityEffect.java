@@ -1,9 +1,11 @@
 package com.github.derrop.proxy.protocol.play.server.entity.effect;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class PacketPlayServerEntityEffect extends DefinedPacket {
     private byte hideParticles;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.entityId = readVarInt(buf);
         this.effectId = buf.readByte();
         this.amplifier = buf.readByte();
@@ -31,7 +33,7 @@ public class PacketPlayServerEntityEffect extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         writeVarInt(this.entityId, buf);
         buf.writeByte(this.effectId);
         buf.writeByte(this.amplifier);
@@ -41,5 +43,10 @@ public class PacketPlayServerEntityEffect extends DefinedPacket {
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.ENTITY_EFFECT;
     }
 }

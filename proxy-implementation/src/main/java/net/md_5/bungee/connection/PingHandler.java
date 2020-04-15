@@ -9,9 +9,6 @@ import net.md_5.bungee.Util;
 import com.github.derrop.proxy.api.util.Callback;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PacketHandler;
-import net.md_5.bungee.netty.PipelineUtils;
-import net.md_5.bungee.protocol.MinecraftDecoder;
-import net.md_5.bungee.protocol.MinecraftEncoder;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.Protocol;
 import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
@@ -28,10 +25,10 @@ public class PingHandler extends PacketHandler {
     @Override
     public void connected(ChannelWrapper channel) throws Exception {
         this.channel = channel;
-        MinecraftEncoder encoder = new MinecraftEncoder(Protocol.HANDSHAKE, false, protocol);
+        //MinecraftEncoder encoder = new MinecraftEncoder(Protocol.HANDSHAKE, false, protocol);
 
-        channel.getHandle().pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.STATUS, false, 578));
-        channel.getHandle().pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, encoder);
+        //channel.getHandle().pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.STATUS, false, 578));
+        //channel.getHandle().pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, encoder);
 
         channel.write(new PacketHandshakingInSetProtocol(protocol, this.targetAddress.getHost(), this.targetAddress.getPort(), 1));
 

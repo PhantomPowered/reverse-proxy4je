@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -17,14 +18,14 @@ public class EntityAttach extends DefinedPacket {
     private int vehicleEntityId;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.entityId = buf.readInt();
         this.vehicleEntityId = buf.readInt();
         this.leash = buf.readUnsignedByte();
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         buf.writeInt(this.entityId);
         buf.writeInt(this.vehicleEntityId);
         buf.writeByte(this.leash);

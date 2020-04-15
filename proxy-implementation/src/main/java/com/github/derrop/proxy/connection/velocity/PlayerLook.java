@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -17,14 +18,14 @@ public class PlayerLook extends DefinedPacket {
     private boolean onGround;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.yaw = buf.readFloat();
         this.pitch = buf.readFloat();
         this.onGround = buf.readUnsignedByte() != 0;
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         buf.writeFloat(this.yaw);
         buf.writeFloat(this.pitch);
         buf.writeByte(this.onGround ? 1 : 0);

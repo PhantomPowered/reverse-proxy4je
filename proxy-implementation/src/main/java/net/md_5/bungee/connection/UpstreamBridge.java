@@ -7,15 +7,14 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
+import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientSettings;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -72,25 +71,32 @@ public class UpstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(PacketPlayKeepAlive alive) throws Exception {
+    public void handle(@NotNull Packet packet) throws Exception {
+        if (packet instanceof PacketPlayChatMessage) {
+            this.handleChat((PacketPlayChatMessage) packet);
+            return;
+        }
+
+        if (packet instanceof PacketPlayPluginMessage) {
+            this.handlePluginMessage((PacketPlayPluginMessage) packet);
+        }
     }
 
-    @Override
-    public void handle(PacketPlayChatMessage chat) throws Exception {
+    private void handleChat(PacketPlayChatMessage chat) throws Exception {
         int maxLength = (con.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
-            throw CancelSendSignal.INSTANCE;
+            throw CancelProceedException.INSTANCE;
         }
 
         if (chat.getMessage().startsWith("/proxy ")) {
             try {
                 CommandMap commandMap = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(CommandMap.class);
                 if (commandMap.process(this.con, chat.getMessage().replaceFirst("/proxy ", "")) != CommandResult.NOT_FOUND) {
-                    throw CancelSendSignal.INSTANCE;
+                    throw CancelProceedException.INSTANCE;
                 }
             } catch (final CommandExecutionException | PermissionDeniedException ex) {
                 this.con.sendMessage("Unable to process command: " + ex.getMessage());
-                throw CancelSendSignal.INSTANCE;
+                throw CancelProceedException.INSTANCE;
             }
 
             return;
@@ -98,64 +104,16 @@ public class UpstreamBridge extends PacketHandler {
 
         ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, TextComponent.fromLegacyText(chat.getMessage()));
         if (this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
-            throw CancelSendSignal.INSTANCE;
+            throw CancelProceedException.INSTANCE;
         }
 
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
     }
 
-    @Override
-    public void handle(PacketPlayClientTabCompleteRequest tabComplete) throws Exception {
-        /*List<String> suggestions = new ArrayList<>();
-
-        if ( tabComplete.getCursor().startsWith( "/" ) )
-        {
-            bungee.getPluginManager().dispatchCommand( con, tabComplete.getCursor().substring( 1 ), suggestions );
-        }
-
-        TabCompleteEvent tabCompleteEvent = new TabCompleteEvent( con, con.getServer(), tabComplete.getCursor(), suggestions );
-        bungee.getPluginManager().callEvent( tabCompleteEvent );
-
-        if ( tabCompleteEvent.isCancelled() )
-        {
-            throw CancelSendSignal.INSTANCE;
-        }
-
-        List<String> results = tabCompleteEvent.getSuggestions();
-        if ( !results.isEmpty() )
-        {
-            // Unclear how to handle 1.13 commands at this point. Because we don't inject into the command packets we are unlikely to get this far unless
-            // Bungee plugins are adding results for commands they don't own anyway
-            if ( con.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13 )
-            {
-                con.sendPacket( new TabCompleteResponse( results ) );
-            } else
-            {
-                int start = tabComplete.getCursor().lastIndexOf( ' ' ) + 1;
-                int end = tabComplete.getCursor().length();
-                StringRange range = StringRange.between( start, end );
-
-                List<Suggestion> brigadier = new LinkedList<>();
-                for ( String s : results )
-                {
-                    brigadier.add( new Suggestion( range, s ) );
-                }
-
-                con.sendPacket( new TabCompleteResponse( tabComplete.getTransactionId(), new Suggestions( range, brigadier ) ) );
-            }
-            throw CancelSendSignal.INSTANCE;
-        }*/
-    }
-
-    @Override
-    public void handle(PacketPlayClientSettings settings) throws Exception {
-    }
-
-    @Override
-    public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
+    private void handlePluginMessage(PacketPlayPluginMessage pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
         if (this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
-            throw CancelSendSignal.INSTANCE;
+            throw CancelProceedException.INSTANCE;
         }
 
         pluginMessage.setTag(event.getTag());

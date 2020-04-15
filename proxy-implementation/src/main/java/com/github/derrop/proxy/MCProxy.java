@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -25,6 +26,7 @@ import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.logging.ILogger;
 import com.github.derrop.proxy.minecraft.AccountReader;
+import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.permission.PermissionProvider;
 import com.github.derrop.proxy.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
@@ -72,7 +74,8 @@ public class MCProxy extends Proxy {
     protected MCProxy(@NotNull ILogger logger) {
         instance = this;
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
-        this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), true);
+        this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
+        this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
 
         this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));

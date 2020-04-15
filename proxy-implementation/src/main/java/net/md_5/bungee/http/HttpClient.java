@@ -1,5 +1,6 @@
 package net.md_5.bungee.http;
 
+import com.github.derrop.proxy.util.NettyUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -12,7 +13,6 @@ import io.netty.handler.codec.http.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import com.github.derrop.proxy.api.util.Callback;
-import net.md_5.bungee.netty.PipelineUtils;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -78,7 +78,7 @@ public class HttpClient {
             }
         };
 
-        new Bootstrap().channel(PipelineUtils.getChannel(null)).group(eventLoop).handler(new HttpInitializer(callback, ssl, uri.getHost(), port)).
+        new Bootstrap().channel(NettyUtils.getSocketChannelClass()).group(eventLoop).handler(new HttpInitializer(callback, ssl, uri.getHost(), port)).
                 option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT).remoteAddress(inetHost, port).connect().addListener(future);
     }
 }

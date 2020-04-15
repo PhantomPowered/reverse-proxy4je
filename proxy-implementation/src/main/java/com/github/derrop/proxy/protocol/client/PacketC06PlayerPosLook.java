@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.protocol.client;
 
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class PacketC06PlayerPosLook extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.x = buf.readDouble();
         this.y = buf.readDouble();
         this.z = buf.readDouble();
@@ -40,7 +41,7 @@ public class PacketC06PlayerPosLook extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
         buf.writeDouble(this.z);
@@ -52,5 +53,10 @@ public class PacketC06PlayerPosLook extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
 
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ServerBound.Play.POSITION_LOOK;
     }
 }

@@ -5,6 +5,7 @@ import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
@@ -53,7 +54,7 @@ public class PacketCache {
         return this.handlers;
     }
 
-    public void handlePacket(ByteBuf packet, DefinedPacket deserialized) {
+    public void handlePacket(ByteBuf packet, Packet deserialized) {
         packet.markReaderIndex();
 
         /*

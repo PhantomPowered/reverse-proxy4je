@@ -9,13 +9,14 @@ import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
@@ -89,7 +90,7 @@ public class DownstreamBridge extends PacketHandler {
     public void handle(PacketPlayKeepAlive alive) throws Exception {
         this.connection.sendPacket(alive);
         this.connection.getClient().setLastAlivePacket(System.currentTimeMillis());
-        throw CancelSendSignal.INSTANCE;
+        throw CancelProceedException.INSTANCE;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class DownstreamBridge extends PacketHandler {
     public void handle(PacketPlayPluginMessage pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(this.connection, ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
         if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
-            throw CancelSendSignal.INSTANCE;
+            throw CancelProceedException.INSTANCE;
         }
 
         pluginMessage.setTag(event.getTag());
@@ -114,7 +115,7 @@ public class DownstreamBridge extends PacketHandler {
         }
 
         connection.sendPacket(pluginMessage);
-        throw CancelSendSignal.INSTANCE;
+        throw CancelProceedException.INSTANCE;
     }
 
     @Override
@@ -130,14 +131,14 @@ public class DownstreamBridge extends PacketHandler {
             return;
         }
         this.connection = proxyClient;
-        throw CancelSendSignal.INSTANCE;
+        throw CancelProceedException.INSTANCE;
     }
 
     @Override
     public void handle(PacketPlayChatMessage chat) throws Exception {
         ChatEvent event = new ChatEvent(this.connection, ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
         if (this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
-            throw CancelSendSignal.INSTANCE;
+            throw CancelProceedException.INSTANCE;
         }
 
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));

@@ -1,12 +1,14 @@
 package com.github.derrop.proxy.protocol.play.server.world;
 
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class PacketPlayServerUpdateSign extends DefinedPacket {
     private BaseComponent[][] lines;
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.pos = BlockPos.fromLong(buf.readLong());
         this.lines = new BaseComponent[4][];
 
@@ -29,7 +31,7 @@ public class PacketPlayServerUpdateSign extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         buf.writeLong(this.pos.toLong());
 
         for (int i = 0; i < 4; i++) {
@@ -39,5 +41,10 @@ public class PacketPlayServerUpdateSign extends DefinedPacket {
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.UPDATE_SIGN;
     }
 }

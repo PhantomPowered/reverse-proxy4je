@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListItem;
-import net.md_5.bungee.netty.ChannelWrapper;
+import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import net.md_5.bungee.tab.TabList;
 
 import java.util.ArrayList;
@@ -9,19 +9,19 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlayerUniqueTabList extends TabList {
-    private ChannelWrapper target;
+    private NetworkChannel target;
     private List<UUID> uuids = new ArrayList<>();
 
-    public PlayerUniqueTabList(ChannelWrapper target) {
+    public PlayerUniqueTabList(NetworkChannel target) {
         this.target = target;
     }
 
     @Override
-    public void onUpdate(PacketPlayServerPlayerListItem playerListItem) {
-        for (PacketPlayServerPlayerListItem.Item item : playerListItem.getItems()) {
-            if (playerListItem.getAction() == PacketPlayServerPlayerListItem.Action.ADD_PLAYER) {
+    public void onUpdate(PacketPlayServerPlayerInfo playerListItem) {
+        for (PacketPlayServerPlayerInfo.Item item : playerListItem.getItems()) {
+            if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.ADD_PLAYER) {
                 this.uuids.add(item.getUuid());
-            } else if (playerListItem.getAction() == PacketPlayServerPlayerListItem.Action.REMOVE_PLAYER) {
+            } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER) {
                 this.uuids.remove(item.getUuid());
             }
         }
@@ -36,11 +36,11 @@ public class PlayerUniqueTabList extends TabList {
         if (this.uuids.isEmpty()) {
             return;
         }
-        PacketPlayServerPlayerListItem playerListItem = new PacketPlayServerPlayerListItem();
-        playerListItem.setAction(PacketPlayServerPlayerListItem.Action.REMOVE_PLAYER);
-        PacketPlayServerPlayerListItem.Item[] items = new PacketPlayServerPlayerListItem.Item[this.uuids.size()];
+        PacketPlayServerPlayerInfo playerListItem = new PacketPlayServerPlayerInfo();
+        playerListItem.setAction(PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER);
+        PacketPlayServerPlayerInfo.Item[] items = new PacketPlayServerPlayerInfo.Item[this.uuids.size()];
         for (int i = 0; i < items.length; i++) {
-            items[i] = new PacketPlayServerPlayerListItem.Item();
+            items[i] = new PacketPlayServerPlayerInfo.Item();
             items[i].setUuid(this.uuids.get(i));
         }
 

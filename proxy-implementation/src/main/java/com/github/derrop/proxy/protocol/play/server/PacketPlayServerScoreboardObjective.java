@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
@@ -61,6 +62,11 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
         handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.SCOREBOARD_OBJECTIVE;
     }
 
     public enum HealthDisplay {

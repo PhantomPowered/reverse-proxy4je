@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.protocol.play.server.entity;
 
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
@@ -35,7 +36,7 @@ public class PacketPlayServerEntityTeleport extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(@NotNull ByteBuf buf) {
         this.entityId = readVarInt(buf);
         this.x = buf.readInt();
         this.y = buf.readInt();
@@ -46,7 +47,7 @@ public class PacketPlayServerEntityTeleport extends DefinedPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(@NotNull ByteBuf buf) {
         writeVarInt(this.entityId, buf);
         buf.writeInt(this.x);
         buf.writeInt(this.y);
@@ -59,5 +60,10 @@ public class PacketPlayServerEntityTeleport extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
         handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ClientBound.Play.ENTITY_TELEPORT;
     }
 }

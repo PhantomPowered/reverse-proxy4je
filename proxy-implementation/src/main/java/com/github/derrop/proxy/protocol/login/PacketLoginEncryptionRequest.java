@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.login;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,5 +37,10 @@ public class PacketLoginEncryptionRequest extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
         handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ServerBound.Login.ENCRYPTION_BEGIN;
     }
 }

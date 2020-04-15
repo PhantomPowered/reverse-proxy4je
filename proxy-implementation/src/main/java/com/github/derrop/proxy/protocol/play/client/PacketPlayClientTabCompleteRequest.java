@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.protocol.play.client;
 
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -71,5 +72,10 @@ public class PacketPlayClientTabCompleteRequest extends DefinedPacket {
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
         handler.handle(this);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.ServerBound.Play.TAB_COMPLETE;
     }
 }

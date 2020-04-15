@@ -3,11 +3,17 @@ package com.github.derrop.proxy.connection;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
+import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
@@ -18,10 +24,15 @@ import com.github.derrop.proxy.connection.velocity.PlayerLook;
 import com.github.derrop.proxy.connection.velocity.PlayerPosition;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.exception.KickedException;
+import com.github.derrop.proxy.network.NetworkUtils;
+import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
+import com.github.derrop.proxy.network.handler.HandlerEndpoint;
+import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
+import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
 import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayClientResourcePackStatusResponse;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
@@ -40,12 +51,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
-import net.md_5.bungee.connection.CancelSendSignal;
 import net.md_5.bungee.entitymap.EntityMap;
-import net.md_5.bungee.netty.ChannelWrapper;
-import net.md_5.bungee.netty.HandlerBoss;
-import net.md_5.bungee.netty.PipelineUtils;
-import net.md_5.bungee.protocol.*;
+import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -65,7 +72,7 @@ public class ConnectedProxyClient {
     private UserAuthentication authentication;
     private MCCredentials credentials;
 
-    private ChannelWrapper channelWrapper;
+    private NetworkChannel networkChannel;
     private com.github.derrop.proxy.api.entity.player.Player redirector;
     private Channel channel;
 
@@ -81,13 +88,13 @@ public class ConnectedProxyClient {
 
     private PacketPlayServerEntityMetadata entityMetadata;
 
-    private Consumer<PacketWrapper> clientPacketHandler;
+    private Consumer<Packet> clientPacketHandler;
 
     private Runnable disconnectionHandler;
 
     private boolean globalAccount = true;
 
-    private Map<Predicate<DefinedPacket>, Long> blockedPackets = new ConcurrentHashMap<>();
+    private Map<Predicate<Packet>, Long> blockedPackets = new ConcurrentHashMap<>();
 
     private BaseComponent[] lastKickReason;
 
@@ -124,13 +131,13 @@ public class ConnectedProxyClient {
     }
 
     public void disconnect() {
-        if (this.channel == null || this.channelWrapper == null) {
+        if (this.channel == null || this.networkChannel == null) {
             return;
         }
 
-        this.channelWrapper.close();
+        this.networkChannel.close();
         this.channel = null;
-        this.channelWrapper = null;
+        this.networkChannel = null;
         this.address = null;
         this.packetCache.reset();
 
@@ -161,25 +168,26 @@ public class ConnectedProxyClient {
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
-                PipelineUtils.BASE.initChannel(ch);
+                NetworkUtils.BASE.initChannel(channel);
 
                 if (proxy != null) {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
                 }
 
-                ch.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, false, 47));
-                ch.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, false, 47));
-                ch.pipeline().get(HandlerBoss.class).setHandler(new ProxyClientLoginHandler(ConnectedProxyClient.this, ConnectedProxyClient.this.connection));
+                //TODO: replace
+                //ch.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
+                //ch.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder());
+                //ch.pipeline().get(HandlerEndpoint.class).setHandler(new ProxyClientLoginHandler(ConnectedProxyClient.this, ConnectedProxyClient.this.connection));
             }
         };
         ChannelFutureListener listener = future1 -> {
             if (future1.isSuccess()) {
-                this.channelWrapper = new ChannelWrapper(future1.channel());
+                this.networkChannel = new DefaultNetworkChannel(future1.channel());
                 this.address = address;
 
-                this.channelWrapper.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
-                this.channelWrapper.setProtocol(Protocol.LOGIN);
-                this.channelWrapper.write(new PacketLoginLoginRequest(this.getAccountName()));
+                this.networkChannel.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
+                this.networkChannel.setProtocolState(ProtocolState.LOGIN);
+                this.networkChannel.write(new PacketLoginLoginRequest(this.getAccountName()));
                 future.complete(true);
             } else {
                 future1.channel().close();
@@ -206,11 +214,11 @@ public class ConnectedProxyClient {
         this.disconnectionHandler = disconnectionHandler;
     }
 
-    public void setClientPacketHandler(Consumer<PacketWrapper> clientPacketHandler) {
+    public void setClientPacketHandler(Consumer<Packet> clientPacketHandler) {
         this.clientPacketHandler = clientPacketHandler;
     }
 
-    public Consumer<PacketWrapper> getClientPacketHandler() {
+    public Consumer<Packet> getClientPacketHandler() {
         return clientPacketHandler;
     }
 
@@ -274,12 +282,17 @@ public class ConnectedProxyClient {
         return credentials;
     }
 
-    public ChannelWrapper getChannelWrapper() {
-        return channelWrapper;
+    @Deprecated
+    public NetworkChannel getChannelWrapper() {
+        return networkChannel;
+    }
+
+    public NetworkChannel getNetworkChannel() {
+        return networkChannel;
     }
 
     public boolean isConnected() {
-        return this.channelWrapper != null && !this.channelWrapper.isClosing() && !this.channelWrapper.isClosed();
+        return this.networkChannel != null && !this.networkChannel.isClosing() && !this.networkChannel.isClosed();
     }
 
     public com.github.derrop.proxy.api.entity.player.Player getRedirector() {
@@ -333,12 +346,12 @@ public class ConnectedProxyClient {
         // todo implement this?
     }
 
-    public void blockPacketUntil(Predicate<DefinedPacket> tester, long until) {
+    public void blockPacketUntil(Predicate<Packet> tester, long until) {
         this.blockedPackets.put(tester, until);
     }
 
-    public void redirectPacket(ByteBuf packet, DefinedPacket deserialized) {
-        if (this.channelWrapper == null || this.channelWrapper.getProtocol() != Protocol.GAME) {
+    public void redirectPacket(ByteBuf packet, Packet deserialized) {
+        if (this.networkChannel == null || this.networkChannel.getProtocolState() != ProtocolState.PLAY) {
             return;
         }
         if (packet == null) {
@@ -346,13 +359,13 @@ public class ConnectedProxyClient {
         }
 
         if (deserialized instanceof PacketPlayServerResourcePackSend) {
-            this.channelWrapper.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.ACCEPTED));
-            this.channelWrapper.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
-            throw CancelSendSignal.INSTANCE;
+            this.networkChannel.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.ACCEPTED));
+            this.networkChannel.write(new PacketPlayClientResourcePackStatusResponse(((PacketPlayServerResourcePackSend) deserialized).getHash(), PacketPlayClientResourcePackStatusResponse.Action.SUCCESSFULLY_LOADED));
+            throw CancelProceedException.INSTANCE;
         }
 
         if (deserialized != null && !this.blockedPackets.isEmpty()) {
-            for (Map.Entry<Predicate<DefinedPacket>, Long> entry : this.blockedPackets.entrySet()) {
+            for (Map.Entry<Predicate<Packet>, Long> entry : this.blockedPackets.entrySet()) {
                 if (entry.getValue() >= System.currentTimeMillis()) {
                     this.blockedPackets.remove(entry.getKey());
                     continue;
@@ -371,12 +384,12 @@ public class ConnectedProxyClient {
 
         if (this.redirector != null) {
             if (deserialized != null) { // rewrite to allow modifications by the packet handlers
-                int id = DefinedPacket.readVarInt(packet);
+                int id = ByteBufUtils.readVarInt(packet);
 
                 ByteBuf buf = Unpooled.buffer();
-                DefinedPacket.writeVarInt(id, buf);
+                ByteBufUtils.writeVarInt(id, buf);
 
-                deserialized.write(buf, ProtocolConstants.Direction.TO_CLIENT, 47);
+                deserialized.write(buf);
 
                 this.redirector.sendPacket(buf);
             } else {
@@ -404,27 +417,25 @@ public class ConnectedProxyClient {
         }
     }
 
-    public void handleClientPacket(PacketWrapper packetWrapper) {
+    public void handleClientPacket(Packet packetWrapper) {
         if (this.clientPacketHandler != null) {
             this.clientPacketHandler.accept(packetWrapper);
         }
 
-        DefinedPacket deserialized = packetWrapper.packet;
-
-        if (deserialized instanceof PositionedPacket) {
-            this.posX = ((PositionedPacket) deserialized).getX();
-            this.posY = ((PositionedPacket) deserialized).getY();
-            this.posZ = ((PositionedPacket) deserialized).getZ();
+        if (packetWrapper instanceof PositionedPacket) {
+            this.posX = ((PositionedPacket) packetWrapper).getX();
+            this.posY = ((PositionedPacket) packetWrapper).getY();
+            this.posZ = ((PositionedPacket) packetWrapper).getZ();
         }
 
-        if (packetWrapper.packet instanceof PacketC06PlayerPosLook) {
-            this.onGround = ((PacketC06PlayerPosLook) packetWrapper.packet).isOnGround();
-        } else if (packetWrapper.packet instanceof PlayerLook) {
-            this.onGround = ((PlayerLook) packetWrapper.packet).isOnGround();
-        } else if (packetWrapper.packet instanceof PlayerPosition) {
-            this.onGround = ((PlayerPosition) packetWrapper.packet).isOnGround();
-        } else if (packetWrapper.packet instanceof Player) {
-            this.onGround = ((Player) packetWrapper.packet).isOnGround();
+        if (packetWrapper instanceof PacketC06PlayerPosLook) {
+            this.onGround = ((PacketC06PlayerPosLook) packetWrapper).isOnGround();
+        } else if (packetWrapper instanceof PlayerLook) {
+            this.onGround = ((PlayerLook) packetWrapper).isOnGround();
+        } else if (packetWrapper instanceof PlayerPosition) {
+            this.onGround = ((PlayerPosition) packetWrapper).isOnGround();
+        } else if (packetWrapper instanceof Player) {
+            this.onGround = ((Player) packetWrapper).isOnGround();
         }
     }
 
