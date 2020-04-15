@@ -324,16 +324,16 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(718, Material.STONE_SLAB2);
         registerState(719, Material.STONE_SLAB2);
         registerState(720, Material.BRICK); // complete
-        registerState(736, Material.TNT);
+        registerState(736, Material.TNT); // complete
         registerState(737, Material.TNT);
         registerState(752, Material.BOOKSHELF); // complete
         registerState(768, Material.MOSSY_COBBLESTONE); // complete
         registerState(784, Material.OBSIDIAN); // complete
-        registerState(801, Material.TORCH);
-        registerState(802, Material.TORCH);
-        registerState(803, Material.TORCH);
-        registerState(804, Material.TORCH);
-        registerState(805, Material.TORCH);
+        registerState(801, Material.TORCH).facing(EnumFacing.EAST); // complete
+        registerState(802, Material.TORCH).facing(EnumFacing.WEST); // complete
+        registerState(803, Material.TORCH).facing(EnumFacing.SOUTH); // complete
+        registerState(804, Material.TORCH).facing(EnumFacing.NORTH); // complete
+        registerState(805, Material.TORCH); // complete
         registerState(816, Material.FIRE);
         registerState(817, Material.FIRE);
         registerState(818, Material.FIRE);
@@ -350,7 +350,7 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(829, Material.FIRE);
         registerState(830, Material.FIRE);
         registerState(831, Material.FIRE);
-        registerState(832, Material.MOB_SPAWNER);
+        registerState(832, Material.MOB_SPAWNER); // complete
         registerState(848, Material.WOOD_STAIRS);
         registerState(849, Material.WOOD_STAIRS);
         registerState(850, Material.WOOD_STAIRS);
