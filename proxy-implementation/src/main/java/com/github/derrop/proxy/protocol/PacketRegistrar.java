@@ -31,6 +31,9 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 import com.github.derrop.proxy.protocol.play.server.world.*;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChat;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
@@ -64,12 +67,18 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.STATUS, new PacketStatusOutPong());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.STATUS, new PacketStatusOutResponse());
 
+        // Keep alive
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayKeepAlive());
+        registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayKeepAlive());
+
         // Play
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayChat());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayChatMessage());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientResourcePackStatusResponse());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientSettings());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientTabCompleteRequest());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayCustomPayload());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayPluginMessage());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayInPositionLook());
         // Effect
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityEffect());
