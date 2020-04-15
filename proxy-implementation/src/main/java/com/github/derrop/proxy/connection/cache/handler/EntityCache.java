@@ -5,10 +5,11 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.connection.cache.packet.entity.*;
-import com.github.derrop.proxy.connection.cache.packet.entity.spawn.*;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerDestroyEntities;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
 import com.github.derrop.proxy.api.connection.PacketSender;
-import com.github.derrop.proxy.protocol.server.PacketPlayOutEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.*;
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EntityCache implements PacketCacheHandler {
 
     private final Map<Integer, PositionedPacket> entities = new ConcurrentHashMap<>();
-    private final Map<Integer, EntityMetadata> metadata = new ConcurrentHashMap<>();
+    private final Map<Integer, PacketPlayServerEntityMetadata> metadata = new ConcurrentHashMap<>();
 
     // todo (fake?) players are not spawned properly
     @Override
@@ -33,9 +34,9 @@ public class EntityCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         DefinedPacket packet = newPacket.getDeserializedPacket();
 
-        if (packet instanceof PacketPlayOutEntityTeleport) {
+        if (packet instanceof PacketPlayServerEntityTeleport) {
 
-            PacketPlayOutEntityTeleport entityTeleport = (PacketPlayOutEntityTeleport) packet;
+            PacketPlayServerEntityTeleport entityTeleport = (PacketPlayServerEntityTeleport) packet;
 
             if (this.entities.containsKey(entityTeleport.getEntityId())) {
                 PositionedPacket entity = this.entities.get(entityTeleport.getEntityId());
@@ -46,37 +47,37 @@ public class EntityCache implements PacketCacheHandler {
                 entity.setPitch(entityTeleport.getPitch());
             }
 
-        } else if (packet instanceof SpawnPlayer) {
+        } else if (packet instanceof PacketPlayServerSpawnPlayer) {
 
-            SpawnPlayer spawnPlayer = (SpawnPlayer) packet;
+            PacketPlayServerSpawnPlayer spawnPlayer = (PacketPlayServerSpawnPlayer) packet;
 
             this.entities.put(spawnPlayer.getEntityId(), spawnPlayer);
 
-        } else if (packet instanceof SpawnMob) {
+        } else if (packet instanceof PacketPlayServerSpawnMob) {
 
-            SpawnMob spawnMob = (SpawnMob) packet;
+            PacketPlayServerSpawnMob spawnMob = (PacketPlayServerSpawnMob) packet;
 
             this.entities.put(spawnMob.getEntityId(), spawnMob);
 
-        } else if (packet instanceof SpawnObject) {
+        } else if (packet instanceof PacketPlayServerSpawnObject) {
 
-            SpawnObject spawnObject = (SpawnObject) packet;
+            PacketPlayServerSpawnObject spawnObject = (PacketPlayServerSpawnObject) packet;
 
             this.entities.put(spawnObject.getEntityId(), spawnObject);
 
-        } else if (packet instanceof SpawnGlobalEntity) {
+        } else if (packet instanceof PacketPlayServerSpawnGlobalEntity) {
 
-            SpawnGlobalEntity spawnGlobalEntity = (SpawnGlobalEntity) packet;
+            PacketPlayServerSpawnGlobalEntity spawnGlobalEntity = (PacketPlayServerSpawnGlobalEntity) packet;
 
             this.entities.put(spawnGlobalEntity.getEntityId(), spawnGlobalEntity);
 
-        } else if (packet instanceof EntityMetadata) {
+        } else if (packet instanceof PacketPlayServerEntityMetadata) {
 
-            this.metadata.put(((EntityMetadata) packet).getEntityId(), (EntityMetadata) packet);
+            this.metadata.put(((PacketPlayServerEntityMetadata) packet).getEntityId(), (PacketPlayServerEntityMetadata) packet);
 
-        } else if (packet instanceof DestroyEntities) {
+        } else if (packet instanceof PacketPlayServerDestroyEntities) {
 
-            DestroyEntities destroyEntities = (DestroyEntities) packet;
+            PacketPlayServerDestroyEntities destroyEntities = (PacketPlayServerDestroyEntities) packet;
             for (int entityId : destroyEntities.getEntityIds()) {
                 this.entities.remove(entityId);
                 this.metadata.remove(entityId);
@@ -91,7 +92,7 @@ public class EntityCache implements PacketCacheHandler {
             con.sendPacket(packet);
         }
 
-        for (EntityMetadata metadata : this.metadata.values()) {
+        for (PacketPlayServerEntityMetadata metadata : this.metadata.values()) {
             con.sendPacket(metadata);
         }
     }
@@ -110,6 +111,6 @@ public class EntityCache implements PacketCacheHandler {
             entityIds[i++] = entityId;
         }
 
-        con.sendPacket(new DestroyEntities(entityIds));
+        con.sendPacket(new PacketPlayServerDestroyEntities(entityIds));
     }
 }

@@ -1,7 +1,6 @@
 package com.github.derrop.proxy.api.block;
 
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.api.util.EnumFacing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +38,7 @@ public interface BlockAccess {
 
     boolean canSeeSky(@NotNull BlockPos pos); // TODO not tested
 
-    default int getStrongPower(@NotNull BlockPos pos, @NotNull EnumFacing direction) { // redstone (0 - 15)
+    default int getStrongPower(@NotNull BlockPos pos, @NotNull Facing direction) { // redstone (0 - 15)
         return 0;
     }
 

@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection.cache;
 
-import com.github.derrop.proxy.connection.cache.packet.entity.effect.EntityEffect;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 
 public class TimedEntityEffect {
 
@@ -38,7 +38,7 @@ public class TimedEntityEffect {
         return hideParticles;
     }
 
-    public static TimedEntityEffect fromEntityEffect(EntityEffect entityEffect) {
+    public static TimedEntityEffect fromEntityEffect(PacketPlayServerEntityEffect entityEffect) {
         long durationMillis = entityEffect.getDuration() >= 32767 ? -1 : ((entityEffect.getDuration() / 20) * 1000) + System.currentTimeMillis();
 
         return new TimedEntityEffect(
@@ -48,13 +48,13 @@ public class TimedEntityEffect {
         );
     }
 
-    public EntityEffect toEntityEffect() {
+    public PacketPlayServerEntityEffect toEntityEffect() {
         if (System.currentTimeMillis() >= this.timeout) {
             return null;
         }
 
         int durationTicks = this.timeout == -1 ? 32767 : (int) (((this.timeout - System.currentTimeMillis()) / 1000) * 20);
-        return new EntityEffect(this.entityId, this.effectId, this.amplifier, durationTicks, this.hideParticles);
+        return new PacketPlayServerEntityEffect(this.entityId, this.effectId, this.amplifier, durationTicks, this.hideParticles);
     }
 
 }

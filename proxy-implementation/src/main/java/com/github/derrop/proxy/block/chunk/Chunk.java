@@ -2,7 +2,7 @@ package com.github.derrop.proxy.block.chunk;
 
 import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.connection.cache.packet.world.ChunkData;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerChunkData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,14 +11,16 @@ import java.util.List;
 public class Chunk {
 
     private ExtendedBlockStorage[] storageArrays = new ExtendedBlockStorage[16];
-    private ChunkData lastChunkData;
+    private PacketPlayServerChunkData lastChunkData;
+    private byte[] biomeArray = new byte[256];
+    private boolean hasSky;
 
-    public void fillChunk(ChunkData chunkData) {
-        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isB());
+    public void fillChunk(PacketPlayServerChunkData chunkData) {
+        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isFullChunk());
         this.lastChunkData = chunkData;
     }
 
-    private void fillChunk(byte[] data, int chunkSize, boolean b) {
+    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk) { // TODO this doesn't work in the nether, but hasSky works perfectly
         int i = 0;
 
         for (int j = 0; j < this.storageArrays.length; ++j) {
@@ -33,23 +35,43 @@ public class Chunk {
                     achar[k] = (char) ((data[i + 1] & 255) << 8 | data[i] & 255);
                     i += 2;
                 }
-            } else if (b && this.storageArrays[j] != null) {
+            } else if (fullChunk && this.storageArrays[j] != null) {
                 this.storageArrays[j] = null;
             }
         }
+
+        for (int j = 0; j < this.storageArrays.length; j++) {
+            if (this.storageArrays[j] != null) {
+                i += 2048; // skip block light data
+            }
+        }
+        int oldI = i;
+        for (int j = 0; j < this.storageArrays.length; j++) {
+            if (this.storageArrays[j] != null) {
+                i += 2048; // skip sky light data
+            }
+        }
+        this.hasSky = data.length - i == (fullChunk ? 256 : 0); // has the packet skylight data? (256 = biome data -> sent if fullChunk is true)
+        if (!hasSky) {
+            i = oldI;
+        }
+
+        if (fullChunk) {
+            System.arraycopy(data, i, this.biomeArray, 0, 256);
+        }
+
     }
 
-    public void fillChunkData(ChunkData chunkData) {
+    public PacketPlayServerChunkData.Extracted getBytes() {
         if (this.lastChunkData == null) {
-            return;
+            return null;
         }
 
         int maxLength = 65535;
-        boolean fullChunk = true;
-        boolean hasSky = this.lastChunkData.isB();
+        boolean fullChunk = this.lastChunkData.isFullChunk();
 
         ExtendedBlockStorage[] storages = this.storageArrays;
-        ChunkData.Extracted extracted = new ChunkData.Extracted();
+        PacketPlayServerChunkData.Extracted extracted = new PacketPlayServerChunkData.Extracted();
         List<ExtendedBlockStorage> list = new ArrayList<>();
 
         for (int i = 0; i < storages.length; ++i) {
@@ -61,7 +83,7 @@ public class Chunk {
             }
         }
 
-        extracted.data = new byte[ChunkData.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
+        extracted.data = new byte[PacketPlayServerChunkData.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
         int j = 0;
 
         for (ExtendedBlockStorage extendedblockstorage1 : list) {
@@ -77,20 +99,17 @@ public class Chunk {
             j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
         }
 
-        if (hasSky) {
+        if (this.hasSky) {
             for (ExtendedBlockStorage extendedblockstorage3 : list) {
                 j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
             }
         }
 
-        /*if (fullChunk) { TODO biomes
-            copyArray(p_179756_0_.getBiomeArray(), extracted.data, j);
-        }*/
+        if (fullChunk) {
+            copyArray(this.biomeArray, extracted.data, j);
+        }
 
-        chunkData.setB(this.lastChunkData.isB());
-        chunkData.setExtracted(extracted);
-        chunkData.setX(this.lastChunkData.getX());
-        chunkData.setZ(this.lastChunkData.getZ());
+        return extracted;
     }
 
     private static int copyArray(byte[] sourceArray, byte[] targetArray, int copyAmount) {
@@ -183,7 +202,7 @@ public class Chunk {
         }
     }
 
-    public ChunkData getLastChunkData() {
+    public PacketPlayServerChunkData getLastChunkData() {
         return lastChunkData;
     }
 

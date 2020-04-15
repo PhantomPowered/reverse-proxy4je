@@ -4,7 +4,7 @@ import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
 import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.minecraft.CryptManager;
@@ -59,7 +59,7 @@ public class ProxyClientLoginHandler extends PacketHandler {
     }
 
     @Override
-    public void handle(PacketPlayKickPlayer kick) throws Exception {
+    public void handle(PacketPlayServerKickPlayer kick) throws Exception {
         if (this.proxyClient == null) {
             return;
         }

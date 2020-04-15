@@ -1,5 +1,6 @@
 package net.md_5.bungee.protocol;
 
+import com.github.derrop.proxy.connection.cache.packet.entity.EntityTeleport;
 import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
 import com.github.derrop.proxy.protocol.Handshake;
 import com.github.derrop.proxy.protocol.legacy.PacketLegacyHandshake;
@@ -99,5 +100,8 @@ public abstract class AbstractPacketHandler {
     }
 
     public void handle(PacketPlayServerEntityStatus status) throws Exception {
+    }
+
+    public void handle(EntityTeleport teleport) throws Exception {
     }
 }

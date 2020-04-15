@@ -9,7 +9,7 @@ import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
-import com.github.derrop.proxy.connection.cache.packet.entity.player.GameStateChange;
+import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerGameStateChange;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.protocol.DefinedPacket;
 
@@ -120,10 +120,9 @@ public class PacketCache {
                 // THE ORDER IS IMPORTANT
                 new LoginCache(),
                 new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
-                new SimplePacketCache(PacketConstants.CAMERA), // todo I think this doesn't work properly
                 new SimplePacketCache(PacketConstants.TIME_UPDATE),
                 new SimplePacketCache(PacketConstants.UPDATE_HEALTH),
-                new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, GameStateChange::getState, gameStateChange -> false),
+                new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, PacketPlayServerGameStateChange::getState, gameStateChange -> false),
                 new SimplePacketCache(71), // header/footer
                 new ListPacketCache(2, 30), // chat
                 new WorldBorderCache(),
@@ -134,10 +133,13 @@ public class PacketCache {
                 new EntityEffectCache(),
                 new MiniMapCache(),
                 new SignCache(),
-                new ScoreboardCache()
+                new ScoreboardCache(),
+                new CameraCache()
         ));
 
         this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getProxy(), chunkCache);
     }
+
+    // TODO cache the held item slot
 
 }

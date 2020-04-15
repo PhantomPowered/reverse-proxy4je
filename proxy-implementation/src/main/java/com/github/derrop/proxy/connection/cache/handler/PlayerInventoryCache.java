@@ -7,8 +7,8 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.InventoryItem;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.connection.cache.packet.inventory.SetSlot;
-import com.github.derrop.proxy.connection.cache.packet.inventory.WindowItems;
+import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
+import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,8 +32,8 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        if (newPacket.getDeserializedPacket() instanceof WindowItems) {
-            WindowItems items = (WindowItems) newPacket.getDeserializedPacket();
+        if (newPacket.getDeserializedPacket() instanceof PacketPlayServerWindowItems) {
+            PacketPlayServerWindowItems items = (PacketPlayServerWindowItems) newPacket.getDeserializedPacket();
 
             if (items.getWindowId() != WINDOW_ID) {
                 return;
@@ -47,8 +47,8 @@ public class PlayerInventoryCache implements PacketCacheHandler {
                     this.itemsBySlot.remove(slot);
                 }
             }
-        } else if (newPacket.getDeserializedPacket() instanceof SetSlot) {
-            SetSlot setSlot = (SetSlot) newPacket.getDeserializedPacket();
+        } else if (newPacket.getDeserializedPacket() instanceof PacketPlayServerSetSlot) {
+            PacketPlayServerSetSlot setSlot = (PacketPlayServerSetSlot) newPacket.getDeserializedPacket();
             InventoryItem item = setSlot.getItem();
 
             if (setSlot.getWindowId() != WINDOW_ID) {
@@ -70,12 +70,12 @@ public class PlayerInventoryCache implements PacketCacheHandler {
             for (int slot = 0; slot < items.length; slot++) {
                 items[slot] = this.itemsBySlot.getOrDefault(slot, InventoryItem.NONE);
             }
-            con.sendPacket(new WindowItems(WINDOW_ID, items));
+            con.sendPacket(new PacketPlayServerWindowItems(WINDOW_ID, items));
         });
     }
 
     @Override
     public void onClientSwitch(Player con) {
-        con.sendPacket(new WindowItems(WINDOW_ID, EMPTY_INVENTORY));
+        con.sendPacket(new PacketPlayServerWindowItems(WINDOW_ID, EMPTY_INVENTORY));
     }
 }

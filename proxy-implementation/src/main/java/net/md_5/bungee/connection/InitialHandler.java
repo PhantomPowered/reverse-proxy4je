@@ -20,7 +20,7 @@ import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
 import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import com.github.derrop.proxy.protocol.status.PacketStatusPing;
 import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
@@ -385,7 +385,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection {
     @Override
     public void disconnect(final BaseComponent... reason) {
         if (canSendKickMessage()) {
-            ch.delayedClose(new PacketPlayKickPlayer(ComponentSerializer.toString(reason)));
+            ch.delayedClose(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
         } else {
             ch.close();
         }

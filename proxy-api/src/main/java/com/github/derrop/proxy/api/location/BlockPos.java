@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.location;
 
-import com.github.derrop.proxy.api.util.EnumFacing;
+import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.api.util.Vec3i;
 import com.google.common.collect.AbstractIterator;
@@ -76,7 +76,7 @@ public class BlockPos extends Vec3i {
      * Offset this BlockPos n blocks up
      */
     public BlockPos up(int n) {
-        return this.offset(EnumFacing.UP, n);
+        return this.offset(Facing.UP, n);
     }
 
     /**
@@ -90,7 +90,7 @@ public class BlockPos extends Vec3i {
      * Offset this BlockPos n blocks down
      */
     public BlockPos down(int n) {
-        return this.offset(EnumFacing.DOWN, n);
+        return this.offset(Facing.DOWN, n);
     }
 
     /**
@@ -104,7 +104,7 @@ public class BlockPos extends Vec3i {
      * Offset this BlockPos n blocks in northern direction
      */
     public BlockPos north(int n) {
-        return this.offset(EnumFacing.NORTH, n);
+        return this.offset(Facing.NORTH, n);
     }
 
     /**
@@ -118,7 +118,7 @@ public class BlockPos extends Vec3i {
      * Offset this BlockPos n blocks in southern direction
      */
     public BlockPos south(int n) {
-        return this.offset(EnumFacing.SOUTH, n);
+        return this.offset(Facing.SOUTH, n);
     }
 
     /**
@@ -132,7 +132,7 @@ public class BlockPos extends Vec3i {
      * Offset this BlockPos n blocks in western direction
      */
     public BlockPos west(int n) {
-        return this.offset(EnumFacing.WEST, n);
+        return this.offset(Facing.WEST, n);
     }
 
     /**
@@ -146,20 +146,20 @@ public class BlockPos extends Vec3i {
      * Offset this BlockPos n blocks in eastern direction
      */
     public BlockPos east(int n) {
-        return this.offset(EnumFacing.EAST, n);
+        return this.offset(Facing.EAST, n);
     }
 
     /**
      * Offset this BlockPos 1 block in the given direction
      */
-    public BlockPos offset(EnumFacing facing) {
+    public BlockPos offset(Facing facing) {
         return this.offset(facing, 1);
     }
 
     /**
      * Offsets this BlockPos n blocks in the given direction
      */
-    public BlockPos offset(EnumFacing facing, int n) {
+    public BlockPos offset(Facing facing, int n) {
         return n == 0 ? this : new BlockPos(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
     }
 

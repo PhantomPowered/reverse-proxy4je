@@ -10,10 +10,8 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.connection.cache.packet.system.Disconnect;
-import com.github.derrop.proxy.connection.cache.packet.system.JoinGame;
 import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
@@ -55,12 +53,6 @@ public class DownstreamBridge extends PacketHandler {
         this.disconnectReceiver(TextComponent.fromLegacyText("§cNo reason given"));
     }
 
-    @Override
-    public void handle(Disconnect disconnect) throws Exception {
-        MCProxy.getInstance().unregisterConnection(this.connection);
-        this.disconnectReceiver(disconnect.getReason());
-    }
-
     private void disconnectReceiver(BaseComponent[] reason) {
         if (this.connection == null || this.disconnected) {
             return;
@@ -88,9 +80,9 @@ public class DownstreamBridge extends PacketHandler {
     public void handle(PacketWrapper packet) throws Exception {
         this.connection.getClient().getEntityMap().rewriteClientbound(packet.buf, this.connection.getEntityId(), this.connection.getEntityId(), 47);
         this.connection.getClient().redirectPacket(packet.buf, packet.packet);
-        if (packet.packet instanceof JoinGame) {
+        /*if (packet.packet instanceof JoinGame) {
             this.connection.getClient().setEntityId(((JoinGame) packet.packet).getEntityId());
-        }
+        }*/
     }
 
     @Override
@@ -126,8 +118,11 @@ public class DownstreamBridge extends PacketHandler {
     }
 
     @Override
-    public void handle(PacketPlayKickPlayer kick) throws Exception {
-        this.connection.getClient().setLastKickReason(ComponentSerializer.parse(kick.getMessage()));
+    public void handle(PacketPlayServerKickPlayer kick) throws Exception {
+        BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
+        this.disconnectReceiver(reason);
+
+        this.connection.getClient().setLastKickReason(reason);
         MCProxy.getInstance().unregisterConnection(this.connection);
         BasicServiceConnection proxyClient = MCProxy.getInstance().findBestConnection(null);
         if (proxyClient == null) {
