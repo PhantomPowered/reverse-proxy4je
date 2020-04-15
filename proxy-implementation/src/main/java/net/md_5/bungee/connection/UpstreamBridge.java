@@ -7,30 +7,23 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
+import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.network.wrapper.DecodedPacket;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.netty.ChannelWrapper;
-import net.md_5.bungee.netty.PacketHandler;
-import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import org.jetbrains.annotations.NotNull;
 
-public class UpstreamBridge extends PacketHandler {
-
-    private final DefaultPlayer con;
-
-    public UpstreamBridge(@NotNull DefaultPlayer con) {
-        this.con = con;
-    }
+public class UpstreamBridge {
 
     @Override
     public void exception(Throwable t) {
@@ -40,7 +33,7 @@ public class UpstreamBridge extends PacketHandler {
 
     @Override
     public void disconnected(ChannelWrapper channel) {
-        this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(this.con));
+        this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(player));
         this.con.setConnected(false);
         if (this.con.getConnectedClient() != null) {
             this.con.getConnectedClient().getClient().free();
@@ -56,34 +49,25 @@ public class UpstreamBridge extends PacketHandler {
         return packet.id != 27; // disconnect packet from the client, the proxy should stay connected
     }
 
-    @Override
-    public void handle(PacketWrapper packet) throws Exception {
-        if (con.getConnectedClient() != null && con.getConnectedClient().isConnected()) {
-            con.getConnectedClient().getClient().handleClientPacket(packet);
-
-            con.getEntityMap().rewriteServerbound(packet.buf, con.getEntityId(), con.getEntityId(), con.getVersion());
-            if (packet.packet != null) {
-                con.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.packet);
+    public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
+        //TODO @PacketHandler
+        if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
+            if (packet.getPacket() != null) {
+                player.getConnectedClient().getClient().handleClientPacket(packet.getPacket());
             }
 
-            con.getConnectedClient().sendPacket(packet);
+            player.getEntityMap().rewriteServerbound(packet.getByteBuf(), player.getEntityId(), player.getEntityId(), player.getVersion());
+            if (packet.getPacket() != null) {
+                player.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.getPacket());
+            }
+
+            player.getConnectedClient().sendPacket(packet);
         }
     }
 
-    @Override
-    public void handle(@NotNull Packet packet) throws Exception {
-        if (packet instanceof PacketPlayChatMessage) {
-            this.handleChat((PacketPlayChatMessage) packet);
-            return;
-        }
-
-        if (packet instanceof PacketPlayPluginMessage) {
-            this.handlePluginMessage((PacketPlayPluginMessage) packet);
-        }
-    }
-
-    private void handleChat(PacketPlayChatMessage chat) throws Exception {
-        int maxLength = (con.getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CHAT, protocolState = ProtocolState.PLAY)
+    private void handleChat(DefaultPlayer player, PacketPlayChatMessage chat) throws Exception {
+        int maxLength = (player.getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
             throw CancelProceedException.INSTANCE;
         }
@@ -91,37 +75,33 @@ public class UpstreamBridge extends PacketHandler {
         if (chat.getMessage().startsWith("/proxy ")) {
             try {
                 CommandMap commandMap = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(CommandMap.class);
-                if (commandMap.process(this.con, chat.getMessage().replaceFirst("/proxy ", "")) != CommandResult.NOT_FOUND) {
+                if (commandMap.process(player, chat.getMessage().replaceFirst("/proxy ", "")) != CommandResult.NOT_FOUND) {
                     throw CancelProceedException.INSTANCE;
                 }
             } catch (final CommandExecutionException | PermissionDeniedException ex) {
-                this.con.sendMessage("Unable to process command: " + ex.getMessage());
+                player.sendMessage("Unable to process command: " + ex.getMessage());
                 throw CancelProceedException.INSTANCE;
             }
 
             return;
         }
 
-        ChatEvent event = new ChatEvent(this.con, ProtocolDirection.TO_CLIENT, TextComponent.fromLegacyText(chat.getMessage()));
-        if (this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_CLIENT, TextComponent.fromLegacyText(chat.getMessage()));
+        if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
     }
 
-    private void handlePluginMessage(PacketPlayPluginMessage pluginMessage) throws Exception {
-        PluginMessageEvent event = new PluginMessageEvent(this.con, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
-        if (this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CUSTOM_PAYLOAD, protocolState = ProtocolState.PLAY)
+    private void handlePluginMessage(DefaultPlayer player, PacketPlayPluginMessage pluginMessage) throws Exception {
+        PluginMessageEvent event = new PluginMessageEvent(player, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
+        if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
         pluginMessage.setTag(event.getTag());
         pluginMessage.setData(event.getData());
-    }
-
-    @Override
-    public String toString() {
-        return "[" + con.getName() + "] -> UpstreamBridge";
     }
 }

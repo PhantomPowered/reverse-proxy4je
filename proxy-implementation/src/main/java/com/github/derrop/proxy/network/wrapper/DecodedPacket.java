@@ -20,6 +20,11 @@ public final class DecodedPacket {
         return this.byteBuf.copy();
     }
 
+    @NotNull
+    public ByteBuf getRealByteBuf() {
+        return this.byteBuf;
+    }
+
     public void setByteBuf(@NotNull ByteBuf byteBuf) {
         this.byteBuf = byteBuf;
     }
