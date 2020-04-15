@@ -15,6 +15,6 @@ public final class ServerConnectionChannelInitializer extends ChannelInitializer
 
         channel.pipeline()
                 .addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING))
-                .addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
+                .addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_CLIENT));
     }
 }

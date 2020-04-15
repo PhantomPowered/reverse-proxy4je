@@ -35,6 +35,6 @@ public class PacketLoginInEncryptionRequest extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.FromClient.Login.ENCRYPTION_BEGIN;
+        return ProtocolIds.FromClient.Login.ENCRYPTION_REQUEST;
     }
 }

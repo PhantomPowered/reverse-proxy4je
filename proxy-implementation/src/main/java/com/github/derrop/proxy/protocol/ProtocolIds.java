@@ -165,7 +165,7 @@ public interface ProtocolIds {
 
             int DISCONNECT = 0;
 
-            int ENCRYPTION_BEGIN = 1;
+            int ENCRYPTION_RESPONSE = 1;
 
             int SUCCESS = 2;
 
@@ -246,7 +246,7 @@ public interface ProtocolIds {
 
             int START = 0;
 
-            int ENCRYPTION_BEGIN = 1;
+            int ENCRYPTION_REQUEST = 1;
         }
 
     }

@@ -32,6 +32,6 @@ public class PacketLoginOutEncryptionResponse extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ToClient.Login.ENCRYPTION_BEGIN;
+        return ProtocolIds.ToClient.Login.ENCRYPTION_RESPONSE;
     }
 }

@@ -79,8 +79,8 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
             DecodedPacket packet = (DecodedPacket) msg;
             if (packet.getPacket() != null) {
                 this.getHandlers().handlePacketReceive(packet.getPacket(), this.networkChannel.getProtocolState(), this.networkChannel);
-                this.getHandlers().handlePacketReceive(packet, this.networkChannel.getProtocolState(), this.networkChannel);
             }
+            this.getHandlers().handlePacketReceive(packet, this.networkChannel.getProtocolState(), this.networkChannel);
         }
     }
 

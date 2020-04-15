@@ -166,7 +166,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
                 }
 
-                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING));
+                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
                 ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
                 ch.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));
             }

@@ -178,7 +178,7 @@ public class InitialHandler implements ChannelListener {
         channel.setProperty(INIT_STATE, State.ENCRYPT);
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.ENCRYPTION_BEGIN, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.ENCRYPTION_REQUEST, protocolState = ProtocolState.LOGIN)
     public void handle(NetworkChannel channel, final PacketLoginOutEncryptionResponse encryptResponse) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.ENCRYPT, "Not expecting ENCRYPT");
 

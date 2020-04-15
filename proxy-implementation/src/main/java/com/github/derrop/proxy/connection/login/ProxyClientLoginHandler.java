@@ -35,7 +35,7 @@ public class ProxyClientLoginHandler {
         proxyClient.connectionFailed();
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.FromClient.Login.ENCRYPTION_BEGIN}, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = {ProtocolIds.FromClient.Login.ENCRYPTION_REQUEST}, protocolState = ProtocolState.LOGIN)
     // TODO can't we just use the packetId (if not defined) out of the Packet in the parameters?
     private void handle(ConnectedProxyClient proxyClient, PacketLoginInEncryptionRequest request) throws Exception {
         if (proxyClient.getCredentials().isOffline()) {
