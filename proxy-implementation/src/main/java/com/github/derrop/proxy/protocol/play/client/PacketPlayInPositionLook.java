@@ -60,7 +60,7 @@ public class PacketPlayInPositionLook extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Play.POSITION_LOOK;
+        return ProtocolIds.FromClient.Play.POSITION_LOOK;
     }
 
     public enum EnumFlags {

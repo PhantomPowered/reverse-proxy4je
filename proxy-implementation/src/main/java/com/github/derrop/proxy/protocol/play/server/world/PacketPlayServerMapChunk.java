@@ -54,7 +54,7 @@ public class PacketPlayServerMapChunk extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.MAP_CHUNK;
+        return ProtocolIds.ToClient.Play.MAP_CHUNK;
     }
 
     public static class Extracted {

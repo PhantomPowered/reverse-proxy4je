@@ -63,6 +63,6 @@ public class PacketPlayServerPlayerAbilities extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.ABILITIES;
+        return ProtocolIds.ToClient.Play.ABILITIES;
     }
 }

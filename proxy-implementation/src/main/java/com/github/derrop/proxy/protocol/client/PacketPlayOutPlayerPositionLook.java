@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Getter
 @NoArgsConstructor
-public class PacketC06PlayerPosLook extends DefinedPacket {
+public class PacketPlayOutPlayerPositionLook extends DefinedPacket {
 
     private double x;
     private double y;
@@ -21,7 +21,7 @@ public class PacketC06PlayerPosLook extends DefinedPacket {
     private float pitch;
     private boolean onGround;
 
-    public PacketC06PlayerPosLook(@NotNull Player player) {
+    public PacketPlayOutPlayerPositionLook(@NotNull Player player) {
         this.x = player.getLocation().getX();
         this.y = player.getLocation().getY();
         this.z = player.getLocation().getZ();
@@ -57,6 +57,6 @@ public class PacketC06PlayerPosLook extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Play.POSITION_LOOK;
+        return ProtocolIds.FromClient.Play.POSITION_LOOK;
     }
 }

@@ -79,6 +79,7 @@ public class MCProxy extends Proxy {
 
     protected MCProxy(@NotNull ILogger logger) {
         instance = this;
+
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);

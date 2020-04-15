@@ -47,6 +47,6 @@ public class PacketPlayServerEntityEffect extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.ENTITY_EFFECT;
+        return ProtocolIds.ToClient.Play.ENTITY_EFFECT;
     }
 }

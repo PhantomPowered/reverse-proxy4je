@@ -48,7 +48,7 @@ public class PacketPlayServerMultiBlockChange extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.MULTI_BLOCK_CHANGE;
+        return ProtocolIds.ToClient.Play.MULTI_BLOCK_CHANGE;
     }
 
     public class BlockUpdateData {

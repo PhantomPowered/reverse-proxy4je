@@ -41,6 +41,6 @@ public class PacketPlayServerEntityStatus extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.ENTITY_STATUS;
+        return ProtocolIds.ToClient.Play.ENTITY_STATUS;
     }
 }

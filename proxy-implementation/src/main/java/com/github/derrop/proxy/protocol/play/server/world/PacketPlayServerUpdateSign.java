@@ -45,6 +45,6 @@ public class PacketPlayServerUpdateSign extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.UPDATE_SIGN;
+        return ProtocolIds.ToClient.Play.UPDATE_SIGN;
     }
 }

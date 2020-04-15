@@ -77,7 +77,7 @@ public class PacketPlayServerTitle extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.TITLE;
+        return ProtocolIds.ToClient.Play.TITLE;
     }
 
     public enum Action {

@@ -2,7 +2,7 @@ package com.github.derrop.proxy.protocol;
 
 public interface ProtocolIds {
 
-    interface ClientBound {
+    interface ToClient {
 
         interface Play {
             int KEEP_ALIVE = 0;
@@ -173,7 +173,7 @@ public interface ProtocolIds {
         }
     }
 
-    interface ServerBound {
+    interface FromClient {
 
         interface Handshaking {
 

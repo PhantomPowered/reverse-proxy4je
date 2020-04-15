@@ -113,7 +113,7 @@ public class PacketPlayServerWorldBorder extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.WORLD_BOARDER;
+        return ProtocolIds.ToClient.Play.WORLD_BOARDER;
     }
 
     public enum Action {

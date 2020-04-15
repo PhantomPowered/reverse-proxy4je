@@ -36,7 +36,7 @@ public class PacketPlayClientResourcePackStatusResponse extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Play.RESOURCE_PACK_STATUS;
+        return ProtocolIds.FromClient.Play.RESOURCE_PACK_STATUS;
     }
 
     public static enum Action {

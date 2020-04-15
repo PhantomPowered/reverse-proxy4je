@@ -77,6 +77,6 @@ public class PacketPlayServerSpawnLivingEntity extends DefinedPacket implements 
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SPAWN_ENTITY_LIVING;
+        return ProtocolIds.ToClient.Play.SPAWN_ENTITY_LIVING;
     }
 }

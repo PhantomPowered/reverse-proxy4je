@@ -1,7 +1,8 @@
-package com.github.derrop.proxy.protocol.status;
+package com.github.derrop.proxy.protocol.status.server;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,15 +12,20 @@ import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PacketStatusRequest extends DefinedPacket {
+public class PacketStatusInPing extends DefinedPacket {
+
+    private long time;
 
     @Override
     public void read(@NotNull ByteBuf buf) {
+        time = buf.readLong();
     }
 
     @Override
     public void write(@NotNull ByteBuf buf) {
+        buf.writeLong(time);
     }
 
     @Override
@@ -29,6 +35,6 @@ public class PacketStatusRequest extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Status.START;
+        return ProtocolIds.FromClient.Status.PING;
     }
 }

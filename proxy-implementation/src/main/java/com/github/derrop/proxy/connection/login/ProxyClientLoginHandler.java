@@ -13,10 +13,10 @@ import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
-import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
-import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
+import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -28,16 +28,16 @@ import java.security.PublicKey;
 
 public class ProxyClientLoginHandler {
 
-    @PacketHandler(packetIds = {ProtocolIds.ClientBound.Play.KICK_DISCONNECT}, protocolState = ProtocolState.PLAY)
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Play.KICK_DISCONNECT}, protocolState = ProtocolState.PLAY)
     private void handle(ConnectedProxyClient proxyClient, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
         proxyClient.setLastKickReason(reason);
         proxyClient.connectionFailed();
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.ServerBound.Login.ENCRYPTION_BEGIN}, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = {ProtocolIds.FromClient.Login.ENCRYPTION_BEGIN}, protocolState = ProtocolState.LOGIN)
     // TODO can't we just use the packetId (if not defined) out of the Packet in the parameters?
-    private void handle(ConnectedProxyClient proxyClient, PacketLoginEncryptionRequest request) throws Exception {
+    private void handle(ConnectedProxyClient proxyClient, PacketLoginInEncryptionRequest request) throws Exception {
         if (proxyClient.getCredentials().isOffline()) {
             proxyClient.close();
             throw new IllegalStateException("Joined with an offline account on an online mode server");
@@ -56,7 +56,7 @@ public class ProxyClientLoginHandler {
 
         byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretKey.getEncoded());
         byte[] verifyTokenEncrypted = CryptManager.encryptData(publicKey, request.getVerifyToken());
-        proxyClient.write(new PacketLoginEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
+        proxyClient.write(new PacketLoginOutEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
 
         proxyClient.getWrappedChannel().pipeline().addBefore(
                 NetworkUtils.LENGTH_DECODER,
@@ -69,15 +69,16 @@ public class ProxyClientLoginHandler {
                 new PacketCipherEncoder(secretKey)
         );
     }
-    @PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.FIRST)
-    private void handle(ConnectedProxyClient client, PacketPlayServerLoginSuccess loginSuccess) throws Exception {
+
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.FIRST)
+    private void handle(ConnectedProxyClient client, PacketLoginOutLoginSuccess loginSuccess) throws Exception {
         client.setProtocolState(ProtocolState.PLAY);
         client.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ServerChannelListener(client));
         throw CancelProceedException.INSTANCE; // without this, the LoginSuccess would be recorded by ConnectedProxyClient#redirectPacket
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.ClientBound.Login.SET_COMPRESSION}, protocolState = ProtocolState.LOGIN)
-    private void handle(NetworkChannel channel, PacketLoginSetCompression setCompression) {
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SET_COMPRESSION}, protocolState = ProtocolState.LOGIN)
+    private void handle(NetworkChannel channel, PacketLoginOutSetCompression setCompression) {
         channel.setCompression(setCompression.getThreshold());
     }
 }

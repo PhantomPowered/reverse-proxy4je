@@ -28,7 +28,7 @@ public class ServerPacketHandler {
         client.redirectPacket(packet.getByteBuf(), packet.getPacket());
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.KEEP_ALIVE)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KEEP_ALIVE)
     public void handleKeepAlive(ConnectedProxyClient client, PacketPlayKeepAlive alive) {
         client.write(alive);
         client.setLastAlivePacket(System.currentTimeMillis());
@@ -36,14 +36,14 @@ public class ServerPacketHandler {
     }
 
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.LOGIN)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.LOGIN)
     public void handleLogin(ConnectedProxyClient client, PacketPlayServerLogin login) {
         client.setEntityId(login.getEntityId());
         client.connectionSuccess();
     }
 
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CUSTOM_PAYLOAD)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD)
     public void handlePluginMessage(ConnectedProxyClient client, PacketPlayPluginMessage pluginMessage) {
         PluginMessageEvent event = new PluginMessageEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
@@ -62,7 +62,7 @@ public class ServerPacketHandler {
         throw CancelProceedException.INSTANCE;
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.KICK_DISCONNECT)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KICK_DISCONNECT)
     public void handleKick(ConnectedProxyClient client, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
         client.handleDisconnect(reason);
@@ -73,7 +73,7 @@ public class ServerPacketHandler {
         throw CancelProceedException.INSTANCE;
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CHAT)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT)
     public void handle(ConnectedProxyClient client, PacketPlayChat chat) throws Exception {
         ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
@@ -85,7 +85,7 @@ public class ServerPacketHandler {
 
     // TODO Implement TabComplete response?
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.RESPAWN)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN)
     public void handle(ConnectedProxyClient client, PacketPlayServerRespawn respawn) {
         client.setDimension(respawn.getDimension());
     }

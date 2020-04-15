@@ -40,10 +40,6 @@ public abstract class DefinedPacket implements Packet {
         return ByteBufUtils.readArray(buf, limit);
     }
 
-    public static int[] readVarIntArray(ByteBuf buf) {
-        return ByteBufUtils.readVarIntArray(buf);
-    }
-
     public static void writeStringArray(List<String> s, ByteBuf buf) {
         ByteBufUtils.writeStringArray(s, buf);
     }
@@ -72,14 +68,6 @@ public abstract class DefinedPacket implements Packet {
         ByteBufUtils.writeVarLong(value, buf);
     }
 
-    public static int readVarShort(ByteBuf buf) {
-        return ByteBufUtils.readVarShort(buf);
-    }
-
-    public static void writeVarShort(ByteBuf buf, int toWrite) {
-        ByteBufUtils.writeVarShort(buf, toWrite);
-    }
-
     public static void writeUUID(UUID value, ByteBuf output) {
         ByteBufUtils.writeUUID(value, output);
     }
@@ -92,16 +80,8 @@ public abstract class DefinedPacket implements Packet {
         throw new UnsupportedOperationException("Packet must implement read method");
     }
 
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
-        read(buf);
-    }
-
     public void write(@NotNull ByteBuf buf) {
         throw new UnsupportedOperationException("Packet must implement write method");
-    }
-
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
-        write(buf);
     }
 
     public abstract void handle(AbstractPacketHandler handler) throws Exception;

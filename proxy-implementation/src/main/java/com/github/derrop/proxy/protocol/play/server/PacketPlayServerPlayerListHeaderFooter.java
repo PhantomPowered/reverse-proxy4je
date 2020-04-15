@@ -38,6 +38,6 @@ public class PacketPlayServerPlayerListHeaderFooter extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.PLAYER_LIST_HEADER_FOOTER;
+        return ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER;
     }
 }

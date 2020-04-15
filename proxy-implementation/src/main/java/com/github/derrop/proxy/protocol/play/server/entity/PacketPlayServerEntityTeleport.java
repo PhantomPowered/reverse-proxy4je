@@ -64,6 +64,6 @@ public class PacketPlayServerEntityTeleport extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.ENTITY_TELEPORT;
+        return ProtocolIds.ToClient.Play.ENTITY_TELEPORT;
     }
 }

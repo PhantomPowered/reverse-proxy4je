@@ -33,6 +33,6 @@ public class PacketPlayServerSpawnPosition extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SPAWN_POSITION;
+        return ProtocolIds.ToClient.Play.SPAWN_POSITION;
     }
 }

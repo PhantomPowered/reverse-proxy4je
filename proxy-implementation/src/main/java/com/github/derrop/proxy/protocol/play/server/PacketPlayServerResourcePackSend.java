@@ -35,6 +35,6 @@ public class PacketPlayServerResourcePackSend extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.RESOURCE_PACK_SEND;
+        return ProtocolIds.ToClient.Play.RESOURCE_PACK_SEND;
     }
 }

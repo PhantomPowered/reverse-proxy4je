@@ -55,6 +55,6 @@ public class PacketPlayServerRespawn extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.RESPAWN;
+        return ProtocolIds.ToClient.Play.RESPAWN;
     }
 }

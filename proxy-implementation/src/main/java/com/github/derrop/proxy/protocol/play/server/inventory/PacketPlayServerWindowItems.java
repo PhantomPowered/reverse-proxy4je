@@ -45,6 +45,6 @@ public class PacketPlayServerWindowItems extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.WINDOW_ITEMS;
+        return ProtocolIds.ToClient.Play.WINDOW_ITEMS;
     }
 }

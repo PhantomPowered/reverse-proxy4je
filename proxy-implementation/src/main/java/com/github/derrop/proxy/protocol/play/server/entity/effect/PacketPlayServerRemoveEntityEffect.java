@@ -35,6 +35,6 @@ public class PacketPlayServerRemoveEntityEffect extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.REMOVE_ENTITY_EFFECT;
+        return ProtocolIds.ToClient.Play.REMOVE_ENTITY_EFFECT;
     }
 }

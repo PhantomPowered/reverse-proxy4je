@@ -47,6 +47,6 @@ public class PacketPlayServerEntityMetadata extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.ENTITY_METADATA;
+        return ProtocolIds.ToClient.Play.ENTITY_METADATA;
     }
 }

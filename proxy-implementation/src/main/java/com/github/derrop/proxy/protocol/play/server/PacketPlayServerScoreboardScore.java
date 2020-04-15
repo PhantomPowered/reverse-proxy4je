@@ -58,6 +58,6 @@ public class PacketPlayServerScoreboardScore extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SCOREBOARD_SCORE;
+        return ProtocolIds.ToClient.Play.SCOREBOARD_SCORE;
     }
 }

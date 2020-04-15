@@ -109,6 +109,6 @@ public class PacketPlayServerScoreboardTeam extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SCOREBOARD_TEAM;
+        return ProtocolIds.ToClient.Play.SCOREBOARD_TEAM;
     }
 }

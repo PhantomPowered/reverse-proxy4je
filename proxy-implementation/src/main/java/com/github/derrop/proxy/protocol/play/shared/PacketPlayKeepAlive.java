@@ -39,6 +39,6 @@ public class PacketPlayKeepAlive extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.KEEP_ALIVE;
+        return ProtocolIds.ToClient.Play.KEEP_ALIVE;
     }
 }

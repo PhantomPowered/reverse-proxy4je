@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.status;
+package com.github.derrop.proxy.protocol.status.client;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
@@ -10,31 +10,31 @@ import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PacketStatusResponse extends DefinedPacket {
+@Data
+public class PacketStatusOutPong extends DefinedPacket {
 
-    private String response;
+    private long clientTime;
 
     @Override
     public void read(@NotNull ByteBuf buf) {
-        response = readString(buf);
+        this.clientTime = buf.readLong();
     }
 
     @Override
     public void write(@NotNull ByteBuf buf) {
-        writeString(response, buf);
+        buf.writeLong(this.clientTime);
     }
 
     @Override
     public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
+
     }
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Status.SERVER_INFO;
+        return ProtocolIds.ToClient.Status.PONG;
     }
 }

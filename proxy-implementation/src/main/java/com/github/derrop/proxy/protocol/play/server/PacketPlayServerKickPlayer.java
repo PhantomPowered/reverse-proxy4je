@@ -35,6 +35,6 @@ public class PacketPlayServerKickPlayer extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.KICK_DISCONNECT;
+        return ProtocolIds.ToClient.Play.KICK_DISCONNECT;
     }
 }

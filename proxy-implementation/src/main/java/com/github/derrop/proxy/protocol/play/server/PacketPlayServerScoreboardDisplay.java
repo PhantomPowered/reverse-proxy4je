@@ -41,6 +41,6 @@ public class PacketPlayServerScoreboardDisplay extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SCOREBOARD_DISPLAY_OBJECTIVE;
+        return ProtocolIds.ToClient.Play.SCOREBOARD_DISPLAY_OBJECTIVE;
     }
 }

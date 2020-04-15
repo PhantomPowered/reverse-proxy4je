@@ -68,6 +68,6 @@ public class PacketPlayServerSpawnEntity extends DefinedPacket implements Positi
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SPAWN_ENTITY;
+        return ProtocolIds.ToClient.Play.SPAWN_ENTITY;
     }
 }

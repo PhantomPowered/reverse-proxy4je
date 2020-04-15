@@ -59,6 +59,6 @@ public class PacketPlayClientSettings extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Play.SETTINGS;
+        return ProtocolIds.FromClient.Play.SETTINGS;
     }
 }

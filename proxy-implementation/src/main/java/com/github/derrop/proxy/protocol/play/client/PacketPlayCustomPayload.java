@@ -16,6 +16,6 @@ public class PacketPlayCustomPayload extends PacketPlayPluginMessage {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Play.CUSTOM_PAYLOAD;
+        return ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD;
     }
 }

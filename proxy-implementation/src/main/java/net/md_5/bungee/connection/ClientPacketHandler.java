@@ -23,7 +23,7 @@ import net.md_5.bungee.protocol.ProtocolConstants;
 
 public class ClientPacketHandler {
 
-    @PacketHandler(packetIds = {}, protocolState = ProtocolState.PLAY)
+    @PacketHandler(protocolState = ProtocolState.PLAY)
     public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
         if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
             if (packet.getPacket() != null) {
@@ -39,7 +39,7 @@ public class ClientPacketHandler {
         }
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CHAT, protocolState = ProtocolState.PLAY)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, protocolState = ProtocolState.PLAY)
     private void handleChat(DefaultPlayer player, PacketPlayChatMessage chat) throws Exception {
         int maxLength = (player.getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
@@ -68,7 +68,7 @@ public class ClientPacketHandler {
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ClientBound.Play.CUSTOM_PAYLOAD, protocolState = ProtocolState.PLAY)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD, protocolState = ProtocolState.PLAY)
     private void handlePluginMessage(DefaultPlayer player, PacketPlayCustomPayload pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(player, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {

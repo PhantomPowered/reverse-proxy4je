@@ -89,6 +89,6 @@ public class PacketPlayServerTabCompleteResponse extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.TAB_COMPLETE;
+        return ProtocolIds.ToClient.Play.TAB_COMPLETE;
     }
 }

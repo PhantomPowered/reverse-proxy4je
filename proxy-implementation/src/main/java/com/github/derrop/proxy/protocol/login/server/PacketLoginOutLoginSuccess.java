@@ -1,8 +1,11 @@
-package com.github.derrop.proxy.protocol.login;
+package com.github.derrop.proxy.protocol.login.server;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
@@ -11,18 +14,21 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PacketLoginServerKickPlayer extends DefinedPacket {
+public class PacketLoginOutLoginSuccess extends DefinedPacket {
 
-    private String message;
+    private String uuid;
+    private String username;
 
     @Override
     public void read(@NotNull ByteBuf buf) {
-        message = readString(buf);
+        uuid = readString(buf);
+        username = readString(buf);
     }
 
     @Override
     public void write(@NotNull ByteBuf buf) {
-        writeString(message, buf);
+        writeString(uuid, buf);
+        writeString(username, buf);
     }
 
     @Override
@@ -32,7 +38,6 @@ public class PacketLoginServerKickPlayer extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Login.DISCONNECT;
+        return ProtocolIds.ToClient.Login.SUCCESS;
     }
-
 }

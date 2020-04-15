@@ -35,6 +35,6 @@ public class PacketPlayServerTimeUpdate extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.UPDATE_TIME;
+        return ProtocolIds.ToClient.Play.UPDATE_TIME;
     }
 }

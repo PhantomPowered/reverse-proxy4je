@@ -76,6 +76,6 @@ public class PacketPlayClientTabCompleteRequest extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Play.TAB_COMPLETE;
+        return ProtocolIds.FromClient.Play.TAB_COMPLETE;
     }
 }

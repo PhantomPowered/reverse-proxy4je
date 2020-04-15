@@ -62,6 +62,6 @@ public class PacketPlayServerSpawnEntityWeather extends DefinedPacket implements
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SPAWN_ENTITY_WEATHER;
+        return ProtocolIds.ToClient.Play.SPAWN_ENTITY_WEATHER;
     }
 }

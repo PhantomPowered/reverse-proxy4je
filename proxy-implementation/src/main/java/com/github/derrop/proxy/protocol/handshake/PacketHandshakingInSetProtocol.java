@@ -44,6 +44,6 @@ public class PacketHandshakingInSetProtocol extends DefinedPacket { // TODO: ren
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Handshaking.SET_PROTOCOL;
+        return ProtocolIds.FromClient.Handshaking.SET_PROTOCOL;
     }
 }

@@ -32,6 +32,6 @@ public class PacketPlayServerCamera extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.CAMERA;
+        return ProtocolIds.ToClient.Play.CAMERA;
     }
 }

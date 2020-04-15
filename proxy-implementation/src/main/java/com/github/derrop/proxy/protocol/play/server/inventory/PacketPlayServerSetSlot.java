@@ -42,6 +42,6 @@ public class PacketPlayServerSetSlot extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SET_SLOT;
+        return ProtocolIds.ToClient.Play.SET_SLOT;
     }
 }

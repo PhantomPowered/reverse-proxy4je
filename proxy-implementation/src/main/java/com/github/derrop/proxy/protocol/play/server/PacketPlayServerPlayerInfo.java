@@ -117,7 +117,7 @@ public class PacketPlayServerPlayerInfo extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.PLAYER_INFO;
+        return ProtocolIds.ToClient.Play.PLAYER_INFO;
     }
 
     public enum Action {

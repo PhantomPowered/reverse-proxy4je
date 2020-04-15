@@ -69,6 +69,6 @@ public class PacketPlayServerNamedEntitySpawn extends DefinedPacket implements P
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.NAMED_ENTITY_SPAWN;
+        return ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN;
     }
 }

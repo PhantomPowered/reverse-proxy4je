@@ -35,6 +35,6 @@ public class PacketPlayServerGameStateChange extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.GAME_STATE_CHANGE;
+        return ProtocolIds.ToClient.Play.GAME_STATE_CHANGE;
     }
 }

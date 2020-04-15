@@ -5,11 +5,10 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.protocol.client.PacketC06PlayerPosLook;
+import com.github.derrop.proxy.protocol.client.PacketPlayOutPlayerPositionLook;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
-import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.util.Arrays;
@@ -73,13 +72,13 @@ public class PlayerVelocityHandler {
                 this.rotPitch = ((PlayerLook) packet).getPitch();
                 this.rotYaw = ((PlayerLook) packet).getYaw();
                 this.onGround = ((PlayerLook) packet).isOnGround();
-            } else if (packet instanceof PacketC06PlayerPosLook) {
-                this.posX = ((PacketC06PlayerPosLook) packet).getX();
-                this.posY = ((PacketC06PlayerPosLook) packet).getY();
-                this.posZ = ((PacketC06PlayerPosLook) packet).getZ();
-                this.rotPitch = ((PacketC06PlayerPosLook) packet).getPitch();
-                this.rotYaw = ((PacketC06PlayerPosLook) packet).getYaw();
-                this.onGround = ((PacketC06PlayerPosLook) packet).isOnGround();
+            } else if (packet instanceof PacketPlayOutPlayerPositionLook) {
+                this.posX = ((PacketPlayOutPlayerPositionLook) packet).getX();
+                this.posY = ((PacketPlayOutPlayerPositionLook) packet).getY();
+                this.posZ = ((PacketPlayOutPlayerPositionLook) packet).getZ();
+                this.rotPitch = ((PacketPlayOutPlayerPositionLook) packet).getPitch();
+                this.rotYaw = ((PacketPlayOutPlayerPositionLook) packet).getYaw();
+                this.onGround = ((PacketPlayOutPlayerPositionLook) packet).isOnGround();
             }
             this.moveEntity(this.posX, this.posY, this.posZ);
         }

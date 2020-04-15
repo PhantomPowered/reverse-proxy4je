@@ -40,6 +40,6 @@ public class PacketPlayServerUpdateHealth extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.UPDATE_HEALTH;
+        return ProtocolIds.ToClient.Play.UPDATE_HEALTH;
     }
 }

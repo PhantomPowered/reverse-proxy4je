@@ -66,7 +66,7 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.SCOREBOARD_OBJECTIVE;
+        return ProtocolIds.ToClient.Play.SCOREBOARD_OBJECTIVE;
     }
 
     public enum HealthDisplay {

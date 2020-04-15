@@ -38,6 +38,6 @@ public class PacketPlayServerEntityDestroy extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.ENTITY_DESTROY;
+        return ProtocolIds.ToClient.Play.ENTITY_DESTROY;
     }
 }

@@ -1,7 +1,7 @@
 package net.md_5.bungee;
 
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
+import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import lombok.Getter;
 
 import javax.crypto.Cipher;
@@ -34,15 +34,15 @@ public class EncryptionUtil {
         }
     }
 
-    public static PacketLoginEncryptionRequest encryptRequest() {
+    public static PacketLoginInEncryptionRequest encryptRequest() {
         String hash = Long.toString(random.nextLong(), 16);
         byte[] pubKey = keys.getPublic().getEncoded();
         byte[] verify = new byte[4];
         random.nextBytes(verify);
-        return new PacketLoginEncryptionRequest(hash, pubKey, verify);
+        return new PacketLoginInEncryptionRequest(hash, pubKey, verify);
     }
 
-    public static SecretKey getSecret(PacketLoginEncryptionResponse resp, PacketLoginEncryptionRequest request) throws GeneralSecurityException {
+    public static SecretKey getSecret(PacketLoginOutEncryptionResponse resp, PacketLoginInEncryptionRequest request) throws GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
         byte[] decrypted = cipher.doFinal(resp.getVerifyToken());

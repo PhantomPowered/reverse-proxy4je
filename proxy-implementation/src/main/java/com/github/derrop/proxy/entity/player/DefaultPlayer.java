@@ -18,7 +18,7 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
-import com.github.derrop.proxy.protocol.login.PacketLoginSetCompression;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayInPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
@@ -46,7 +46,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
         if (!channel.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
             this.compression = compressionThreshold;
-            this.sendPacket(new PacketLoginSetCompression(compressionThreshold));
+            this.sendPacket(new PacketLoginOutSetCompression(compressionThreshold));
             channel.setCompression(compression);
         }
 

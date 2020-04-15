@@ -90,6 +90,6 @@ public class PacketPlayServerLogin extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.LOGIN;
+        return ProtocolIds.ToClient.Play.LOGIN;
     }
 }

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.status;
+package com.github.derrop.proxy.protocol.status.client;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
@@ -14,18 +14,18 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PacketStatusPing extends DefinedPacket {
+public class PacketStatusOutResponse extends DefinedPacket {
 
-    private long time;
+    private String response;
 
     @Override
     public void read(@NotNull ByteBuf buf) {
-        time = buf.readLong();
+        response = readString(buf);
     }
 
     @Override
     public void write(@NotNull ByteBuf buf) {
-        buf.writeLong(time);
+        writeString(response, buf);
     }
 
     @Override
@@ -35,6 +35,6 @@ public class PacketStatusPing extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Status.PING;
+        return ProtocolIds.ToClient.Status.SERVER_INFO;
     }
 }

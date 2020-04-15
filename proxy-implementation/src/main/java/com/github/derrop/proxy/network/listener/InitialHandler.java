@@ -21,14 +21,15 @@ import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
-import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionResponse;
-import com.github.derrop.proxy.protocol.login.PacketLoginLoginRequest;
-import com.github.derrop.proxy.protocol.login.PacketPlayServerLoginSuccess;
+import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
+import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
-import com.github.derrop.proxy.protocol.status.PacketStatusPing;
-import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
-import com.github.derrop.proxy.protocol.status.PacketStatusResponse;
+import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
+import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
+import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
+import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.ServerPing;
@@ -90,27 +91,27 @@ public class InitialHandler implements ChannelListener {
         );
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ServerBound.Status.START, protocolState = ProtocolState.STATUS)
-    public void handle(NetworkChannel channel, PacketStatusRequest statusRequest) throws Exception {
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, protocolState = ProtocolState.STATUS)
+    public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
         final String motd = "§7To join: Contact §6Schul_Futzi#4633 §7on §9Discord\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
         int sentProtocol = channel.getProperty("sentProtocol");
         final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(sentProtocol)) ? sentProtocol : 47;
 
-        channel.write(new PacketStatusResponse(Util.GSON.toJson(getPingInfo(motd, protocol))));
+        channel.write(new PacketStatusOutResponse(Util.GSON.toJson(getPingInfo(motd, protocol))));
 
         channel.setProperty(INIT_STATE, State.PING);
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ServerBound.Status.PING, protocolState = ProtocolState.STATUS)
-    public void handle(NetworkChannel channel, PacketStatusPing ping) throws Exception {
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Status.PING, protocolState = ProtocolState.STATUS)
+    public void handle(NetworkChannel channel, PacketStatusInPing ping) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.PING, "Not expecting PING");
-        channel.write(ping);
+        channel.write(new PacketStatusOutPong(ping.getTime()));
         disconnect(channel, "");
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ServerBound.Handshaking.SET_PROTOCOL, protocolState = ProtocolState.HANDSHAKING)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Handshaking.SET_PROTOCOL, protocolState = ProtocolState.HANDSHAKING)
     public void handle(NetworkChannel channel, PacketHandshakingInSetProtocol packetHandshakingInSetProtocol) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.HANDSHAKE, "Not expecting HANDSHAKE");
         channel.setProperty("sentProtocol", packetHandshakingInSetProtocol.getProtocolVersion());
@@ -157,8 +158,8 @@ public class InitialHandler implements ChannelListener {
         }
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ServerBound.Login.START, protocolState = ProtocolState.LOGIN)
-    public void handle(NetworkChannel channel, PacketLoginLoginRequest loginRequest) throws Exception {
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.START, protocolState = ProtocolState.LOGIN)
+    public void handle(NetworkChannel channel, PacketLoginInLoginRequest loginRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.USERNAME, "Not expecting USERNAME");
         channel.setProperty("requestedName", loginRequest.getData());
 
@@ -172,17 +173,17 @@ public class InitialHandler implements ChannelListener {
             return;
         }
 
-        PacketLoginEncryptionRequest request = EncryptionUtil.encryptRequest();
+        PacketLoginInEncryptionRequest request = EncryptionUtil.encryptRequest();
         channel.setProperty("encryptionRequest", request);
         channel.write(request);
         channel.setProperty(INIT_STATE, State.ENCRYPT);
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ServerBound.Login.ENCRYPTION_BEGIN, protocolState = ProtocolState.LOGIN)
-    public void handle(NetworkChannel channel, final PacketLoginEncryptionResponse encryptResponse) throws Exception {
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.ENCRYPTION_BEGIN, protocolState = ProtocolState.LOGIN)
+    public void handle(NetworkChannel channel, final PacketLoginOutEncryptionResponse encryptResponse) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.ENCRYPT, "Not expecting ENCRYPT");
 
-        PacketLoginEncryptionRequest encryptionRequest = channel.getProperty("encryptionRequest");
+        PacketLoginInEncryptionRequest encryptionRequest = channel.getProperty("encryptionRequest");
         SecretKey sharedKey = EncryptionUtil.getSecret(encryptResponse, encryptionRequest);
 
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_DECODER, NetworkUtils.DECRYPT, new PacketCipherDecoder(sharedKey));
@@ -232,7 +233,7 @@ public class InitialHandler implements ChannelListener {
             if (!channel.isClosing()) {
                 DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(channel), uniqueId, result, channel, channel.getProperty("sentVersion"), 256);
 
-                channel.write(new PacketPlayServerLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
+                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientPacketListener(player));
 

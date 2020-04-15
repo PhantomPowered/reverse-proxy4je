@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -24,17 +24,19 @@ public class PacketPlayChat extends DefinedPacket {
     }
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf) {
         message = readString(buf);
-        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
+
+        if (this.getId() == ProtocolIds.ToClient.Play.CHAT) {
             position = buf.readByte();
         }
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf) {
         writeString(message, buf);
-        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
+
+        if (this.getId() == ProtocolIds.ToClient.Play.CHAT) {
             buf.writeByte(position);
         }
     }
@@ -46,6 +48,6 @@ public class PacketPlayChat extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Play.CHAT;
+        return ProtocolIds.ToClient.Play.CHAT;
     }
 }

@@ -1,4 +1,8 @@
-package com.github.derrop.proxy.protocol.login;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.github.derrop.proxy.protocol.login.client;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
@@ -8,24 +12,24 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PacketLoginSetCompression extends DefinedPacket {
+public class PacketLoginInLoginRequest extends DefinedPacket {
 
-    private int threshold;
+    private String data;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
-        threshold = DefinedPacket.readVarInt(buf);
+    public void read(@NotNull ByteBuf buf) {
+        data = readString(buf);
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
-        DefinedPacket.writeVarInt(threshold, buf);
+    public void write(@NotNull ByteBuf buf) {
+        writeString(data, buf);
     }
 
     @Override
@@ -35,6 +39,6 @@ public class PacketLoginSetCompression extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ClientBound.Login.SET_COMPRESSION;
+        return ProtocolIds.FromClient.Login.START;
     }
 }

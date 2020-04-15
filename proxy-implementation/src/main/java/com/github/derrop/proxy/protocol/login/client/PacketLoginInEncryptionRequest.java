@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.login;
+package com.github.derrop.proxy.protocol.login.client;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
@@ -8,27 +8,27 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
+import org.jetbrains.annotations.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class PacketLoginEncryptionRequest extends DefinedPacket {
+public class PacketLoginInEncryptionRequest extends DefinedPacket {
 
     private String serverId;
     private byte[] publicKey;
     private byte[] verifyToken;
 
     @Override
-    public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void read(@NotNull ByteBuf buf) {
         serverId = readString(buf);
         publicKey = readArray(buf);
         verifyToken = readArray(buf);
     }
 
     @Override
-    public void write(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion) {
+    public void write(@NotNull ByteBuf buf) {
         writeString(serverId, buf);
         writeArray(publicKey, buf);
         writeArray(verifyToken, buf);
@@ -41,6 +41,6 @@ public class PacketLoginEncryptionRequest extends DefinedPacket {
 
     @Override
     public int getId() {
-        return ProtocolIds.ServerBound.Login.ENCRYPTION_BEGIN;
+        return ProtocolIds.FromClient.Login.ENCRYPTION_BEGIN;
     }
 }
