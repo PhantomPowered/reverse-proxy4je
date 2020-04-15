@@ -14,6 +14,7 @@ public class DefaultBlockState implements BlockState {
     private boolean powered;
     private int layers;
     private double height;
+    private double thickness;
     private EnumFacing facing;
     private HingePosition hingePosition;
     private TrapdoorPosition half;
@@ -22,6 +23,7 @@ public class DefaultBlockState implements BlockState {
         this.id = id;
         this.material = material;
         this.height = 1;
+        this.thickness = 1;
     }
 
     DefaultBlockState open() {
@@ -64,6 +66,11 @@ public class DefaultBlockState implements BlockState {
         return this;
     }
 
+    DefaultBlockState thick(double thickness) {
+        this.thickness = thickness;
+        return this;
+    }
+
     @Override
     public int getId() {
         return this.id;
@@ -88,6 +95,11 @@ public class DefaultBlockState implements BlockState {
     @Override
     public double getHeight() {
         return this.height;
+    }
+
+    @Override
+    public double getThickness() {
+        return this.thickness;
     }
 
     @Override

@@ -630,22 +630,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1533, Material.STAINED_GLASS);
         registerState(1534, Material.STAINED_GLASS);
         registerState(1535, Material.STAINED_GLASS);
-        registerState(1536, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.BOTTOM); // complete
-        registerState(1537, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.BOTTOM); // complete
-        registerState(1538, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.BOTTOM); // complete
-        registerState(1539, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.BOTTOM); // complete
-        registerState(1540, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.BOTTOM).open(); // complete
-        registerState(1541, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.BOTTOM).open(); // complete
-        registerState(1542, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.BOTTOM).open(); // complete
-        registerState(1543, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.BOTTOM).open(); // complete
-        registerState(1544, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.TOP); // complete
-        registerState(1545, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.TOP); // complete
-        registerState(1546, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.TOP); // complete
-        registerState(1547, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.TOP); // complete
-        registerState(1548, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.TOP).open(); // complete
-        registerState(1549, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.TOP).open(); // complete
-        registerState(1550, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.TOP).open(); // complete
-        registerState(1551, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.TOP).open(); // complete
+        registerState(1536, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
+        registerState(1537, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
+        registerState(1538, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
+        registerState(1539, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
+        registerState(1540, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.BOTTOM).open().thick(0.3D); // complete
+        registerState(1541, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.BOTTOM).open().thick(0.3D); // complete
+        registerState(1542, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.BOTTOM).open().thick(0.3D); // complete
+        registerState(1543, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.BOTTOM).open().thick(0.3D); // complete
+        registerState(1544, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.TOP).height(0.3D); // complete
+        registerState(1545, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.TOP).height(0.3D); // complete
+        registerState(1546, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.TOP).height(0.3D); // complete
+        registerState(1547, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.TOP).height(0.3D); // complete
+        registerState(1548, Material.TRAP_DOOR).facing(EnumFacing.SOUTH).half(TrapdoorPosition.TOP).open().thick(0.3D); // complete
+        registerState(1549, Material.TRAP_DOOR).facing(EnumFacing.NORTH).half(TrapdoorPosition.TOP).open().thick(0.3D); // complete
+        registerState(1550, Material.TRAP_DOOR).facing(EnumFacing.EAST).half(TrapdoorPosition.TOP).open().thick(0.3D); // complete
+        registerState(1551, Material.TRAP_DOOR).facing(EnumFacing.WEST).half(TrapdoorPosition.TOP).open().thick(0.3D); // complete
         registerState(1552, Material.MONSTER_EGGS);
         registerState(1553, Material.MONSTER_EGGS);
         registerState(1554, Material.MONSTER_EGGS);
