@@ -3,7 +3,6 @@ package com.github.derrop.proxy.protocol.play.server.world;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -105,10 +104,6 @@ public class PacketPlayServerWorldBorder extends DefinedPacket {
                 writeVarInt(this.warningTime, buf);
                 break;
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

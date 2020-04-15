@@ -5,7 +5,6 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
@@ -59,11 +58,6 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
                 writeString(type.toString().toLowerCase(), buf);
             }
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
 
     @Override

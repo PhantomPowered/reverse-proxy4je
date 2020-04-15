@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
@@ -69,11 +68,6 @@ public class PacketPlayClientTabCompleteRequest extends DefinedPacket {
                 buf.writeLong(position);
             }
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
 
     @Override

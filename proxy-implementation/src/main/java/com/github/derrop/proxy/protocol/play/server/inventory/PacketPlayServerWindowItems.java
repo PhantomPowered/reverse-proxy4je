@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,10 +36,6 @@ public class PacketPlayServerWindowItems extends DefinedPacket {
         for (InventoryItem item : this.items) {
             PacketUtil.writeItem(buf, item);
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,11 +28,6 @@ public class PacketPlayServerPlayerListHeaderFooter extends DefinedPacket {
     public void write(@NotNull ByteBuf buf) {
         writeString(header, buf);
         writeString(footer, buf);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,11 +54,6 @@ public class PacketPlayServerEntityTeleport extends DefinedPacket {
         buf.writeByte(this.yaw);
         buf.writeByte(this.pitch);
         buf.writeBoolean(this.onGround);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
 
     @Override

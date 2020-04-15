@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,11 +31,6 @@ public class PacketLoginInEncryptionRequest extends DefinedPacket {
         writeString(serverId, buf);
         writeArray(publicKey, buf);
         writeArray(verifyToken, buf);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
-        handler.handle(this);
     }
 
     @Override

@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,10 +36,6 @@ public class PacketPlayServerUpdateSign extends DefinedPacket {
         for (int i = 0; i < 4; i++) {
             writeString(ComponentSerializer.toString(this.lines[i]), buf);
         }
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

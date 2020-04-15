@@ -3,7 +3,6 @@ package com.github.derrop.proxy.protocol.play.server.entity.effect;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import io.netty.buffer.ByteBuf;
 import lombok.*;
-import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,10 +38,6 @@ public class PacketPlayServerEntityEffect extends DefinedPacket {
         buf.writeByte(this.amplifier);
         writeVarInt(this.duration, buf);
         buf.writeByte(this.hideParticles);
-    }
-
-    @Override
-    public void handle(AbstractPacketHandler handler) throws Exception {
     }
 
     @Override

@@ -84,5 +84,4 @@ public abstract class DefinedPacket implements Packet {
         throw new UnsupportedOperationException("Packet must implement write method");
     }
 
-    public abstract void handle(AbstractPacketHandler handler) throws Exception;
 }
