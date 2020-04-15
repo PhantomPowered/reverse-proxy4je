@@ -18,6 +18,7 @@ import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
+import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.login.PacketLoginEncryptionRequest;
@@ -33,6 +34,7 @@ import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.ServerPing;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.connection.ClientPacketListener;
 import net.md_5.bungee.connection.LoginResult;
 import net.md_5.bungee.http.HttpClient;
 import net.md_5.bungee.protocol.ProtocolConstants;
@@ -232,7 +234,7 @@ public class InitialHandler implements ChannelListener {
 
                 channel.write(new PacketPlayServerLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
-                //channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setHandler(new UpstreamBridge(player)); TODO
+                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientPacketListener(player));
 
                 ServiceConnection client = MCProxy.getInstance().findBestConnection(player);
 

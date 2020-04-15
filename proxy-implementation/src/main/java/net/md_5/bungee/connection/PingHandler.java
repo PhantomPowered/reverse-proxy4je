@@ -1,22 +1,11 @@
 package net.md_5.bungee.connection;
 
-import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.BufUtil;
-import net.md_5.bungee.ServerPing;
-import net.md_5.bungee.Util;
-import com.github.derrop.proxy.api.util.Callback;
-import net.md_5.bungee.netty.ChannelWrapper;
-import net.md_5.bungee.netty.PacketHandler;
-import net.md_5.bungee.protocol.PacketWrapper;
-import net.md_5.bungee.protocol.Protocol;
-import com.github.derrop.proxy.protocol.status.PacketStatusRequest;
-import com.github.derrop.proxy.protocol.status.PacketStatusResponse;
 
 @RequiredArgsConstructor
-public class PingHandler extends PacketHandler {
-
+public class PingHandler {
+    // TODO this could be useful for a "ping <address>" command
+/*
     private final NetworkAddress targetAddress;
     private final Callback<ServerPing> callback;
     private final int protocol;
@@ -58,5 +47,5 @@ public class PingHandler extends PacketHandler {
     @Override
     public String toString() {
         return "[Ping Handler] -> " + this.targetAddress;
-    }
+    }*/
 }

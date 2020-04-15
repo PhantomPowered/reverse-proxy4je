@@ -11,7 +11,6 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
-import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
@@ -19,35 +18,10 @@ import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
-import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
 public class ClientPacketHandler {
-
-    @Override
-    public void exception(Throwable t) {
-        t.printStackTrace();
-        con.sendMessage("Unexpected exception, check log for more details: " + Util.exception(t));
-    }
-
-    @Override
-    public void disconnected(ChannelWrapper channel) {
-        this.con.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(player));
-        this.con.setConnected(false);
-        if (this.con.getConnectedClient() != null) {
-            this.con.getConnectedClient().getClient().free();
-        }
-    }
-
-    @Override
-    public void writabilityChanged(ChannelWrapper channel) {
-    }
-
-    @Override
-    public boolean shouldHandle(PacketWrapper packet) {
-        return packet.id != 27; // disconnect packet from the client, the proxy should stay connected
-    }
 
     @PacketHandler(packetIds = {}, protocolState = ProtocolState.PLAY)
     public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
