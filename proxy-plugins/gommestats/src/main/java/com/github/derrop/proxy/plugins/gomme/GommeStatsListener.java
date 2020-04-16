@@ -26,7 +26,7 @@ public class GommeStatsListener {
 
         if (data != null && action.equals("JOIN_SERVER")) {
             String serverType = data.get("cloud_type").getAsString().toUpperCase();
-            String serverId = data.get("id").getAsString();
+            String matchId = data.get("id").getAsString();
 
             // TODO
         }
