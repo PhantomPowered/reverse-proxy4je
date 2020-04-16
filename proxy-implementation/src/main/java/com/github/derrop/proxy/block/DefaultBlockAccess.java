@@ -192,4 +192,9 @@ public class DefaultBlockAccess implements BlockAccess {
     public BlockStateRegistry getBlockStateRegistry() {
         return this.registry;
     }
+
+    @Override
+    public int getDimension() {
+        return this.chunkCache.getDimension();
+    }
 }

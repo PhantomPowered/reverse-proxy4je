@@ -41,6 +41,10 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     boolean isOnGround();
 
+    long getTotalWorldTime();
+
+    long getWorldTime();
+
     @NotNull
     NetworkAddress getServerAddress();
 
