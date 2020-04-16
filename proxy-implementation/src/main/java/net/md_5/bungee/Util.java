@@ -27,7 +27,6 @@ public class Util {
             .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
             .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
             .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
-            .registerTypeAdapter(ServerPing.PlayerInfo.class, new PlayerInfoSerializer())
             .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter()).create();
     @Deprecated public static final int DEFAULT_PORT = 25565; // TODO: unused and remove
 

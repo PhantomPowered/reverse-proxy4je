@@ -1,0 +1,150 @@
+package com.github.derrop.proxy.ping;
+
+import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import net.md_5.bungee.Favicon;
+
+import java.util.UUID;
+
+public class ServerPing {
+
+    private Protocol version;
+    private Players players;
+    private BaseComponent description;
+    private Favicon favicon;
+
+    public ServerPing(Protocol version, Players players, BaseComponent description, Favicon favicon) {
+        this.version = version;
+        this.players = players;
+        this.description = description;
+        this.favicon = favicon;
+    }
+
+    public Protocol getVersion() {
+        return version;
+    }
+
+    public void setVersion(Protocol version) {
+        this.version = version;
+    }
+
+    public Players getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(Players players) {
+        this.players = players;
+    }
+
+    public BaseComponent getDescription() {
+        return description;
+    }
+
+    public void setDescription(BaseComponent description) {
+        this.description = description;
+    }
+
+    public Favicon getFavicon() {
+        return favicon;
+    }
+
+    public void setFavicon(Favicon favicon) {
+        this.favicon = favicon;
+    }
+
+    public static class Protocol {
+
+        private String name;
+        private int protocol;
+
+        public Protocol(String name, int protocol) {
+            this.name = name;
+            this.protocol = protocol;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getProtocol() {
+            return protocol;
+        }
+
+        public void setProtocol(int protocol) {
+            this.protocol = protocol;
+        }
+    }
+
+    public static class Players {
+
+        private int online;
+        private int max;
+        private PlayerInfo[] sample;
+
+        public Players(int online, int max, PlayerInfo[] sample) {
+            this.online = online;
+            this.max = max;
+            this.sample = sample;
+        }
+
+        public int getOnline() {
+            return online;
+        }
+
+        public void setOnline(int online) {
+            this.online = online;
+        }
+
+        public int getMax() {
+            return max;
+        }
+
+        public void setMax(int max) {
+            this.max = max;
+        }
+
+        public PlayerInfo[] getSample() {
+            return sample;
+        }
+
+        public void setSample(PlayerInfo[] sample) {
+            this.sample = sample;
+        }
+
+        public static class PlayerInfo {
+
+            private String name;
+            private UUID id;
+
+            public PlayerInfo(String name, UUID id) {
+                this.name = name;
+                this.id = id;
+            }
+
+            public PlayerInfo(String name) {
+                this(name, UUID.randomUUID());
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public UUID getId() {
+                return id;
+            }
+
+            public void setId(UUID id) {
+                this.id = id;
+            }
+        }
+
+    }
+
+}

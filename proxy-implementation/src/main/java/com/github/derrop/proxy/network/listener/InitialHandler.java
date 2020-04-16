@@ -31,7 +31,6 @@ import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
 import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
-import net.md_5.bungee.ServerPing;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.ClientPacketListener;
@@ -61,24 +60,18 @@ public class InitialHandler {
         HANDSHAKE, STATUS, PING, USERNAME, ENCRYPT, FINISHED
     }
 
-    private ServerPing getPingInfo(String motd, int protocol) {
-        return new ServerPing(
-                new ServerPing.Protocol("§cProxy by §bderrop", -1),
-                new ServerPing.Players(0, 0, null),
-                new TextComponent(TextComponent.fromLegacyText(motd)),
-                null
-        );
-    }
-
     @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
     public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
-        final String motd = "§7To join: Contact §6Schul_Futzi#4633 §7on §9Discord\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
-        int sentProtocol = channel.getProperty("sentProtocol");
-        final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(sentProtocol)) ? sentProtocol : 47;
+        final String motd = "\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
 
-        channel.write(new PacketStatusOutResponse(Util.GSON.toJson(getPingInfo(motd, protocol))));
+        channel.write(new PacketStatusOutResponse(Util.GSON.toJson(new com.github.derrop.proxy.ping.ServerPing(
+                new com.github.derrop.proxy.ping.ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
+                new com.github.derrop.proxy.ping.ServerPing.Players(0, 0, null),
+                new TextComponent(motd),
+                null
+        ))));
 
         channel.setProperty(INIT_STATE, State.PING);
     }
