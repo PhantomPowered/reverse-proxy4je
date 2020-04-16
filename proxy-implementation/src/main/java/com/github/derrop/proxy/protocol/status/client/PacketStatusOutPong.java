@@ -1,34 +1,42 @@
 package com.github.derrop.proxy.protocol.status.client;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Data
-public class PacketStatusOutPong extends DefinedPacket {
+public class PacketStatusOutPong implements Packet {
 
     private long clientTime;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.clientTime = buf.readLong();
+    public PacketStatusOutPong(long clientTime) {
+        this.clientTime = clientTime;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        buf.writeLong(this.clientTime);
+    public PacketStatusOutPong() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Status.PONG;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.clientTime = protoBuf.readLong();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeLong(this.clientTime);
+    }
+
+    public long getClientTime() {
+        return this.clientTime;
+    }
+
+    public String toString() {
+        return "PacketStatusOutPong(clientTime=" + this.getClientTime() + ")";
     }
 }

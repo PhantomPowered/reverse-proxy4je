@@ -1,37 +1,50 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerPlayerListHeaderFooter extends DefinedPacket {
+public class PacketPlayServerPlayerListHeaderFooter implements Packet {
 
     private String header;
     private String footer;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        header = readString(buf);
-        footer = readString(buf);
+    public PacketPlayServerPlayerListHeaderFooter(String header, String footer) {
+        this.header = header;
+        this.footer = footer;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeString(header, buf);
-        writeString(footer, buf);
+    public PacketPlayServerPlayerListHeaderFooter() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER;
+    }
+
+    public String getHeader() {
+        return this.header;
+    }
+
+    public String getFooter() {
+        return this.footer;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.header = protoBuf.readString();
+        this.footer = protoBuf.readString();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeString(this.header);
+        protoBuf.writeString(this.footer);
+    }
+
+    public String toString() {
+        return "PacketPlayServerPlayerListHeaderFooter(header=" + this.getHeader() + ", footer=" + this.getFooter() + ")";
     }
 }

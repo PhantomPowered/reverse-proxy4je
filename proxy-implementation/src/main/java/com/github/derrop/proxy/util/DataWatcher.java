@@ -1,13 +1,13 @@
 package com.github.derrop.proxy.util;
 
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.connection.PacketUtil;
 import com.github.derrop.proxy.connection.cache.InventoryItem;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
@@ -231,7 +231,7 @@ public class DataWatcher {
                 break;
 
             case 4:
-                DefinedPacket.writeString((String) object.getObject(), buffer);
+                ByteBufUtils.writeString((String) object.getObject(), buffer);
                 break;
 
             case 5:
@@ -284,7 +284,7 @@ public class DataWatcher {
                     break;
 
                 case 4:
-                    datawatcher$watchableobject = new DataWatcher.WatchableObject(j, k, DefinedPacket.readString(buffer));
+                    datawatcher$watchableobject = new DataWatcher.WatchableObject(j, k, ByteBufUtils.readString(buffer));
                     break;
 
                 case 5:

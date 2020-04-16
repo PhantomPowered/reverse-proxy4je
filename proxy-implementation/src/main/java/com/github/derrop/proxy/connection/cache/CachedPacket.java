@@ -2,7 +2,7 @@ package com.github.derrop.proxy.connection.cache;
 
 import com.github.derrop.proxy.api.network.Packet;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.protocol.DefinedPacket;
+import com.github.derrop.proxy.api.network.Packet;
 
 public class CachedPacket {
 

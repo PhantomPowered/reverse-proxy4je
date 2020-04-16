@@ -8,7 +8,7 @@ import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
 
 import java.util.Arrays;
 

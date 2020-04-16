@@ -1,56 +1,67 @@
 package com.github.derrop.proxy.protocol.play.server;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerRespawn extends DefinedPacket {
+public class PacketPlayServerRespawn implements Packet {
 
     private int dimension;
-    private long seed;
     private short difficulty;
     private short gameMode;
     private String levelType;
 
-    @Override
-    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        dimension = buf.readInt();
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
-            seed = buf.readLong();
-        }
-        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
-            difficulty = buf.readUnsignedByte();
-        }
-        gameMode = buf.readUnsignedByte();
-        levelType = readString(buf);
+    public PacketPlayServerRespawn(int dimension, short difficulty, short gameMode, String levelType) {
+        this.dimension = dimension;
+        this.difficulty = difficulty;
+        this.gameMode = gameMode;
+        this.levelType = levelType;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        buf.writeInt(dimension);
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
-            buf.writeLong(seed);
-        }
-        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
-            buf.writeByte(difficulty);
-        }
-        buf.writeByte(gameMode);
-        writeString(levelType, buf);
+    public PacketPlayServerRespawn() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.RESPAWN;
+    }
+
+    public int getDimension() {
+        return this.dimension;
+    }
+
+    public short getDifficulty() {
+        return this.difficulty;
+    }
+
+    public short getGameMode() {
+        return this.gameMode;
+    }
+
+    public String getLevelType() {
+        return this.levelType;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.dimension = protoBuf.readInt();
+        this.difficulty = protoBuf.readUnsignedByte();
+        this.gameMode = protoBuf.readUnsignedByte();
+        this.levelType = protoBuf.readString();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeInt(this.dimension);
+        protoBuf.writeByte(this.difficulty);
+        protoBuf.writeByte(this.gameMode);
+        protoBuf.writeString(this.levelType);
+    }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerRespawn{" + "dimension=" + dimension + ", difficulty=" + difficulty + ", gameMode=" + gameMode + ", levelType='" + levelType + '\'' + '}';
     }
 }

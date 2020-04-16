@@ -2,7 +2,8 @@ package com.github.derrop.proxy.network.minecraft;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
+import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -17,7 +18,8 @@ public final class MinecraftEncoder extends MessageToByteEncoder<Packet> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
-        ByteBufUtils.writeVarInt(packet.getId(), byteBuf);
-        packet.write(byteBuf, this.direction, 47);
+        ProtoBuf protoBuf = new DefaultProtoBuf(47, byteBuf);
+        protoBuf.writeVarInt(packet.getId());
+        packet.write(protoBuf, this.direction, protoBuf.getProtocolVersion());
     }
 }

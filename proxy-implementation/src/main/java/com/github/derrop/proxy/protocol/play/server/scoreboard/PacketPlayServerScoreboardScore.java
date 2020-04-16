@@ -1,57 +1,84 @@
 package com.github.derrop.proxy.protocol.play.server.scoreboard;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerScoreboardScore extends DefinedPacket {
+public class PacketPlayServerScoreboardScore implements Packet {
 
     private String itemName;
-    /**
-     * 0 = create / update, 1 = remove.
-     */
     private byte action;
     private String objectiveName;
     private int value;
 
-    /**
-     * Destroy packet
-     */
     public PacketPlayServerScoreboardScore(String itemName, String objectiveName) {
         this(itemName, (byte) 1, objectiveName, -1);
     }
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        itemName = readString(buf);
-        action = buf.readByte();
-        objectiveName = readString(buf);
-        if (action != 1) {
-            value = readVarInt(buf);
-        }
+    public PacketPlayServerScoreboardScore(String itemName, byte action, String objectiveName, int value) {
+        this.itemName = itemName;
+        this.action = action;
+        this.objectiveName = objectiveName;
+        this.value = value;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeString(itemName, buf);
-        buf.writeByte(action);
-        writeString(objectiveName, buf);
-        if (action != 1) {
-            writeVarInt(value, buf);
-        }
+    public PacketPlayServerScoreboardScore() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.SCOREBOARD_SCORE;
+    }
+
+    public String getItemName() {
+        return this.itemName;
+    }
+
+    public byte getAction() {
+        return this.action;
+    }
+
+    public String getObjectiveName() {
+        return this.objectiveName;
+    }
+
+    public int getValue() {
+        return this.value;
+    }
+
+    public void setAction(byte action) {
+        this.action = action;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.itemName = protoBuf.readString();
+        this.action = protoBuf.readByte();
+        this.objectiveName = protoBuf.readString();
+
+        if (action != 1) {
+            this.value = protoBuf.readVarInt();
+        }
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeString(this.itemName);
+        protoBuf.writeByte(this.action);
+        protoBuf.writeString(this.objectiveName);
+
+        if (action != 1) {
+            protoBuf.writeVarInt(this.value);
+        }
+    }
+
+    public String toString() {
+        return "PacketPlayServerScoreboardScore(itemName=" + this.getItemName() + ", action=" + this.getAction() + ", objectiveName=" + this.getObjectiveName() + ", value=" + this.getValue() + ")";
     }
 }

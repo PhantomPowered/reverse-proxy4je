@@ -21,7 +21,7 @@ import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -129,12 +129,12 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void chat(@NotNull String message) {
-        this.client.write(new PacketPlayChatMessage(message));
+        this.client.write(new PacketPlayClientChatMessage(message));
     }
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull String message) {
-        this.client.write(new PacketPlayChatMessage(message, (byte) type.ordinal()));
+        this.client.write(new PacketPlayClientChatMessage(message, (byte) type.ordinal()));
     }
 
     @Override

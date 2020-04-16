@@ -1,9 +1,9 @@
 package com.github.derrop.proxy.network.compression;
 
+import com.github.derrop.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public final class PacketDeCompressor extends MessageToMessageDecoder<ByteBuf> {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        int size = DefinedPacket.readVarInt(byteBuf);
+        int size = ByteBufUtils.readVarInt(byteBuf);
         if (size == 0) {
             list.add(byteBuf.slice().retain());
             byteBuf.skipBytes(byteBuf.readableBytes());

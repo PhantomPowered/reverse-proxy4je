@@ -1,66 +1,96 @@
 package com.github.derrop.proxy.protocol.play.server.world;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerMapChunkBulk extends DefinedPacket {
+public class PacketPlayServerMapChunkBulk implements Packet {
 
     private int[] x;
     private int[] z;
     private boolean b;
     private PacketPlayServerMapChunk.Extracted[] extracted;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.b = buf.readBoolean();
-        int size = readVarInt(buf);
-        this.x = new int[size];
-        this.z = new int[size];
-        this.extracted = new PacketPlayServerMapChunk.Extracted[size];
-
-        for (int i = 0; i < size; i++) {
-            this.x[i] = buf.readInt();
-            this.z[i] = buf.readInt();
-            this.extracted[i] = new PacketPlayServerMapChunk.Extracted();
-            this.extracted[i].dataLength = buf.readShort() & 65535;
-
-
-            this.extracted[i].data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(this.extracted[i].dataLength), this.b, true)];
-        }
-
-        for (int i = 0; i < size; i++) {
-            buf.readBytes(this.extracted[i].data);
-        }
+    public PacketPlayServerMapChunkBulk(int[] x, int[] z, boolean b, PacketPlayServerMapChunk.Extracted[] extracted) {
+        this.x = x;
+        this.z = z;
+        this.b = b;
+        this.extracted = extracted;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        buf.writeBoolean(this.b);
-        writeVarInt(this.extracted.length, buf);
-
-        for (int i = 0; i < this.extracted.length; i++) {
-            buf.writeInt(this.x[i]);
-            buf.writeInt(this.z[i]);
-            buf.writeShort(this.extracted[i].dataLength & 65535);
-        }
-
-        for (int i = 0; i < this.extracted.length; i++) {
-            buf.writeBytes(this.extracted[i].data);
-        }
+    public PacketPlayServerMapChunkBulk() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.MAP_CHUNK_BULK;
+    }
+
+    public int[] getX() {
+        return this.x;
+    }
+
+    public int[] getZ() {
+        return this.z;
+    }
+
+    public boolean isB() {
+        return this.b;
+    }
+
+    public PacketPlayServerMapChunk.Extracted[] getExtracted() {
+        return this.extracted;
+    }
+
+    public void setX(int[] x) {
+        this.x = x;
+    }
+
+    public void setZ(int[] z) {
+        this.z = z;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.b = protoBuf.readBoolean();
+        int size = protoBuf.readVarInt();
+        this.x = new int[size];
+        this.z = new int[size];
+        this.extracted = new PacketPlayServerMapChunk.Extracted[size];
+
+        for (int i = 0; i < size; i++) {
+            this.x[i] = protoBuf.readInt();
+            this.z[i] = protoBuf.readInt();
+            this.extracted[i] = new PacketPlayServerMapChunk.Extracted();
+            this.extracted[i].dataLength = protoBuf.readShort() & 65535;
+
+            this.extracted[i].data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(this.extracted[i].dataLength), this.b, true)];
+        }
+
+        for (int i = 0; i < size; i++) {
+            protoBuf.readBytes(this.extracted[i].data);
+        }
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeBoolean(this.b);
+        protoBuf.writeVarInt(this.extracted.length);
+
+        for (int i = 0; i < this.extracted.length; i++) {
+            protoBuf.writeInt(this.x[i]);
+            protoBuf.writeInt(this.z[i]);
+            protoBuf.writeShort(this.extracted[i].dataLength & 65535);
+        }
+
+        for (PacketPlayServerMapChunk.Extracted value : this.extracted) {
+            protoBuf.writeBytes(value.data);
+        }
+    }
+
+    public String toString() {
+        return "PacketPlayServerMapChunkBulk(x=" + java.util.Arrays.toString(this.getX()) + ", z=" + java.util.Arrays.toString(this.getZ()) + ", b=" + this.isB() + ", extracted=" + java.util.Arrays.deepToString(this.getExtracted()) + ")";
     }
 }

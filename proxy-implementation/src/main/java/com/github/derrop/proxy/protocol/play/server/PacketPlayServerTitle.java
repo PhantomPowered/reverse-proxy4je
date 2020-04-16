@@ -1,79 +1,112 @@
 package com.github.derrop.proxy.protocol.play.server;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerTitle extends DefinedPacket {
+public class PacketPlayServerTitle implements Packet {
 
     private Action action;
-
-    // TITLE & SUBTITLE
     private String text;
-
-    // TIMES
     private int fadeIn;
     private int stay;
     private int fadeOut;
 
-    @Override
-    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        int index = readVarInt(buf);
-
-        // If we're working on 1.10 or lower, increment the value of the index so we pull out the correct value.
-        if (protocolVersion <= ProtocolConstants.MINECRAFT_1_10 && index >= 2) {
-            index++;
-        }
-
-        action = Action.values()[index];
-        switch (action) {
-            case TITLE:
-            case SUBTITLE:
-                text = readString(buf);
-                break;
-            case TIMES:
-                fadeIn = buf.readInt();
-                stay = buf.readInt();
-                fadeOut = buf.readInt();
-                break;
-        }
-    }
-
-    @Override
-    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        int index = action.ordinal();
-
-        // If we're working on 1.10 or lower, increment the value of the index so we pull out the correct value.
-        if (protocolVersion <= ProtocolConstants.MINECRAFT_1_10 && index >= 2) {
-            index--;
-        }
-
-        writeVarInt(index, buf);
-        switch (action) {
-            case TITLE:
-            case SUBTITLE:
-                writeString(text, buf);
-                break;
-            case TIMES:
-                buf.writeInt(fadeIn);
-                buf.writeInt(stay);
-                buf.writeInt(fadeOut);
-                break;
-        }
+    public PacketPlayServerTitle() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.TITLE;
+    }
+
+    public Action getAction() {
+        return this.action;
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    public int getFadeIn() {
+        return this.fadeIn;
+    }
+
+    public int getStay() {
+        return this.stay;
+    }
+
+    public int getFadeOut() {
+        return this.fadeOut;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setFadeIn(int fadeIn) {
+        this.fadeIn = fadeIn;
+    }
+
+    public void setStay(int stay) {
+        this.stay = stay;
+    }
+
+    public void setFadeOut(int fadeOut) {
+        this.fadeOut = fadeOut;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        int index = protoBuf.readVarInt();
+        if (index >= 2) {
+            index++;
+        }
+
+        this.action = Action.values()[index];
+        switch (action) {
+            case TITLE:
+            case SUBTITLE:
+                this.text = protoBuf.readString();
+                break;
+
+            case TIMES:
+                this.fadeIn = protoBuf.readInt();
+                this.stay = protoBuf.readInt();
+                this.fadeOut = protoBuf.readInt();
+        }
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        int index = this.action.ordinal();
+        if (index >= 2) {
+            index--;
+        }
+
+        protoBuf.writeVarInt(index);
+        switch (action) {
+            case TITLE:
+            case SUBTITLE:
+                protoBuf.writeString(this.text);
+                break;
+
+            case TIMES:
+                protoBuf.writeInt(this.fadeIn);
+                protoBuf.writeInt(this.stay);
+                protoBuf.writeInt(this.fadeOut);
+                break;
+        }
+    }
+
+    public String toString() {
+        return "PacketPlayServerTitle(action=" + this.getAction() + ", text=" + this.getText() + ", fadeIn=" + this.getFadeIn() + ", stay=" + this.getStay() + ", fadeOut=" + this.getFadeOut() + ")";
     }
 
     public enum Action {

@@ -1,17 +1,17 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.api.connection.PacketSender;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class MappedPacketCache<V extends DefinedPacket> implements PacketCacheHandler {
+public class MappedPacketCache<V extends Packet> implements PacketCacheHandler {
 
     private int packetId;
     private Map<Object, V> cachedPackets = new HashMap<>();

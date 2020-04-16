@@ -1,35 +1,50 @@
 package com.github.derrop.proxy.protocol.play.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@EqualsAndHashCode(callSuper = false)
-@ToString
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class PacketPlayServerResourcePackSend extends DefinedPacket {
+public class PacketPlayServerResourcePackSend implements Packet {
 
     private String url;
     private String hash;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.url = readString(buf);
-        this.hash = readString(buf);
+    public PacketPlayServerResourcePackSend(String url, String hash) {
+        this.url = url;
+        this.hash = hash;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeString(this.url, buf);
-        writeString(this.hash, buf);
+    public PacketPlayServerResourcePackSend() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.RESOURCE_PACK_SEND;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public String getHash() {
+        return this.hash;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.url = protoBuf.readString();
+        this.hash = protoBuf.readString();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeString(this.url);
+        protoBuf.writeString(this.hash);
+    }
+
+    public String toString() {
+        return "PacketPlayServerResourcePackSend(url=" + this.getUrl() + ", hash=" + this.getHash() + ")";
     }
 }

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.play.server.entity.spawn;
+package com.github.derrop.proxy.api.network.util;
 
 import com.github.derrop.proxy.api.network.Packet;
 

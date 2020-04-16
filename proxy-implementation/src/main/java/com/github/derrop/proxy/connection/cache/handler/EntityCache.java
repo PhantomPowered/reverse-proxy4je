@@ -3,6 +3,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;

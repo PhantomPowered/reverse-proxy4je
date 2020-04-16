@@ -1,37 +1,50 @@
 package com.github.derrop.proxy.protocol.login.server;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketLoginOutEncryptionResponse extends DefinedPacket {
+public class PacketLoginOutEncryptionResponse implements Packet {
 
     private byte[] sharedSecret;
     private byte[] verifyToken;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        sharedSecret = readArray(buf, 128);
-        verifyToken = readArray(buf, 128);
+    public PacketLoginOutEncryptionResponse(byte[] sharedSecret, byte[] verifyToken) {
+        this.sharedSecret = sharedSecret;
+        this.verifyToken = verifyToken;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeArray(sharedSecret, buf);
-        writeArray(verifyToken, buf);
+    public PacketLoginOutEncryptionResponse() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.FromClient.Login.ENCRYPTION_RESPONSE;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.sharedSecret = protoBuf.readArray(128);
+        this.verifyToken = protoBuf.readArray(128);
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeArray(this.sharedSecret);
+        protoBuf.writeArray(this.verifyToken);
+    }
+
+    public byte[] getSharedSecret() {
+        return this.sharedSecret;
+    }
+
+    public byte[] getVerifyToken() {
+        return this.verifyToken;
+    }
+
+    public String toString() {
+        return "PacketLoginOutEncryptionResponse(sharedSecret=" + java.util.Arrays.toString(this.getSharedSecret()) + ", verifyToken=" + java.util.Arrays.toString(this.getVerifyToken()) + ")";
     }
 }

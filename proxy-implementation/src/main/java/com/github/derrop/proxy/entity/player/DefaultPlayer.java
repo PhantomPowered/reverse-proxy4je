@@ -19,13 +19,13 @@ import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayInPositionLook;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayChat;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.LoginResult;
@@ -116,8 +116,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     @Override
     public void sendActionBar(int units, BaseComponent... message) {
         if (this.connectedClient != null) {
-            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayChatMessage
-                            && ((PacketPlayChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
+            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayClientChatMessage
+                            && ((PacketPlayClientChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
                     System.currentTimeMillis() + (units * 100)
             );
         }
@@ -137,7 +137,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void sendData(String channel, byte[] data) {
-        this.sendPacket(new PacketPlayPluginMessage(channel, data));
+        this.sendPacket(new PacketPlayServerPluginMessage(channel, data));
     }
 
     @Override
@@ -391,7 +391,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {
-        this.sendPacket(new PacketPlayChat(message, (byte) position.ordinal()));
+        this.sendPacket(new PacketPlayServerChatMessage(message, (byte) position.ordinal()));
     }
 
     public void disconnect0(BaseComponent... reason) {
@@ -416,7 +416,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private void handleLocationUpdate() {
         this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
-        this.connectedClient.sendPacket(new PacketPlayInPositionLook(this.location, Collections.emptySet()));
+        this.connectedClient.sendPacket(new PacketPlayClientPositionLook(this.location, Collections.emptySet()));
     }
 
     private class Unsafe0 implements EntityLiving.Unsafe {

@@ -1,91 +1,90 @@
 package com.github.derrop.proxy.protocol.play.server;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerLogin extends DefinedPacket {
+public class PacketPlayServerLogin implements Packet {
 
     private int entityId;
     private short gameMode;
     private int dimension;
-    private long seed;
     private short difficulty;
     private short maxPlayers;
     private String levelType;
-    private int viewDistance;
     private boolean reducedDebugInfo;
-    private boolean normalRespawn;
 
-    @Override
-    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        entityId = buf.readInt();
-        gameMode = buf.readUnsignedByte();
-        if (protocolVersion > ProtocolConstants.MINECRAFT_1_9) {
-            dimension = buf.readInt();
-        } else {
-            dimension = buf.readByte();
-        }
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
-            seed = buf.readLong();
-        }
-        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
-            difficulty = buf.readUnsignedByte();
-        }
-        maxPlayers = buf.readUnsignedByte();
-        levelType = readString(buf);
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_14) {
-            viewDistance = readVarInt(buf);
-        }
-        if (protocolVersion >= 29) {
-            reducedDebugInfo = buf.readBoolean();
-        }
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
-            normalRespawn = buf.readBoolean();
-        }
+    public PacketPlayServerLogin(int entityId, short gameMode, int dimension, short difficulty, short maxPlayers, String levelType, boolean reducedDebugInfo) {
+        this.entityId = entityId;
+        this.gameMode = gameMode;
+        this.dimension = dimension;
+        this.difficulty = difficulty;
+        this.maxPlayers = maxPlayers;
+        this.levelType = levelType;
+        this.reducedDebugInfo = reducedDebugInfo;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        buf.writeInt(entityId);
-        buf.writeByte(gameMode);
-        if (protocolVersion > ProtocolConstants.MINECRAFT_1_9) {
-            buf.writeInt(dimension);
-        } else {
-            buf.writeByte(dimension);
-        }
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
-            buf.writeLong(seed);
-        }
-        if (protocolVersion < ProtocolConstants.MINECRAFT_1_14) {
-            buf.writeByte(difficulty);
-        }
-        buf.writeByte(maxPlayers);
-        writeString(levelType, buf);
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_14) {
-            writeVarInt(viewDistance, buf);
-        }
-        if (protocolVersion >= 29) {
-            buf.writeBoolean(reducedDebugInfo);
-        }
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_15) {
-            buf.writeBoolean(normalRespawn);
-        }
+    public PacketPlayServerLogin() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.LOGIN;
+    }
+
+    public int getEntityId() {
+        return this.entityId;
+    }
+
+    public short getGameMode() {
+        return this.gameMode;
+    }
+
+    public int getDimension() {
+        return this.dimension;
+    }
+
+    public short getDifficulty() {
+        return this.difficulty;
+    }
+
+    public String getLevelType() {
+        return this.levelType;
+    }
+
+    public boolean isReducedDebugInfo() {
+        return this.reducedDebugInfo;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.entityId = protoBuf.readInt();
+        this.gameMode = protoBuf.readUnsignedByte();
+        this.dimension = protoBuf.readByte();
+        this.difficulty = protoBuf.readUnsignedByte();
+        this.maxPlayers = protoBuf.readUnsignedByte();
+        this.levelType = protoBuf.readString();
+        this.reducedDebugInfo = protoBuf.readBoolean();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeInt(this.entityId);
+        protoBuf.writeByte(this.gameMode);
+        protoBuf.writeByte(this.dimension);
+        protoBuf.writeByte(this.difficulty);
+        protoBuf.writeByte(this.maxPlayers);
+        protoBuf.writeString(this.levelType);
+        protoBuf.writeBoolean(this.reducedDebugInfo);
+    }
+
+    public String toString() {
+        return "PacketPlayServerLogin{" + "entityId=" + entityId + ", gameMode=" + gameMode + ", dimension=" + dimension + ", difficulty=" + difficulty + ", maxPlayers=" + maxPlayers + ", levelType='" + levelType + '\'' + ", reducedDebugInfo=" + reducedDebugInfo + '}';
     }
 }

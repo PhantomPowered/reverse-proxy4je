@@ -1,62 +1,52 @@
 package com.github.derrop.proxy.protocol.play.server.scoreboard;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
-import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerScoreboardObjective extends DefinedPacket {
+public class PacketPlayServerScoreboardObjective implements Packet {
 
     private String name;
     private String value;
-    private IScoreObjectiveCriteria.EnumRenderType type;
-    /**
-     * 0 to create, 1 to remove, 2 to update display text.
-     */
     private byte action;
+    private IScoreObjectiveCriteria.EnumRenderType type;
 
-    /**
-     * Destroy packet
-     */
     public PacketPlayServerScoreboardObjective(String name) {
         this(name, null, null, (byte) 1);
     }
 
+    public PacketPlayServerScoreboardObjective(String name, String value, IScoreObjectiveCriteria.EnumRenderType type, byte action) {
+        this.name = name;
+        this.value = value;
+        this.type = type;
+        this.action = action;
+    }
+
+    public PacketPlayServerScoreboardObjective() {
+    }
+
     @Override
-    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        name = readString(buf);
-        action = buf.readByte();
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.name = protoBuf.readString();
+        this.action = protoBuf.readByte();
+
         if (action == 0 || action == 2) {
-            value = readString(buf);
-            if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
-                type = IScoreObjectiveCriteria.EnumRenderType.values()[readVarInt(buf)];
-            } else {
-                type = IScoreObjectiveCriteria.EnumRenderType.valueOf(readString(buf).toUpperCase());
-            }
+            this.value = protoBuf.readString();
+            this.type = IScoreObjectiveCriteria.EnumRenderType.valueOf(protoBuf.readString().toUpperCase());
         }
     }
 
     @Override
-    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        writeString(name, buf);
-        buf.writeByte(action);
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeString(this.name);
+        protoBuf.writeByte(this.action);
+
         if (action == 0 || action == 2) {
-            writeString(value, buf);
-            if (protocolVersion >= ProtocolConstants.MINECRAFT_1_13) {
-                writeVarInt(type.ordinal(), buf);
-            } else {
-                writeString(type.toString().toLowerCase(), buf);
-            }
+            protoBuf.writeString(this.value);
+            protoBuf.writeString(this.toString().toLowerCase());
         }
     }
 
@@ -65,17 +55,39 @@ public class PacketPlayServerScoreboardObjective extends DefinedPacket {
         return ProtocolIds.ToClient.Play.SCOREBOARD_OBJECTIVE;
     }
 
-    public enum HealthDisplay {
+    public String getName() {
+        return this.name;
+    }
 
-        INTEGER, HEARTS;
+    public String getValue() {
+        return this.value;
+    }
 
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase(Locale.ROOT);
-        }
+    public IScoreObjectiveCriteria.EnumRenderType getType() {
+        return this.type;
+    }
 
-        public static HealthDisplay fromString(String s) {
-            return valueOf(s.toUpperCase(Locale.ROOT));
-        }
+    public byte getAction() {
+        return this.action;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setType(IScoreObjectiveCriteria.EnumRenderType type) {
+        this.type = type;
+    }
+
+    public void setAction(byte action) {
+        this.action = action;
+    }
+
+    public String toString() {
+        return "PacketPlayServerScoreboardObjective(name=" + this.getName() + ", value=" + this.getValue() + ", type=" + this.getType() + ", action=" + this.getAction() + ")";
     }
 }

@@ -1,17 +1,12 @@
 package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class PacketPlayServerSpawnEntityWeather extends DefinedPacket implements PositionedPacket {
+public class PacketPlayServerSpawnEntityWeather implements PositionedPacket {
 
     private int entityId;
     private int x;
@@ -19,22 +14,15 @@ public class PacketPlayServerSpawnEntityWeather extends DefinedPacket implements
     private int z;
     private byte type;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.entityId = readVarInt(buf);
-        this.type = buf.readByte();
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
+    public PacketPlayServerSpawnEntityWeather(int entityId, int x, int y, int z, byte type) {
+        this.entityId = entityId;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.type = type;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeVarInt(this.entityId, buf);
-        buf.writeByte(this.type);
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
+    public PacketPlayServerSpawnEntityWeather() {
     }
 
     @Override
@@ -58,5 +46,67 @@ public class PacketPlayServerSpawnEntityWeather extends DefinedPacket implements
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.SPAWN_ENTITY_WEATHER;
+    }
+
+    public int getEntityId() {
+        return this.entityId;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public int getZ() {
+        return this.z;
+    }
+
+    public byte getType() {
+        return this.type;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
+    }
+
+    public void setType(byte type) {
+        this.type = type;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.entityId = protoBuf.readVarInt();
+        this.type = protoBuf.readByte();
+        this.x = protoBuf.readInt();
+        this.y = protoBuf.readInt();
+        this.z = protoBuf.readInt();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeVarInt(this.entityId);
+        protoBuf.writeByte(this.type);
+        protoBuf.writeInt(this.x);
+        protoBuf.writeInt(this.y);
+        protoBuf.writeInt(this.z);
+    }
+
+    public String toString() {
+        return "PacketPlayServerSpawnEntityWeather(entityId=" + this.getEntityId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", type=" + this.getType() + ")";
     }
 }

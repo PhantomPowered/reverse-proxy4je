@@ -1,10 +1,10 @@
 package com.github.derrop.proxy.network.length;
 
+import com.github.derrop.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class LengthFrameDecoder extends ByteToMessageDecoder {
 
             buffer[i] = byteBuf.readByte();
             if (buffer[i] >= 0) {
-                int length = DefinedPacket.readVarInt(Unpooled.wrappedBuffer(buffer));
+                int length = ByteBufUtils.readVarInt(Unpooled.wrappedBuffer(buffer));
                 if (length == 0) {
                     System.err.println("Unable to handle empty packet! Dump: " + channelHandlerContext.toString());
                     return;

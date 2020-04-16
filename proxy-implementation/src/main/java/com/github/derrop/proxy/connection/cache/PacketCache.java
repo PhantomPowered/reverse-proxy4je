@@ -13,7 +13,7 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerGameStateChange;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.protocol.DefinedPacket;
+import com.github.derrop.proxy.api.network.Packet;
 
 import java.util.ArrayList;
 import java.util.Arrays;

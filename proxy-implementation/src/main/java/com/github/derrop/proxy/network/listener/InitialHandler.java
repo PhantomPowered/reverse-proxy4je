@@ -18,7 +18,7 @@ import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
@@ -84,29 +84,29 @@ public class InitialHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Handshaking.SET_PROTOCOL, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.HANDSHAKING)
-    public void handle(NetworkChannel channel, PacketHandshakingInSetProtocol packetHandshakingInSetProtocol) throws Exception {
+    public void handle(NetworkChannel channel, PacketHandshakingClientSetProtocol packetHandshakingClientSetProtocol) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.HANDSHAKE, "Not expecting HANDSHAKE");
-        channel.setProperty("sentProtocol", packetHandshakingInSetProtocol.getProtocolVersion());
+        channel.setProperty("sentProtocol", packetHandshakingClientSetProtocol.getProtocolVersion());
 
         // Starting with FML 1.8, a "\0FML\0" token is appended to the handshake. This interferes
         // with Bungee's IP forwarding, so we detect it, and remove it from the host string, for now.
         // We know FML appends \00FML\00. However, we need to also consider that other systems might
         // add their own data to the end of the string. So, we just take everything from the \0 character
         // and save it for later.
-        if (packetHandshakingInSetProtocol.getHost().contains("\0")) {
-            String[] split = packetHandshakingInSetProtocol.getHost().split("\0", 2);
-            packetHandshakingInSetProtocol.setHost(split[0]);
+        if (packetHandshakingClientSetProtocol.getHost().contains("\0")) {
+            String[] split = packetHandshakingClientSetProtocol.getHost().split("\0", 2);
+            packetHandshakingClientSetProtocol.setHost(split[0]);
             channel.setProperty("extraDataInHandshake", "\0" + split[1]);
         }
 
         // SRV records can end with a . depending on DNS / client.
-        if (packetHandshakingInSetProtocol.getHost().endsWith(".")) {
-            packetHandshakingInSetProtocol.setHost(packetHandshakingInSetProtocol.getHost().substring(0, packetHandshakingInSetProtocol.getHost().length() - 1));
+        if (packetHandshakingClientSetProtocol.getHost().endsWith(".")) {
+            packetHandshakingClientSetProtocol.setHost(packetHandshakingClientSetProtocol.getHost().substring(0, packetHandshakingClientSetProtocol.getHost().length() - 1));
         }
 
-        channel.setProperty("virtualHost", InetSocketAddress.createUnresolved(packetHandshakingInSetProtocol.getHost(), packetHandshakingInSetProtocol.getPort()));
+        channel.setProperty("virtualHost", InetSocketAddress.createUnresolved(packetHandshakingClientSetProtocol.getHost(), packetHandshakingClientSetProtocol.getPort()));
 
-        switch (packetHandshakingInSetProtocol.getRequestedProtocol()) {
+        switch (packetHandshakingClientSetProtocol.getRequestedProtocol()) {
             case 1:
                 // Ping
                 channel.setProperty(INIT_STATE, State.STATUS);
@@ -120,13 +120,13 @@ public class InitialHandler {
                 channel.setProtocolState(ProtocolState.LOGIN);
                 //System.out.println("Connect: " + this);
 
-                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(packetHandshakingInSetProtocol.getProtocolVersion())) {
+                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(packetHandshakingClientSetProtocol.getProtocolVersion())) {
                     disconnect(channel, "We only support 1.8");
                     return;
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Cannot request protocol " + packetHandshakingInSetProtocol.getRequestedProtocol());
+                throw new IllegalArgumentException("Cannot request protocol " + packetHandshakingClientSetProtocol.getRequestedProtocol());
         }
     }
 

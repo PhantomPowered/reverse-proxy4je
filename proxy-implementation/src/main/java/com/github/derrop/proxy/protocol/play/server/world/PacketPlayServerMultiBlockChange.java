@@ -1,44 +1,25 @@
 package com.github.derrop.proxy.protocol.play.server.world;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class PacketPlayServerMultiBlockChange extends DefinedPacket {
+public class PacketPlayServerMultiBlockChange implements Packet {
 
     private int chunkX;
     private int chunkZ;
     private BlockUpdateData[] updateData;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.chunkX = buf.readInt();
-        this.chunkZ = buf.readInt();
-        this.updateData = new BlockUpdateData[readVarInt(buf)];
-
-        for (int i = 0; i < this.updateData.length; i++) {
-            this.updateData[i] = new BlockUpdateData(buf.readShort(), readVarInt(buf));
-        }
+    public PacketPlayServerMultiBlockChange(int chunkX, int chunkZ, BlockUpdateData[] updateData) {
+        this.chunkX = chunkX;
+        this.chunkZ = chunkZ;
+        this.updateData = updateData;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        buf.writeInt(this.chunkX);
-        buf.writeInt(this.chunkZ);
-        writeVarInt(this.updateData.length, buf);
-
-        for (BlockUpdateData updateData : this.updateData) {
-            buf.writeShort(updateData.getChunkPosCrammed());
-            writeVarInt(updateData.getBlockState(), buf);
-        }
+    public PacketPlayServerMultiBlockChange() {
     }
 
     @Override
@@ -46,9 +27,48 @@ public class PacketPlayServerMultiBlockChange extends DefinedPacket {
         return ProtocolIds.ToClient.Play.MULTI_BLOCK_CHANGE;
     }
 
+    public int getChunkX() {
+        return this.chunkX;
+    }
+
+    public int getChunkZ() {
+        return this.chunkZ;
+    }
+
+    public BlockUpdateData[] getUpdateData() {
+        return this.updateData;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.chunkX = protoBuf.readInt();
+        this.chunkZ = protoBuf.readInt();
+        this.updateData = new BlockUpdateData[protoBuf.readVarInt()];
+
+        for (int i = 0; i < this.updateData.length; i++) {
+            this.updateData[i] = new BlockUpdateData(protoBuf.readShort(), protoBuf.readVarInt());
+        }
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeInt(this.chunkX);
+        protoBuf.writeInt(this.chunkZ);
+        protoBuf.writeVarInt(this.updateData.length);
+
+        for (BlockUpdateData updateData : this.updateData) {
+            protoBuf.writeShort(updateData.getChunkPosCrammed());
+            protoBuf.writeVarInt(updateData.getBlockState());
+        }
+    }
+
+    public String toString() {
+        return "PacketPlayServerMultiBlockChange(chunkX=" + this.getChunkX() + ", chunkZ=" + this.getChunkZ() + ", updateData=" + java.util.Arrays.deepToString(this.getUpdateData()) + ")";
+    }
+
     public class BlockUpdateData {
-        private short chunkPosCrammed;
-        private int blockState;
+        private final short chunkPosCrammed;
+        private final int blockState;
 
         public BlockUpdateData(short chunkPosCrammed, int blockState) {
             this.chunkPosCrammed = chunkPosCrammed;

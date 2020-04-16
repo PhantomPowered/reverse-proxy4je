@@ -4,35 +4,47 @@
  */
 package com.github.derrop.proxy.protocol.login.client;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketLoginInLoginRequest extends DefinedPacket {
+public class PacketLoginInLoginRequest implements Packet {
 
     private String data;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        data = readString(buf);
+    public PacketLoginInLoginRequest(String data) {
+        this.data = data;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeString(data, buf);
+    public PacketLoginInLoginRequest() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.FromClient.Login.START;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.data = protoBuf.readString();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeString(this.data);
+    }
+
+    public String getData() {
+        return this.data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String toString() {
+        return "PacketLoginInLoginRequest(data=" + this.getData() + ")";
     }
 }

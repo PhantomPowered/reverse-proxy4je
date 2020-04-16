@@ -15,16 +15,16 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayChat;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 public class ServerPacketHandler {
 
     @PacketHandler
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
-        client.redirectPacket(packet.getByteBuf(), packet.getPacket());
+        client.redirectPacket(packet.getProtoBuf().clone(), packet.getPacket());
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KEEP_ALIVE, directions = ProtocolDirection.TO_CLIENT)
@@ -42,7 +42,7 @@ public class ServerPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_CLIENT)
-    public void handlePluginMessage(ConnectedProxyClient client, PacketPlayPluginMessage pluginMessage) {
+    public void handlePluginMessage(ConnectedProxyClient client, PacketPlayServerPluginMessage pluginMessage) {
         PluginMessageEvent event = new PluginMessageEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
@@ -72,7 +72,7 @@ public class ServerPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT)
-    public void handle(ConnectedProxyClient client, PacketPlayChat chat) throws Exception {
+    public void handle(ConnectedProxyClient client, PacketPlayServerChatMessage chat) throws Exception {
         ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;

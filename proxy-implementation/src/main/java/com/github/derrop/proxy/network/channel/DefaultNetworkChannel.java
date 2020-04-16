@@ -58,7 +58,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
         }
 
         if (packet instanceof DecodedPacket) {
-            this.channel.writeAndFlush(((DecodedPacket) packet).getByteBuf(), this.channel.voidPromise());
+            this.channel.writeAndFlush(((DecodedPacket) packet).getProtoBuf(), this.channel.voidPromise());
         } else {
             this.channel.writeAndFlush(packet, this.channel.voidPromise());
         }
@@ -68,7 +68,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
     public @NotNull Task<Boolean> writeWithResult(@NotNull Object packet) {
         Task<Boolean> task = new DefaultTask<>();
         if (packet instanceof DecodedPacket) {
-            this.channel.writeAndFlush(((DecodedPacket) packet).getByteBuf()).addListener(future -> task.complete(future.isSuccess()));
+            this.channel.writeAndFlush(((DecodedPacket) packet).getProtoBuf()).addListener(future -> task.complete(future.isSuccess()));
         } else {
             this.channel.writeAndFlush(packet).addListener(future -> task.complete(future.isSuccess()));
         }

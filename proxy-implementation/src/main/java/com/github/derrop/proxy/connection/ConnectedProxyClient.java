@@ -9,6 +9,8 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
@@ -25,13 +27,13 @@ import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
-import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
+import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
+import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
@@ -39,7 +41,6 @@ import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -173,7 +174,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
                 super.setChannel(future1.channel());
                 this.address = address;
 
-                super.write(new PacketHandshakingInSetProtocol(47, address.getHost(), address.getPort(), 2));
+                super.write(new PacketHandshakingClientSetProtocol(47, address.getHost(), address.getPort(), 2));
                 super.setProtocolState(ProtocolState.LOGIN);
                 super.write(new PacketLoginInLoginRequest(this.getAccountName()));
                 future.complete(true);
@@ -320,7 +321,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.blockedPackets.put(tester, until);
     }
 
-    public void redirectPacket(ByteBuf packet, Packet deserialized) {
+    public void redirectPacket(ProtoBuf packet, Packet deserialized) {
         if (!this.isConnected() || super.getProtocolState() != ProtocolState.PLAY) {
             return;
         }
@@ -356,10 +357,9 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             if (deserialized != null) { // rewrite to allow modifications by the packet handlers
                 int id = ByteBufUtils.readVarInt(packet);
 
-                ByteBuf buf = Unpooled.buffer();
+                ProtoBuf buf = new DefaultProtoBuf(packet.getProtocolVersion(), Unpooled.buffer());
                 ByteBufUtils.writeVarInt(id, buf);
-
-                deserialized.write(buf, ProtocolDirection.TO_CLIENT, 47);
+                deserialized.write(buf, ProtocolDirection.TO_CLIENT, buf.getProtocolVersion());
 
                 this.redirector.sendPacket(buf);
             } else {

@@ -55,13 +55,10 @@ public class LoginCache implements PacketCacheHandler {
                         this.lastLogin.getEntityId(),
                         (short) 0,
                         this.lastLogin.getDimension(),
-                        0,
                         this.lastLogin.getDifficulty(),
                         (short) 255,
                         this.lastLogin.getLevelType(),
-                        this.lastLogin.getViewDistance(),
-                        this.lastLogin.isReducedDebugInfo(),
-                        this.lastLogin.isNormalRespawn()
+                        this.lastLogin.isReducedDebugInfo()
                 );
                 player.sendPacket(login);
                 player.setDimension(this.lastLogin.getDimension());
@@ -71,7 +68,7 @@ public class LoginCache implements PacketCacheHandler {
 
             PacketPlayServerEntityStatus entityStatus = new PacketPlayServerEntityStatus(
                     player.getEntityId(),
-                    this.lastLogin.isReducedDebugInfo() ? PacketPlayServerEntityStatus.DEBUG_INFO_REDUCED : PacketPlayServerEntityStatus.DEBUG_INFO_NORMAL
+                    (byte) (this.lastLogin.isReducedDebugInfo() ? 22 : 23)
             );
             player.sendPacket(entityStatus);
             player.setDimensionChange(true);
@@ -80,7 +77,6 @@ public class LoginCache implements PacketCacheHandler {
         if (!(con instanceof Player) || this.lastLogin.getDimension() == ((Player) con).getDimension()) {
             con.sendPacket(new PacketPlayServerRespawn(
                     (this.lastLogin.getDimension() >= 0 ? -1 : 0),
-                    this.lastLogin.getSeed(),
                     this.lastLogin.getDifficulty(),
                     this.lastLogin.getGameMode(),
                     this.lastLogin.getLevelType()
@@ -89,7 +85,6 @@ public class LoginCache implements PacketCacheHandler {
 
         con.sendPacket(new PacketPlayServerRespawn(
                 this.lastLogin.getDimension(),
-                this.lastLogin.getSeed(),
                 this.lastLogin.getDifficulty(),
                 this.lastLogin.getGameMode(),
                 this.lastLogin.getLevelType()

@@ -41,7 +41,11 @@ public final class NetworkUtils {
 
     public static int roundedPowDouble(double d1, double d2) {
         long result = Math.round(Math.pow(d1, d2));
-        return result > Integer.MAX_VALUE ? Integer.MAX_VALUE : result < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int) result;
+        return longToInt(result);
+    }
+
+    public static int longToInt(long in) {
+        return in > Integer.MAX_VALUE ? Integer.MAX_VALUE : in < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int) in;
     }
 
     public static int varintSize(int paramInt) {

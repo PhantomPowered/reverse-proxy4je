@@ -16,8 +16,8 @@ import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayCustomPayload;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
@@ -39,7 +39,7 @@ public class ClientPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)
-    private void handleChat(DefaultPlayer player, PacketPlayChatMessage chat) throws Exception {
+    private void handleChat(DefaultPlayer player, PacketPlayClientChatMessage chat) throws Exception {
         int maxLength = (player.getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
             throw CancelProceedException.INSTANCE;
@@ -68,7 +68,7 @@ public class ClientPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)
-    private void handlePluginMessage(DefaultPlayer player, PacketPlayCustomPayload pluginMessage) throws Exception {
+    private void handlePluginMessage(DefaultPlayer player, PacketPlayClientCustomPayload pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(player, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;

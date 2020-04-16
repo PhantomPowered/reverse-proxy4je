@@ -1,21 +1,12 @@
 package com.github.derrop.proxy.protocol.play.client;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayClientSettings extends DefinedPacket {
+public class PacketPlayClientSettings implements Packet {
 
     private String locale;
     private byte viewDistance;
@@ -23,38 +14,67 @@ public class PacketPlayClientSettings extends DefinedPacket {
     private boolean chatColours;
     private byte difficulty;
     private byte skinParts;
-    private int mainHand;
 
-    @Override
-    public void read(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        locale = readString(buf);
-        viewDistance = buf.readByte();
-        chatFlags = protocolVersion >= ProtocolConstants.MINECRAFT_1_9 ? DefinedPacket.readVarInt(buf) : buf.readUnsignedByte();
-        chatColours = buf.readBoolean();
-        skinParts = buf.readByte();
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_9) {
-            mainHand = DefinedPacket.readVarInt(buf);
-        }
+    public PacketPlayClientSettings(String locale, byte viewDistance, int chatFlags, boolean chatColours, byte difficulty, byte skinParts) {
+        this.locale = locale;
+        this.viewDistance = viewDistance;
+        this.chatFlags = chatFlags;
+        this.chatColours = chatColours;
+        this.difficulty = difficulty;
+        this.skinParts = skinParts;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        writeString(locale, buf);
-        buf.writeByte(viewDistance);
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_9) {
-            DefinedPacket.writeVarInt(chatFlags, buf);
-        } else {
-            buf.writeByte(chatFlags);
-        }
-        buf.writeBoolean(chatColours);
-        buf.writeByte(skinParts);
-        if (protocolVersion >= ProtocolConstants.MINECRAFT_1_9) {
-            DefinedPacket.writeVarInt(mainHand, buf);
-        }
+    public PacketPlayClientSettings() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.FromClient.Play.SETTINGS;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.locale = protoBuf.readString();
+        this.viewDistance = protoBuf.readByte();
+        this.chatFlags = protoBuf.readUnsignedByte();
+        this.chatColours = protoBuf.readBoolean();
+        this.skinParts = protoBuf.readByte();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeString(this.locale);
+        protoBuf.writeByte(this.viewDistance);
+        protoBuf.writeByte(this.chatFlags);
+        protoBuf.writeBoolean(this.chatColours);
+        protoBuf.writeByte(this.skinParts);
+    }
+
+    public String getLocale() {
+        return this.locale;
+    }
+
+    public byte getViewDistance() {
+        return this.viewDistance;
+    }
+
+    public int getChatFlags() {
+        return this.chatFlags;
+    }
+
+    public boolean isChatColours() {
+        return this.chatColours;
+    }
+
+    public byte getDifficulty() {
+        return this.difficulty;
+    }
+
+    public byte getSkinParts() {
+        return this.skinParts;
+    }
+
+    public String toString() {
+        return "PacketPlayClientSettings(locale=" + this.getLocale() + ", viewDistance=" + this.getViewDistance() + ", chatFlags=" + this.getChatFlags() + ", chatColours=" + this.isChatColours() + ", difficulty=" + this.getDifficulty() + ", skinParts=" + this.getSkinParts() + ")";
     }
 }

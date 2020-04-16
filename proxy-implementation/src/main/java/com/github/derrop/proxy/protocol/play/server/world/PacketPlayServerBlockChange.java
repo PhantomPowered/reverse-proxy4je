@@ -1,36 +1,51 @@
 package com.github.derrop.proxy.protocol.play.server.world;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString
-public class PacketPlayServerBlockChange extends DefinedPacket {
+public class PacketPlayServerBlockChange implements Packet {
 
     private BlockPos pos;
     private int blockState;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.pos = BlockPos.fromLong(buf.readLong());
-        this.blockState = readVarInt(buf);
+    public PacketPlayServerBlockChange(BlockPos pos, int blockState) {
+        this.pos = pos;
+        this.blockState = blockState;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        buf.writeLong(this.pos.toLong());
-        writeVarInt(this.blockState, buf);
+    public PacketPlayServerBlockChange() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.BLOCK_CHANGE;
+    }
+
+    public BlockPos getPos() {
+        return this.pos;
+    }
+
+    public int getBlockState() {
+        return this.blockState;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.blockState = protoBuf.readVarInt();
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeVarInt(this.blockState);
+    }
+
+    public String toString() {
+        return "PacketPlayServerBlockChange(pos=" + this.getPos() + ", blockState=" + this.getBlockState() + ")";
     }
 }

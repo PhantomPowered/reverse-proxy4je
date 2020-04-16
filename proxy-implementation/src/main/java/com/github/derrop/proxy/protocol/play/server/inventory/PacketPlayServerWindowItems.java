@@ -1,45 +1,60 @@
 package com.github.derrop.proxy.protocol.play.server.inventory;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.connection.PacketUtil;
 import com.github.derrop.proxy.connection.cache.InventoryItem;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerWindowItems extends DefinedPacket {
+public class PacketPlayServerWindowItems implements Packet {
 
     private byte windowId;
     private InventoryItem[] items;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.windowId = buf.readByte();
-        this.items = new InventoryItem[buf.readShort()];
-        for (int i = 0; i < this.items.length; i++) {
-            this.items[i] = PacketUtil.readItem(buf);
-        }
+    public PacketPlayServerWindowItems(byte windowId, InventoryItem[] items) {
+        this.windowId = windowId;
+        this.items = items;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        buf.writeByte(this.windowId);
-        buf.writeShort(this.items.length);
-        for (InventoryItem item : this.items) {
-            PacketUtil.writeItem(buf, item);
-        }
+    public PacketPlayServerWindowItems() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.WINDOW_ITEMS;
+    }
+
+    public byte getWindowId() {
+        return this.windowId;
+    }
+
+    public InventoryItem[] getItems() {
+        return this.items;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.windowId = protoBuf.readByte();
+        this.items = new InventoryItem[protoBuf.readShort()];
+
+        for (int i = 0; i < this.items.length; i++) {
+            this.items[i] = PacketUtil.readItem(protoBuf);
+        }
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeByte(this.windowId);
+        protoBuf.writeShort(this.items.length);
+
+        for (InventoryItem item : this.items) {
+            PacketUtil.writeItem(protoBuf, item);
+        }
+    }
+
+    public String toString() {
+        return "PacketPlayServerWindowItems(windowId=" + this.getWindowId() + ", items=" + java.util.Arrays.deepToString(this.getItems()) + ")";
     }
 }

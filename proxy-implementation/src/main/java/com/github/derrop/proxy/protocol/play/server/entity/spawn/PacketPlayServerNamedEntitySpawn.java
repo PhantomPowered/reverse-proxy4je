@@ -1,22 +1,19 @@
 package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.DataWatcher;
 import io.netty.buffer.ByteBuf;
-import lombok.*;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-@Data
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class PacketPlayServerNamedEntitySpawn extends DefinedPacket implements PositionedPacket {
+public class PacketPlayServerNamedEntitySpawn implements PositionedPacket {
 
     private int entityId;
     private UUID playerId;
@@ -28,42 +25,137 @@ public class PacketPlayServerNamedEntitySpawn extends DefinedPacket implements P
     private short currentItem;
     private List<DataWatcher.WatchableObject> watchableObjects;
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.entityId = readVarInt(buf);
-        this.playerId = readUUID(buf);
-        this.x = buf.readInt();
-        this.y = buf.readInt();
-        this.z = buf.readInt();
-        this.yaw = buf.readByte();
-        this.pitch = buf.readByte();
-        this.currentItem = buf.readShort();
-        try {
-            this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(buf);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, int x, int y, int z, byte yaw, byte pitch, short currentItem, List<DataWatcher.WatchableObject> watchableObjects) {
+        this.entityId = entityId;
+        this.playerId = playerId;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.currentItem = currentItem;
+        this.watchableObjects = watchableObjects;
     }
 
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        writeVarInt(this.entityId, buf);
-        writeUUID(this.playerId, buf);
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeByte(this.yaw);
-        buf.writeByte(this.pitch);
-        buf.writeShort(this.currentItem);
-        try {
-            DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, buf);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+    public PacketPlayServerNamedEntitySpawn() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN;
+    }
+
+    public int getEntityId() {
+        return this.entityId;
+    }
+
+    public UUID getPlayerId() {
+        return this.playerId;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public int getZ() {
+        return this.z;
+    }
+
+    public byte getYaw() {
+        return this.yaw;
+    }
+
+    public byte getPitch() {
+        return this.pitch;
+    }
+
+    public short getCurrentItem() {
+        return this.currentItem;
+    }
+
+    public List<DataWatcher.WatchableObject> getWatchableObjects() {
+        return this.watchableObjects;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
+    }
+
+    public void setYaw(byte yaw) {
+        this.yaw = yaw;
+    }
+
+    public void setPitch(byte pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setCurrentItem(short currentItem) {
+        this.currentItem = currentItem;
+    }
+
+    public void setWatchableObjects(List<DataWatcher.WatchableObject> watchableObjects) {
+        this.watchableObjects = watchableObjects;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.entityId = protoBuf.readVarInt();
+        this.playerId = protoBuf.readUniqueId();
+
+        this.x = protoBuf.readInt();
+        this.y = protoBuf.readInt();
+        this.z = protoBuf.readInt();
+        this.yaw = protoBuf.readByte();
+        this.pitch = protoBuf.readByte();
+        this.currentItem = protoBuf.readShort();
+
+        try {
+            this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
+        } catch (final IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeVarInt(this.entityId);
+        protoBuf.writeUniqueId(this.playerId);
+
+        protoBuf.writeInt(this.x);
+        protoBuf.writeInt(this.y);
+        protoBuf.writeInt(this.z);
+        protoBuf.writeByte(this.yaw);
+        protoBuf.writeByte(this.pitch);
+        protoBuf.writeShort(this.currentItem);
+
+        try {
+            DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
+        } catch (final IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public String toString() {
+        return "PacketPlayServerNamedEntitySpawn(entityId=" + this.getEntityId() + ", playerId=" + this.getPlayerId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", yaw=" + this.getYaw() + ", pitch=" + this.getPitch() + ", currentItem=" + this.getCurrentItem() + ", watchableObjects=" + this.getWatchableObjects() + ")";
     }
 }

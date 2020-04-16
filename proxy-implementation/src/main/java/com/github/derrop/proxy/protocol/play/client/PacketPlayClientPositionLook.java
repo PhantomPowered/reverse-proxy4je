@@ -1,20 +1,17 @@
 package com.github.derrop.proxy.protocol.play.client;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
-import io.netty.buffer.ByteBuf;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.protocol.DefinedPacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-@Getter
-@NoArgsConstructor
-public class PacketPlayInPositionLook extends DefinedPacket {
+public class PacketPlayClientPositionLook implements Packet {
 
     private double x;
     private double y;
@@ -23,7 +20,7 @@ public class PacketPlayInPositionLook extends DefinedPacket {
     private float pitch;
     private Set<EnumFlags> flags;
 
-    public PacketPlayInPositionLook(Location location, Set<EnumFlags> flags) {
+    public PacketPlayClientPositionLook(Location location, Set<EnumFlags> flags) {
         this.x = location.getX();
         this.y = location.getY();
         this.z = location.getZ();
@@ -32,29 +29,56 @@ public class PacketPlayInPositionLook extends DefinedPacket {
         this.flags = flags;
     }
 
-    @Override
-    public void read(@NotNull ByteBuf buf) {
-        this.x = buf.readDouble();
-        this.y = buf.readDouble();
-        this.z = buf.readDouble();
-        this.yaw = buf.readFloat();
-        this.pitch = buf.readFloat();
-        this.flags = EnumFlags.read(buf.readUnsignedByte());
-    }
-
-    @Override
-    public void write(@NotNull ByteBuf buf) {
-        buf.writeDouble(this.x);
-        buf.writeDouble(this.y);
-        buf.writeDouble(this.z);
-        buf.writeFloat(this.yaw);
-        buf.writeFloat(this.pitch);
-        buf.writeByte(EnumFlags.write(this.flags));
+    public PacketPlayClientPositionLook() {
     }
 
     @Override
     public int getId() {
         return ProtocolIds.FromClient.Play.POSITION_LOOK;
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.x = protoBuf.readDouble();
+        this.y = protoBuf.readDouble();
+        this.z = protoBuf.readDouble();
+        this.yaw = protoBuf.readFloat();
+        this.pitch = protoBuf.readFloat();
+        this.flags = EnumFlags.read(protoBuf.readUnsignedByte());
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        protoBuf.writeDouble(this.x);
+        protoBuf.writeDouble(this.y);
+        protoBuf.writeDouble(this.z);
+        protoBuf.writeFloat(this.yaw);
+        protoBuf.writeFloat(this.pitch);
+        protoBuf.writeByte(EnumFlags.write(this.flags));
+    }
+
+    public double getX() {
+        return this.x;
+    }
+
+    public double getY() {
+        return this.y;
+    }
+
+    public double getZ() {
+        return this.z;
+    }
+
+    public float getYaw() {
+        return this.yaw;
+    }
+
+    public float getPitch() {
+        return this.pitch;
+    }
+
+    public Set<EnumFlags> getFlags() {
+        return this.flags;
     }
 
     public enum EnumFlags {
