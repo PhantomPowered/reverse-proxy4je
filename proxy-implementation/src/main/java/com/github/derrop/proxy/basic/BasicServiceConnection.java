@@ -4,23 +4,24 @@ import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.ban.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -28,9 +29,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.ChatComponentTransformer;
 import net.md_5.bungee.chat.ComponentSerializer;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -140,13 +139,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void chat(@NotNull BaseComponent component) {
-        component = ChatComponentTransformer.getInstance().transform(this.client.getRedirector(), component)[0];
         this.chat(ComponentSerializer.toString(component));
     }
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull BaseComponent component) {
-        component = ChatComponentTransformer.getInstance().transform(this.client.getRedirector(), component)[0];
         if (type == ChatMessageType.ACTION_BAR) {
             this.displayMessage(type, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(component))));
         } else {
@@ -156,13 +153,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void chat(@NotNull BaseComponent... components) {
-        components = ChatComponentTransformer.getInstance().transform(this.client.getRedirector(), components);
         this.chat(ComponentSerializer.toString(components));
     }
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull BaseComponent... components) {
-        components = ChatComponentTransformer.getInstance().transform(this.client.getRedirector(), components);
         if (type == ChatMessageType.ACTION_BAR) {
             this.displayMessage(type, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(components))));
         } else {
