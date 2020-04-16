@@ -10,6 +10,8 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockChange;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunk;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunkBulk;
@@ -20,7 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChunkCache implements PacketCacheHandler {
 
-    private Collection<Chunk> chunks = new CopyOnWriteArrayList<>(); // TODO Reset on Dimension Change
+    private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
+    private int dimension;
 
     private Player connectedPlayer;
 
@@ -32,7 +35,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.CHUNK_DATA, PacketConstants.CHUNK_BULK, PacketConstants.BLOCK_UPDATE, PacketConstants.MULTI_BLOCK_UPDATE};
+        return new int[]{PacketConstants.CHUNK_DATA, PacketConstants.CHUNK_BULK, PacketConstants.BLOCK_UPDATE, PacketConstants.MULTI_BLOCK_UPDATE, ProtocolIds.ToClient.Play.RESPAWN};
     }
 
     @Override
@@ -40,7 +43,12 @@ public class ChunkCache implements PacketCacheHandler {
         PacketPlayServerMapChunk[] data = null;
         Packet packet = newPacket.getDeserializedPacket();
 
-        if (packet instanceof PacketPlayServerMapChunk) {
+        if (packet instanceof PacketPlayServerRespawn) {
+
+            this.dimension = ((PacketPlayServerRespawn) packet).getDimension();
+            this.chunks.clear();
+
+        } else if (packet instanceof PacketPlayServerMapChunk) {
 
             data = new PacketPlayServerMapChunk[]{(PacketPlayServerMapChunk) packet};
 
@@ -96,7 +104,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     private void load(PacketPlayServerMapChunk chunkData) {
         Chunk chunk = new Chunk();
-        chunk.fillChunk(chunkData);
+        chunk.fillChunk(chunkData, this.dimension);
         this.chunks.add(chunk);
 
         if (this.blockAccess != null) {
@@ -164,7 +172,7 @@ public class ChunkCache implements PacketCacheHandler {
             if (chunk.getLastChunkData() == null) {
                 continue;
             }
-            PacketPlayServerMapChunk data = new PacketPlayServerMapChunk(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isFullChunk(), chunk.getBytes());
+            PacketPlayServerMapChunk data = new PacketPlayServerMapChunk(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isFullChunk(), chunk.getBytes(this.dimension));
             sender.sendPacket(data);
         }
     }

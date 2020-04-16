@@ -13,14 +13,15 @@ public class Chunk {
     private ExtendedBlockStorage[] storageArrays = new ExtendedBlockStorage[16];
     private PacketPlayServerMapChunk lastChunkData;
     private byte[] biomeArray = new byte[256];
-    private boolean hasSky;
 
-    public void fillChunk(PacketPlayServerMapChunk chunkData) {
-        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isFullChunk());
+    public void fillChunk(PacketPlayServerMapChunk chunkData, int dimension) {
+        this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isFullChunk(), dimension);
         this.lastChunkData = chunkData;
     }
 
-    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk) { // TODO this doesn't work in the nether, but hasSky works perfectly
+    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk, int dimension) { // TODO this doesn't work in the nether, but hasSky works perfectly
+        boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
+
         int i = 0;
 
         for (int j = 0; j < this.storageArrays.length; ++j) {
@@ -43,17 +44,10 @@ public class Chunk {
         for (int j = 0; j < this.storageArrays.length; j++) {
             if (this.storageArrays[j] != null) {
                 i += 2048; // skip block light data
+                if (hasSky) {
+                    i += 2048; // skip sky light data
+                }
             }
-        }
-        int oldI = i;
-        for (int j = 0; j < this.storageArrays.length; j++) {
-            if (this.storageArrays[j] != null) {
-                i += 2048; // skip sky light data
-            }
-        }
-        this.hasSky = data.length - i == (fullChunk ? 256 : 0); // has the packet skylight data? (256 = biome data -> sent if fullChunk is true)
-        if (!hasSky) {
-            i = oldI;
         }
 
         if (fullChunk) {
@@ -62,13 +56,14 @@ public class Chunk {
 
     }
 
-    public PacketPlayServerMapChunk.Extracted getBytes() {
+    public PacketPlayServerMapChunk.Extracted getBytes(int dimension) {
         if (this.lastChunkData == null) {
             return null;
         }
 
         int maxLength = 65535;
         boolean fullChunk = this.lastChunkData.isFullChunk();
+        boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
 
         ExtendedBlockStorage[] storages = this.storageArrays;
         PacketPlayServerMapChunk.Extracted extracted = new PacketPlayServerMapChunk.Extracted();
@@ -99,7 +94,7 @@ public class Chunk {
             j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
         }
 
-        if (this.hasSky) {
+        if (hasSky) {
             for (ExtendedBlockStorage extendedblockstorage3 : list) {
                 j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
             }
