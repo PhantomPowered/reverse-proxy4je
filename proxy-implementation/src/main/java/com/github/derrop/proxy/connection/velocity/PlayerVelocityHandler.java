@@ -2,14 +2,13 @@ package com.github.derrop.proxy.connection.velocity;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.protocol.client.PacketPlayInPlayerPositionLook;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PositionedPacket;
-import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.util.Arrays;
 
@@ -38,8 +37,8 @@ public class PlayerVelocityHandler {
 
     private double lastReportedPosX, lastReportedPosY, lastReportedPosZ;
 
-    public void handlePacket(ProtocolConstants.Direction direction, Packet packet) {
-        if (direction == ProtocolConstants.Direction.TO_CLIENT) {
+    public void handlePacket(ProtocolDirection direction, Packet packet) {
+        if (direction == ProtocolDirection.TO_CLIENT) {
             /*if (packet instanceof EntityVelocity) {
                 this.motionX = ((EntityVelocity) packet).getMotionX() / 8000D;
                 this.motionY = ((EntityVelocity) packet).getMotionY() / 8000D;
@@ -61,7 +60,7 @@ public class PlayerVelocityHandler {
                 }
                 this.moveEntity(this.posX, this.posY, this.posZ);
             }
-        } else if (direction == ProtocolConstants.Direction.TO_SERVER) {
+        } else if (direction == ProtocolDirection.TO_SERVER) {
             // todo idk if it is necessary to listen to the packets by the client for positions like they are sent below
             /*if (packet instanceof PlayerPosition) {
                 this.posX = ((PlayerPosition) packet).getX();

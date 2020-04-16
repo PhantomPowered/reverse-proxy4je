@@ -31,7 +31,7 @@ public class ClientPacketHandler {
             }
 
             if (packet.getPacket() != null) {
-                player.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.getPacket());
+                player.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolDirection.TO_SERVER, packet.getPacket());
             }
 
             player.getConnectedClient().sendPacket(packet);

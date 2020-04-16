@@ -46,7 +46,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
-import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -350,7 +349,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
         this.packetCache.handlePacket(packet, deserialized);
         if (deserialized != null) {
-            this.velocityHandler.handlePacket(ProtocolConstants.Direction.TO_CLIENT, deserialized);
+            this.velocityHandler.handlePacket(ProtocolDirection.TO_CLIENT, deserialized);
         }
 
         if (this.redirector != null) {
