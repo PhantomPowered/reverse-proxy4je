@@ -1,8 +1,10 @@
 package com.github.derrop.proxy.basic;
 
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.player.GameMode;
 import com.github.derrop.proxy.connection.cache.handler.GameStateCache;
+import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
@@ -58,5 +60,14 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
     @Override
     public GameMode getOwnGameMode() {
         return this.getGameStateCache().getGameMode();
+    }
+
+    @Override
+    public PlayerInfo[] getOnlinePlayers() {
+        PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+
+        return cache.getItems().stream()
+                .map(item -> new BasicPlayerInfo(item.getUuid(), item.getUsername(), item.getProperties(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName()))
+                .toArray(PlayerInfo[]::new);
     }
 }

@@ -85,4 +85,8 @@ public class PlayerInfoCache implements PacketCacheHandler {
         }
     }
 
+    public Collection<PacketPlayServerPlayerInfo.Item> getItems() {
+        return this.items;
+    }
+
 }

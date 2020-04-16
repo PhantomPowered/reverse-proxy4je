@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.api.connection;
 
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.player.GameMode;
 
 public interface ServiceWorldDataProvider {
@@ -17,5 +18,7 @@ public interface ServiceWorldDataProvider {
     float getThunderStrength();
 
     GameMode getOwnGameMode();
+
+    PlayerInfo[] getOnlinePlayers();
 
 }
