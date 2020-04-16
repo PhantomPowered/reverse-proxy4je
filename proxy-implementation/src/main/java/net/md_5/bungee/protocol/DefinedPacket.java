@@ -77,11 +77,11 @@ public abstract class DefinedPacket implements Packet {
     }
 
     public void read(@NotNull ByteBuf buf) {
-        throw new UnsupportedOperationException("Packet must implement read method");
+        throw new UnsupportedOperationException("Packet (" + this.getClass().getName() + ") must implement read method");
     }
 
     public void write(@NotNull ByteBuf buf) {
-        throw new UnsupportedOperationException("Packet must implement write method");
+        throw new UnsupportedOperationException("Packet (" + this.getClass().getName() + ") must implement write method");
     }
 
 }

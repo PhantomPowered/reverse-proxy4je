@@ -367,7 +367,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
                 ByteBuf buf = Unpooled.buffer();
                 ByteBufUtils.writeVarInt(id, buf);
 
-                deserialized.write(buf);
+                deserialized.write(buf, ProtocolDirection.TO_CLIENT, 47);
 
                 this.redirector.sendPacket(buf);
             } else {
