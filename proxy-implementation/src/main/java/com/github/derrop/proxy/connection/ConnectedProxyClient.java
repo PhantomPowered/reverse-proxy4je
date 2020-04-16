@@ -20,7 +20,6 @@ import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
-import com.github.derrop.proxy.exception.KickedException;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;

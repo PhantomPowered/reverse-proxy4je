@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.minecraft;
+package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;

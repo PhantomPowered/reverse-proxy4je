@@ -8,7 +8,7 @@ import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.minecraft.CryptManager;
+import com.github.derrop.proxy.account.CryptManager;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;

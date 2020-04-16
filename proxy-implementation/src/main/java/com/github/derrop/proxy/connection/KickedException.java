@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.exception;
+package com.github.derrop.proxy.connection;
 
 import java.net.ConnectException;
 

@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.minecraft;
+package com.github.derrop.proxy.account;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;

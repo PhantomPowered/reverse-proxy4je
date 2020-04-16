@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.math;
+package com.github.derrop.proxy.util;
 
 public final class MathHelper {
 

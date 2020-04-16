@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.reconnect;
+package com.github.derrop.proxy.connection.reconnect;
 
 import java.util.UUID;
 

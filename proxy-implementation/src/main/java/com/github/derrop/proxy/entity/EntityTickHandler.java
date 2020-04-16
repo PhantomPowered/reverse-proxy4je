@@ -3,7 +3,7 @@ package com.github.derrop.proxy.entity;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
-import com.github.derrop.proxy.reconnect.ReconnectProfile;
+import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 
 import java.util.concurrent.TimeUnit;
