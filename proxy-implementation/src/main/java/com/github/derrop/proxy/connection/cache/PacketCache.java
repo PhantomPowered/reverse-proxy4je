@@ -6,6 +6,7 @@ import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.PacketConstants;
@@ -17,13 +18,14 @@ import net.md_5.bungee.protocol.DefinedPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class PacketCache {
 
     private final ConnectedProxyClient targetProxyClient;
-    private final Collection<PacketCacheHandler> handlers = new ArrayList<>();
+    private final Collection<PacketCacheHandler> handlers = new CopyOnWriteArrayList<>();
 
     private BlockAccess blockAccess;
 
@@ -67,7 +69,7 @@ public class PacketCache {
 
          */
 
-        int receivedPacketId = DefinedPacket.readVarInt(packet);
+        int receivedPacketId = ByteBufUtils.readVarInt(packet);
 
         for (PacketCacheHandler handler : this.handlers) {
             for (int packetId : handler.getPacketIDs()) {

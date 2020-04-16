@@ -3,6 +3,7 @@ package com.github.derrop.proxy.network.channel;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.task.Task;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +13,7 @@ import java.net.SocketAddress;
 public interface WrappedNetworkChannel extends NetworkChannel {
 
     NetworkChannel getWrappedNetworkChannel();
-    
+
     @Override
     default void write(@NotNull Object packet) {
         this.getWrappedNetworkChannel().write(packet);
@@ -21,6 +22,11 @@ public interface WrappedNetworkChannel extends NetworkChannel {
     @Override
     default void setProtocolState(@NotNull ProtocolState state) {
         this.getWrappedNetworkChannel().setProtocolState(state);
+    }
+
+    @NotNull
+    default Task<Boolean> writeWithResult(@NotNull Object packet) {
+        return this.getWrappedNetworkChannel().writeWithResult(packet);
     }
 
     @Override
@@ -67,7 +73,7 @@ public interface WrappedNetworkChannel extends NetworkChannel {
     default Channel getWrappedChannel() {
         return this.getWrappedNetworkChannel().getWrappedChannel();
     }
-    
+
     @Override
     default <T> T getProperty(String key) {
         return this.getWrappedNetworkChannel().getProperty(key);

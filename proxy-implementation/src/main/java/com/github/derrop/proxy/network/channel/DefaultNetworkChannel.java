@@ -3,11 +3,13 @@ package com.github.derrop.proxy.network.channel;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.compression.PacketCompressor;
 import com.github.derrop.proxy.network.compression.PacketDeCompressor;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
+import com.github.derrop.proxy.task.DefaultTask;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -60,6 +62,18 @@ public class DefaultNetworkChannel implements NetworkChannel {
         } else {
             this.channel.writeAndFlush(packet, this.channel.voidPromise());
         }
+    }
+
+    @Override
+    public @NotNull Task<Boolean> writeWithResult(@NotNull Object packet) {
+        Task<Boolean> task = new DefaultTask<>();
+        if (packet instanceof DecodedPacket) {
+            this.channel.writeAndFlush(((DecodedPacket) packet).getByteBuf()).addListener(future -> task.complete(future.isSuccess()));
+        } else {
+            this.channel.writeAndFlush(packet).addListener(future -> task.complete(future.isSuccess()));
+        }
+
+        return task;
     }
 
     @Override

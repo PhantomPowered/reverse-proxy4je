@@ -70,7 +70,7 @@ public class ProxyClientLoginHandler {
         );
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.FIRST)
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.LAST)
     private void handle(ConnectedProxyClient client, PacketLoginOutLoginSuccess loginSuccess) throws Exception {
         client.setProtocolState(ProtocolState.PLAY);
         client.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ServerChannelListener(client));

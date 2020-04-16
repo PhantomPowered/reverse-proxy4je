@@ -49,7 +49,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
         if (!channel.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
             this.compression = compressionThreshold;
-            this.sendPacket(new PacketLoginOutSetCompression(compressionThreshold));
+            this.channel.writeWithResult(new PacketLoginOutSetCompression(compressionThreshold)).join();
             channel.setCompression(compression);
         }
 

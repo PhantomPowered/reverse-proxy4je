@@ -24,7 +24,7 @@ public class ServerPacketHandler {
 
     @PacketHandler
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
-        //client.getEntityMap().rewriteClientbound(packet.getByteBuf(), client.getEntityId(), client.getEntityId(), 47); // TODO is this necessary?
+        client.getEntityMap().rewriteClientbound(packet.getByteBuf(), client.getEntityId(), client.getEntityId(), 47); // TODO is this necessary?
         client.redirectPacket(packet.getByteBuf(), packet.getPacket());
     }
 
@@ -41,7 +41,6 @@ public class ServerPacketHandler {
         client.setEntityId(login.getEntityId());
         client.connectionSuccess();
     }
-
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD)
     public void handlePluginMessage(ConnectedProxyClient client, PacketPlayPluginMessage pluginMessage) {

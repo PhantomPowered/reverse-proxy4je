@@ -2,7 +2,6 @@ package com.github.derrop.proxy.network.listener;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolState;
@@ -15,21 +14,21 @@ import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
-import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingInSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
-import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
+import com.github.derrop.proxy.protocol.login.server.PacketLoginOutServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
+import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
-import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.ServerPing;
@@ -51,7 +50,7 @@ import java.util.UUID;
 public class InitialHandler {
 
     static final String INIT_STATE = "initialState";
-    
+
     private final MCProxy proxy;
 
     public InitialHandler(MCProxy proxy) {
@@ -257,7 +256,11 @@ public class InitialHandler {
 
     static void disconnect(NetworkChannel channel, final BaseComponent... reason) {
         if (canSendKickMessage(channel)) {
-            channel.delayedClose(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
+            if (channel.getProtocolState() == ProtocolState.PLAY) {
+                channel.delayedClose(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
+            } else {
+                channel.delayedClose(new PacketLoginOutServerKickPlayer(ComponentSerializer.toString(reason)));
+            }
         } else {
             channel.close();
         }

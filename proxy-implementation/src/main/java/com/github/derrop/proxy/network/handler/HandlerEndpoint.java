@@ -10,6 +10,7 @@ import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.haproxy.HAProxyMessage;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +32,12 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
 
     public void setNetworkChannel(@NotNull NetworkChannel networkChannel) {
         this.networkChannel = networkChannel;
+    }
+
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
+    public NetworkChannel getNetworkChannel() {
+        return networkChannel;
     }
 
     @Override
@@ -89,8 +96,13 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
         if (msg instanceof DecodedPacket) {
             DecodedPacket packet = (DecodedPacket) msg;
             if (packet.getPacket() != null) {
-                this.getHandlers().handlePacketReceive(packet.getPacket(), this.networkChannel.getProtocolState(), this.networkChannel);
+                Packet result = this.getHandlers().handlePacketReceive(packet.getPacket(), this.networkChannel.getProtocolState(), this.networkChannel);
+                if (result == null) {
+                    // ProceedCancelException - user stopped handling of packet (we should respect the decision)
+                    return;
+                }
             }
+
             this.getHandlers().handlePacketReceive(packet, this.networkChannel.getProtocolState(), this.networkChannel);
         }
     }

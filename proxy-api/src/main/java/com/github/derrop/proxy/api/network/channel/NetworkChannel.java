@@ -2,6 +2,7 @@ package com.github.derrop.proxy.api.network.channel;
 
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.task.Task;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,8 @@ public interface NetworkChannel extends AutoCloseable {
     }
 
     void write(@NotNull Object packet);
+
+    @NotNull Task<Boolean> writeWithResult(@NotNull Object packet);
 
     void setProtocolState(@NotNull ProtocolState state);
 
@@ -41,7 +44,7 @@ public interface NetworkChannel extends AutoCloseable {
 
     Channel getWrappedChannel();
 
-    <T> T getProperty(String key);
+    @Nullable <T> T getProperty(String key);
 
     <T> void setProperty(String key, T value);
 
