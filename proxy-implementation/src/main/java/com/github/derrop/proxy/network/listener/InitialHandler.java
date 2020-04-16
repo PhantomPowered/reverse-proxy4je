@@ -29,13 +29,13 @@ import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
+import com.github.derrop.proxy.util.HttpHelper;
 import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.ClientPacketListener;
 import net.md_5.bungee.connection.LoginResult;
-import net.md_5.bungee.http.HttpClient;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
@@ -189,10 +189,11 @@ public class InitialHandler {
                 disconnect(channel, "offline mode not supported");
             } else {
                 disconnect(channel, "failed to authenticate with mojang");
+                error.printStackTrace();
             }
         };
 
-        HttpClient.get(authURL, channel.getWrappedChannel().eventLoop(), handler);
+        HttpHelper.getHTTPAsync(authURL, handler);
     }
 
     private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
