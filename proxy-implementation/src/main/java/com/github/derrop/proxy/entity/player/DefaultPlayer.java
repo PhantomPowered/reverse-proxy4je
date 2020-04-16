@@ -29,7 +29,6 @@ import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.LoginResult;
-import net.md_5.bungee.tab.TabList;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
@@ -38,10 +37,9 @@ import java.util.UUID;
 
 public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
 
-    public DefaultPlayer(MCProxy proxy, TabList tabList, UUID uniqueId, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
+    public DefaultPlayer(MCProxy proxy, UUID uniqueId, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
         super(uniqueId, loginResult.getName(), System.currentTimeMillis(), version);
         this.proxy = proxy;
-        this.tabList = tabList;
         this.displayName = loginResult.getName();
 
         this.channel = channel;
@@ -58,8 +56,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
 
     private final MCProxy proxy;
-
-    private final TabList tabList;
 
     private final NetworkChannel channel;
     private final int version;
@@ -178,7 +174,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             this.connectedClient.getClient().free();
         }
 
-        this.tabList.onServerChange();
         this.connected = true;
 
         ((BasicServiceConnection) connection).getClient().redirectPackets(this, this.connectedClient != null);

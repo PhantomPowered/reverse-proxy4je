@@ -12,7 +12,6 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.Callback;
-import com.github.derrop.proxy.connection.PlayerUniqueTabList;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
@@ -211,8 +210,7 @@ public class InitialHandler {
 
         channel.getWrappedChannel().eventLoop().execute(() -> {
             if (!channel.isClosing()) {
-                DefaultPlayer player = new DefaultPlayer(this.proxy, new PlayerUniqueTabList(channel), uniqueId, result, channel, channel.getProperty("sentProtocol"), 256);
-
+                DefaultPlayer player = new DefaultPlayer(this.proxy, uniqueId, result, channel, channel.getProperty("sentProtocol"), 256);
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
