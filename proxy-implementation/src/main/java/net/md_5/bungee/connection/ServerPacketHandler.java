@@ -24,7 +24,6 @@ public class ServerPacketHandler {
 
     @PacketHandler
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
-        client.getEntityMap().rewriteClientbound(packet.getByteBuf(), client.getEntityId(), client.getEntityId(), 47); // TODO is this necessary?
         client.redirectPacket(packet.getByteBuf(), packet.getPacket());
     }
 

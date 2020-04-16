@@ -47,7 +47,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
-import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.net.InetSocketAddress;
@@ -71,7 +70,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
     private com.github.derrop.proxy.api.entity.player.Player redirector;
 
     private PacketCache packetCache;
-    private EntityMap entityMap = EntityMap.getEntityMap(47);
     private Scoreboard scoreboard;
 
     private int entityId;
@@ -279,10 +277,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     public PacketPlayServerEntityMetadata getEntityMetadata() {
         return entityMetadata;
-    }
-
-    public EntityMap getEntityMap() {
-        return entityMap;
     }
 
     public int getEntityId() {

@@ -30,7 +30,6 @@ public class ClientPacketHandler {
                 player.getConnectedClient().getClient().handleClientPacket(packet.getPacket());
             }
 
-            player.getEntityMap().rewriteServerbound(packet.getByteBuf(), player.getEntityId(), player.getEntityId(), player.getVersion());
             if (packet.getPacket() != null) {
                 player.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolConstants.Direction.TO_SERVER, packet.getPacket());
             }

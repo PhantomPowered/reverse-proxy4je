@@ -29,7 +29,6 @@ import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.LoginResult;
-import net.md_5.bungee.entitymap.EntityMap;
 import net.md_5.bungee.tab.TabList;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +53,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             channel.setCompression(compression);
         }
 
-        this.entityMap = EntityMap.getEntityMap(version);
         MCProxy.getInstance().getUUIDStorage().createMapping(this.getUniqueId(), this.getName());
     }
 
@@ -63,7 +61,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private final TabList tabList;
 
-    private final EntityMap entityMap;
     private final NetworkChannel channel;
     private final int version;
 
@@ -425,10 +422,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private void handleLocationUpdate() {
         this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
         this.connectedClient.sendPacket(new PacketPlayInPositionLook(this.location, Collections.emptySet()));
-    }
-
-    public EntityMap getEntityMap() {
-        return entityMap;
     }
 
     private class Unsafe0 implements EntityLiving.Unsafe {
