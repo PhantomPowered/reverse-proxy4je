@@ -20,8 +20,11 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
+import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayChatMessage;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -112,6 +115,22 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public boolean isOnGround() {
         return this.client.isOnGround();
+    }
+
+    private PacketPlayServerTimeUpdate getLastTimeUpdate() {
+        return (PacketPlayServerTimeUpdate) ((SimplePacketCache) this.client.getPacketCache().getHandler(handler -> handler.getPacketIDs()[0] == ProtocolIds.ToClient.Play.UPDATE_TIME)).getLastPacket();
+    }
+
+    @Override
+    public long getTotalWorldTime() {
+        PacketPlayServerTimeUpdate update = this.getLastTimeUpdate();
+        return update == null ? -1 : update.getTotalWorldTime();
+    }
+
+    @Override
+    public long getWorldTime() {
+        PacketPlayServerTimeUpdate update = this.getLastTimeUpdate();
+        return update == null ? -1 : update.getWorldTime();
     }
 
     public ConnectedProxyClient getClient() {
