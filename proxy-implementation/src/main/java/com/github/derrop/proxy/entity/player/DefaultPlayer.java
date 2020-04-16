@@ -24,6 +24,7 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayInPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayChat;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayPluginMessage;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -398,7 +399,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {
-        this.sendPacket(new PacketPlayChatMessage(message, (byte) position.ordinal()));
+        this.sendPacket(new PacketPlayChat(message, (byte) position.ordinal()));
     }
 
     public void disconnect0(BaseComponent... reason) {
