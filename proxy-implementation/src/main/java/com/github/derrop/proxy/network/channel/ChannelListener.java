@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.network.channel;
 
-import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import org.jetbrains.annotations.NotNull;
 

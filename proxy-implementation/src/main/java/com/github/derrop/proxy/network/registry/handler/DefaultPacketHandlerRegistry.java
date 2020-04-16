@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.network.registry.handler;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketHandler;
@@ -26,7 +27,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
     private final BiMap<Byte, Collection<PacketHandlerRegistryEntry>> entries = HashBiMap.create();
 
     @Override
-    public <T extends Identifiable> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
+    public <T extends Identifiable> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolDirection direction, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
         SortedMap<Byte, Collection<PacketHandlerRegistryEntry>> sorted = new TreeMap<>(Byte::compare);
         this.entries.forEach(sorted::put);
 
@@ -46,7 +47,12 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                     if (!packet.getClass().isAssignableFrom(entryEntry.getMethod().getParameterTypes()[1])) {
                         continue;
                     }
+
                     if (!entryEntry.getMethod().getParameterTypes()[0].isInstance(channel)) {
+                        continue;
+                    }
+
+                    if (entryEntry.getDirections().length != 0 && Arrays.stream(entryEntry.getDirections()).noneMatch(e -> e == direction)) {
                         continue;
                     }
 
@@ -137,8 +143,12 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
 
             declaredMethod.setAccessible(true);
 
-            out.computeIfAbsent(packetHandler.priority().getPriority(), priority -> new ArrayList<>())
-                    .add(new DefaultRegisteredEntry(packetHandler.packetIds(), declaredMethod, packetHandler.protocolState()));
+            out.computeIfAbsent(packetHandler.priority().getPriority(), priority -> new ArrayList<>()).add(new DefaultRegisteredEntry(
+                    packetHandler.packetIds(),
+                    declaredMethod,
+                    packetHandler.protocolState(),
+                    packetHandler.directions()
+            ));
         }
 
         return out;

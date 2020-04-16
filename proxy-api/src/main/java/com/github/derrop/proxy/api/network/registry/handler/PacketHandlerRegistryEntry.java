@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.api.network.registry.handler;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public interface PacketHandlerRegistryEntry {
         @NotNull Method getMethod();
 
         @NotNull ProtocolState getState();
+
+        @Nullable ProtocolDirection[] getDirections();
 
     }
 }

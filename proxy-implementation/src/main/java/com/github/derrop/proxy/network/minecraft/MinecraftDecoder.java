@@ -49,4 +49,9 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
     public ProtocolState getProtocolState() {
         return protocolState;
     }
+
+    @NotNull
+    public ProtocolDirection getDirection() {
+        return direction;
+    }
 }
