@@ -160,6 +160,10 @@ public class ChunkCache implements PacketCacheHandler {
         return this.getChunk(pos) != null;
     }
 
+    public int getDimension() {
+        return this.dimension;
+    }
+
     @Override
     public void sendCached(PacketSender sender) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk. Now fixed?

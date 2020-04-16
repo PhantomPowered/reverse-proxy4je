@@ -48,4 +48,6 @@ public interface BlockAccess {
 
     BlockStateRegistry getBlockStateRegistry();
 
+    int getDimension();
+
 }
