@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -73,6 +74,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final NetworkAddress networkAddress;
 
+    private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
+
     private ConnectedProxyClient client;
 
     private boolean reScheduleOnFailure;
@@ -117,20 +120,9 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         return this.client.isOnGround();
     }
 
-    private PacketPlayServerTimeUpdate getLastTimeUpdate() {
-        return (PacketPlayServerTimeUpdate) ((SimplePacketCache) this.client.getPacketCache().getHandler(handler -> handler.getPacketIDs()[0] == ProtocolIds.ToClient.Play.UPDATE_TIME)).getLastPacket();
-    }
-
     @Override
-    public long getTotalWorldTime() {
-        PacketPlayServerTimeUpdate update = this.getLastTimeUpdate();
-        return update == null ? -1 : update.getTotalWorldTime();
-    }
-
-    @Override
-    public long getWorldTime() {
-        PacketPlayServerTimeUpdate update = this.getLastTimeUpdate();
-        return update == null ? -1 : update.getWorldTime();
+    public ServiceWorldDataProvider getWorldDataProvider() {
+        return this.worldDataProvider;
     }
 
     public ConnectedProxyClient getClient() {
