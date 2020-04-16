@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.ban;
+package com.github.derrop.proxy.account;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;

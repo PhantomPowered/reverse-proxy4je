@@ -1,17 +1,19 @@
 package com.github.derrop.proxy;
 
 import com.github.derrop.proxy.account.AccountBiConsumer;
+import com.github.derrop.proxy.account.AccountReader;
+import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
-import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.plugin.PluginManager;
+import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.util.MCCredentials;
@@ -22,27 +24,26 @@ import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
-import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.ProxyServer;
+import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
+import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.entity.EntityTickHandler;
+import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.logging.ILogger;
-import com.github.derrop.proxy.account.AccountReader;
 import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
 import com.github.derrop.proxy.permission.PermissionProvider;
-import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
-import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.session.BasicProvidedSessionService;
 import com.github.derrop.proxy.storage.UUIDStorage;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.md_5.bungee.connection.ServerPacketHandler;
 import net.md_5.bungee.connection.ClientPacketHandler;
+import net.md_5.bungee.connection.ServerPacketHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,7 +77,7 @@ public class MCProxy extends Proxy {
     private Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
-    private ILogger logger;
+    private final ILogger logger;
 
     protected MCProxy(@NotNull ILogger logger) {
         instance = this;
@@ -85,11 +86,14 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketRegistry.class, new DefaultPacketRegistry(), false, true);
+        this.serviceRegistry.setProvider(null, Configuration.class, new JsonConfiguration(), true);
 
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ClientPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ServerPacketHandler());
+
+        this.serviceRegistry.getProviderUnchecked(Configuration.class).load();
 
         this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
@@ -213,7 +217,7 @@ public class MCProxy extends Proxy {
     public void bootstrap(int port) throws IOException {
         PacketRegistrar.registerPackets();
 
-        this.proxyServer.start(new InetSocketAddress(port)); // TODO: service + config
+        this.proxyServer.start(new InetSocketAddress(port));
 
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);

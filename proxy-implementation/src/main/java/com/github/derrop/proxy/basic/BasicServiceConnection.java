@@ -17,7 +17,7 @@ import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.ban.BanTester;
+import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;

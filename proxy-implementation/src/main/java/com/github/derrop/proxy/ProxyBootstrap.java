@@ -1,5 +1,6 @@
 package com.github.derrop.proxy;
 
+import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
@@ -20,7 +21,7 @@ public final class ProxyBootstrap {
         logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));
 
         MCProxy proxy = new MCProxy(logger);
-        proxy.bootstrap(25567); // TODO: config
+        proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort());
 
         CommandMap commandMap = proxy.getServiceRegistry().getProviderUnchecked(CommandMap.class);
         while (!Thread.interrupted()) {

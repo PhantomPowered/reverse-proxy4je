@@ -9,6 +9,7 @@ target/
 
 logs/
 replays/
+config.json
 uuids.json
 permissions.json
 accounts.txt
