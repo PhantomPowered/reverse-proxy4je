@@ -9,6 +9,7 @@ import com.github.derrop.proxy.api.network.registry.packet.exception.PacketAlrea
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,7 +31,11 @@ public class DefaultPacketRegistry implements PacketRegistry {
     public @Nullable Packet getPacket(@NotNull ProtocolDirection direction, @NotNull ProtocolState state, int packetId) {
         for (PacketRegistryEntry entry : this.entries) {
             if (entry.getDirection() == direction && entry.getState() == state && entry.getPacket().getId() == packetId) {
-                return entry.getPacket();
+                try {
+                    return entry.getPacket().getClass().getDeclaredConstructor().newInstance();
+                } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
 

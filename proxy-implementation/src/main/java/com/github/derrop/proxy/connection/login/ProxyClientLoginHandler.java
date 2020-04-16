@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.connection.login;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.priority.EventPriority;
 import com.github.derrop.proxy.api.network.PacketHandler;
@@ -28,14 +29,14 @@ import java.security.PublicKey;
 
 public class ProxyClientLoginHandler {
 
-    @PacketHandler(packetIds = {ProtocolIds.ToClient.Play.KICK_DISCONNECT}, protocolState = ProtocolState.PLAY)
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Play.KICK_DISCONNECT}, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.PLAY)
     private void handle(ConnectedProxyClient proxyClient, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
         proxyClient.setLastKickReason(reason);
         proxyClient.connectionFailed();
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.FromClient.Login.ENCRYPTION_REQUEST}, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.ENCRYPTION_BEGIN}, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.LOGIN)
     // TODO can't we just use the packetId (if not defined) out of the Packet in the parameters?
     private void handle(ConnectedProxyClient proxyClient, PacketLoginInEncryptionRequest request) throws Exception {
         if (proxyClient.getCredentials().isOffline()) {
@@ -70,14 +71,14 @@ public class ProxyClientLoginHandler {
         );
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SUCCESS}, protocolState = ProtocolState.LOGIN, priority = EventPriority.LAST)
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SUCCESS}, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.LOGIN, priority = EventPriority.LAST)
     private void handle(ConnectedProxyClient client, PacketLoginOutLoginSuccess loginSuccess) throws Exception {
         client.setProtocolState(ProtocolState.PLAY);
         client.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ServerChannelListener(client));
         throw CancelProceedException.INSTANCE; // without this, the LoginSuccess would be recorded by ConnectedProxyClient#redirectPacket
     }
 
-    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SET_COMPRESSION}, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = {ProtocolIds.ToClient.Login.SET_COMPRESSION}, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.LOGIN)
     private void handle(NetworkChannel channel, PacketLoginOutSetCompression setCompression) {
         channel.setCompression(setCompression.getThreshold());
     }

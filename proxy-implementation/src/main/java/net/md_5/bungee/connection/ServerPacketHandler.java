@@ -28,7 +28,7 @@ public class ServerPacketHandler {
         client.redirectPacket(packet.getByteBuf(), packet.getPacket());
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KEEP_ALIVE)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KEEP_ALIVE, directions = ProtocolDirection.TO_CLIENT)
     public void handleKeepAlive(ConnectedProxyClient client, PacketPlayKeepAlive alive) {
         client.write(alive);
         client.setLastAlivePacket(System.currentTimeMillis());
@@ -36,13 +36,13 @@ public class ServerPacketHandler {
     }
 
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.LOGIN)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.LOGIN, directions = ProtocolDirection.TO_CLIENT)
     public void handleLogin(ConnectedProxyClient client, PacketPlayServerLogin login) {
         client.setEntityId(login.getEntityId());
         client.connectionSuccess();
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_CLIENT)
     public void handlePluginMessage(ConnectedProxyClient client, PacketPlayPluginMessage pluginMessage) {
         PluginMessageEvent event = new PluginMessageEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
@@ -61,7 +61,7 @@ public class ServerPacketHandler {
         throw CancelProceedException.INSTANCE;
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KICK_DISCONNECT)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KICK_DISCONNECT, directions = ProtocolDirection.TO_CLIENT)
     public void handleKick(ConnectedProxyClient client, PacketPlayServerKickPlayer kick) throws Exception {
         BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
         client.handleDisconnect(reason);
@@ -72,7 +72,7 @@ public class ServerPacketHandler {
         throw CancelProceedException.INSTANCE;
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayChat chat) throws Exception {
         ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ComponentSerializer.parse(chat.getMessage()));
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
@@ -84,7 +84,7 @@ public class ServerPacketHandler {
 
     // TODO Implement TabComplete response?
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN)
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerRespawn respawn) {
         client.setDimension(respawn.getDimension());
     }

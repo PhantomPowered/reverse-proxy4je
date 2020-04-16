@@ -99,6 +99,8 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
         if (msg instanceof DecodedPacket) {
             DecodedPacket packet = (DecodedPacket) msg;
             if (packet.getPacket() != null) {
+                System.out.println(direction + "@" + packet.getPacket().toString());
+
                 Packet result = this.getHandlers().handlePacketReceive(packet.getPacket(), direction, this.networkChannel.getProtocolState(), this.networkChannel);
                 if (result == null) {
                     // ProceedCancelException - user stopped handling of packet (we should respect the decision)

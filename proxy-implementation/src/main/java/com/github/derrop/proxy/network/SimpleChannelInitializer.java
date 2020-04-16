@@ -22,8 +22,6 @@ public final class SimpleChannelInitializer extends ChannelInitializer<Channel> 
                 .addLast(NetworkUtils.TIMEOUT, new ReadTimeoutHandler(15))
                 .addLast(NetworkUtils.LENGTH_DECODER, new LengthFrameDecoder())
                 .addLast(NetworkUtils.LENGTH_ENCODER, NetworkUtils.LENGTH_FRAME_ENCODER)
-                .addLast(NetworkUtils.ENDPOINT, new HandlerEndpoint(null));
-
-        channel.pipeline().get(HandlerEndpoint.class).setChannelListener(new InitialListener());
+                .addLast(NetworkUtils.ENDPOINT, new HandlerEndpoint(new InitialListener()));
     }
 }

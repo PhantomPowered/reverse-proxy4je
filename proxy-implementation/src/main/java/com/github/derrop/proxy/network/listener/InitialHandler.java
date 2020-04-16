@@ -4,6 +4,7 @@ import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
@@ -70,7 +71,7 @@ public class InitialHandler {
         );
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, protocolState = ProtocolState.STATUS)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
     public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
@@ -83,14 +84,14 @@ public class InitialHandler {
         channel.setProperty(INIT_STATE, State.PING);
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Status.PING, protocolState = ProtocolState.STATUS)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Status.PING, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
     public void handle(NetworkChannel channel, PacketStatusInPing ping) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.PING, "Not expecting PING");
         channel.write(new PacketStatusOutPong(ping.getTime()));
         disconnect(channel, "");
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Handshaking.SET_PROTOCOL, protocolState = ProtocolState.HANDSHAKING)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Handshaking.SET_PROTOCOL, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.HANDSHAKING)
     public void handle(NetworkChannel channel, PacketHandshakingInSetProtocol packetHandshakingInSetProtocol) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.HANDSHAKE, "Not expecting HANDSHAKE");
         channel.setProperty("sentProtocol", packetHandshakingInSetProtocol.getProtocolVersion());
@@ -137,7 +138,7 @@ public class InitialHandler {
         }
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.START, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.LOGIN)
     public void handle(NetworkChannel channel, PacketLoginInLoginRequest loginRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.USERNAME, "Not expecting USERNAME");
         channel.setProperty("requestedName", loginRequest.getData());
@@ -158,7 +159,7 @@ public class InitialHandler {
         channel.setProperty(INIT_STATE, State.ENCRYPT);
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.ENCRYPTION_REQUEST, protocolState = ProtocolState.LOGIN)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Login.ENCRYPTION_RESPONSE, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.LOGIN)
     public void handle(NetworkChannel channel, final PacketLoginOutEncryptionResponse encryptResponse) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.ENCRYPT, "Not expecting ENCRYPT");
 
