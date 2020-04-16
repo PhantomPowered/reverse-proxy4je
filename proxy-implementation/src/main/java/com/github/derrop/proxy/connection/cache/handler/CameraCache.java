@@ -8,7 +8,7 @@ import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerCamera;
 
-public class CameraCache implements PacketCacheHandler {
+public class CameraCache implements PacketCacheHandler { // TODO if you go into the camera of another player (spectator mode) and rejoin, you will be stuck in the login screen
 
     private PacketPlayServerCamera camera;
 
