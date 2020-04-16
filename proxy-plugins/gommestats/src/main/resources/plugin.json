@@ -1,0 +1,6 @@
+{
+  "name": "GommeStats",
+  "version": "1.0",
+  "authors": ["derrop"],
+  "main": "com.github.derrop.proxy.plugins.gomme.GommeStatsPlugin"
+}
