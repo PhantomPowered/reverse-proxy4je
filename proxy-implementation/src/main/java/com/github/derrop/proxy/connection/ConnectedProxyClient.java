@@ -6,6 +6,9 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
+import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -419,6 +422,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         if (this.connectionHandler != null) {
             this.connectionHandler.complete(true);
             this.connectionHandler = null;
+
+            this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectEvent(this.connection));
         }
     }
 
@@ -447,6 +452,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
         this.connection.getClient().setLastKickReason(reason);
         this.connection.getClient().connectionFailed();
+
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new ServiceDisconnectEvent(this.connection, reason));
     }
 
 }
