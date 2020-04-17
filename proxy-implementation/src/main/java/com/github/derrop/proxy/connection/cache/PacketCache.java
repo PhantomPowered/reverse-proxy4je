@@ -137,7 +137,8 @@ public class PacketCache {
                 new MiniMapCache(),
                 new SignCache(),
                 new ScoreboardCache(),
-                new CameraCache()
+                new CameraCache(),
+                new GameStateCache()
         ));
 
         this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getProxy(), chunkCache);

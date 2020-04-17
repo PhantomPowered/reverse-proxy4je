@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -22,6 +23,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -70,6 +72,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final NetworkAddress networkAddress;
 
+    private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
+
     private ConnectedProxyClient client;
 
     private boolean reScheduleOnFailure;
@@ -114,6 +118,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         return this.client.isOnGround();
     }
 
+    @Override
+    public ServiceWorldDataProvider getWorldDataProvider() {
+        return this.worldDataProvider;
+    }
+
     public ConnectedProxyClient getClient() {
         return this.client;
     }
@@ -134,7 +143,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull String message) {
-        this.client.write(new PacketPlayClientChatMessage(message, (byte) type.ordinal()));
+        this.client.write(new PacketPlayServerChatMessage(message, (byte) type.ordinal()));
     }
 
     @Override

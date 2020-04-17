@@ -73,6 +73,7 @@ public class PacketPlayServerTitle implements Packet {
         switch (action) {
             case TITLE:
             case SUBTITLE:
+            case PLACEHOLDER:
                 this.text = protoBuf.readString();
                 break;
 
@@ -94,6 +95,7 @@ public class PacketPlayServerTitle implements Packet {
         switch (action) {
             case TITLE:
             case SUBTITLE:
+            case PLACEHOLDER:
                 protoBuf.writeString(this.text);
                 break;
 

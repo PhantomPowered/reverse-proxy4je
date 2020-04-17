@@ -1,17 +1,11 @@
 package net.md_5.bungee;
 
 import com.github.derrop.proxy.api.chat.component.*;
-import com.google.common.base.Joiner;
 import com.google.common.primitives.UnsignedLongs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.netty.channel.unix.DomainSocketAddress;
 import net.md_5.bungee.chat.*;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 /**
@@ -28,49 +22,6 @@ public class Util {
             .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
             .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
             .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter()).create();
-    @Deprecated public static final int DEFAULT_PORT = 25565; // TODO: unused and remove
-
-    /**
-     * Method to transform human readable addresses into usable address objects.
-     *
-     * @param hostline in the format of 'host:port'
-     * @return the constructed hostname + port.
-     */
-    public static SocketAddress getAddr(String hostline) {
-        URI uri = null;
-        try {
-            uri = new URI(hostline);
-        } catch (URISyntaxException ex) {
-        }
-
-        if (uri != null && "unix".equals(uri.getScheme())) {
-            return new DomainSocketAddress(uri.getPath());
-        }
-
-        if (uri == null || uri.getHost() == null) {
-            try {
-                uri = new URI("tcp://" + hostline);
-            } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException("Bad hostline: " + hostline, ex);
-            }
-        }
-
-        if (uri.getHost() == null) {
-            throw new IllegalArgumentException("Invalid host/address: " + hostline);
-        }
-
-        return new InetSocketAddress(uri.getHost(), (uri.getPort()) == -1 ? DEFAULT_PORT : uri.getPort());
-    }
-
-    /**
-     * Formats an integer as a hex value.
-     *
-     * @param i the integer to format
-     * @return the hex representation of the integer
-     */
-    public static String hex(int i) {
-        return String.format("0x%02X", i);
-    }
 
     /**
      * Constructs a pretty one line version of a {@link Throwable}. Useful for
@@ -84,15 +35,6 @@ public class Util {
         StackTraceElement[] trace = t.getStackTrace();
         return t.getClass().getSimpleName() + " : " + t.getMessage()
                 + ((trace.length > 0) ? " @ " + t.getStackTrace()[0].getClassName() + ":" + t.getStackTrace()[0].getLineNumber() : "");
-    }
-
-    public static String csv(Iterable<?> objects) {
-        return format(objects, ", ");
-    }
-
-    // TODO: Check if really required
-    public static String format(Iterable<?> objects, String separators) {
-        return Joiner.on(separators).join(objects);
     }
 
     /**
