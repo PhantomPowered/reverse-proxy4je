@@ -46,7 +46,7 @@ public class PacketPlayServerScoreboardObjective implements Packet {
 
         if (action == 0 || action == 2) {
             protoBuf.writeString(this.value);
-            protoBuf.writeString(this.toString().toLowerCase());
+            protoBuf.writeString(this.type.toString().toLowerCase());
         }
     }
 
