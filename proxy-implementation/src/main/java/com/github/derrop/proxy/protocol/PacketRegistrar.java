@@ -31,9 +31,7 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 import com.github.derrop.proxy.protocol.play.server.world.*;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
@@ -53,9 +51,9 @@ public final class PacketRegistrar {
 
         // Login
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.LOGIN, new PacketLoginInLoginRequest());
-        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.LOGIN, new PacketLoginInEncryptionRequest());
-
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.LOGIN, new PacketLoginOutEncryptionResponse());
+
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.LOGIN, new PacketLoginInEncryptionRequest());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.LOGIN, new PacketLoginOutLoginSuccess());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.LOGIN, new PacketLoginOutServerKickPlayer());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.LOGIN, new PacketLoginOutSetCompression());
