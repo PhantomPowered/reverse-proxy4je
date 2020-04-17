@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.stats.PlayerStatistics;
+import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +20,7 @@ public class MatchInfo {
     private PlayerInfo[] playersOnBegin;
     private PlayerInfo[] playersOnEnd;
 
-    private PlayerStatistics[] statisticsOnBegin;
+    private PlayerData[] statisticsOnBegin;
 
     private Collection<MatchEvent> events = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class MatchInfo {
         this.matchId = matchId;
     }
 
-    public void start(PlayerInfo[] currentPlayers, PlayerStatistics[] statistics) {
+    public void start(PlayerInfo[] currentPlayers, PlayerData[] statistics) {
         this.running = true;
         this.beginTimestamp = System.currentTimeMillis();
         this.playersOnBegin = currentPlayers;
@@ -77,5 +77,13 @@ public class MatchInfo {
 
     public PlayerInfo[] getPlayersOnEnd() {
         return playersOnEnd;
+    }
+
+    public PlayerData[] getStatisticsOnBegin() {
+        return statisticsOnBegin;
+    }
+
+    public Collection<MatchEvent> getEvents() {
+        return events;
     }
 }

@@ -3,7 +3,7 @@ package com.github.derrop.proxy.plugins.gomme.match;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
-import com.github.derrop.proxy.plugins.gomme.stats.PlayerStatistics;
+import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,9 +40,9 @@ public class MatchManager {
         MatchInfo matchInfo = this.openMatches.get(matchId);
         if (matchInfo != null) {
             PlayerInfo[] players = matchInfo.getInvoker().getWorldDataProvider().getOnlinePlayers();
-            PlayerStatistics[] statistics = new PlayerStatistics[players.length];
+            PlayerData[] statistics = new PlayerData[players.length];
             for (int i = 0; i < players.length; i++) {
-                statistics[i] = this.core.getStatsProvider().getStatistics(players[i].getUniqueId());
+                statistics[i] = this.core.getPlayerDataProvider().getData(players[i].getUniqueId());
             }
             matchInfo.start(players, statistics);
         }

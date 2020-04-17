@@ -1,22 +1,26 @@
-package com.github.derrop.proxy.plugins.gomme.stats;
+package com.github.derrop.proxy.plugins.gomme.player;
 
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 
+import java.util.Collection;
 import java.util.Map;
 
-public class PlayerStatistics {
+public class PlayerData {
 
     private PlayerInfo playerInfo;
     private GommeGameMode gameMode;
     private Map<String, String> stats;
     private int rank;
+    private String clan;
+    private Collection<Tag> tags;
 
-    public PlayerStatistics(PlayerInfo playerInfo, GommeGameMode gameMode, Map<String, String> stats, int rank) {
+    public PlayerData(PlayerInfo playerInfo, GommeGameMode gameMode, Map<String, String> stats, int rank, Collection<Tag> tags) {
         this.playerInfo = playerInfo;
         this.gameMode = gameMode;
         this.stats = stats;
         this.rank = rank;
+        this.tags = tags;
     }
 
     public PlayerInfo getPlayerInfo() {
@@ -24,14 +28,18 @@ public class PlayerStatistics {
     }
 
     public GommeGameMode getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public Map<String, String> getStats() {
-        return stats;
+        return this.stats;
     }
 
     public int getRank() {
-        return rank;
+        return this.rank;
+    }
+
+    public Collection<Tag> getTags() {
+        return this.tags;
     }
 }
