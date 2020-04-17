@@ -11,6 +11,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
@@ -197,7 +198,7 @@ public class InitialHandler {
     }
 
     private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
-        if (MCProxy.getInstance().getPlayerRepository().getOnlinePlayer(uniqueId) != null) {
+        if (this.proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).getOnlinePlayer(uniqueId) != null) {
             disconnect(channel, "Already connected");
             return;
         }

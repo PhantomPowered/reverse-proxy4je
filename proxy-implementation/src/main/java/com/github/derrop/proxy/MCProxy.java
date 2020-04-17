@@ -73,7 +73,6 @@ public class MCProxy extends Proxy {
     private ProxyServer proxyServer = new ProxyServer();
     private PermissionProvider permissionProvider = new PermissionProvider();
     private AccountReader accountReader = new AccountReader();
-    private PlayerRepository playerRepository;
 
     private Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
@@ -180,12 +179,6 @@ public class MCProxy extends Proxy {
         }
     }
 
-    @NotNull
-    @Override
-    public PlayerRepository getPlayerRepository() {
-        return this.playerRepository;
-    }
-
     @Override
     public @NotNull ProvidedTitle createTitle() {
         return new BasicTitle();
@@ -223,7 +216,7 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
 
-        this.playerRepository = new DefaultPlayerRepository(this);
+        this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this), true);
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins();

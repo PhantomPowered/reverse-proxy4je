@@ -15,6 +15,7 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -50,7 +51,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             channel.setCompression(compression);
         }
 
-        MCProxy.getInstance().getPlayerRepository().updateOfflinePlayer(new DefaultOfflinePlayer(
+        proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).updateOfflinePlayer(new DefaultOfflinePlayer(
                 uniqueId, super.getName(), super.getLastLogin(), super.getLastVersion()
         )); // create a new player because we don't want the online player to be stored in the database
     }
