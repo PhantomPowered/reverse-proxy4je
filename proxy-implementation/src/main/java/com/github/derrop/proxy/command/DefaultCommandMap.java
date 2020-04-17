@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class DefaultCommandMap implements CommandMap {
 
@@ -77,7 +78,12 @@ public class DefaultCommandMap implements CommandMap {
             CommandContainer commandContainer = this.getContainer(commandSender, split);
             String[] args = split.length > 1 ? Arrays.copyOfRange(split, 1, split.length) : new String[0];
             return commandContainer.getCallback().getSuggestions(commandSender, args, fullLine);
-        } catch (final CommandExecutionException | UnknownCommandException | PermissionDeniedException ex) {
+        } catch (UnknownCommandException ex) {
+            return this.commands.entrySet().stream()
+                    .filter(entry -> entry.getValue().getCallback().testPermission(commandSender))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        } catch (final CommandExecutionException | PermissionDeniedException ex) {
             return new ArrayList<>();
         }
     }

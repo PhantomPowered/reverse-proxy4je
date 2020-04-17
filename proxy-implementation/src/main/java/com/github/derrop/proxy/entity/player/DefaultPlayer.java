@@ -78,6 +78,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private String displayName;
 
+    private String lastCommandCompleteRequest;
+
     private final EntityLiving.Unsafe unsafe = new Unsafe0();
 
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
@@ -95,6 +97,14 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     @Override
     public void setDisplayName(String name) {
         this.displayName = name;
+    }
+
+    public String getLastCommandCompleteRequest() {
+        return this.lastCommandCompleteRequest;
+    }
+
+    public void setLastCommandCompleteRequest(String lastCommandCompleteRequest) {
+        this.lastCommandCompleteRequest = lastCommandCompleteRequest;
     }
 
     @Override

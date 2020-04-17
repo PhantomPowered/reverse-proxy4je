@@ -12,15 +12,11 @@ import com.github.derrop.proxy.api.events.connection.service.TitleReceiveEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTitle;
+import com.github.derrop.proxy.protocol.play.server.*;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 public class ServerPacketHandler {
@@ -84,7 +80,19 @@ public class ServerPacketHandler {
         chat.setMessage(ComponentSerializer.toString(event.getMessage()));
     }
 
-    // TODO Implement TabComplete response?
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.TAB_COMPLETE, directions = ProtocolDirection.TO_CLIENT)
+    public void handleTabComplete(ConnectedProxyClient client, PacketPlayServerTabCompleteResponse response) {
+        if (client.getRedirector() == null) {
+            return;
+        }
+
+        DefaultPlayer player = (DefaultPlayer) client.getRedirector();
+
+        if (player.getLastCommandCompleteRequest() != null) {
+            player.setLastCommandCompleteRequest(null);
+            response.getCommands().add("/proxy");
+        }
+    }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerRespawn respawn) {

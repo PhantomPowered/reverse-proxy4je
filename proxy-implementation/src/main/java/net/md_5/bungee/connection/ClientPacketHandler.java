@@ -18,8 +18,12 @@ import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayload;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.ProtocolConstants;
+
+import java.util.List;
 
 public class ClientPacketHandler {
 
@@ -77,4 +81,21 @@ public class ClientPacketHandler {
         pluginMessage.setTag(event.getTag());
         pluginMessage.setData(event.getData());
     }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.TAB_COMPLETE, directions = ProtocolDirection.TO_SERVER)
+    public void handle(DefaultPlayer player, PacketPlayClientTabCompleteRequest request) {
+        if (!request.getCursor().startsWith("/")) {
+            return;
+        }
+        if (!request.getCursor().startsWith("/proxy")) {
+            player.setLastCommandCompleteRequest(request.getCursor());
+            return;
+        }
+        List<String> suggestions = player.getProxy().getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring("/proxy ".length()));
+        if (!suggestions.isEmpty()) {
+            player.sendPacket(new PacketPlayServerTabCompleteResponse(suggestions));
+            throw CancelProceedException.INSTANCE;
+        }
+    }
+
 }
