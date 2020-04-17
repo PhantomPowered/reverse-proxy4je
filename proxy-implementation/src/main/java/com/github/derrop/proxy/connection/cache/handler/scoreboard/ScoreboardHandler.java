@@ -21,6 +21,10 @@ public interface ScoreboardHandler {
 
     void handleTeamUpdated(ScorePlayerTeam team);
 
+    void handleTeamEntryAdded(ScorePlayerTeam team, String entry);
+
+    void handleTeamEntryRemoved(ScorePlayerTeam team, String entry);
+
     void handleTeamUnregistered(ScorePlayerTeam team);
 
     void handleScoreboardPacket(Packet packet);

@@ -5,11 +5,10 @@ import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
-import com.google.gson.internal.$Gson$Preconditions;
+import com.github.derrop.proxy.plugins.gomme.secret.SpectatorEntry;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -104,6 +103,10 @@ public class MatchInfo {
 
     public Collection<MatchTeam> getTeams() {
         return teams;
+    }
+
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 
     public <T> T getProperty(String key) {

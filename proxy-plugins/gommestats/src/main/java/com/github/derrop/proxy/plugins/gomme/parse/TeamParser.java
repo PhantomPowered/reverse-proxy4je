@@ -6,6 +6,7 @@ import com.github.derrop.proxy.api.event.handler.Listener;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardScoreSetEvent;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamRegisterEvent;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamUnregisterEvent;
+import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamUpdateEvent;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
@@ -21,20 +22,25 @@ public class TeamParser extends MatchParser {
 
     @Listener
     public void handleTeamRegister(ScoreboardTeamRegisterEvent event) {
-        System.out.println(event.getTeam().getName() + ": " + event.getTeam().getPrefix() + " " + event.getTeam().getEntries());
+        System.out.println("TCreate: " + event.getTeam().getName() + ": " + ChatColor.stripColor(event.getTeam().getPrefix()) + " " + event.getTeam().getEntries());
         this.getTeamColor(event.getConnection(), event.getTeam(), (matchInfo, color) -> {
             System.out.println(matchInfo.getMatchId() + ": " + color);
         });
     }
 
     @Listener
-    public void handleTeamUpdate(ScoreboardTeamUnregisterEvent event) {
-        
+    public void handleTeamUpdate(ScoreboardTeamUpdateEvent event) {
+        System.out.println("TUpdate: " + event.getTeam().getName() + ": " + ChatColor.stripColor(event.getTeam().getPrefix()) + " " + event.getTeam().getEntries());
+    }
+
+    @Listener
+    public void hadnleTeamUnregister(ScoreboardTeamUnregisterEvent event) {
+
     }
 
     @Listener
     public void handleScoreUpdate(ScoreboardScoreSetEvent event) {
-        System.out.println(event.getScore().getEntry() + ": " + event.getScore().getScore());
+        System.out.println("Score: " + ChatColor.stripColor(event.getScore().getEntry()) + ": " + event.getScore().getScore());
     }
 
     private void getTeamColor(ServiceConnection connection, Team team, BiConsumer<MatchInfo, ChatColor> consumer) {

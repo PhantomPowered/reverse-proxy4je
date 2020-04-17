@@ -158,6 +158,16 @@ public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
     }
 
     @Override
+    public void handleTeamEntryAdded(ScorePlayerTeam team, String entry) {
+        this.callEvent(new ScoreboardTeamEntryAddEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team), entry));
+    }
+
+    @Override
+    public void handleTeamEntryRemoved(ScorePlayerTeam team, String entry) {
+        this.callEvent(new ScoreboardTeamEntryRemoveEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team), entry));
+    }
+
+    @Override
     public void handleTeamUnregistered(ScorePlayerTeam team) {
         this.callEvent(new ScoreboardTeamUnregisterEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team)));
     }

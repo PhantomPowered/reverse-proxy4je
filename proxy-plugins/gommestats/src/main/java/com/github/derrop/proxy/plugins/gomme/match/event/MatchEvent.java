@@ -19,7 +19,7 @@ public class MatchEvent {
     }
 
     public enum Type {
-        CORE_DESTROYED, PLAYER_DIED
+        CORE_DESTROYED, PLAYER_DIED, SPECTATOR_JOINED, SPECTATOR_LEFT
     }
 
 }

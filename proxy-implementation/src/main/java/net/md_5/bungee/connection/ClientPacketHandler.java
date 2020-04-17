@@ -59,7 +59,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_CLIENT, TextComponent.fromLegacyText(chat.getMessage()));
+        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, TextComponent.fromLegacyText(chat.getMessage()));
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }

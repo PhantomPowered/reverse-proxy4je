@@ -14,6 +14,7 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.scoreboard.minecraft.*;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class ScoreboardCache implements PacketCacheHandler {
@@ -124,12 +125,18 @@ public class ScoreboardCache implements PacketCacheHandler {
             if (team.getMode() == 0 || team.getMode() == 3) {
                 for (String s : team.getPlayers()) {
                     scoreboard.addPlayerToTeam(s, team.getName());
+                    if (this.handler != null) {
+                        this.handler.handleTeamEntryAdded(scoreplayerteam, s);
+                    }
                 }
             }
 
             if (team.getMode() == 4) {
                 for (String s1 : team.getPlayers()) {
                     scoreboard.removePlayerFromTeam(s1, scoreplayerteam);
+                    if (this.handler != null) {
+                        this.handler.handleTeamEntryRemoved(scoreplayerteam, s1);
+                    }
                 }
             }
 
