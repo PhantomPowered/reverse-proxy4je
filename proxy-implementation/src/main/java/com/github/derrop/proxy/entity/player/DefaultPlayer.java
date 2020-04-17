@@ -50,7 +50,9 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             channel.setCompression(compression);
         }
 
-        MCProxy.getInstance().getUUIDStorage().createMapping(this.getUniqueId(), this.getName());
+        MCProxy.getInstance().getPlayerRepository().updateOfflinePlayer(new DefaultOfflinePlayer(
+                uniqueId, super.getName(), super.getLastLogin(), super.getLastVersion()
+        )); // create a new player because we don't want the online player to be stored in the database
     }
 
 

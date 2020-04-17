@@ -28,8 +28,6 @@ import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
-import com.github.derrop.proxy.database.H2DatabaseConfig;
-import com.github.derrop.proxy.database.H2DatabaseDriver;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.event.DefaultEventManager;
@@ -42,7 +40,8 @@ import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.session.BasicProvidedSessionService;
-import com.github.derrop.proxy.storage.UUIDStorage;
+import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
+import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.md_5.bungee.connection.ClientPacketHandler;
@@ -73,9 +72,8 @@ public class MCProxy extends Proxy {
 
     private ProxyServer proxyServer = new ProxyServer();
     private PermissionProvider permissionProvider = new PermissionProvider();
-    private UUIDStorage uuidStorage = new UUIDStorage();
     private AccountReader accountReader = new AccountReader();
-    private PlayerRepository playerRepository = new DefaultPlayerRepository(this);
+    private PlayerRepository playerRepository;
 
     private Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
@@ -206,10 +204,6 @@ public class MCProxy extends Proxy {
         return reconnectProfiles;
     }
 
-    public UUIDStorage getUUIDStorage() {
-        return uuidStorage;
-    }
-
     public ILogger getLogger() {
         return logger;
     }
@@ -228,6 +222,8 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins")), false, true);
 
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
+
+        this.playerRepository = new DefaultPlayerRepository(this);
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins();

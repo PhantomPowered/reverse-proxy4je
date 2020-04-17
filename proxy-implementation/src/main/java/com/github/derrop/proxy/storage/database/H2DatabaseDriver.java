@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.database;
+package com.github.derrop.proxy.storage.database;
 
 import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.database.config.DatabaseConfig;

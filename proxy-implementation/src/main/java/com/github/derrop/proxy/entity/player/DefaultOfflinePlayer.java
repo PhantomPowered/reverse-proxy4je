@@ -4,9 +4,10 @@ import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import com.github.derrop.proxy.entity.permission.DefaultPermissionHolder;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class DefaultOfflinePlayer extends DefaultPermissionHolder implements OfflinePlayer {
+public class DefaultOfflinePlayer extends DefaultPermissionHolder implements OfflinePlayer, Serializable {
 
     public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin, int lastVersion) {
         this.uniqueID = uniqueID;

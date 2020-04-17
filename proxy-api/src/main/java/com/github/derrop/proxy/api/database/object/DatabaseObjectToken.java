@@ -38,6 +38,18 @@ public abstract class DatabaseObjectToken<T> {
         };
     }
 
+    @NotNull
+    public static <T> DatabaseObjectToken<T> newToken(@NotNull String key, @NotNull String table) {
+        return newToken(objectInputStream -> {
+            try {
+                return (T) objectInputStream.readObject();
+            } catch (IOException | ClassNotFoundException exception) {
+                exception.printStackTrace();
+            }
+            return null;
+        }, key, table);
+    }
+
     /**
      * Deserializes an object from the database.
      *

@@ -18,7 +18,7 @@ public class GommeStatsPlugin {
 
     @Inject(state = PluginState.ENABLED)
     public void enable(ServiceRegistry registry) {
-        GommeStatsCore core = new GommeStatsCore();
+        GommeStatsCore core = new GommeStatsCore(registry);
 
         //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(new TeamParser(core));
         registry.getProviderUnchecked(EventManager.class).registerListener(new GommeMatchListener(core.getMatchManager()));

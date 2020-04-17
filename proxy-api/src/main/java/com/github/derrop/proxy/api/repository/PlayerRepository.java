@@ -15,7 +15,9 @@ public interface PlayerRepository {
     Player getOnlinePlayer(UUID uniqueId);
 
 
-    Collection<OfflinePlayer> getOfflinePlayers();
+    void updateOfflinePlayer(OfflinePlayer offlinePlayer);
+
+    Collection<? extends OfflinePlayer> getOfflinePlayers();
 
     OfflinePlayer getOfflinePlayer(String name);
 
