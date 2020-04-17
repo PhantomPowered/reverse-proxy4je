@@ -4,6 +4,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.plugin.PluginState;
+import com.github.derrop.proxy.api.plugin.annotation.Dependency;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -61,11 +62,17 @@ public final class DefaultPluginContainer implements PluginContainer {
     }
 
     @Override
-    public @NotNull PluginContainer[] getDependencies() {
-        return Arrays.stream(this.plugin.dependencies()).map(e -> {
+    public @Nullable String getDescription() {
+        return this.plugin.description().trim().isEmpty() ? null : this.plugin.description();
+    }
+
+    @Override
+    public @NotNull Dependency[] getDependencies() {
+        return this.plugin.dependencies();
+        /*Üreturn Arrays.stream(this.plugin.dependencies()).map(e -> {
             Optional<PluginContainer> container = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PluginManager.class).getPlugin(e.id());
             return container.orElse(null);
-        }).filter(Objects::nonNull).toArray(PluginContainer[]::new);
+        }).filter(Objects::nonNull).toArray(Dependency[]::new);*/
     }
 
     @Override

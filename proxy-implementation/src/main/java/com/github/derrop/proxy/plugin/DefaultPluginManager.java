@@ -194,9 +194,9 @@ public class DefaultPluginManager implements PluginManager {
                 PluginContainerEntry entry = new PluginContainerEntry(
                         container,
                         instance,
-                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.LOADED).map(e -> e.getRight()).toArray(Method[]::new),
-                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.ENABLED).map(e -> e.getRight()).toArray(Method[]::new),
-                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.DISABLED).map(e -> e.getRight()).toArray(Method[]::new)
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.LOADED).map(Duo::getRight).toArray(Method[]::new),
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.ENABLED).map(Duo::getRight).toArray(Method[]::new),
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.DISABLED).map(Duo::getRight).toArray(Method[]::new)
                 );
                 this.pluginContainers.add(entry);
             } catch (final IOException | ClassNotFoundException ex) {

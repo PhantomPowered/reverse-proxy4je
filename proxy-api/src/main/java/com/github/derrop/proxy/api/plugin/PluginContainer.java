@@ -16,6 +16,8 @@ public interface PluginContainer {
 
     int getVersion();
 
+    @Nullable String getDescription();
+
     @NotNull String getWebSite();
 
     @NotNull String[] getAuthors();
