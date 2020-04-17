@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
@@ -27,6 +28,8 @@ import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
+import com.github.derrop.proxy.database.H2DatabaseConfig;
+import com.github.derrop.proxy.database.H2DatabaseDriver;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.event.DefaultEventManager;
@@ -87,6 +90,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketRegistry.class, new DefaultPacketRegistry(), false, true);
         this.serviceRegistry.setProvider(null, Configuration.class, new JsonConfiguration(), true);
+        this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
 
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
@@ -222,6 +226,8 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(this), false, true);
+
+        this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins(Paths.get("plugins")); // TODO: config
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
