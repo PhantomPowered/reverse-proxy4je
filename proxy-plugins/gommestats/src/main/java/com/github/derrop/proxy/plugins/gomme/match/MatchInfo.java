@@ -5,13 +5,14 @@ import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
+import com.google.gson.internal.$Gson$Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class MatchInfo {
 
-    private final ServiceConnection invoker;
+    private final transient ServiceConnection invoker;
     private final GommeGameMode gameMode;
     private final String matchId;
     private boolean running;
@@ -22,6 +23,7 @@ public class MatchInfo {
 
     private PlayerData[] statisticsOnBegin;
 
+    private Collection<MatchTeam> teams = new ArrayList<>();
     private Collection<MatchEvent> events = new ArrayList<>();
 
     public MatchInfo(ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
@@ -41,6 +43,14 @@ public class MatchInfo {
         this.running = false;
         this.endTimestamp = System.currentTimeMillis();
         this.playersOnEnd = currentPlayers;
+    }
+
+    public boolean hasBegin() {
+        return this.playersOnBegin != null;
+    }
+
+    public boolean hasEnded() {
+        return this.playersOnEnd != null;
     }
 
     public void callEvent(MatchEvent event) {
