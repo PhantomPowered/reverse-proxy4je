@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-// TODO test the events
 public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
 
     private final ServiceConnection connection;
