@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.connection.cache.handler;
+package com.github.derrop.proxy.connection.cache.handler.scoreboard;
 
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
@@ -20,7 +20,7 @@ public class ScoreboardCache implements PacketCacheHandler {
 
     private final Scoreboard scoreboard = new Scoreboard();
 
-    private Consumer<Packet> packetHandler;
+    private ScoreboardHandler handler;
 
     private Player connectedPlayer;
 
@@ -44,14 +44,25 @@ public class ScoreboardCache implements PacketCacheHandler {
                 ScoreObjective scoreobjective = scoreboard.addScoreObjective(objective.getName(), IScoreObjectiveCriteria.DUMMY);
                 scoreobjective.setDisplayName(objective.getValue());
                 scoreobjective.setRenderType(objective.getType());
+
+                if (this.handler != null) {
+                    this.handler.handleObjectiveCreated(scoreobjective);
+                }
             } else {
-                ScoreObjective scoreobjective1 = scoreboard.getObjective(objective.getName());
+                ScoreObjective scoreobjective = scoreboard.getObjective(objective.getName());
 
                 if (objective.getAction() == 1) {
-                    scoreboard.removeObjective(scoreobjective1);
+                    scoreboard.removeObjective(scoreobjective);
+                    if (this.handler != null) {
+                        this.handler.handleObjectiveUnregistered(scoreobjective);
+                    }
                 } else if (objective.getAction() == 2) {
-                    scoreobjective1.setDisplayName(objective.getValue());
-                    scoreobjective1.setRenderType(objective.getType());
+                    scoreobjective.setDisplayName(objective.getValue());
+                    scoreobjective.setRenderType(objective.getType());
+
+                    if (this.handler != null) {
+                        this.handler.handleObjectiveUpdated(scoreobjective);
+                    }
                 }
             }
         } else if (packet instanceof PacketPlayServerScoreboardScore) {
@@ -62,11 +73,19 @@ public class ScoreboardCache implements PacketCacheHandler {
             if (scorePacket.getAction() == 0) {
                 Score score = scoreboard.getValueFromObjective(scorePacket.getItemName(), scoreobjective);
                 score.setScorePoints(scorePacket.getValue());
+
+                if (this.handler != null) {
+                    this.handler.handleScoreUpdated(score);
+                }
             } else if (scorePacket.getAction() == 1) {
                 if (scorePacket.getObjectiveName().isEmpty()) {
                     scoreboard.removeObjectiveFromEntity(scorePacket.getItemName(), null);
                 } else if (scoreobjective != null) {
                     scoreboard.removeObjectiveFromEntity(scorePacket.getItemName(), scoreobjective);
+                }
+
+                if (this.handler != null) {
+                    this.handler.handleScoreRemoved(scorePacket.getItemName(), scoreobjective);
                 }
             }
         } else if (packet instanceof PacketPlayServerScoreboardDisplay) {
@@ -117,10 +136,24 @@ public class ScoreboardCache implements PacketCacheHandler {
             if (team.getMode() == 1) {
                 scoreboard.removeTeam(scoreplayerteam);
             }
+
+            if (team.getMode() == 0) {
+                if (this.handler != null) {
+                    this.handler.handleTeamRegistered(scoreplayerteam);
+                }
+            } else if (team.getMode() == 1) {
+                if (this.handler != null) {
+                    this.handler.handleTeamUnregistered(scoreplayerteam);
+                }
+            } else {
+                if (this.handler != null) {
+                    this.handler.handleTeamUpdated(scoreplayerteam);
+                }
+            }
         }
 
-        if (this.packetHandler != null) {
-            this.packetHandler.accept(packet);
+        if (this.handler != null) {
+            this.handler.handleScoreboardPacket(packet);
         }
     }
 
@@ -166,8 +199,8 @@ public class ScoreboardCache implements PacketCacheHandler {
         }
     }
 
-    public void setPacketHandler(Consumer<Packet> packetHandler) {
-        this.packetHandler = packetHandler;
+    public void setHandler(ScoreboardHandler handler) {
+        this.handler = handler;
     }
 
     public void sendScoreUpdate(String score, String objective, int value) {

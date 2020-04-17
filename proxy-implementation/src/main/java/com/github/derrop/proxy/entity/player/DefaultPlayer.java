@@ -19,13 +19,12 @@ import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientPositionLook;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.LoginResult;
@@ -116,8 +115,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     @Override
     public void sendActionBar(int units, BaseComponent... message) {
         if (this.connectedClient != null) {
-            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayClientChatMessage
-                            && ((PacketPlayClientChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
+            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayServerChatMessage
+                            && ((PacketPlayServerChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
                     System.currentTimeMillis() + (units * 100)
             );
         }

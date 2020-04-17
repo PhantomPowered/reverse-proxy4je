@@ -4,11 +4,11 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
-public class ScoreboardTeamRegisterEvent extends ScoreboardEvent {
+public class ScoreboardTeamUnregisterEvent extends ScoreboardEvent {
 
     private final Team team;
 
-    public ScoreboardTeamRegisterEvent(@NotNull ServiceConnection connection, Team team) {
+    public ScoreboardTeamUnregisterEvent(@NotNull ServiceConnection connection, Team team) {
         super(connection);
         this.team = team;
     }
