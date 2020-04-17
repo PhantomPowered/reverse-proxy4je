@@ -36,7 +36,7 @@ public class SignCache implements PacketCacheHandler {
         for (Map.Entry<BlockPos, PacketPlayServerUpdateSign> entry : this.signUpdates.entrySet()) {
             Material material = this.packetCache.getMaterialAt(entry.getKey());
 
-            if (material != Material.SIGN && material != Material.SIGN_POST) {
+            if (material != Material.WALL_SIGN && material != Material.SIGN_POST) {
                 this.signUpdates.remove(entry.getKey());
                 continue;
             }
