@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.service;
 
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.service.exception.ProviderImmutableException;
 import com.github.derrop.proxy.api.service.exception.ProviderNeedsReplacementException;
 import com.github.derrop.proxy.api.service.exception.ProviderNotRegisteredException;
@@ -12,15 +12,15 @@ import java.util.Optional;
 
 public interface ServiceRegistry {
 
-    default <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider) {
-        this.setProvider(plugin, service, provider, false);
+    default <T> void setProvider(@Nullable PluginContainer pluginContainer, @NotNull Class<T> service, @NotNull T provider) {
+        this.setProvider(pluginContainer, service, provider, false);
     }
 
-    default <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable) {
-        this.setProvider(plugin, service, provider, immutable, false);
+    default <T> void setProvider(@Nullable PluginContainer pluginContainer, @NotNull Class<T> service, @NotNull T provider, boolean immutable) {
+        this.setProvider(pluginContainer, service, provider, immutable, false);
     }
 
-    <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable, boolean needsReplacement);
+    <T> void setProvider(@Nullable PluginContainer pluginContainer, @NotNull Class<T> service, @NotNull T provider, boolean immutable, boolean needsReplacement);
 
     @NotNull <T> Optional<T> getProvider(@NotNull Class<T> service);
 
@@ -29,7 +29,7 @@ public interface ServiceRegistry {
     @NotNull <T> T getProviderUnchecked(@NotNull Class<T> service) throws ProviderNotRegisteredException;
 
     @NotNull
-    Collection<ServiceRegistryEntry<?>> getPluginRegisteredServices(@NotNull Plugin plugin);
+    Collection<ServiceRegistryEntry<?>> getPluginRegisteredServices(@NotNull PluginContainer pluginContainer);
 
     default <T> void unregisterService(@NotNull Class<T> service) throws ProviderNotRegisteredException, ProviderImmutableException, ProviderNeedsReplacementException {
         this.unregisterService(service, null);

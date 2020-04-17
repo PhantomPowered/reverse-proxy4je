@@ -2,7 +2,7 @@ package com.github.derrop.proxy.api.network.registry.handler;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public interface PacketHandlerRegistryEntry {
 
-    @Nullable Plugin getPlugin();
+    @Nullable PluginContainer getPluginContainer();
 
     @NotNull Object getSource();
 

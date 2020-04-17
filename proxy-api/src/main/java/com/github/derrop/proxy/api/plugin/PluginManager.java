@@ -1,22 +1,31 @@
 package com.github.derrop.proxy.api.plugin;
 
-import java.nio.file.Path;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
+import java.util.Optional;
 
 public interface PluginManager {
 
-    void loadPlugins(Path directory);
+    @NotNull
+    Optional<PluginContainer> fromInstance(@NotNull Object instance);
+
+    @NotNull
+    Optional<PluginContainer> getPlugin(@NotNull String id);
+
+    @NotNull
+    Collection<PluginContainer> getPlugins();
+
+    boolean isLoaded(@NotNull String id);
+
+    boolean isEnabled(@NotNull String id);
+
+    void detectPlugins();
+
+    void loadPlugins();
 
     void enablePlugins();
 
     void disablePlugins();
-
-    Plugin getEnabledPlugin(String name);
-
-    Collection<Plugin> getEnabledPlugins();
-
-    boolean isPluginLoaded(String name);
-
-    boolean isPluginEnabled(String name);
 
 }

@@ -1,9 +1,9 @@
 package com.github.derrop.proxy.plugins;
 
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 
-public class LabyModPlugin extends Plugin {
+public class LabyModPluginContainer extends PluginContainer {
 
     @Override
     public void onEnable() {

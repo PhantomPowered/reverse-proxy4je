@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.service;
 
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.service.ServiceRegistryEntry;
 import com.github.derrop.proxy.api.service.exception.ProviderImmutableException;
@@ -22,8 +22,8 @@ public final class BasicServiceRegistry implements ServiceRegistry {
             .makeMap();
 
     @Override
-    public <T> void setProvider(@Nullable Plugin plugin, @NotNull Class<T> service, @NotNull T provider, boolean immutable, boolean needsReplacement) {
-        this.entries.put(service, new BasicServiceRegistryEntry<>(service, provider, plugin, immutable, needsReplacement));
+    public <T> void setProvider(@Nullable PluginContainer pluginContainer, @NotNull Class<T> service, @NotNull T provider, boolean immutable, boolean needsReplacement) {
+        this.entries.put(service, new BasicServiceRegistryEntry<>(service, provider, pluginContainer, immutable, needsReplacement));
     }
 
     @Override
@@ -52,10 +52,10 @@ public final class BasicServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public @NotNull Collection<ServiceRegistryEntry<?>> getPluginRegisteredServices(@NotNull Plugin plugin) {
+    public @NotNull Collection<ServiceRegistryEntry<?>> getPluginRegisteredServices(@NotNull PluginContainer pluginContainer) {
         Collection<ServiceRegistryEntry<?>> out = new ArrayList<>();
         for (ServiceRegistryEntry<?> value : this.entries.values()) {
-            if (value.getPlugin() != null && value.getPlugin().equals(plugin)) {
+            if (value.getPluginContainer() != null && value.getPluginContainer().equals(pluginContainer)) {
                 out.add(value);
             }
         }

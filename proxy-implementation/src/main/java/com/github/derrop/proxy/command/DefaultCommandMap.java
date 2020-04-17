@@ -9,7 +9,7 @@ import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.exception.UnknownCommandException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,13 +21,13 @@ public class DefaultCommandMap implements CommandMap {
     private final Map<String, CommandContainer> commands = new ConcurrentHashMap<>();
 
     @Override
-    public @NotNull CommandContainer registerCommand(@Nullable Plugin plugin, @NotNull CommandCallback commandCallback, @NotNull List<String> aliases) throws CommandRegistrationException {
+    public @NotNull CommandContainer registerCommand(@Nullable PluginContainer pluginContainer, @NotNull CommandCallback commandCallback, @NotNull List<String> aliases) throws CommandRegistrationException {
         if (aliases.isEmpty()) {
             throw new CommandRegistrationException("Unable to register command which has no aliases provided");
         }
 
         String mainAlias = aliases.get(0);
-        CommandContainer commandContainer = new DefaultCommandContainer(plugin, commandCallback, mainAlias, new HashSet<>(aliases.subList(1, aliases.size())));
+        CommandContainer commandContainer = new DefaultCommandContainer(pluginContainer, commandCallback, mainAlias, new HashSet<>(aliases.subList(1, aliases.size())));
 
         for (String alias : aliases) {
             this.commands.put(alias.toLowerCase(), commandContainer);
@@ -42,10 +42,10 @@ public class DefaultCommandMap implements CommandMap {
     }
 
     @Override
-    public @NotNull Collection<CommandContainer> getCommandsByPlugin(@NotNull Plugin plugin) {
+    public @NotNull Collection<CommandContainer> getCommandsByPlugin(@NotNull PluginContainer pluginContainer) {
         Collection<CommandContainer> out = new ArrayList<>();
         for (CommandContainer value : this.commands.values()) {
-            if (value.getPlugin() != null && value.getPlugin().equals(plugin)) {
+            if (value.getPluginContainer() != null && value.getPluginContainer().equals(pluginContainer)) {
                 out.add(value);
             }
         }

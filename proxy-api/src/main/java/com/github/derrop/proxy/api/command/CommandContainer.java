@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.command;
 
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,5 +17,5 @@ public interface CommandContainer {
     @NotNull
     CommandCallback getCallback();
 
-    @Nullable Plugin getPlugin();
+    @Nullable PluginContainer getPluginContainer();
 }

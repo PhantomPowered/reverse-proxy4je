@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.service;
 
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ public interface ServiceRegistryEntry<T> {
     T getProvider();
 
     @Nullable
-    Plugin getPlugin();
+    PluginContainer getPluginContainer();
 
     boolean isImmutable();
 

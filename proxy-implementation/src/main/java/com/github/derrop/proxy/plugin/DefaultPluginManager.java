@@ -1,183 +1,389 @@
 package com.github.derrop.proxy.plugin;
 
+import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.github.derrop.proxy.api.Proxy;
-import com.github.derrop.proxy.api.plugin.Plugin;
-import com.github.derrop.proxy.api.plugin.PluginDescription;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginManager;
+import com.github.derrop.proxy.api.plugin.PluginState;
+import com.github.derrop.proxy.api.plugin.annotation.Dependency;
+import com.github.derrop.proxy.api.plugin.annotation.Inject;
+import com.github.derrop.proxy.api.plugin.annotation.Plugin;
+import com.github.derrop.proxy.api.plugin.exceptions.PluginMainClassNotDefinedException;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.util.Duo;
+import com.github.derrop.proxy.util.io.IOUtils;
+import com.google.common.collect.Maps;
+import com.google.common.graph.Graph;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.stream.Collectors;
 
 public class DefaultPluginManager implements PluginManager {
 
-    private final Gson gson = new Gson();
+    private final List<PluginContainerEntry> pluginContainers = new CopyOnWriteArrayList<>();
 
-    private Map<String, Plugin> enabledPlugins = new HashMap<>();
-    private Collection<PluginDescription> loadedPlugins = new ArrayList<>();
+    private final Collection<Path> toLoad = new CopyOnWriteArrayList<>();
 
-    public DefaultPluginManager(Proxy proxy) {
+    public DefaultPluginManager(Path pluginsDirectory) {
+        this.pluginsDirectory = pluginsDirectory;
+        IOUtils.createDirectories(pluginsDirectory);
     }
 
-    private PluginDescription loadDescription(InputStream inputStream) throws IOException {
-        try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-            return this.gson.fromJson(reader, PluginDescription.class);
+    private final Path pluginsDirectory;
+
+    @Override
+    public @NotNull Optional<PluginContainer> fromInstance(@NotNull Object instance) {
+        if (instance instanceof PluginContainer) {
+            return Optional.of((PluginContainer) instance);
         }
+
+        return Optional.empty();
     }
 
     @Override
-    public void loadPlugins(Path directory) {
-        System.out.println("Loading plugins in " + directory + "...");
-
-        try {
-            Files.createDirectories(directory);
-
-            Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (!file.getFileName().toString().endsWith(".jar")) {
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    PluginDescription description = null;
-
-                    try (InputStream inputStream = Files.newInputStream(file);
-                         ZipInputStream zipInputStream = new ZipInputStream(inputStream, StandardCharsets.UTF_8)) {
-                        ZipEntry entry;
-                        while ((entry = zipInputStream.getNextEntry()) != null) {
-                            if (entry.getName().equals("plugin.json")) {
-                                try {
-                                    description = loadDescription(zipInputStream);
-                                    break;
-                                } catch (JsonSyntaxException exception) {
-                                    throw new InvalidPluginDescriptionException("Invalid plugin.json in " + file);
-                                }
-                            }
-                        }
-                    }
-
-                    if (description == null) {
-                        throw new InvalidPluginDescriptionException("No plugin.json found in " + file);
-                    }
-                    if (description.getName() == null) {
-                        throw new InvalidPluginDescriptionException("No name given in the plugin.json of " + file);
-                    }
-                    if (description.getVersion() == null) {
-                        throw new InvalidPluginDescriptionException("No version given in the plugin.json of " + file);
-                    }
-                    if (description.getMain() == null) {
-                        throw new InvalidPluginDescriptionException("No main given in the plugin.json of " + file);
-                    }
-
-                    description.setPath(file);
-
-
-
-                    loadedPlugins.add(description);
-
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (IOException exception) {
-            exception.printStackTrace();
+    public @NotNull Optional<PluginContainer> getPlugin(@NotNull String id) {
+        for (PluginContainer pluginContainer : this.getPlugins()) {
+            if (pluginContainer.getId().equals(id)) {
+                return Optional.of(pluginContainer);
+            }
         }
 
-        System.out.println("Successfully loaded " + this.loadedPlugins.size() + " plugins out of " + directory);
+        return Optional.empty();
+    }
+
+    @Override
+    public @NotNull Collection<PluginContainer> getPlugins() {
+        return this.pluginContainers.stream().map(e -> e.getPluginContainer()).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isLoaded(@NotNull String id) {
+        PluginContainer container = this.getPlugin(id).orElse(null);
+        return container != null && (container.getState() == PluginState.LOADED || container.getState() == PluginState.ENABLED);
+    }
+
+    @Override
+    public boolean isEnabled(@NotNull String id) {
+        PluginContainer container = this.getPlugin(id).orElse(null);
+        return container != null && container.getState() == PluginState.ENABLED;
+    }
+
+    @Override
+    public void detectPlugins() {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.pluginsDirectory, Constants.JAR_FILE_FILTER)) {
+            for (Path path : stream) {
+                if (this.isPluginDetectedByPath(path)) {
+                    continue;
+                }
+
+                toLoad.add(path);
+            }
+        } catch (final IOException ex) {
+            ex.printStackTrace();
+        }
+
+        this.handleLoaded();
+    }
+
+    @Override
+    public void loadPlugins() {
+        for (PluginContainerEntry pluginContainer : this.pluginContainers) {
+            for (Method method : pluginContainer.getOnLoadMethod()) {
+                try {
+                    this.invokeMethod0(method, pluginContainer.getInstance());
+                } catch (final Exception ex) {
+                    System.err.println("Unexpected exception while calling load method " + method.getName()
+                            + " in plugin " + pluginContainer.getPluginContainer().getId());
+                }
+            }
+        }
     }
 
     @Override
     public void enablePlugins() {
-        System.out.println("Enabling " + this.loadedPlugins.size() + " plugins...");
-        for (PluginDescription description : this.loadedPlugins) {
-            System.out.println("Enabling plugin " + description.getName() + " " + description.getVersion() + " by " + String.join(", ", description.getAuthors()) + "...");
-            URLClassLoader classLoader = null;
-            try {
-                classLoader = new FinalizeURLClassLoader(description.getPath().toUri().toURL());
-
-                description.setClassLoader(classLoader);
-
-                Class<?> mainClass = classLoader.loadClass(description.getMain());
-
-                if (!Plugin.class.isAssignableFrom(mainClass)) {
-                    throw new InvalidPluginDescriptionException("Main class must be an instance of Plugin");
-                }
-
-                Plugin plugin = (Plugin) mainClass.getConstructor().newInstance();
-                plugin.set(description, MCProxy.getInstance().getServiceRegistry());
-
+        for (PluginContainerEntry pluginContainer : this.pluginContainers) {
+            for (Method method : pluginContainer.getOnEnableMethod()) {
                 try {
-                    plugin.onEnable();
-
-                    this.enabledPlugins.put(description.getName(), plugin);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
+                    this.invokeMethod0(method, pluginContainer.getInstance());
+                } catch (final Exception ex) {
+                    System.err.println("Unexpected exception while calling enable method " + method.getName()
+                            + " in plugin " + pluginContainer.getPluginContainer().getId());
                 }
-
-            } catch (ClassNotFoundException exception) {
-                exception.printStackTrace();
-                try {
-                    classLoader.close();
-                } catch (IOException exception1) {
-                    exception.printStackTrace();
-                }
-            } catch (MalformedURLException | ReflectiveOperationException exception) {
-                exception.printStackTrace();
             }
         }
-        System.out.println("Successfully enabled " + this.enabledPlugins.size() + " plugins");
-        this.loadedPlugins.clear();
     }
 
     @Override
     public void disablePlugins() {
-        System.out.println("Disabling " + this.enabledPlugins.size() + " plugins...");
-        for (Plugin plugin : this.enabledPlugins.values()) {
-            System.out.println("Disabling plugin " + plugin.getDescription().getName() + " " + plugin.getDescription().getVersion() + " by " + String.join(", ", plugin.getDescription().getAuthors()) + "...");
-            try {
-                plugin.onDisable();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+        for (PluginContainerEntry pluginContainer : this.pluginContainers) {
+            for (Method method : pluginContainer.getOnDisableMethod()) {
+                try {
+                    this.invokeMethod0(method, pluginContainer.getInstance());
+                } catch (final Exception ex) {
+                    System.err.println("Unexpected exception while calling disable method " + method.getName()
+                            + " in plugin " + pluginContainer.getPluginContainer().getId());
+                }
             }
         }
-        System.out.println("Successfully disabled " + this.enabledPlugins.size() + " plugins");
-        this.enabledPlugins.clear();
     }
 
-    @Override
-    public Plugin getEnabledPlugin(String name) {
-        return this.enabledPlugins.get(name);
+    private boolean isPluginDetectedByPath(@NotNull Path path) {
+        String check = path.toAbsolutePath().toString();
+        for (PluginContainer pluginContainer : this.getPlugins()) {
+            if (pluginContainer.getPluginPath().toAbsolutePath().toString().equals(check)) {
+                return true;
+            }
+
+            if (toLoad.stream().anyMatch(e -> e.toAbsolutePath().toString().equals(check))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    @Override
-    public Collection<Plugin> getEnabledPlugins() {
-        return this.enabledPlugins.values();
+    private void handleLoaded() {
+        for (Path path : this.toLoad) {
+            try {
+                URLClassLoader classLoader = new URLClassLoader(new URL[]{path.toUri().toURL()});
+                List<Duo<Class<?>, Plugin>> mainClassPossibilities = this.findMainClass(path, classLoader);
+                if (mainClassPossibilities.size() != 1) {
+                    throw new PluginMainClassNotDefinedException("Found " + mainClassPossibilities.size() + " main class targets in " + path.toString() + ". Expected: 1");
+                }
+
+                Duo<Class<?>, Plugin> mainClass = mainClassPossibilities.get(0);
+                PluginContainer container = new DefaultPluginContainer(mainClass.getRight(), mainClass.getLeft(), classLoader, path);
+
+                Object instance;
+                try {
+                    instance = mainClass.getLeft().getDeclaredConstructor().newInstance();
+                } catch (final NoSuchMethodException ex) {
+                    System.err.println("No args constructor in plugin " + container.getId() + " not present");
+                    continue;
+                } catch (final InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+                    System.err.println("Unexpected exception while calling constructor of " + container.getId());
+                    ex.printStackTrace();
+                    continue;
+                }
+
+                Collection<Duo<PluginState, Method>> injectMethods = new ArrayList<>();
+                for (Method declaredMethod : mainClass.getLeft().getDeclaredMethods()) {
+                    Inject inject = declaredMethod.getAnnotation(Inject.class);
+                    if (inject == null) {
+                        continue;
+                    }
+
+                    injectMethods.add(new Duo<>(inject.state(), declaredMethod));
+                }
+
+                PluginContainerEntry entry = new PluginContainerEntry(
+                        container,
+                        instance,
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.LOADED).map(e -> e.getRight()).toArray(Method[]::new),
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.ENABLED).map(e -> e.getRight()).toArray(Method[]::new),
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.DISABLED).map(e -> e.getRight()).toArray(Method[]::new)
+                );
+                this.pluginContainers.add(entry);
+            } catch (final IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        this.pluginContainers.sort(Comparator.comparing(e -> e.getPluginContainer().getId()));
+        List<PluginContainer> sorted = this.sort(this.pluginContainers.stream().map(PluginContainerEntry::getPluginContainer).collect(Collectors.toList()));
+
+        load:
+        for (PluginContainer container : sorted) {
+            for (Dependency dependency : container.getDependencies()) {
+                if (dependency.optional()) {
+                    continue;
+                }
+
+                PluginContainer depend = this.getPlugin(dependency.id()).orElse(null);
+                if (depend == null) {
+                    System.err.println("Unable to load plugin " + container.getId() + " because of missing dependency " + dependency.id());
+                    this.pluginContainers.removeIf(e -> e.getPluginContainer().getId().equals(container.getId()));
+                    continue load;
+                }
+
+                if (depend.getVersion() < dependency.minimumVersion()) {
+                    System.err.println("Cannot load plugin " + container.getId() + " because of missing dependency with minimum version " + dependency.minimumVersion());
+                    this.pluginContainers.removeIf(e -> e.getPluginContainer().getId().equals(container.getId()));
+                    continue load;
+                }
+            }
+        }
     }
 
-    @Override
-    public boolean isPluginLoaded(String name) {
-        return this.isPluginEnabled(name) || this.loadedPlugins.stream().anyMatch(description -> description.getName().equals(name));
+    @NotNull
+    private List<Duo<Class<?>, Plugin>> findMainClass(@NotNull Path plugin, @NotNull URLClassLoader classLoader) throws IOException, ClassNotFoundException {
+        List<Duo<Class<?>, Plugin>> out = new ArrayList<>();
+        try (JarInputStream jarInputStream = new JarInputStream(Files.newInputStream(plugin))) {
+            JarEntry entry;
+            while ((entry = jarInputStream.getNextJarEntry()) != null) {
+                if (!entry.getName().endsWith(".class")) {
+                    continue;
+                }
+
+                String className = entry.getName().replace("/", ".");
+                className = IOUtils.replaceLast(className, ".class", "");
+
+                Class<?> clazz = classLoader.loadClass(className);
+                Plugin annotation = clazz.getAnnotation(Plugin.class);
+                if (annotation == null) {
+                    continue;
+                }
+
+                out.add(new Duo<>(clazz, annotation));
+            }
+        }
+
+        return out;
     }
 
-    @Override
-    public boolean isPluginEnabled(String name) {
-        return this.enabledPlugins.containsKey(name);
+    @NotNull
+    private List<PluginContainer> sort(@NotNull List<PluginContainer> candidates) {
+        MutableGraph<PluginContainer> graph = GraphBuilder
+                .directed()
+                .expectedNodeCount(candidates.size())
+                .allowsSelfLoops(false)
+                .build();
+        Map<String, PluginContainer> candidateAsMap = Maps.uniqueIndex(candidates, PluginContainer::getId);
+
+        for (PluginContainer candidate : candidates) {
+            graph.addNode(candidate);
+
+            for (Dependency dependency : candidate.getDependencies()) {
+                PluginContainer container = candidateAsMap.get(dependency.id());
+                if (container != null) {
+                    graph.putEdge(candidate, container);
+                }
+            }
+        }
+
+        List<PluginContainer> sorted = new ArrayList<>();
+        Map<PluginContainer, Integer> integerMap = new HashMap<>();
+
+        for (PluginContainer node : graph.nodes()) {
+            this.visitNode(graph, node, integerMap, sorted, new ArrayDeque<>());
+        }
+
+        return sorted;
+    }
+
+    private void visitNode(Graph<PluginContainer> graph, PluginContainer node, Map<PluginContainer, Integer> marks, List<PluginContainer> sorted,
+                           Deque<PluginContainer> currentIteration) {
+        Integer integer = marks.getOrDefault(node, 0);
+        if (integer == 2) {
+            return;
+        } else if (integer == 1) {
+            currentIteration.addLast(node);
+            StringBuilder loopGraph = new StringBuilder();
+            for (PluginContainer description : currentIteration) {
+                loopGraph.append(description.getId());
+                loopGraph.append(" -> ");
+            }
+
+            loopGraph.setLength(loopGraph.length() - 4);
+            throw new IllegalStateException("Circular dependency detected: " + loopGraph.toString());
+        }
+
+        currentIteration.addLast(node);
+        marks.put(node, 2);
+        for (PluginContainer edge : graph.successors(node)) {
+            this.visitNode(graph, edge, marks, sorted, currentIteration);
+        }
+
+        marks.put(node, 2);
+        currentIteration.removeLast();
+        sorted.add(node);
+    }
+
+    private void invokeMethod0(@NotNull Method method, @NotNull Object instance) throws Exception {
+        if (method.getParameters().length == 0) {
+            method.invoke(instance);
+            return;
+        }
+
+        if (method.getParameters().length == 1 && Proxy.class.isAssignableFrom(method.getParameters()[0].getType())) {
+            method.invoke(instance, MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class));
+            return;
+        }
+
+        if (method.getParameters().length == 1 && ServiceRegistry.class.isAssignableFrom(method.getParameters()[0].getType())) {
+            method.invoke(instance, MCProxy.getInstance().getServiceRegistry());
+            return;
+        }
+
+        if (method.getParameters().length == 2 && ServiceRegistry.class.isAssignableFrom(method.getParameters()[0].getType())
+                && Proxy.class.isAssignableFrom(method.getParameters()[1].getType())) {
+            method.invoke(instance, MCProxy.getInstance().getServiceRegistry(), MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class));
+            return;
+        }
+
+        if (method.getParameters().length == 2 && Proxy.class.isAssignableFrom(method.getParameters()[0].getType())
+                && ServiceRegistry.class.isAssignableFrom(method.getParameters()[1].getType())) {
+            method.invoke(instance, MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class), MCProxy.getInstance().getServiceRegistry());
+            return;
+        }
+
+        throw new NoSuchMethodException("Unable to find method with no parameter, single parameter " +
+                "(service registry or proxy) or duo parameters (proxy/service registry, service registry/proxy)");
+    }
+
+    private static class PluginContainerEntry {
+
+        public PluginContainerEntry(PluginContainer pluginContainer, Object instance, Method[] onLoadMethod, Method[] onEnableMethod, Method[] onDisableMethod) {
+            this.pluginContainer = pluginContainer;
+            this.instance = instance;
+            this.onLoadMethod = onLoadMethod;
+            this.onEnableMethod = onEnableMethod;
+            this.onDisableMethod = onDisableMethod;
+        }
+
+        private final PluginContainer pluginContainer;
+
+        private final Object instance;
+
+        private final Method[] onLoadMethod;
+
+        private final Method[] onEnableMethod;
+
+        private final Method[] onDisableMethod;
+
+        public PluginContainer getPluginContainer() {
+            return pluginContainer;
+        }
+
+        public Object getInstance() {
+            return instance;
+        }
+
+        public Method[] getOnLoadMethod() {
+            return onLoadMethod;
+        }
+
+        public Method[] getOnEnableMethod() {
+            return onEnableMethod;
+        }
+
+        public Method[] getOnDisableMethod() {
+            return onDisableMethod;
+        }
     }
 }

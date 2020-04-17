@@ -1,16 +1,16 @@
 package com.github.derrop.proxy.service;
 
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.service.ServiceRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class BasicServiceRegistryEntry<T> implements ServiceRegistryEntry<T> {
 
-    BasicServiceRegistryEntry(Class<T> service, T provider, Plugin plugin, boolean immutable, boolean needsReplacement) {
+    BasicServiceRegistryEntry(Class<T> service, T provider, PluginContainer pluginContainer, boolean immutable, boolean needsReplacement) {
         this.service = service;
         this.provider = provider;
-        this.plugin = plugin;
+        this.pluginContainer = pluginContainer;
         this.immutable = immutable;
         this.needsReplacement = needsReplacement;
     }
@@ -19,7 +19,7 @@ public final class BasicServiceRegistryEntry<T> implements ServiceRegistryEntry<
 
     private final T provider;
 
-    private final Plugin plugin;
+    private final PluginContainer pluginContainer;
 
     private final boolean immutable;
 
@@ -37,8 +37,8 @@ public final class BasicServiceRegistryEntry<T> implements ServiceRegistryEntry<
     }
 
     @Override
-    public @Nullable Plugin getPlugin() {
-        return this.plugin;
+    public @Nullable PluginContainer getPluginContainer() {
+        return this.pluginContainer;
     }
 
     @Override

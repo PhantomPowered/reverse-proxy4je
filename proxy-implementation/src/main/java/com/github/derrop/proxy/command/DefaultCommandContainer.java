@@ -2,7 +2,7 @@ package com.github.derrop.proxy.command;
 
 import com.github.derrop.proxy.api.command.CommandCallback;
 import com.github.derrop.proxy.api.command.CommandContainer;
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,14 +10,14 @@ import java.util.Set;
 
 public final class DefaultCommandContainer implements CommandContainer {
 
-    DefaultCommandContainer(Plugin plugin, CommandCallback commandCallback, String mainAlias, Set<String> aliases) {
-        this.plugin = plugin;
+    DefaultCommandContainer(PluginContainer pluginContainer, CommandCallback commandCallback, String mainAlias, Set<String> aliases) {
+        this.pluginContainer = pluginContainer;
         this.commandCallback = commandCallback;
         this.mainAlias = mainAlias;
         this.aliases = aliases;
     }
 
-    private final Plugin plugin;
+    private final PluginContainer pluginContainer;
 
     private final CommandCallback commandCallback;
 
@@ -41,7 +41,7 @@ public final class DefaultCommandContainer implements CommandContainer {
     }
 
     @Override
-    public @Nullable Plugin getPlugin() {
-        return this.plugin;
+    public @Nullable PluginContainer getPluginContainer() {
+        return this.pluginContainer;
     }
 }

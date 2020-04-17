@@ -225,12 +225,12 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
-        this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(this), false, true);
+        this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins")), false, true);
 
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
 
-        this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins(Paths.get("plugins")); // TODO: config
-        this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
+        this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
+        this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins();
 
         this.handleCommands();
 
@@ -241,6 +241,8 @@ public class MCProxy extends Proxy {
 
         this.accountReader.readAccounts(ACCOUNT_PATH, new AccountBiConsumer());
         EntityTickHandler.startTick();
+
+        this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
     }
 
     private void handleCommands() {

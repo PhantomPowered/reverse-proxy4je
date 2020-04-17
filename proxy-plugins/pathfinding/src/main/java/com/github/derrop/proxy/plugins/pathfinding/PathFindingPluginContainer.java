@@ -4,11 +4,11 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.handler.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.plugins.pathfinding.provider.DefaultPathProvider;
 import com.github.derrop.proxy.plugins.pathfinding.provider.PathProvider;
 
-public class PathFindingPlugin extends Plugin {
+public class PathFindingPluginContainer extends PluginContainer {
 
     @Override
     public void onEnable() {

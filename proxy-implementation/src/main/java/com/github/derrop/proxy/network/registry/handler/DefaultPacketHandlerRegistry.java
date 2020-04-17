@@ -8,7 +8,7 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistryEntry;
-import com.github.derrop.proxy.api.plugin.Plugin;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.util.Identifiable;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.google.common.collect.BiMap;
@@ -74,7 +74,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
     }
 
     @Override
-    public void registerPacketHandlerClass(@Nullable Plugin plugin, @NotNull Object handler) {
+    public void registerPacketHandlerClass(@Nullable PluginContainer pluginContainer, @NotNull Object handler) {
         Map<Byte, PacketHandlerRegistryEntry> result = new HashMap<>();
 
         Map<Byte, Collection<PacketHandlerRegistryEntry.RegisteredEntry>> entries = this.getEntries(handler);
@@ -82,7 +82,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
             if (result.containsKey(entry.getKey())) {
                 result.get(entry.getKey()).getEntries().addAll(entry.getValue());
             } else {
-                result.put(entry.getKey(), new DefaultPacketHandlerRegistryEntry(plugin, handler, entry.getValue()));
+                result.put(entry.getKey(), new DefaultPacketHandlerRegistryEntry(pluginContainer, handler, entry.getValue()));
             }
         }
 
@@ -104,9 +104,9 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
     }
 
     @Override
-    public void unregisterAll(@NotNull Plugin plugin) {
+    public void unregisterAll(@NotNull PluginContainer pluginContainer) {
         for (Collection<PacketHandlerRegistryEntry> value : this.entries.values()) {
-            value.removeIf(entry -> entry.getPlugin() != null && entry.getPlugin().equals(plugin));
+            value.removeIf(entry -> entry.getPluginContainer() != null && entry.getPluginContainer().equals(pluginContainer));
         }
     }
 
