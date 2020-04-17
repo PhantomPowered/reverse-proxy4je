@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.plugins.gomme.player;
 
+import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.player.clan.ClanInfo;
 
 import java.util.UUID;
@@ -13,6 +14,14 @@ public class PlayerDataProvider {
 
     public void updateStatistics(PlayerData data) {
 
+    }
+
+    public long countPlayerData() {
+        return -1;
+    }
+
+    public long countPlayerData(GommeGameMode gameMode) {
+        return -1;
     }
 
     public ClanInfo getClan(String name) {
