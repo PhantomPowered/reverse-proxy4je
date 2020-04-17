@@ -27,7 +27,7 @@ public class ClanMember {
     }
 
     public static enum Type {
-        ADMIN, MODERATOR, MEMBER
+        LEADER, MODERATOR, MEMBER
     }
 
 }
