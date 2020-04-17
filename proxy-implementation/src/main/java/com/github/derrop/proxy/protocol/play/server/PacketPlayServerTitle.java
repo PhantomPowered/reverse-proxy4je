@@ -38,6 +38,7 @@ public class PacketPlayServerTitle extends DefinedPacket {
         switch (action) {
             case TITLE:
             case SUBTITLE:
+            case PLACEHOLDER:
                 text = readString(buf);
                 break;
             case TIMES:
@@ -61,6 +62,7 @@ public class PacketPlayServerTitle extends DefinedPacket {
         switch (action) {
             case TITLE:
             case SUBTITLE:
+            case PLACEHOLDER:
                 writeString(text, buf);
                 break;
             case TIMES:
