@@ -56,4 +56,16 @@ public class MatchManager {
         }
     }
 
+    public long countMatches() {
+        return -1;
+    }
+
+    public long countMatches(GommeGameMode gameMode) {
+        return -1;
+    }
+
+    public Collection<MatchInfo> getPastMatches() {
+        return null;
+    }
+
 }

@@ -24,6 +24,14 @@ public class PlayerDataProvider {
         return -1;
     }
 
+    public PlayerData getBestPlayer(GommeGameMode gameMode) {
+        return null;
+    }
+
+    public PlayerData getWorstPlayer(GommeGameMode gameMode) {
+        return null;
+    }
+
     public ClanInfo getClan(String name) {
         return null;
     }
