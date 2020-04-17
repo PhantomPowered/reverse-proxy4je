@@ -19,10 +19,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
-import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerCamera;
-import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerGameStateChange;
-import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerPlayerAbilities;
-import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerUpdateHealth;
+import com.github.derrop.proxy.protocol.play.server.entity.player.*;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
@@ -85,6 +82,8 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerGameStateChange());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerPlayerAbilities());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerUpdateHealth());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerHeldItemSlot());
+        registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientHeldItemSlot());
         // Spawn
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerNamedEntitySpawn());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSpawnEntity());

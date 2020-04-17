@@ -393,6 +393,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             this.posZ = ((PositionedPacket) packetWrapper).getZ();
         }
 
+        this.packetCache.handleClientPacket(packetWrapper);
+
         // TODO
         /*if (packetWrapper instanceof PacketPlayOutPlayerPositionLook) {
             this.onGround = ((PacketPlayOutPlayerPositionLook) packetWrapper).isOnGround();
