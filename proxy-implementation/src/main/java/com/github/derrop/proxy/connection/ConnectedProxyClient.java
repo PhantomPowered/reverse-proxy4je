@@ -312,14 +312,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.redirector = null;
     }
 
-    public void keepAliveTick() {
-        if (this.lastAlivePacket == -1) {
-            return;
-        }
-
-        // todo implement this?
-    }
-
     public void blockPacketUntil(Predicate<Packet> tester, long until) {
         this.blockedPackets.put(tester, until);
     }

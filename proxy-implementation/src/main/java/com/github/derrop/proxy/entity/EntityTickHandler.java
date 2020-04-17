@@ -17,7 +17,6 @@ public final class EntityTickHandler {
     public static void startTick() {
         Constants.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
             for (BasicServiceConnection onlineClient : MCProxy.getInstance().getOnlineClients()) {
-                onlineClient.getClient().keepAliveTick();
                 if (onlineClient.getPlayer() != null) {
                     onlineClient.getPlayer().sendPacket(new PacketPlayKeepAlive(System.nanoTime())); // TODO: wait for result (if no, disconnect)
                 }
