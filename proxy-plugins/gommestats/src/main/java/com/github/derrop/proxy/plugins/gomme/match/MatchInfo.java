@@ -9,13 +9,16 @@ import com.google.gson.internal.$Gson$Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MatchInfo {
 
     private final transient ServiceConnection invoker;
     private final GommeGameMode gameMode;
     private final String matchId;
-    private boolean running;
+    private transient boolean running;
     private long beginTimestamp;
     private long endTimestamp;
     private PlayerInfo[] playersOnBegin;
@@ -25,6 +28,8 @@ public class MatchInfo {
 
     private Collection<MatchTeam> teams = new ArrayList<>();
     private Collection<MatchEvent> events = new ArrayList<>();
+
+    private transient Map<String, Object> properties = new ConcurrentHashMap<>();
 
     public MatchInfo(ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
         this.invoker = invoker;
@@ -96,4 +101,17 @@ public class MatchInfo {
     public Collection<MatchEvent> getEvents() {
         return events;
     }
+
+    public Collection<MatchTeam> getTeams() {
+        return teams;
+    }
+
+    public <T> T getProperty(String key) {
+        return (T) this.properties.get(key);
+    }
+
+    public <T> void setProperty(String key, T value) {
+        this.properties.put(key, value);
+    }
+
 }

@@ -142,7 +142,7 @@ public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
     @Override
     public void handleScoreRemoved(String scoreName, ScoreObjective objective) {
         this.callEvent(new ScoreboardScoreSetEvent(this.connection, new BasicScore(
-                this, new BasicObjective(this, objective.getName(), objective),
+                this, objective == null ? null : new BasicObjective(this, objective.getName(), objective),
                 scoreName, -1
         )));
     }

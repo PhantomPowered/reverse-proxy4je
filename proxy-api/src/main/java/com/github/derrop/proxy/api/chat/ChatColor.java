@@ -158,6 +158,14 @@ public enum ChatColor {
         return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
+    public static ChatColor getLastColor(final String input) {
+        int i = input.lastIndexOf(COLOR_CHAR);
+        if (i == -1 || i == input.length() - 2) {
+            return null;
+        }
+        return getByChar(input.charAt(i + 1));
+    }
+
     public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
         for (int i = 0; i < b.length - 1; i++) {
