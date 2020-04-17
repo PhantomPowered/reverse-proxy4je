@@ -24,6 +24,7 @@ public class EntityCache implements PacketCacheHandler {
     private final Map<Integer, PacketPlayServerEntityMetadata> metadata = new ConcurrentHashMap<>();
 
     // todo (fake?) players are not spawned properly
+    // todo the entity equipment packet is ignored
     @Override
     public int[] getPacketIDs() {
         return new int[]{
