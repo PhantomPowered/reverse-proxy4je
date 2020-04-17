@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.event.Cancelable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ServiceDisconnectEvent extends ServiceConnectionEvent implements Cancelable { // TODO
+public class ServiceDisconnectEvent extends ServiceConnectionEvent implements Cancelable {
 
     private boolean cancel;
     private BaseComponent[] reason;
