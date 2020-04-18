@@ -10,7 +10,7 @@ target/
 logs/
 replays/
 database/
-plugins/
+/plugins/
 
 config.json
 uuids.json
