@@ -1,7 +1,6 @@
 package com.github.derrop.proxy.api.plugin.annotation;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.*;
 

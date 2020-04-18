@@ -105,7 +105,12 @@ public class DefaultPluginManager implements PluginManager {
         for (PluginContainerEntry pluginContainer : this.pluginContainers) {
             for (Method method : pluginContainer.getOnLoadMethod()) {
                 try {
-                    this.invokeMethod0(method, pluginContainer.getInstance());
+                    System.out.println("Staging load method \"" + method.getName() + "\" in class "
+                            + pluginContainer.getPluginContainer().getMainClass().getName()
+                            + " (plugin: " + pluginContainer.getPluginContainer().getId() + "/"
+                            + pluginContainer.getPluginContainer().getVersion() + ")"
+                    );
+                    this.invokeMethod0(method, pluginContainer.getInstance(), pluginContainer.getPluginContainer());
                 } catch (final Exception ex) {
                     System.err.println("Unexpected exception while calling load method " + method.getName()
                             + " in plugin " + pluginContainer.getPluginContainer().getId());
@@ -119,7 +124,12 @@ public class DefaultPluginManager implements PluginManager {
         for (PluginContainerEntry pluginContainer : this.pluginContainers) {
             for (Method method : pluginContainer.getOnEnableMethod()) {
                 try {
-                    this.invokeMethod0(method, pluginContainer.getInstance());
+                    System.out.println("Staging enable method \"" + method.getName() + "\" in class "
+                            + pluginContainer.getPluginContainer().getMainClass().getName()
+                            + " (plugin: " + pluginContainer.getPluginContainer().getId() + "/"
+                            + pluginContainer.getPluginContainer().getVersion() + ")"
+                    );
+                    this.invokeMethod0(method, pluginContainer.getInstance(), pluginContainer.getPluginContainer());
                 } catch (final Exception ex) {
                     System.err.println("Unexpected exception while calling enable method " + method.getName()
                             + " in plugin " + pluginContainer.getPluginContainer().getId());
@@ -133,7 +143,12 @@ public class DefaultPluginManager implements PluginManager {
         for (PluginContainerEntry pluginContainer : this.pluginContainers) {
             for (Method method : pluginContainer.getOnDisableMethod()) {
                 try {
-                    this.invokeMethod0(method, pluginContainer.getInstance());
+                    System.out.println("Staging disable method \"" + method.getName() + "\" in class "
+                            + pluginContainer.getPluginContainer().getMainClass().getName()
+                            + " (plugin: " + pluginContainer.getPluginContainer().getId() + "/"
+                            + pluginContainer.getPluginContainer().getVersion() + ")"
+                    );
+                    this.invokeMethod0(method, pluginContainer.getInstance(), pluginContainer.getPluginContainer());
                 } catch (final Exception ex) {
                     System.err.println("Unexpected exception while calling disable method " + method.getName()
                             + " in plugin " + pluginContainer.getPluginContainer().getId());
@@ -150,15 +165,13 @@ public class DefaultPluginManager implements PluginManager {
             }
         }
 
-        if (toLoad.stream().anyMatch(e -> e.toAbsolutePath().toString().equals(check))) {
-            return true;
-        }
-
-        return false;
+        return toLoad.stream().anyMatch(e -> e.toAbsolutePath().toString().equals(check));
     }
 
     private void handleLoaded() {
         for (Path path : this.toLoad) {
+            this.toLoad.remove(path);
+
             try {
                 URLClassLoader classLoader = new URLClassLoader(new URL[]{path.toUri().toURL()});
                 List<Duo<Class<?>, Plugin>> mainClassPossibilities = this.findMainClass(path, classLoader);
@@ -256,6 +269,7 @@ public class DefaultPluginManager implements PluginManager {
         return out;
     }
 
+    // See https://github.com/google/guava/wiki/GraphsExplained
     @NotNull
     private List<PluginContainer> sort(@NotNull List<PluginContainer> candidates) {
         MutableGraph<PluginContainer> graph = GraphBuilder
@@ -293,14 +307,14 @@ public class DefaultPluginManager implements PluginManager {
             return;
         } else if (integer == 1) {
             currentIteration.addLast(node);
-            StringBuilder loopGraph = new StringBuilder();
+
+            StringBuilder stringBuilder = new StringBuilder();
             for (PluginContainer description : currentIteration) {
-                loopGraph.append(description.getId());
-                loopGraph.append(" -> ");
+                stringBuilder.append(description.getId()).append(": ");
             }
 
-            loopGraph.setLength(loopGraph.length() - 4);
-            throw new IllegalStateException("Circular dependency detected: " + loopGraph.toString());
+            stringBuilder.setLength(stringBuilder.length() - 4);
+            throw new StackOverflowError("Dependency load injects itself or other injects other: " + stringBuilder.toString());
         }
 
         currentIteration.addLast(node);
@@ -314,36 +328,34 @@ public class DefaultPluginManager implements PluginManager {
         sorted.add(node);
     }
 
-    private void invokeMethod0(@NotNull Method method, @NotNull Object instance) throws Exception {
+    private void invokeMethod0(@NotNull Method method, @NotNull Object instance, @NotNull PluginContainer container) throws Exception {
         if (method.getParameters().length == 0) {
             method.invoke(instance);
             return;
         }
 
-        if (method.getParameters().length == 1 && Proxy.class.isAssignableFrom(method.getParameters()[0].getType())) {
-            method.invoke(instance, MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class));
-            return;
+        Object[] parameters = new Object[method.getParameters().length];
+        for (int i = 0; i < method.getParameters().length; i++) {
+            Class<?> type = method.getParameters()[i].getType();
+            if (Proxy.class.isAssignableFrom(type)) {
+                parameters[i] = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class);
+                continue;
+            }
+
+            if (ServiceRegistry.class.isAssignableFrom(type)) {
+                parameters[i] = MCProxy.getInstance().getServiceRegistry();
+                continue;
+            }
+
+            if (PluginContainer.class.isAssignableFrom(type)) {
+                parameters[i] = container;
+                continue;
+            }
+
+            throw new IllegalStateException("Expecting type plugin container, service registry or proxy not " + type.getName());
         }
 
-        if (method.getParameters().length == 1 && ServiceRegistry.class.isAssignableFrom(method.getParameters()[0].getType())) {
-            method.invoke(instance, MCProxy.getInstance().getServiceRegistry());
-            return;
-        }
-
-        if (method.getParameters().length == 2 && ServiceRegistry.class.isAssignableFrom(method.getParameters()[0].getType())
-                && Proxy.class.isAssignableFrom(method.getParameters()[1].getType())) {
-            method.invoke(instance, MCProxy.getInstance().getServiceRegistry(), MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class));
-            return;
-        }
-
-        if (method.getParameters().length == 2 && Proxy.class.isAssignableFrom(method.getParameters()[0].getType())
-                && ServiceRegistry.class.isAssignableFrom(method.getParameters()[1].getType())) {
-            method.invoke(instance, MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class), MCProxy.getInstance().getServiceRegistry());
-            return;
-        }
-
-        throw new NoSuchMethodException("Unable to find method with no parameter, single parameter " +
-                "(service registry or proxy) or duo parameters (proxy/service registry, service registry/proxy)");
+        method.invoke(instance, parameters);
     }
 
     private static class PluginContainerEntry {
