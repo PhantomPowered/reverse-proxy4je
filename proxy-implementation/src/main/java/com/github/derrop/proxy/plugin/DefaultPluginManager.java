@@ -148,10 +148,10 @@ public class DefaultPluginManager implements PluginManager {
             if (pluginContainer.getPluginPath().toAbsolutePath().toString().equals(check)) {
                 return true;
             }
+        }
 
-            if (toLoad.stream().anyMatch(e -> e.toAbsolutePath().toString().equals(check))) {
-                return true;
-            }
+        if (toLoad.stream().anyMatch(e -> e.toAbsolutePath().toString().equals(check))) {
+            return true;
         }
 
         return false;
