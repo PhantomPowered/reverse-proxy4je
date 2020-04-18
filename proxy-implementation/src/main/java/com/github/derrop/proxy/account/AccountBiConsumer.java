@@ -65,7 +65,7 @@ public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddre
                 public void onSuccess(@NotNull Task<Boolean> task) {
                     Boolean result = task.getResult();
                     if (result != null && result) {
-                        System.out.println("Successfully opended connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
+                        System.out.println("Successfully opened connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
                         return;
                     }
 
