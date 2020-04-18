@@ -133,25 +133,21 @@ public class InitialHandler {
 
         switch (packetHandshakingClientSetProtocol.getRequestedProtocol()) {
             case 1:
-                // Ping
                 channel.setProperty(INIT_STATE, State.STATUS);
                 channel.setProtocolState(ProtocolState.STATUS);
-//                System.out.println("Ping: " + this);
-
                 break;
+
             case 2:
-                // Login
                 channel.setProperty(INIT_STATE, State.USERNAME);
                 channel.setProtocolState(ProtocolState.LOGIN);
-                //System.out.println("Connect: " + this);
-
                 if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(packetHandshakingClientSetProtocol.getProtocolVersion())) {
                     disconnect(channel, "We only support 1.8");
                     return;
                 }
                 break;
+
             default:
-                throw new IllegalArgumentException("Cannot request protocol " + packetHandshakingClientSetProtocol.getRequestedProtocol());
+                disconnect(channel, "Cannot request protocol " + packetHandshakingClientSetProtocol.getRequestedProtocol());
         }
     }
 
