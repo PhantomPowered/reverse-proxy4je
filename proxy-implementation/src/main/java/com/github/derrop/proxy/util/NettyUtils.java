@@ -24,8 +24,6 @@
  */
 package com.github.derrop.proxy.util;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -44,7 +42,6 @@ import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.MultithreadEventExecutorGroup;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ThreadFactory;
 
 
@@ -78,86 +75,4 @@ public final class NettyUtils {
         return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true, Thread.MIN_PRIORITY);
     }
 
-    public static byte[] toByteArray(ByteBuf byteBuf, int size) {
-        byte[] data = new byte[size];
-        byteBuf.readBytes(data);
-        return data;
-    }
-
-    public static int readVarInt(ByteBuf byteBuf) {
-        int numRead = 0;
-        int result = 0;
-        byte read;
-        do {
-            read = byteBuf.readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 5) {
-                throw new RuntimeException("VarInt is too big");
-            }
-        } while ((read & 0b10000000) != 0);
-
-        return result;
-    }
-
-    public static long readVarLong(ByteBuf byteBuf) {
-        int numRead = 0;
-        long result = 0;
-        byte read;
-        do {
-            read = byteBuf.readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 10) {
-                throw new RuntimeException("VarLong is too big");
-            }
-        } while ((read & 0b10000000) != 0);
-
-        return result;
-    }
-
-    public static ByteBuf writeVarInt(ByteBuf byteBuf, int value) {
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            byteBuf.writeByte(temp);
-        } while (value != 0);
-
-        return byteBuf;
-    }
-
-    public static ByteBuf writeVarLong(ByteBuf byteBuf, long value) {
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            byteBuf.writeByte(temp);
-        } while (value != 0);
-
-        return byteBuf;
-    }
-
-    public static ByteBuf writeString(ByteBuf byteBuf, String string) {
-        byte[] values = string.getBytes(StandardCharsets.UTF_8);
-        writeVarInt(byteBuf, values.length);
-        byteBuf.writeBytes(values);
-        return byteBuf;
-    }
-
-    public static String readString(ByteBuf byteBuf) {
-        int integer = readVarInt(byteBuf);
-        byte[] buffer = new byte[integer];
-        byteBuf.readBytes(buffer, 0, integer);
-
-        return new String(buffer, StandardCharsets.UTF_8);
-    }
 }
