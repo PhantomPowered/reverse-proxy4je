@@ -46,6 +46,10 @@ public class MatchManager {
 
     private final Map<String, MatchInfo> openMatches = new ConcurrentHashMap<>();
 
+    public GommeStatsCore getCore() {
+        return this.core;
+    }
+
     public Collection<MatchInfo> getRunningMatches() {
         return this.openMatches.values().stream().filter(MatchInfo::isRunning).collect(Collectors.toList());
     }

@@ -33,6 +33,11 @@ public class SpectatorJoinEvent extends MatchEvent {
         this.name = name;
     }
 
+    @Override
+    public String toPlainText() {
+        return "Spectator " + this.name + " joined";
+    }
+
     public String getName() {
         return this.name;
     }

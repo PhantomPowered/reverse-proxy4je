@@ -27,6 +27,8 @@ package com.github.derrop.proxy.api.connection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.player.GameMode;
 
+import java.util.UUID;
+
 public interface ServiceWorldDataProvider {
 
     long getWorldTime();
@@ -44,5 +46,7 @@ public interface ServiceWorldDataProvider {
     GameMode getOwnGameMode();
 
     PlayerInfo[] getOnlinePlayers();
+
+    PlayerInfo getOnlinePlayer(UUID uniqueId);
 
 }

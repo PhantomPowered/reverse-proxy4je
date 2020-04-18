@@ -24,18 +24,25 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
+import com.github.derrop.proxy.api.entity.PlayerInfo;
+
 import java.util.UUID;
 
 public class PlayerLeaveEvent extends MatchEvent {
 
-    private final UUID playerId;
+    private final PlayerInfo playerInfo;
 
-    public PlayerLeaveEvent(Type type, UUID playerId) {
+    public PlayerLeaveEvent(Type type, PlayerInfo playerInfo) {
         super(type);
-        this.playerId = playerId;
+        this.playerInfo = playerInfo;
     }
 
-    public UUID getPlayerId() {
-        return this.playerId;
+    @Override
+    public String toPlainText() {
+        return "Player " + this.playerInfo.getUsername() + " left";
+    }
+
+    public PlayerInfo getPlayerInfo() {
+        return playerInfo;
     }
 }

@@ -31,7 +31,11 @@ import com.github.derrop.proxy.connection.cache.handler.GameStateCache;
 import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
+
+import java.util.UUID;
+import java.util.function.Function;
 
 public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
@@ -91,7 +95,23 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
         PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
 
         return cache.getItems().stream()
-                .map(item -> new BasicPlayerInfo(item.getUniqueId(), item.getUsername(), item.getProperties(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName()))
+                .map(this.itemToPlayerInfoFunction())
                 .toArray(PlayerInfo[]::new);
     }
+
+    @Override
+    public PlayerInfo getOnlinePlayer(UUID uniqueId) {
+        PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+
+        return cache.getItems().stream()
+                .filter(item -> item.getUniqueId().equals(uniqueId))
+                .findFirst()
+                .map(this.itemToPlayerInfoFunction())
+                .orElse(null);
+    }
+
+    private Function<PacketPlayServerPlayerInfo.Item, PlayerInfo> itemToPlayerInfoFunction() {
+        return item -> new BasicPlayerInfo(item.getUniqueId(), item.getUsername(), item.getProperties(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName());
+    }
+
 }

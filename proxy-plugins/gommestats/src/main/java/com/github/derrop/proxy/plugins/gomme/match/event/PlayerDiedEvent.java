@@ -24,18 +24,23 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
-import java.util.UUID;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 
 public class PlayerDiedEvent extends MatchEvent {
 
-    private final UUID playerId;
+    private final PlayerInfo playerInfo;
 
-    public PlayerDiedEvent(UUID playerId) {
+    public PlayerDiedEvent(PlayerInfo playerInfo) {
         super(Type.PLAYER_DIED);
-        this.playerId = playerId;
+        this.playerInfo = playerInfo;
     }
 
-    public UUID getPlayerId() {
-        return this.playerId;
+    @Override
+    public String toPlainText() {
+        return "Player " + this.playerInfo.getUsername() + " died";
+    }
+
+    public PlayerInfo getPlayerInfo() {
+        return playerInfo;
     }
 }

@@ -24,21 +24,26 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
-import java.util.UUID;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 
 public class MatchChatEvent extends MatchEvent {
 
-    private final UUID senderId;
+    private final PlayerInfo sender;
     private final String content;
 
-    public MatchChatEvent(Type type, UUID senderId, String content) {
+    public MatchChatEvent(Type type, PlayerInfo sender, String content) {
         super(type);
-        this.senderId = senderId;
+        this.sender = sender;
         this.content = content;
     }
 
-    public UUID getSenderId() {
-        return this.senderId;
+    @Override
+    public String toPlainText() {
+        return "Message by " + this.sender.getUsername() + ": " + this.content;
+    }
+
+    public PlayerInfo getSender() {
+        return this.sender;
     }
 
     public String getContent() {

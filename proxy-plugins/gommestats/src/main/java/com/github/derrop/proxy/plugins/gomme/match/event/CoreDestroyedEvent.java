@@ -24,21 +24,33 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
-import java.util.UUID;
+import com.github.derrop.proxy.plugins.gomme.match.MatchTeam;
+import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
 
 public class CoreDestroyedEvent extends MatchEvent {
 
-    private final UUID destroyerId;
+    private final PlayerData destroyer;
+    private final MatchTeam coreOwner;
     private final String core;
 
-    public CoreDestroyedEvent(UUID destroyerId, String core) {
-        super(Type.CORE_DESTROYED);
-        this.destroyerId = destroyerId;
+    public CoreDestroyedEvent(Type type, PlayerData destroyer, MatchTeam coreOwner, String core) {
+        super(type);
+        this.destroyer = destroyer;
+        this.coreOwner = coreOwner;
         this.core = core;
     }
 
-    public UUID getDestroyerId() {
-        return this.destroyerId;
+    @Override
+    public String toPlainText() {
+        return "The core of the team " + this.coreOwner.getName() + " was destroyed by " + this.destroyer.getPlayerInfo().getUsername();
+    }
+
+    public PlayerData getDestroyer() {
+        return this.destroyer;
+    }
+
+    public MatchTeam getCoreOwner() {
+        return this.coreOwner;
     }
 
     public String getCore() {

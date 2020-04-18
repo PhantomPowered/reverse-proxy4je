@@ -30,6 +30,8 @@ import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
+import com.github.derrop.proxy.plugins.gomme.web.MatchFileHandler;
+import io.javalin.Javalin;
 
 @Plugin(
         id = "com.github.derrop.plugins.gommestats",
@@ -47,5 +49,13 @@ public class GommeStatsPlugin {
         //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(new TeamParser(core));
         registry.getProviderUnchecked(EventManager.class).registerListener(new GommeMatchListener(core.getMatchManager()));
         registry.getProviderUnchecked(EventManager.class).registerListener(new GommeSpectatorDetector(core));
+
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+
+        Javalin javalin = Javalin.create().start(80);
+        javalin.get("/matches", new MatchFileHandler("/matches", core.getMatchManager()));
+
+        Thread.currentThread().setContextClassLoader(old);
     }
 }

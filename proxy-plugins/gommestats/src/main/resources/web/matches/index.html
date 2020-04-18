@@ -1,0 +1,246 @@
+<html lang="de-DE">
+<script type="text/javascript" id="www-widgetapi-script"
+        src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflJJaNgk/www-widgetapi.js" async=""></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://www.googletagservices.com/activeview/js/current/osd.js?cb=%2Fr20100101"></script>
+<script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script>
+<script id="twitter-wjs" src="https://platform.twitter.com/widgets.js"></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/r20200413/r20190131/show_ads_impl_fy2019.js"
+        id="google_shimpl"></script>
+<script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-MTTZ5TF"></script>
+</script>
+
+<head>
+
+    <script type="text/javascript">
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-MTTZ5TF');
+    </script>
+
+    <script>
+        const shouldLiveUpdate = '${internal.liveupdate}';
+        if (shouldLiveUpdate === "true") {
+            /*setInterval(() => {
+                window.location.reload(); // TODO this can be done better
+            }, 5000);*/
+        }
+    </script>
+
+    <script async="" data-ad-client="ca-pub-6249772009578879"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" type="text/javascript"
+            data-checked-head="true"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-param" content="_csrf">
+    <meta name="csrf-token" content="RGNDQWVTVTMgF24kDiY3XWlaGQAWFxdwAxMADwo7ZUQJBzEvOiM3BA==">
+    <title>MatchInfo - ${match.type}</title>
+    <link href="https://gommehd.net/assets/b967c59a/css/bootstrap.css" rel="stylesheet">
+    <link href="https://gommehd.net/css/arvo.css" rel="stylesheet">
+    <link href="https://gommehd.net/css/ubuntu.css" rel="stylesheet">
+    <link href="https://gommehd.net/css/fontawesome-all-5.min.css" rel="stylesheet">
+    <link href="https://gommehd.net/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://gommehd.net/css/gommehd-theme.css" rel="stylesheet">
+    <link href="https://gommehd.net/css/custom-styles.css" rel="stylesheet">
+
+<body class="page-clans" data-gr-c-s-loaded="true" cz-shortcut-listen="true" style="margin-top: 0px;">
+
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTTZ5TF" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe>
+</noscript>
+
+<header>
+    <nav class="navbar navbar-inverse navbar-static-top" id="site-nav" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-vbar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://gommehd.net">
+                    <img src="https://gommehd.net/images/brandmark@3x.png" width="60" height="54" alt="Brand">
+                    <span>GommeHD.Net</span>
+                </a>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-collapse-1">
+                <ul id="w0" class="navbar-nav navbar-right nav">
+                    <li><a href="/statistic">Statistiken</a></li>
+                    <li class="active"><a href="/matches/index.html">Matches</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="userbar">
+        <div class="container">
+            <div id="onlineCounter">
+                <dl class="player-count">
+                    <dt>Spieler online:</dt>
+                    <dd><span>7</span><span>6</span><span>5</span><span>7</span></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</header>
+<div id="content">
+    <div class="container" style="padding-top: 30px;">
+        <div class="blockWrapper withPadding matchDetails">
+            <h3 style="text-align: center; margin-top: 46px; margin-bottom: 20px;">Spieldaten</h3>
+            <div class="table-responsive">
+                <table class="table mapInf">
+                    <tbody>
+                    <tr>
+                        <td align="center" style="width: 5%;"><i class="fa fa-gamepad" aria-hidden="true"></i></td>
+                        <td>Spieltyp</td>
+                        <td>${match.type}</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><i class="fa fa-globe" aria-hidden="true"></i></td>
+                        <td>Map</td>
+                        <td>${match.map}</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><i class="fa fa-flag" aria-hidden="true"></i></td>
+                        <td>Spielstart</td>
+                        <td>${match.begin}</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><i class="fa fa-flag" aria-hidden="true"></i></td>
+                        <td>Spielende</td>
+                        <td>${match.end}</td>
+                    </tr>
+                    <input id="runningMatchLength" type="hidden" value="56">
+                    <tr>
+                        <td align="center"><i class="fa fa-clock-o" aria-hidden="true"></i></td>
+                        <td>Dauer</td>
+                        <td><span class="currentLength"><!-- TODO --></span></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><i class="fa fa-key" aria-hidden="true"></i></td>
+                        <td>Match ID</td>
+                        <td>${match.id}</td>
+                    </tr>
+                    <!--<tr>
+                        <td align="center"><i class="fa fa-play" aria-hidden="true"></i></td>
+                        <td>Replay-ID</td>
+                        <td>
+                            I3KFX694
+                        </td>
+                    </tr>-->
+                    <!--<tr>
+                        <td align="center"><i class="fa fa-pencil" aria-hidden="true"></i></td>
+                        <td>Chatlog</td>
+                        <td>
+                            <a href="https://chatlog.gommehd.net/I3KFtN23">
+                                I3KFtN23 </a>
+                        </td>
+                    </tr>-->
+                    </tbody>
+                </table>
+            </div>
+            <h3 style="text-align: center; margin-top: 30px;">Teams</h3>
+            <div class="table-responsive matchPlayersTable" data-match="f08a5bf4-92ae-420a-bdaa-b7cfdf82e930">
+                <table class="table teamsTable text-center">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${match.teams}
+                    </tbody>
+                </table>
+            </div>
+            <h3 style="text-align: center; margin-top: 30px; margin-bottom: 20px;">Spielverlauf</h3>
+            <div class="matchActionsConsole">
+                <input id="finished" type="hidden" value="false">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Uhrzeit</th>
+                        <th></th>
+                        <th>Aktion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${match.events}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="notificationsContainer ">
+</div>
+<script type="text/javascript">
+    var TopNotifications = {};
+    TopNotifications.hideCookieNotification = function (el, key) {
+        var notificationsContainer = $('.notificationsContainer');
+        $.post('/xen-forum/hide-notification', {
+            key: key
+        }, function (data) {
+            $(el).closest('.notificationPanel').hide();
+            $('body').css('margin-top', notificationsContainer.height());
+        });
+    };
+</script>
+<script src="https://gommehd.net/js/clans.js" type="text/javascript"></script>
+<script src="https://gommehd.net/assets/4d39f6fd/yii.js" type="text/javascript"></script>
+<script src="https://gommehd.net/assets/b967c59a/js/bootstrap.js" type="text/javascript"></script>
+<script src="https://gommehd.net/js/react.min.js" type="text/javascript"></script>
+<script src="https://gommehd.net/js/r-login-form.js" type="text/javascript"></script>
+<script src="https://gommehd.net/js/r-restore-pwd.js" type="text/javascript"></script>
+<script src="https://gommehd.net/js/js.cookie.js" type="text/javascript"></script>
+<script src="https://gommehd.net/js/custom-scripts.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.2/masonry.pkgd.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"
+        type="text/javascript"></script>
+
+<ins class="adsbygoogle adsbygoogle-noablate" data-adsbygoogle-status="done" style="display: none !important;">
+    <ins id="aswift_0_expand"
+         style="display:inline-table;border:none;height:0px;margin:0;padding:0;position:relative;visibility:visible;width:0px;background-color:transparent;">
+        <ins id="aswift_0_anchor"
+             style="display:block;border:none;height:0px;margin:0;padding:0;position:relative;visibility:visible;width:0px;background-color:transparent;">
+            <iframe id="aswift_0" name="aswift_0"
+                    style="left:0;position:absolute;top:0;border:0;width:undefinedpx;height:undefinedpx;"
+                    sandbox="allow-forms allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+                    frameborder="0"
+                    src="https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-6249772009578879&amp;output=html&amp;adk=1812271804&amp;adf=3025194257&amp;lmt=1587218551&amp;plat=1%3A32776%2C2%3A32776%2C8%3A32776%2C9%3A32776%2C16%3A8388608%2C17%3A32%2C24%3A32%2C25%3A32%2C30%3A1081344%2C32%3A32%2C40%3A32&amp;guci=1.2.0.0.2.2.0.0&amp;format=0x0&amp;url=https%3A%2F%2Fwww.gommehd.net%2Fclan-match%3Fid%3Df08a5bf4-92ae-420a-bdaa-b7cfdf82e930&amp;ea=0&amp;flash=0&amp;pra=5&amp;wgl=1&amp;dt=1587218551071&amp;bpp=3&amp;bdt=436&amp;idt=64&amp;shv=r20200413&amp;cbv=r20190131&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;nras=1&amp;correlator=4075085498327&amp;frm=20&amp;pv=2&amp;ga_vid=951681031.1579889901&amp;ga_sid=1587218551&amp;ga_hid=2076921803&amp;ga_fc=0&amp;iag=0&amp;icsg=8580094&amp;dssz=17&amp;mdo=0&amp;mso=0&amp;u_tz=120&amp;u_his=4&amp;u_java=0&amp;u_h=1440&amp;u_w=2560&amp;u_ah=1400&amp;u_aw=2560&amp;u_cd=24&amp;u_nplug=3&amp;u_nmime=4&amp;adx=-12245933&amp;ady=-12245933&amp;biw=2543&amp;bih=1329&amp;scr_x=0&amp;scr_y=300&amp;eid=21065472%2C21065474%2C44717539&amp;oid=3&amp;pvsid=2659294847736439&amp;pem=195&amp;ref=https%3A%2F%2Fwww.gommehd.net%2Fclans&amp;rx=0&amp;eae=2&amp;fc=1920&amp;brdim=0%2C0%2C0%2C0%2C2560%2C0%2C2560%2C1400%2C2560%2C1329&amp;vis=1&amp;rsz=%7C%7Cs%7C&amp;abl=NS&amp;fu=8208&amp;bc=31&amp;ifi=0&amp;uci=a!0&amp;fsb=1&amp;dtd=76"
+                    marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no"
+                    allowfullscreen="true" data-google-container-id="a!0" data-load-complete="true"></iframe>
+        </ins>
+    </ins>
+</ins>
+<script type="text/javascript" id="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<iframe id="google_osd_static_frame_6765721207305" name="google_osd_static_frame"
+        style="display: none; width: 0px; height: 0px;"></iframe>
+<iframe scrolling="no" frameborder="0" allowtransparency="true"
+        src="https://platform.twitter.com/widgets/widget_iframe.6787510241df65d128e2b60207ad4c25.html?origin=https%3A%2F%2Fwww.gommehd.net"
+        title="Twitter settings iframe" style="display: none;"></iframe>
+<iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+        style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;"
+        title="Twitter analytics iframe"></iframe>
+</body>
+<iframe id="google_esf" name="google_esf"
+        src="https://googleads.g.doubleclick.net/pagead/html/r20200413/r20190131/zrt_lookup.html#"
+        data-ad-client="ca-pub-6249772009578879" style="display: none;"></iframe>
+
+</head></html>

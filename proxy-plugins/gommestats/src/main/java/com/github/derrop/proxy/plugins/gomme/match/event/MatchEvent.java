@@ -34,6 +34,10 @@ public class MatchEvent {
         this.timestamp = System.currentTimeMillis();
     }
 
+    public String toPlainText() {
+        return "No description for event " + this.type + " available";
+    }
+
     public Type getType() {
         return this.type;
     }

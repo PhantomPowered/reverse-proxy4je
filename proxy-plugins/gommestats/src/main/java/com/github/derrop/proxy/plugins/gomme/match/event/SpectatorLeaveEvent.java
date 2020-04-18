@@ -33,6 +33,11 @@ public class SpectatorLeaveEvent extends MatchEvent {
         this.name = name;
     }
 
+    @Override
+    public String toPlainText() {
+        return "Spectator " + this.name + " left";
+    }
+
     public String getName() {
         return this.name;
     }

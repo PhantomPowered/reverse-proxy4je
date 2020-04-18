@@ -138,6 +138,7 @@ public class DefaultPluginManager implements PluginManager {
                 } catch (final Exception ex) {
                     System.err.println("Unexpected exception while calling load method " + method.getName()
                             + " in plugin " + pluginContainer.getPluginContainer().getId());
+                    ex.printStackTrace();
                 }
             }
         }
@@ -157,6 +158,7 @@ public class DefaultPluginManager implements PluginManager {
                 } catch (final Exception ex) {
                     System.err.println("Unexpected exception while calling enable method " + method.getName()
                             + " in plugin " + pluginContainer.getPluginContainer().getId());
+                    ex.printStackTrace();
                 }
             }
         }
@@ -176,6 +178,7 @@ public class DefaultPluginManager implements PluginManager {
                 } catch (final Exception ex) {
                     System.err.println("Unexpected exception while calling disable method " + method.getName()
                             + " in plugin " + pluginContainer.getPluginContainer().getId());
+                    ex.printStackTrace();
                 }
             }
         }
@@ -236,7 +239,7 @@ public class DefaultPluginManager implements PluginManager {
                         injectMethods.stream().filter(e -> e.getLeft() == PluginState.DISABLED).map(Duo::getRight).toArray(Method[]::new)
                 );
                 this.pluginContainers.add(entry);
-            } catch (final IOException | ClassNotFoundException ex) {
+            } catch (final IOException ex) {
                 ex.printStackTrace();
             }
         }
@@ -268,7 +271,7 @@ public class DefaultPluginManager implements PluginManager {
     }
 
     @NotNull
-    private List<Duo<Class<?>, Plugin>> findMainClass(@NotNull Path plugin, @NotNull URLClassLoader classLoader) throws IOException, ClassNotFoundException {
+    private List<Duo<Class<?>, Plugin>> findMainClass(@NotNull Path plugin, @NotNull URLClassLoader classLoader) throws IOException {
         List<Duo<Class<?>, Plugin>> out = new ArrayList<>();
         try (JarInputStream jarInputStream = new JarInputStream(Files.newInputStream(plugin))) {
             JarEntry entry;
@@ -280,7 +283,12 @@ public class DefaultPluginManager implements PluginManager {
                 String className = entry.getName().replace("/", ".");
                 className = IOUtils.replaceLast(className, ".class", "");
 
-                Class<?> clazz = classLoader.loadClass(className);
+                Class<?> clazz;
+                try {
+                    clazz = classLoader.loadClass(className);
+                } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+                    continue;
+                }
                 Plugin annotation = clazz.getAnnotation(Plugin.class);
                 if (annotation == null) {
                     continue;
