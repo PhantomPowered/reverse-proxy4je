@@ -26,7 +26,7 @@ package com.github.derrop.proxy.plugins.gomme.parse;
 
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.event.handler.Listener;
+import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardScoreSetEvent;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamRegisterEvent;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamUnregisterEvent;

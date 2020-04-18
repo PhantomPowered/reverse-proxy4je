@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.brand;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.event.handler.Listener;
+import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;

@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.plugins.gomme;
 
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
@@ -41,11 +42,11 @@ import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 public class GommeStatsPlugin {
 
     @Inject(state = PluginState.ENABLED)
-    public void enable(ServiceRegistry registry) {
+    public void enable(ServiceRegistry registry, PluginContainer container) {
         GommeStatsCore core = new GommeStatsCore(registry);
 
-        //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(new TeamParser(core));
-        registry.getProviderUnchecked(EventManager.class).registerListener(new GommeMatchListener(core.getMatchManager()));
-        registry.getProviderUnchecked(EventManager.class).registerListener(new GommeSpectatorDetector(core));
+        //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(container, new TeamParser(core));
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeSpectatorDetector(core));
     }
 }

@@ -26,27 +26,27 @@ package com.github.derrop.proxy.event;
 
 import com.github.derrop.proxy.api.event.Event;
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.event.handler.Listener;
+import com.github.derrop.proxy.api.event.ListenerContainer;
+import com.github.derrop.proxy.api.event.annotation.Listener;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public final class DefaultEventManager implements EventManager {
 
-    private final Lock lock = new ReentrantLock();
-
-    private final Map<Class<?>, Map<Byte, Map<Object, Method[]>>> byListenerAndPriority = new HashMap<>();
-
-    private final Map<Class<?>, List<LoadedListener>> done = new ConcurrentHashMap<>();
+    private final List<ListenerContainer> registeredListeners = new CopyOnWriteArrayList<>();
 
     @Override
-    public void callEvent(Class<? extends Event> event) {
+    public void callEvent(@NotNull Class<? extends Event> event) {
         try {
             callEvent(event.getDeclaredConstructor().newInstance());
         } catch (final IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException ex) {
@@ -55,28 +55,17 @@ public final class DefaultEventManager implements EventManager {
     }
 
     @Override
-    public @NotNull <T extends Event> T callEvent(T event) {
+    public @NotNull <T extends Event> T callEvent(@NotNull T event) {
         event.preCall();
 
-        List<LoadedListener> listeners = done.get(event.getClass());
-        if (listeners != null) {
-            listeners.forEach(loadedListener -> {
-                if (!event.isAsync()) {
-                    try {
-                        loadedListener.call(event);
-                    } catch (final InvocationTargetException | IllegalAccessException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            loadedListener.call(event);
-                        } catch (final InvocationTargetException | IllegalAccessException ex) {
-                            ex.printStackTrace();
-                        }
-                    });
+        for (ListenerContainer registeredListener : this.registeredListeners) {
+            if (registeredListener.getTargetEventClass().equals(event.getClass())) {
+                try {
+                    registeredListener.call(event);
+                } catch (final InvocationTargetException | IllegalAccessException ex) {
+                    ex.printStackTrace();
                 }
-            });
+            }
         }
 
         event.postCall();
@@ -84,143 +73,71 @@ public final class DefaultEventManager implements EventManager {
     }
 
     @Override
-    public void callEventAsync(Class<? extends Event> event) {
-        CompletableFuture.runAsync(() -> callEvent(event));
+    public void registerListener(@Nullable PluginContainer pluginContainer, @NotNull Object listener) {
+        for (Method declaredMethod : listener.getClass().getDeclaredMethods()) {
+            Listener annotation = declaredMethod.getAnnotation(Listener.class);
+            if (annotation == null) {
+                continue;
+            }
+
+            Class<?>[] parameters = declaredMethod.getParameterTypes();
+            if (parameters.length != 1) {
+                System.err.println("Unable to register listener which has more than one parameter");
+                continue;
+            }
+
+            if (!Event.class.isAssignableFrom(parameters[0])) {
+                System.err.println("Cannot register listener which has no event as parameter");
+                continue;
+            }
+
+            ListenerContainer container = new DefaultListenerContainer(
+                    pluginContainer,
+                    parameters[0],
+                    listener,
+                    declaredMethod,
+                    annotation.priority()
+            );
+            this.registeredListeners.add(container);
+        }
+
+        this.registeredListeners.sort(Comparator.comparingInt(t0 -> t0.getPriority().getPriority()));
     }
 
     @Override
-    public void callEventAsync(Event event) {
-        CompletableFuture.runAsync(() -> callEvent(event));
-    }
-
-    @Override
-    public void registerListener(Object listener) {
-        this.register(listener);
-    }
-
-    @Override
-    public void registerListener(Class<?> listener) {
+    public void registerListener(@Nullable PluginContainer pluginContainer, @NotNull Class<?> listener) {
         try {
-            this.register(listener.getDeclaredConstructor().newInstance());
+            this.registerListener(pluginContainer, listener.getDeclaredConstructor().newInstance());
         } catch (final IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException ex) {
             ex.printStackTrace();
         }
     }
 
     @Override
-    public void registerListenerAsync(Object listener) {
-        CompletableFuture.runAsync(() -> registerListener(listener));
+    public void unregisterListener(@NotNull Object listener) {
+        this.registeredListeners.removeIf(e -> e.getListenerInstance() == listener);
     }
 
     @Override
-    public void registerListenerAsync(Class<?> listener) {
-        CompletableFuture.runAsync(() -> registerListener(listener));
-    }
-
-    @Override
-    public void unregisterListener(Object listener) {
-        unregister(listener);
+    public void unregisterAll(@NotNull PluginContainer pluginContainer) {
+        this.registeredListeners.removeIf(e -> e.getPlugin() != null && e.getPlugin() == pluginContainer);
     }
 
     @Override
     public void unregisterAll() {
-        for (List<LoadedListener> value : this.done.values()) {
-            for (LoadedListener loadedListener : value) {
-                this.unregister(loadedListener.getListener());
-            }
-        }
+        this.registeredListeners.clear();
     }
 
-    private Map<Class<?>, Map<Byte, Set<Method>>> find(Object listener) {
-        Map<Class<?>, Map<Byte, Set<Method>>> result = new HashMap<>();
-        for (Method method : listener.getClass().getDeclaredMethods()) {
-            Listener annotation = method.getAnnotation(Listener.class);
-            if (annotation != null) {
-                Class<?>[] parameters = method.getParameterTypes();
-                if (parameters.length != 1) {
-                    continue;
-                }
-
-                Map<Byte, Set<Method>> map = result.computeIfAbsent(parameters[0], aClass -> new HashMap<>());
-                Set<Method> methods = map.computeIfAbsent(annotation.priority().getPriority(), aByte -> new HashSet<>());
-
-                methods.add(method);
-            }
-        }
-
-        return result;
+    @Override
+    public @NotNull Collection<ListenerContainer> getRegisteredListeners(@NotNull PluginContainer pluginContainer) {
+        return this.registeredListeners
+                .stream()
+                .filter(e -> e.getPlugin() != null && e.getPlugin() == pluginContainer)
+                .collect(Collectors.toList());
     }
 
-    private void register(Object listener) {
-        Map<Class<?>, Map<Byte, Set<Method>>> handlers = find(listener);
-        lock.lock();
-        try {
-            for (Map.Entry<Class<?>, Map<Byte, Set<Method>>> classMapEntry : handlers.entrySet()) {
-                Map<Byte, Map<Object, Method[]>> priorities = byListenerAndPriority.computeIfAbsent(classMapEntry.getKey(), aClass -> new HashMap<>());
-
-                for (Map.Entry<Byte, Set<Method>> byteSetEntry : classMapEntry.getValue().entrySet()) {
-                    Map<Object, Method[]> current = priorities.computeIfAbsent(byteSetEntry.getKey(), aByte -> new HashMap<>());
-
-                    Method[] methods = new Method[byteSetEntry.getValue().size()];
-                    current.put(listener, byteSetEntry.getValue().toArray(methods));
-                }
-
-                finallyDo(classMapEntry.getKey());
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    private void finallyDo(Class<?> eventClass) {
-        Map<Byte, Map<Object, Method[]>> map = byListenerAndPriority.get(eventClass);
-        if (map != null) {
-            List<LoadedListener> listeners = new ArrayList<>();
-
-            byte current = Byte.MIN_VALUE;
-            do {
-                Map<Object, Method[]> handlers = map.get(current);
-                if (handlers != null) {
-                    for (Map.Entry<Object, Method[]> objectEntry : handlers.entrySet()) {
-                        for (Method method : objectEntry.getValue()) {
-                            LoadedListener loadedListener = new LoadedListener(objectEntry.getKey(), method);
-                            listeners.add(loadedListener);
-                        }
-                    }
-                }
-            } while (current++ < Byte.MAX_VALUE);
-            done.put(eventClass, listeners);
-        } else {
-            done.remove(eventClass);
-        }
-    }
-
-    private void unregister(Object listener) {
-        Map<Class<?>, Map<Byte, Set<Method>>> handler = find(listener);
-        lock.lock();
-        try {
-            for (Map.Entry<Class<?>, Map<Byte, Set<Method>>> classMapEntry : handler.entrySet()) {
-                Map<Byte, Map<Object, Method[]>> prioritiesMap = byListenerAndPriority.get(classMapEntry.getKey());
-                if (prioritiesMap != null) {
-                    for (Byte aByte : classMapEntry.getValue().keySet()) {
-                        Map<Object, Method[]> currentPriority = prioritiesMap.get(aByte);
-                        if (currentPriority != null) {
-                            currentPriority.remove(listener);
-                            if (currentPriority.isEmpty()) {
-                                prioritiesMap.remove(aByte);
-                            }
-                        }
-                    }
-
-                    if (prioritiesMap.isEmpty()) {
-                        byListenerAndPriority.remove(classMapEntry.getKey());
-                    }
-                }
-
-                finallyDo(classMapEntry.getKey());
-            }
-        } finally {
-            lock.unlock();
-        }
+    @Override
+    public @NotNull Collection<ListenerContainer> getRegisteredListeners() {
+        return Collections.unmodifiableCollection(this.registeredListeners);
     }
 }

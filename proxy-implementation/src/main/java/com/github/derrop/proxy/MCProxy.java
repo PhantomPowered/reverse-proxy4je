@@ -253,7 +253,7 @@ public class MCProxy extends Proxy {
 
         this.handleCommands();
 
-        this.serviceRegistry.getProviderUnchecked(EventManager.class).registerListener(new ProxyBrandChangeListener());
+        this.serviceRegistry.getProviderUnchecked(EventManager.class).registerListener(null, new ProxyBrandChangeListener());
         if (Files.notExists(ACCOUNT_PATH)) {
             this.accountReader.writeDefaults(ACCOUNT_PATH);
         }

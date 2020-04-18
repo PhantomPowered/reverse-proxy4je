@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.secret;
 
-import com.github.derrop.proxy.api.event.handler.Listener;
+import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamUpdateEvent;
 
 public class GommeNickDetector {

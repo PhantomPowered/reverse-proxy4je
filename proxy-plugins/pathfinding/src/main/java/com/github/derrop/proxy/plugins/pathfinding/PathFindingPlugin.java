@@ -25,9 +25,10 @@
 package com.github.derrop.proxy.plugins.pathfinding;
 
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.event.handler.Listener;
+import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
@@ -47,10 +48,10 @@ public class PathFindingPlugin {
     private ServiceRegistry serviceRegistry;
 
     @Inject(state = PluginState.ENABLED)
-    public void enable(ServiceRegistry registry) {
+    public void enable(ServiceRegistry registry, PluginContainer container) {
         this.serviceRegistry = registry;
 
-        registry.getProviderUnchecked(EventManager.class).registerListener(this);
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, this);
         registry.setProvider(null, PathProvider.class, new DefaultPathProvider());
     }
 
