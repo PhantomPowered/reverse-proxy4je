@@ -37,6 +37,7 @@ import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
+import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -60,6 +61,7 @@ import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
 import com.github.derrop.proxy.permission.PermissionProvider;
+import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
@@ -68,7 +70,9 @@ import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import net.md_5.bungee.Util;
 import net.md_5.bungee.connection.ClientPacketHandler;
+import net.md_5.bungee.connection.PingPacketHandler;
 import net.md_5.bungee.connection.ServerPacketHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -113,6 +117,9 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, Configuration.class, new JsonConfiguration(), true);
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
 
+        this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(), false, true);
+
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ClientPacketHandler());

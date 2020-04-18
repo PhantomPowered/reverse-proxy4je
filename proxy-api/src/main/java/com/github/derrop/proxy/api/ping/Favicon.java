@@ -1,4 +1,4 @@
-package net.md_5.bungee;
+package com.github.derrop.proxy.api.ping;
 
 import com.google.common.io.BaseEncoding;
 import com.google.gson.TypeAdapter;
