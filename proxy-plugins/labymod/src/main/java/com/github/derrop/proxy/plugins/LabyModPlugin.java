@@ -41,8 +41,8 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 public class LabyModPlugin {
 
     @Inject(state = PluginState.ENABLED)
-    public void enable(ServiceRegistry registry) {
-        registry.getProviderUnchecked(EventManager.class).registerListener(new LabyModListener());
+    public void enable(ServiceRegistry registry, PluginContainer pluginContainer) {
+        registry.getProviderUnchecked(EventManager.class).registerListener(pluginContainer, new LabyModListener());
     }
 
 }
