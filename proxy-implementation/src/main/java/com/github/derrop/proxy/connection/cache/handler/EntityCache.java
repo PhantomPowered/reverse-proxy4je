@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
@@ -32,22 +33,28 @@ import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntity;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntityWeather;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class EntityCache implements PacketCacheHandler {
 
     private final Map<Integer, PositionedPacket> entities = new ConcurrentHashMap<>();
     private final Map<Integer, PacketPlayServerEntityMetadata> metadata = new ConcurrentHashMap<>();
 
-    // todo (fake?) players are not spawned properly
+    private PacketCache packetCache;
+
     // todo the entity equipment packet is ignored
     @Override
     public int[] getPacketIDs() {
@@ -60,6 +67,8 @@ public class EntityCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+        this.packetCache = packetCache;
+
         Packet packet = newPacket.getDeserializedPacket();
 
         if (packet instanceof PacketPlayServerEntityTeleport) {
@@ -101,7 +110,12 @@ public class EntityCache implements PacketCacheHandler {
 
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
 
-            this.metadata.put(((PacketPlayServerEntityMetadata) packet).getEntityId(), (PacketPlayServerEntityMetadata) packet);
+            PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
+            if (this.metadata.containsKey(metadata.getEntityId())) {
+                this.metadata.get(metadata.getEntityId()).getWatchableObjects().addAll(metadata.getWatchableObjects());
+            } else {
+                this.metadata.put(metadata.getEntityId(), metadata);
+            }
 
         } else if (packet instanceof PacketPlayServerEntityDestroy) {
 
@@ -116,8 +130,24 @@ public class EntityCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(PacketSender con) {
+        if (this.packetCache == null) {
+            return;
+        }
+        PlayerInfoCache infoCache = (PlayerInfoCache) this.packetCache.getHandler(handler -> handler instanceof PlayerInfoCache);
+
         for (PositionedPacket packet : this.entities.values()) {
-            con.sendPacket(packet);
+            if (packet instanceof PacketPlayServerNamedEntitySpawn && !infoCache.isCached(((PacketPlayServerNamedEntitySpawn) packet).getPlayerId())) {
+                // NPCs might get removed out of the player list after they have been spawned, but the client doesn't spawn them without them being in the list
+                PacketPlayServerPlayerInfo.Item item = infoCache.getRemovedItem(((PacketPlayServerNamedEntitySpawn) packet).getPlayerId());
+                con.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.ADD_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item}));
+                con.sendPacket(packet);
+                Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(
+                        () -> con.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item})),
+                        500, TimeUnit.MILLISECONDS
+                );
+            } else {
+                con.sendPacket(packet);
+            }
         }
 
         for (PacketPlayServerEntityMetadata metadata : this.metadata.values()) {
