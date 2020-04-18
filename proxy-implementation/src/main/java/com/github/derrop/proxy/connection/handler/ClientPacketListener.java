@@ -1,4 +1,4 @@
-package net.md_5.bungee.connection;
+package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;

@@ -52,7 +52,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessag
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import io.netty.buffer.ByteBuf;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.connection.LoginResult;
+import com.github.derrop.proxy.connection.LoginResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;

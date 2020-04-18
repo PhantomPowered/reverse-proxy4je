@@ -45,7 +45,7 @@ import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompressio
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.connection.ServerChannelListener;
+import com.github.derrop.proxy.connection.handler.ServerChannelListener;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;

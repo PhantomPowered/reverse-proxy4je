@@ -35,6 +35,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
@@ -59,8 +60,8 @@ import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.connection.ClientPacketListener;
-import net.md_5.bungee.connection.LoginResult;
+import com.github.derrop.proxy.connection.handler.ClientPacketListener;
+import com.github.derrop.proxy.connection.LoginResult;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,9 +92,9 @@ public class InitialHandler {
 
         final String motd = "\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
 
-        channel.write(new PacketStatusOutResponse(Util.GSON.toJson(new com.github.derrop.proxy.ping.ServerPing(
-                new com.github.derrop.proxy.ping.ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
-                new com.github.derrop.proxy.ping.ServerPing.Players(0, 0, null),
+        channel.write(new PacketStatusOutResponse(Util.GSON.toJson(new ServerPing(
+                new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
+                new ServerPing.Players(0, 0, null),
                 new TextComponent(motd),
                 null
         ))));

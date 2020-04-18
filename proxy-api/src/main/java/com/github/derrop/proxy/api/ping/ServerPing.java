@@ -22,10 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.ping;
+package com.github.derrop.proxy.api.ping;
 
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import net.md_5.bungee.Favicon;
 
 import java.util.UUID;
 

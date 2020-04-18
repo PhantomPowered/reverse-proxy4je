@@ -1,6 +1,7 @@
 package net.md_5.bungee;
 
 import com.github.derrop.proxy.api.chat.component.*;
+import com.github.derrop.proxy.api.ping.Favicon;
 import com.google.common.primitives.UnsignedLongs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

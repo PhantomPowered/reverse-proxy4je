@@ -87,7 +87,7 @@ public class GommeSpectatorDetector extends MatchParser {
 
                     // TODO this doesn't work in BedWars yet
                     System.out.println("Spectator left: " + name);
-                    matchInfo.getProperties().remove(entry.getKey());
+                    matchInfo.getProperties().remove("spectator-" + name);
                     matchInfo.callEvent(new SpectatorLeaveEvent(name));
                 } else {
                     spec.setLastRemove();
