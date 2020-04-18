@@ -60,8 +60,8 @@ import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.connection.ClientPacketListener;
-import net.md_5.bungee.connection.LoginResult;
+import com.github.derrop.proxy.connection.handler.ClientPacketListener;
+import com.github.derrop.proxy.connection.LoginResult;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package net.md_5.bungee.connection;
+package com.github.derrop.proxy.connection;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package net.md_5.bungee.connection;
+package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;

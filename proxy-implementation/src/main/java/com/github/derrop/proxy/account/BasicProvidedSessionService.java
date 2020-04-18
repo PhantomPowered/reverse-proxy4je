@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.session;
+package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.mojang.authlib.Agent;
