@@ -34,6 +34,8 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerInfoCache implements PacketCacheHandler {
     @Override
@@ -41,7 +43,9 @@ public class PlayerInfoCache implements PacketCacheHandler {
         return new int[]{56};
     }
 
-    private Collection<PacketPlayServerPlayerInfo.Item> items = new ArrayList<>();
+    private Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
+
+    private Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new ArrayList<>();
 
     private PacketCache packetCache;
 
@@ -52,7 +56,14 @@ public class PlayerInfoCache implements PacketCacheHandler {
         PacketPlayServerPlayerInfo playerListItem = (PacketPlayServerPlayerInfo) newPacket.getDeserializedPacket();
 
         if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER) {
-            this.items.removeIf(item -> Arrays.stream(playerListItem.getItems()).anyMatch(item1 -> item1.getUniqueId().equals(item.getUniqueId())));
+            for (PacketPlayServerPlayerInfo.Item item : this.items) {
+                for (PacketPlayServerPlayerInfo.Item item1 : playerListItem.getItems()) {
+                    if (item.getUniqueId().equals(item1.getUniqueId())) {
+                        this.lastRemovedItems.add(item);
+                        this.items.remove(item);
+                    }
+                }
+            }
         }
 
         if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.ADD_PLAYER) {
@@ -111,6 +122,14 @@ public class PlayerInfoCache implements PacketCacheHandler {
 
     public Collection<PacketPlayServerPlayerInfo.Item> getItems() {
         return this.items;
+    }
+
+    public boolean isCached(UUID uniqueId) {
+        return this.items.stream().anyMatch(item -> item.getUniqueId().equals(uniqueId));
+    }
+
+    public PacketPlayServerPlayerInfo.Item getRemovedItem(UUID uniqueId) {
+        return this.lastRemovedItems.stream().filter(item -> item.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
     }
 
 }
