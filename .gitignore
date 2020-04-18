@@ -9,6 +9,9 @@ target/
 
 logs/
 replays/
+database/
+plugins/
+
 config.json
 uuids.json
 permissions.json
