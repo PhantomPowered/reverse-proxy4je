@@ -22,16 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.event.handler;
+package com.github.derrop.proxy.api.event;
 
-import com.github.derrop.proxy.api.event.priority.EventPriority;
+public enum EventPriority {
 
-import java.lang.annotation.*;
+    FIRST((byte) -64),
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Listener {
+    SECOND((byte) -32),
 
-    EventPriority priority() default EventPriority.NORMAL;
+    MONITOR((byte) -1),
+
+    NORMAL((byte) 0),
+
+    PENULTIMATE((byte) 32),
+
+    LAST((byte) 64);
+
+    EventPriority(byte priorityInJava) {
+        this.priority = priorityInJava;
+    }
+
+    private final byte priority;
+
+    public byte getPriority() {
+        return priority;
+    }
 }

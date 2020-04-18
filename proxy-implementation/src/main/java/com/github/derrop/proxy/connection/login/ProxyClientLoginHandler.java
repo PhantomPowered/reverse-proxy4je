@@ -27,7 +27,7 @@ package com.github.derrop.proxy.connection.login;
 import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
-import com.github.derrop.proxy.api.event.priority.EventPriority;
+import com.github.derrop.proxy.api.event.EventPriority;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;

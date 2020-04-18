@@ -26,7 +26,6 @@ package com.github.derrop.proxy.plugin;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
-import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Dependency;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
@@ -36,9 +35,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
 
 public final class DefaultPluginContainer implements PluginContainer {
 
@@ -93,10 +89,6 @@ public final class DefaultPluginContainer implements PluginContainer {
     @Override
     public @NotNull Dependency[] getDependencies() {
         return this.plugin.dependencies();
-        /*Üreturn Arrays.stream(this.plugin.dependencies()).map(e -> {
-            Optional<PluginContainer> container = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PluginManager.class).getPlugin(e.id());
-            return container.orElse(null);
-        }).filter(Objects::nonNull).toArray(Dependency[]::new);*/
     }
 
     @Override

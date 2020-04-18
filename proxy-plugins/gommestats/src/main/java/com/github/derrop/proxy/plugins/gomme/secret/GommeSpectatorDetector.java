@@ -25,9 +25,8 @@
 package com.github.derrop.proxy.plugins.gomme.secret;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.event.handler.Listener;
+import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamEntryRemoveEvent;
-import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamUnregisterEvent;
 import com.github.derrop.proxy.api.events.connection.service.scoreboard.ScoreboardTeamUpdateEvent;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;

@@ -22,29 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.event.priority;
+package com.github.derrop.proxy.api.event;
 
-public enum EventPriority {
+import com.github.derrop.proxy.api.plugin.PluginContainer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-    FIRST((byte) -64),
+import java.lang.reflect.InvocationTargetException;
 
-    SECOND((byte) -32),
+public interface ListenerContainer {
 
-    MONITOR((byte) -1),
+    @Nullable PluginContainer getPlugin();
 
-    NORMAL((byte) 0),
+    @NotNull Object getListenerInstance();
 
-    PENULTIMATE((byte) 32),
+    @NotNull Class<?> getTargetEventClass();
 
-    LAST((byte) 64);
+    @NotNull EventPriority getPriority();
 
-    EventPriority(byte priorityInJava) {
-        this.priority = priorityInJava;
-    }
-
-    private final byte priority;
-
-    public byte getPriority() {
-        return priority;
-    }
+    void call(@NotNull Event event) throws InvocationTargetException, IllegalAccessException;
 }

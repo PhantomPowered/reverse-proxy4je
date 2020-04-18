@@ -22,33 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.event;
+package com.github.derrop.proxy.api.event.annotation;
 
-import com.github.derrop.proxy.api.event.Event;
+import com.github.derrop.proxy.api.event.EventPriority;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.annotation.*;
 
-public final class LoadedListener {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Listener {
 
-    public LoadedListener(Object listener, Method method) {
-        this.listener = listener;
-        this.method = method;
-    }
-
-    private final Object listener;
-
-    private final Method method;
-
-    public void call(Event event) throws InvocationTargetException, IllegalAccessException {
-        method.invoke(listener, event);
-    }
-
-    public Method getMethod() {
-        return method;
-    }
-
-    public Object getListener() {
-        return listener;
-    }
+    EventPriority priority() default EventPriority.NORMAL;
 }

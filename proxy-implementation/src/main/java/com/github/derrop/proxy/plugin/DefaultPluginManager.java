@@ -57,7 +57,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
 
-public class DefaultPluginManager implements PluginManager {
+public final class DefaultPluginManager implements PluginManager {
 
     private final List<PluginContainerEntry> pluginContainers = new CopyOnWriteArrayList<>();
 
@@ -74,6 +74,12 @@ public class DefaultPluginManager implements PluginManager {
     public @NotNull Optional<PluginContainer> fromInstance(@NotNull Object instance) {
         if (instance instanceof PluginContainer) {
             return Optional.of((PluginContainer) instance);
+        }
+
+        for (PluginContainerEntry pluginContainer : this.pluginContainers) {
+            if (pluginContainer.getInstance() == instance) {
+                return Optional.of(pluginContainer.getPluginContainer());
+            }
         }
 
         return Optional.empty();
@@ -161,6 +167,8 @@ public class DefaultPluginManager implements PluginManager {
                     ex.printStackTrace();
                 }
             }
+
+            pluginContainer.getPluginContainer().setPluginState(PluginState.ENABLED);
         }
     }
 
@@ -181,6 +189,8 @@ public class DefaultPluginManager implements PluginManager {
                     ex.printStackTrace();
                 }
             }
+
+            pluginContainer.getPluginContainer().setPluginState(PluginState.DISABLED);
         }
     }
 

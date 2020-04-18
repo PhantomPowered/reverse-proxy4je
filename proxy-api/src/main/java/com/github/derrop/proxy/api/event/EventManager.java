@@ -24,80 +24,29 @@
  */
 package com.github.derrop.proxy.api.event;
 
+import com.github.derrop.proxy.api.plugin.PluginContainer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public interface EventManager {
 
-    /**
-     * Calls an event
-     *
-     * @param event The class of the event which get instantiated and then called
-     * @see #callEvent(Event)
-     */
-    void callEvent(Class<? extends Event> event);
+    void callEvent(@NotNull Class<? extends Event> event);
 
-    /**
-     * Calls an event
-     *
-     * @param event The event which should be called
-     * @return The same event after the call
-     */
-    @NotNull <T extends Event> T callEvent(T event);
+    @NotNull <T extends Event> T callEvent(@NotNull T event);
 
-    /**
-     * Calls an event async
-     *
-     * @param event The class of the event which get instantiated and then called
-     * @see #callEventAsync(Event)
-     */
-    void callEventAsync(Class<? extends Event> event);
+    void registerListener(@Nullable PluginContainer pluginContainer, @NotNull Object listener);
 
-    /**
-     * Calls an event async
-     *
-     * @param event The event which should be called
-     */
-    void callEventAsync(Event event);
+    void registerListener(@Nullable PluginContainer pluginContainer, @NotNull Class<?> listener);
 
-    /**
-     * Registers a event listener
-     *
-     * @param listener The listener which should get registered
-     */
-    void registerListener(Object listener);
+    void unregisterListener(@NotNull Object listener);
 
-    /**
-     * Registers a listener
-     *
-     * @param listener The listener class which will get instantiated and then registered
-     * @see #registerListener(Object)
-     */
-    void registerListener(Class<?> listener);
+    void unregisterAll(@NotNull PluginContainer pluginContainer);
 
-    /**
-     * Registers a listener async
-     *
-     * @param listener The listener which should get registered
-     */
-    void registerListenerAsync(Object listener);
-
-    /**
-     * Registers a listener async
-     *
-     * @param listener The listener class which will get instantiated and then registered
-     * @see #registerListenerAsync(Object)
-     */
-    void registerListenerAsync(Class<?> listener);
-
-    /**
-     * Unregisters a specific listener
-     *
-     * @param listener The listener which should get unregistered
-     */
-    void unregisterListener(Object listener);
-
-    /**
-     * Unregisters all listeners
-     */
     void unregisterAll();
+
+    @NotNull Collection<ListenerContainer> getRegisteredListeners(@NotNull PluginContainer pluginContainer);
+
+    @NotNull Collection<ListenerContainer> getRegisteredListeners();
 }
