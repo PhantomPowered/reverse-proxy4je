@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.PingEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -98,7 +99,13 @@ public class InitialHandler {
                 .replace("$online", String.valueOf(this.proxy.getOnlineClients().size()))
         ));
 
-        channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(response)));
+        PingEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PingEvent(channel, response));
+        if (event.getResponse() == null) {
+            channel.close();
+            return;
+        }
+
+        channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(event.getResponse())));
 
         channel.setProperty(INIT_STATE, State.PING);
     }
