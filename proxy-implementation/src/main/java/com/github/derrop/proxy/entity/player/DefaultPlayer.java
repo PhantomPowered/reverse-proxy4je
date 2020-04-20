@@ -259,7 +259,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void sendMessage(@NotNull String message) {
-        this.sendMessage(ChatMessageType.CHAT, GsonComponentSerializer.INSTANCE.deserialize(Constants.MESSAGE_PREFIX + message));
+        this.sendMessage(ChatMessageType.CHAT, LegacyComponentSerializer.legacyLinking().deserialize(Constants.MESSAGE_PREFIX + message));
     }
 
     @Override

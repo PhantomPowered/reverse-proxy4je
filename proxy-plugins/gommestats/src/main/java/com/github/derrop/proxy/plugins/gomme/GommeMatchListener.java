@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.plugins.gomme;
 
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
@@ -37,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Arrays;
 import java.util.concurrent.Executors;
@@ -105,7 +105,7 @@ public class GommeMatchListener {
             return;
         }
 
-        String msg = TextComponent.toPlainText(event.getMessage());
+        String msg = LegacyComponentSerializer.legacy().serialize(event.getMessage());
         if (msg.matches("\\[Cores] Team (.*) hat Cores gewonnen")) { // todo this can be done better
             System.out.println("MatchEnd on " + match.getGameMode() + ": " +
                     Arrays.stream(((ServiceConnection) event.getConnection()).getWorldDataProvider().getOnlinePlayers()).map(playerInfo -> playerInfo.getUniqueId() + "#" + playerInfo.getUsername()).collect(Collectors.joining(", ")));

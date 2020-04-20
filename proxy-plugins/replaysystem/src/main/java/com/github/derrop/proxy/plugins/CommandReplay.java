@@ -24,17 +24,17 @@
  */
 package com.github.derrop.proxy.plugins;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandReplay extends NonTabCompleteableCommandCallback {
 
-    public CommandReplay(@NotNull String permission, @Nullable BaseComponent[] help) {
+    public CommandReplay(@NotNull String permission, @Nullable Component help) {
         super(permission, help);
     }
 
