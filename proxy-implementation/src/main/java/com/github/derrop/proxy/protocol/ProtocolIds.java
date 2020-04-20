@@ -26,6 +26,31 @@ package com.github.derrop.proxy.protocol;
 
 public interface ProtocolIds {
 
+    interface Versions {
+        int MINECRAFT_1_8 = 47;
+        int MINECRAFT_1_9 = 107;
+        int MINECRAFT_1_9_1 = 108;
+        int MINECRAFT_1_9_2 = 109;
+        int MINECRAFT_1_9_4 = 110;
+        int MINECRAFT_1_10 = 210;
+        int MINECRAFT_1_11 = 315;
+        int MINECRAFT_1_11_1 = 316;
+        int MINECRAFT_1_12 = 335;
+        int MINECRAFT_1_12_1 = 338;
+        int MINECRAFT_1_12_2 = 340;
+        int MINECRAFT_1_13 = 393;
+        int MINECRAFT_1_13_1 = 401;
+        int MINECRAFT_1_13_2 = 404;
+        int MINECRAFT_1_14 = 5787;
+        int MINECRAFT_1_14_1 = 480;
+        int MINECRAFT_1_14_2 = 485;
+        int MINECRAFT_1_14_3 = 490;
+        int MINECRAFT_1_14_4 = 498;
+        int MINECRAFT_1_15 = 573;
+        int MINECRAFT_1_15_1 = 575;
+        int MINECRAFT_1_15_2 = 578;
+    }
+    
     interface ToClient {
 
         interface Play {

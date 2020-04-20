@@ -21,7 +21,6 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayloa
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class ClientPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)
     private void handleChat(DefaultPlayer player, PacketPlayClientChatMessage chat) throws Exception {
-        int maxLength = (player.getVersion() >= ProtocolConstants.MINECRAFT_1_11) ? 256 : 100;
+        int maxLength = (player.getVersion() >= ProtocolIds.Versions.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
             throw CancelProceedException.INSTANCE;
         }

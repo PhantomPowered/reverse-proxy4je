@@ -72,7 +72,8 @@ public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddre
                     System.err.println("Unable to open connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
                 }
             });
-        } catch (final AuthenticationException exception) {
+            Thread.sleep(500);
+        } catch (final AuthenticationException | InterruptedException exception) {
             exception.printStackTrace();
         }
     }

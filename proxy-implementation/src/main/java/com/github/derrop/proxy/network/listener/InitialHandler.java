@@ -38,6 +38,8 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.repository.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
+import com.github.derrop.proxy.connection.LoginResult;
+import com.github.derrop.proxy.connection.handler.ClientPacketListener;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
@@ -60,9 +62,6 @@ import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
 import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
-import com.github.derrop.proxy.connection.handler.ClientPacketListener;
-import com.github.derrop.proxy.connection.LoginResult;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
@@ -141,7 +140,7 @@ public class InitialHandler {
             case 2:
                 channel.setProperty(INIT_STATE, State.USERNAME);
                 channel.setProtocolState(ProtocolState.LOGIN);
-                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(packetHandshakingClientSetProtocol.getProtocolVersion())) {
+                if (packetHandshakingClientSetProtocol.getProtocolVersion() != ProtocolIds.Versions.MINECRAFT_1_8) {
                     disconnect(channel, "We only support 1.8");
                     return;
                 }
