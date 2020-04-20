@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.network.channel.ChannelListener;
-import net.md_5.bungee.Util;
+import com.github.derrop.proxy.util.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class ServerChannelListener implements ChannelListener {
             cause.printStackTrace();
         }
         MCProxy.getInstance().unregisterConnection(this.client.getConnection());
-        this.client.handleDisconnect(TextComponent.fromLegacyText("§c" + Util.exception(cause)));
+        this.client.handleDisconnect(TextComponent.fromLegacyText("§c" + Utils.stringifyException(cause)));
         this.client.getConnection().close();
     }
 

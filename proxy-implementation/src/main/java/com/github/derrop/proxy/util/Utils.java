@@ -1,19 +1,17 @@
-package net.md_5.bungee;
+package com.github.derrop.proxy.util;
 
 import com.github.derrop.proxy.api.chat.component.*;
 import com.github.derrop.proxy.api.ping.Favicon;
-import com.google.common.primitives.UnsignedLongs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.md_5.bungee.chat.*;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 
-/**
- * Series of utility classes to perform various operations.
- */
-@Deprecated
-public class Util {
+public class Utils {
+
+    private static final Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
@@ -24,28 +22,18 @@ public class Util {
             .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
             .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter()).create();
 
-    /**
-     * Constructs a pretty one line version of a {@link Throwable}. Useful for
-     * debugging.
-     *
-     * @param t the {@link Throwable} to format.
-     * @return a string representing information about the {@link Throwable}
-     */
-    // TODO: move elsewhere
-    public static String exception(Throwable t) {
-        StackTraceElement[] trace = t.getStackTrace();
-        return t.getClass().getSimpleName() + " : " + t.getMessage()
-                + ((trace.length > 0) ? " @ " + t.getStackTrace()[0].getClassName() + ":" + t.getStackTrace()[0].getLineNumber() : "");
+    private Utils() {
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * Converts a String to a UUID
-     *
-     * @param uuid The string to be converted
-     * @return The result
-     */
-    // TODO: Looks unsafe, remove or remove
-    public static UUID getUUID(String uuid) {
-        return new UUID(UnsignedLongs.parseUnsignedLong(uuid.substring(0, 16), 16), UnsignedLongs.parseUnsignedLong(uuid.substring(16), 16));
+    public static String stringifyException(Throwable t) {
+        StackTraceElement[] trace = t.getStackTrace();
+        return t.getClass().getSimpleName() + " : " + t.getMessage()
+                + ((trace.length > 0) ? " @ " + trace[0].getClassName() + ":" + trace[0].getLineNumber() : "");
     }
+
+    public static UUID parseUUID(String uuid) {
+        return UUID.fromString(UUID_PATTERN.matcher(uuid).replaceAll("$1-$2-$3-$4-$5"));
+    }
+
 }

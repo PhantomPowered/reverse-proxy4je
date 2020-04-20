@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.channel.ChannelListener;
-import net.md_5.bungee.Util;
+import com.github.derrop.proxy.util.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class ClientPacketListener implements ChannelListener {
     @Override
     public void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
         if (!(cause instanceof IOException)) {
-            this.player.sendMessage("Unexpected exception, check log for more details: " + Util.exception(cause));
+            this.player.sendMessage("Unexpected exception, check log for more details: " + Utils.stringifyException(cause));
             cause.printStackTrace();
         }
     }

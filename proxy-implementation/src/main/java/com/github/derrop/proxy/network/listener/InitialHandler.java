@@ -58,9 +58,9 @@ import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
 import com.github.derrop.proxy.util.HttpHelper;
+import com.github.derrop.proxy.util.Utils;
 import com.google.common.base.Preconditions;
 import net.md_5.bungee.EncryptionUtil;
-import net.md_5.bungee.Util;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +91,7 @@ public class InitialHandler {
 
         final String motd = "\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
 
-        channel.write(new PacketStatusOutResponse(Util.GSON.toJson(new ServerPing(
+        channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(new ServerPing(
                 new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
                 new ServerPing.Players(0, 0, null),
                 new TextComponent(motd),
@@ -198,9 +198,9 @@ public class InitialHandler {
 
         Callback<String> handler = (result, error) -> {
             if (error == null) {
-                LoginResult obj = Util.GSON.fromJson(result, LoginResult.class);
+                LoginResult obj = Utils.GSON.fromJson(result, LoginResult.class);
                 if (obj != null && obj.getId() != null) {
-                    UUID uniqueId = Util.getUUID(obj.getId());
+                    UUID uniqueId = Utils.parseUUID(obj.getId());
                     /*if (uniqueId == null) {
                         uniqueId = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
                     }*/
