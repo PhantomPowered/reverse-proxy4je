@@ -1,10 +1,8 @@
 package com.github.derrop.proxy.util;
 
-import com.github.derrop.proxy.api.chat.component.*;
 import com.github.derrop.proxy.api.ping.Favicon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.md_5.bungee.chat.*;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -14,13 +12,8 @@ public class Utils {
     private static final Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
     public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
-            .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
-            .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
-            .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
-            .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
-            .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
-            .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter()).create();
+            .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter())
+            .create();
 
     private Utils() {
         throw new UnsupportedOperationException();

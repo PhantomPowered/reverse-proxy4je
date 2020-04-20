@@ -26,16 +26,16 @@ package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -89,7 +89,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             }).exceptionally(throwable -> {
                 if (player != null) {
                     player.sendTitle(MCProxy.getInstance().createTitle().reset());
-                    player.sendActionBar(200, TextComponent.fromLegacyText(throwable.getMessage().replace('\n', ' ')));
+                    player.sendActionBar(200, TextComponent.of(throwable.getMessage().replace('\n', ' ')));
                     this.fallback(player, connection, throwable);
                 }
                 return null;
@@ -109,8 +109,8 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         }
 
         player.getProxy().createTitle()
-                .title(TextComponent.fromLegacyText("§cFailed to connect"))
-                .subTitle(TextComponent.fromLegacyText(reason != null ? reason.getClass().getSimpleName() : "Unknown reason"))
+                .title(TextComponent.of("§cFailed to connect"))
+                .subTitle(TextComponent.of(reason != null ? reason.getClass().getSimpleName() : "Unknown reason"))
                 .send(player);
 
         player.useClient(nextClient);

@@ -1,7 +1,6 @@
 package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
@@ -20,7 +19,7 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.List;
 
@@ -62,12 +61,12 @@ public class ClientPacketHandler {
             return;
         }
 
-        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, TextComponent.fromLegacyText(chat.getMessage()));
+        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, GsonComponentSerializer.INSTANCE.deserialize(chat.getMessage()));
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
-        chat.setMessage(ComponentSerializer.toString(event.getMessage()));
+        chat.setMessage(GsonComponentSerializer.INSTANCE.serialize(event.getMessage()));
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)

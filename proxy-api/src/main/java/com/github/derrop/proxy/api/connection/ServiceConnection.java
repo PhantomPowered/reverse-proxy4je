@@ -26,7 +26,6 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
@@ -35,6 +34,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.UserAuthentication;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,13 +74,13 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     void displayMessage(@NotNull ChatMessageType type, @NotNull String message);
 
-    void chat(@NotNull BaseComponent component);
+    void chat(@NotNull Component component);
 
-    void displayMessage(@NotNull ChatMessageType type, @NotNull BaseComponent component);
+    void displayMessage(@NotNull ChatMessageType type, @NotNull Component component);
 
-    void chat(@NotNull BaseComponent... components);
+    void chat(@NotNull Component... components);
 
-    void displayMessage(@NotNull ChatMessageType type, @NotNull BaseComponent... components);
+    void displayMessage(@NotNull ChatMessageType type, @NotNull Component... components);
 
     @NotNull
     Task<Boolean> connect();

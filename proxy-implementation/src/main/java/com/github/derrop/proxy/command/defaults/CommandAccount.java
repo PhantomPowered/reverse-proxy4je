@@ -26,18 +26,18 @@ package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.ClickEvent;
-import com.github.derrop.proxy.api.chat.HoverEvent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import net.kyori.text.TextComponent;
+import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
@@ -82,9 +82,9 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
                 sender.sendMessage(success ? ("§aSuccessfully connected as §e" + credentials.getEmail() + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
                 if (sender instanceof Player) {
-                    TextComponent component = new TextComponent(Constants.MESSAGE_PREFIX + "§aClick to connect");
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + client.getName()));
-                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
+                    TextComponent component = TextComponent.of(Constants.MESSAGE_PREFIX + "§aClick to connect");
+                    component.clickEvent(ClickEvent.runCommand("/switch " + client.getName()));
+                    component.hoverEvent(HoverEvent.showText(TextComponent.of("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
                     sender.sendMessage(component);
                 }
             } catch (ExecutionException | InterruptedException | TimeoutException exception) {

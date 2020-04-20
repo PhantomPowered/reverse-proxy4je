@@ -30,6 +30,8 @@ package com.github.derrop.proxy.api.chat;
 public enum ChatMessageType {
 
     CHAT,
+
     SYSTEM,
+
     ACTION_BAR
 }

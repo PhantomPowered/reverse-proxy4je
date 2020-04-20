@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.ping;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import net.kyori.text.Component;
 
 import java.util.UUID;
 
@@ -32,10 +32,10 @@ public class ServerPing {
 
     private Protocol version;
     private Players players;
-    private BaseComponent description;
+    private Component description;
     private Favicon favicon;
 
-    public ServerPing(Protocol version, Players players, BaseComponent description, Favicon favicon) {
+    public ServerPing(Protocol version, Players players, Component description, Favicon favicon) {
         this.version = version;
         this.players = players;
         this.description = description;
@@ -58,11 +58,11 @@ public class ServerPing {
         this.players = players;
     }
 
-    public BaseComponent getDescription() {
+    public Component getDescription() {
         return description;
     }
 
-    public void setDescription(BaseComponent description) {
+    public void setDescription(Component description) {
         this.description = description;
     }
 

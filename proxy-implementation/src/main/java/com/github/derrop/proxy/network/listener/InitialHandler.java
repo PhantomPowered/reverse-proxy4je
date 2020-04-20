@@ -26,8 +26,6 @@ package com.github.derrop.proxy.network.listener;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -60,8 +58,10 @@ import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
 import com.github.derrop.proxy.util.HttpHelper;
 import com.github.derrop.proxy.util.Utils;
 import com.google.common.base.Preconditions;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.EncryptionUtil;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
@@ -94,7 +94,7 @@ public class InitialHandler {
         channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(new ServerPing(
                 new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
                 new ServerPing.Players(0, 0, null),
-                new TextComponent(motd),
+                TextComponent.of(motd),
                 null
         ))));
 
@@ -239,13 +239,13 @@ public class InitialHandler {
                 }
 
                 if (event.isCancelled()) {
-                    disconnect(channel, event.getCancelReason() == null ? TextComponent.fromLegacyText("§cNo reason given") : event.getCancelReason());
+                    disconnect(channel, event.getCancelReason() == null ? TextComponent.of("§cNo reason given") : event.getCancelReason());
                     return;
                 }
 
                 client = event.getTargetConnection();
                 if (client == null) {
-                    disconnect(channel, TextComponent.fromLegacyText("§7No client found"));
+                    disconnect(channel, TextComponent.of("§7No client found"));
                     return;
                 }
 
@@ -262,18 +262,18 @@ public class InitialHandler {
 
     static void disconnect(NetworkChannel channel, @NotNull String reason) {
         if (canSendKickMessage(channel)) {
-            disconnect(channel, TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + reason));
+            disconnect(channel, TextComponent.of(Constants.MESSAGE_PREFIX + reason));
         } else {
             channel.close();
         }
     }
 
-    static void disconnect(NetworkChannel channel, final BaseComponent... reason) {
+    static void disconnect(NetworkChannel channel, final Component reason) {
         if (canSendKickMessage(channel)) {
             if (channel.getProtocolState() == ProtocolState.PLAY) {
-                channel.delayedClose(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
+                channel.delayedClose(new PacketPlayServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
             } else {
-                channel.delayedClose(new PacketLoginOutServerKickPlayer(ComponentSerializer.toString(reason)));
+                channel.delayedClose(new PacketLoginOutServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
             }
         } else {
             channel.close();

@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.api.command.basic;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +34,7 @@ import java.util.List;
 
 public abstract class NonTabCompleteableCommandCallback extends BasicCommandCallback {
 
-    public NonTabCompleteableCommandCallback(@NotNull String permission, @Nullable BaseComponent[] help) {
+    public NonTabCompleteableCommandCallback(@NotNull String permission, @Nullable Component help) {
         super(permission, help);
     }
 

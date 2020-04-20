@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.command.sender;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -33,9 +33,7 @@ public interface CommandSender {
 
     void sendMessage(@NotNull String message);
 
-    void sendMessage(@NotNull BaseComponent component);
-
-    void sendMessage(@NotNull BaseComponent[] component);
+    void sendMessage(@NotNull Component component);
 
     void sendMessages(@NotNull String... messages);
 

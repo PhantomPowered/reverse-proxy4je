@@ -24,23 +24,23 @@
  */
 package com.github.derrop.proxy.api.command.basic;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandCallback;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BasicCommandCallback implements CommandCallback {
 
-    public BasicCommandCallback(@NotNull String permission, @Nullable BaseComponent[] help) {
+    public BasicCommandCallback(@NotNull String permission, @Nullable Component help) {
         this.permission = permission;
-        this.help = help == null ? TextComponent.fromLegacyText("§cNo help provided") : help;
+        this.help = help == null ? TextComponent.of("§cNo help provided") : help;
     }
 
     private final String permission;
 
-    private final BaseComponent[] help;
+    private final Component help;
 
     @Override
     public boolean testPermission(@NotNull CommandSender commandSender) {
@@ -48,7 +48,7 @@ public abstract class BasicCommandCallback implements CommandCallback {
     }
 
     @Override
-    public @NotNull BaseComponent[] getHelp(@NotNull CommandSender commandSender) {
+    public @NotNull Component getHelp(@NotNull CommandSender commandSender) {
         return this.help;
     }
 }

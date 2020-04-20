@@ -24,28 +24,28 @@
  */
 package com.github.derrop.proxy.api.events.connection.player;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlayerKickEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel;
-    private BaseComponent[] reason;
+    private Component reason;
 
-    public PlayerKickEvent(@NotNull Player player, @Nullable BaseComponent[] reason) {
+    public PlayerKickEvent(@NotNull Player player, @Nullable Component reason) {
         super(player);
         this.reason = reason;
     }
 
     @Nullable
-    public BaseComponent[] getReason() {
+    public Component getReason() {
         return this.reason;
     }
 
-    public void setReason(@Nullable BaseComponent[] reason) {
+    public void setReason(@Nullable Component reason) {
         this.reason = reason;
     }
 

@@ -26,10 +26,10 @@ package com.github.derrop.proxy;
 
 import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.account.AccountReader;
+import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
@@ -51,6 +51,9 @@ import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.connection.ProxyServer;
+import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
+import com.github.derrop.proxy.connection.handler.PingPacketHandler;
+import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.entity.EntityTickHandler;
@@ -65,14 +68,11 @@ import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
-import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import com.github.derrop.proxy.title.BasicTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
-import com.github.derrop.proxy.connection.handler.PingPacketHandler;
-import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
+import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -131,7 +131,7 @@ public class MCProxy extends Proxy {
     }
 
     public void switchClientSafe(Player player, ServiceConnection proxyClient) {
-        player.disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
+        player.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
         this.setReconnectTarget(player.getUniqueId(), proxyClient.getUniqueId());
     }
 
@@ -197,7 +197,7 @@ public class MCProxy extends Proxy {
 
             for (ServiceConnection onlineClient : this.getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {
-                    onlineClient.getPlayer().disconnect(TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
+                    onlineClient.getPlayer().disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
                 }
 
                 try {

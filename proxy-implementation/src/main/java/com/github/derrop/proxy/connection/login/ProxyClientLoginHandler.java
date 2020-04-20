@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.login;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
+import com.github.derrop.proxy.account.CryptManager;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventPriority;
@@ -32,7 +32,7 @@ import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.account.CryptManager;
+import com.github.derrop.proxy.connection.handler.ServerChannelListener;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
@@ -44,8 +44,8 @@ import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.md_5.bungee.chat.ComponentSerializer;
-import com.github.derrop.proxy.connection.handler.ServerChannelListener;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -55,7 +55,8 @@ public class ProxyClientLoginHandler {
 
     @PacketHandler(packetIds = {ProtocolIds.ToClient.Play.KICK_DISCONNECT}, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.PLAY)
     private void handle(ConnectedProxyClient proxyClient, PacketPlayServerKickPlayer kick) throws Exception {
-        BaseComponent[] reason = ComponentSerializer.parse(kick.getMessage());
+        Component reason = GsonComponentSerializer.INSTANCE.deserialize(kick.getMessage());
+
         proxyClient.setLastKickReason(reason);
         proxyClient.connectionFailed();
     }

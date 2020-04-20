@@ -25,14 +25,14 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.repository.PlayerRepository;
+import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -62,7 +62,7 @@ public class CommandKick extends NonTabCompleteableCommandCallback {
         }
 
         message = "§7Kicked by §e" + commandSender.getName() + "§7. Reason: " + ChatColor.translateAlternateColorCodes('&', message);
-        player.disconnect(TextComponent.fromLegacyText(message));
+        player.disconnect(TextComponent.of(message));
         return CommandResult.END;
     }
 }

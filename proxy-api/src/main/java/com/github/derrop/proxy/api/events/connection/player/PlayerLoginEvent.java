@@ -24,17 +24,17 @@
  */
 package com.github.derrop.proxy.api.events.connection.player;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.Cancelable;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlayerLoginEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel = false;
-    private BaseComponent[] cancelReason;
+    private Component cancelReason;
 
     private ServiceConnection targetConnection;
 
@@ -43,12 +43,12 @@ public class PlayerLoginEvent extends PlayerEvent implements Cancelable {
         this.targetConnection = targetConnection;
     }
 
-    public void setCancelReason(@Nullable BaseComponent[] cancelReason) {
+    public void setCancelReason(@Nullable Component cancelReason) {
         this.cancelReason = cancelReason;
     }
 
     @Nullable
-    public BaseComponent[] getCancelReason() {
+    public Component getCancelReason() {
         return this.cancelReason;
     }
 

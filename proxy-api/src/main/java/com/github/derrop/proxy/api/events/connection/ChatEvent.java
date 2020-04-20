@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.api.events.connection;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.event.Cancelable;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class ChatEvent extends ConnectionEvent implements Cancelable {
@@ -35,9 +35,9 @@ public class ChatEvent extends ConnectionEvent implements Cancelable {
     private boolean cancel;
     private final ProtocolDirection direction;
 
-    private BaseComponent[] message;
+    private Component message;
 
-    public ChatEvent(@NotNull Connection connection, @NotNull ProtocolDirection direction, @NotNull BaseComponent[] message) {
+    public ChatEvent(@NotNull Connection connection, @NotNull ProtocolDirection direction, @NotNull Component message) {
         super(connection);
         this.direction = direction;
         this.message = message;
@@ -49,11 +49,11 @@ public class ChatEvent extends ConnectionEvent implements Cancelable {
     }
 
     @NotNull
-    public BaseComponent[] getMessage() {
+    public Component getMessage() {
         return this.message;
     }
 
-    public void setMessage(BaseComponent[] message) {
+    public void setMessage(Component message) {
         this.message = message;
     }
 

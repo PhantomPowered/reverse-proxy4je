@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.command.console;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.chat.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -42,13 +42,8 @@ public class ConsoleCommandSender implements CommandSender {
     }
 
     @Override
-    public void sendMessage(@NotNull BaseComponent component) {
-        this.sendMessage(ComponentSerializer.toString(component));
-    }
-
-    @Override
-    public void sendMessage(@NotNull BaseComponent[] component) {
-        this.sendMessage(ComponentSerializer.toString(component));
+    public void sendMessage(@NotNull Component component) {
+        this.sendMessage(LegacyComponentSerializer.legacy().serialize(component));
     }
 
     @Override

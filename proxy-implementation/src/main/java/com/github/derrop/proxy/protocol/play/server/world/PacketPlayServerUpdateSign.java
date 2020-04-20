@@ -24,21 +24,21 @@
  */
 package com.github.derrop.proxy.protocol.play.server.world;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerUpdateSign implements Packet {
 
     private BlockPos pos;
-    private BaseComponent[][] lines;
+    private Component[] lines;
 
-    public PacketPlayServerUpdateSign(BlockPos pos, BaseComponent[][] lines) {
+    public PacketPlayServerUpdateSign(BlockPos pos, Component[] lines) {
         this.pos = pos;
         this.lines = lines;
     }
@@ -55,17 +55,17 @@ public class PacketPlayServerUpdateSign implements Packet {
         return this.pos;
     }
 
-    public BaseComponent[][] getLines() {
+    public Component[] getLines() {
         return this.lines;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.pos = BlockPos.fromLong(protoBuf.readLong());
-        this.lines = new BaseComponent[4][];
+        this.lines = new Component[4];
 
         for (int i = 0; i < 4; i++) {
-            this.lines[i] = ComponentSerializer.parse(protoBuf.readString());
+            this.lines[i] = GsonComponentSerializer.INSTANCE.deserialize(protoBuf.readString());
         }
     }
 
@@ -74,7 +74,7 @@ public class PacketPlayServerUpdateSign implements Packet {
         protoBuf.writeLong(this.pos.toLong());
 
         for (int i = 0; i < 4; i++) {
-            protoBuf.writeString(ComponentSerializer.toString(this.lines[i]));
+            protoBuf.writeString(GsonComponentSerializer.INSTANCE.serialize(this.lines[i]));
         }
     }
 

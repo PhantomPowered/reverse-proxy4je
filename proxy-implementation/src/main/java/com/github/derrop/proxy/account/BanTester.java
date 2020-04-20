@@ -32,7 +32,7 @@ import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.chat.ChatColor;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -116,7 +116,7 @@ public class BanTester {
                     return false;
                 }
 
-                kickReason = proxyClient.getLastKickReason() == null ? null : TextComponent.toPlainText(proxyClient.getLastKickReason());
+                kickReason = proxyClient.getLastKickReason() == null ? null : GsonComponentSerializer.INSTANCE.serialize(proxyClient.getLastKickReason());
             } catch (Exception exception) {
                 if (exception.getCause() instanceof KickedException) {
                     kickReason = ChatColor.stripColor(exception.getMessage());

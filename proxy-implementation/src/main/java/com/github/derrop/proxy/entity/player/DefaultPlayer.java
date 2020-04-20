@@ -28,8 +28,6 @@ import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.PacketSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityLiving;
@@ -51,8 +49,11 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHe
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.chat.ComponentSerializer;
 import com.github.derrop.proxy.connection.LoginResult;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
@@ -132,25 +133,19 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public void sendMessage(ChatMessageType position, BaseComponent... message) {
-        if (position == ChatMessageType.ACTION_BAR) {
-            this.sendMessage(position, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(message))));
-        } else {
-            this.sendMessage(position, ComponentSerializer.toString(message));
+    public void sendMessage(ChatMessageType position, Component... messages) {
+        for (Component message : messages) {
+            this.sendMessage(position, message);
         }
     }
 
     @Override
-    public void sendMessage(ChatMessageType position, BaseComponent message) {
-        if (position == ChatMessageType.ACTION_BAR) {
-            this.sendMessage(position, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(message))));
-        } else {
-            this.sendMessage(position, ComponentSerializer.toString(message));
-        }
+    public void sendMessage(ChatMessageType position, Component message) {
+        this.sendMessage(position, GsonComponentSerializer.INSTANCE.serialize(message));
     }
 
     @Override
-    public void sendActionBar(int units, BaseComponent... message) {
+    public void sendActionBar(int units, Component... message) {
         if (this.connectedClient != null) {
             this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayServerChatMessage
                             && ((PacketPlayServerChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
@@ -245,24 +240,16 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     // TODO: replace all tablist method
 
     @Override
-    public void setTabHeader(BaseComponent header, BaseComponent footer) {
+    public void setTabHeader(Component header, Component footer) {
         this.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
-                ComponentSerializer.toString(header),
-                ComponentSerializer.toString(footer)
-        ));
-    }
-
-    @Override
-    public void setTabHeader(BaseComponent[] header, BaseComponent[] footer) {
-        this.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
-                ComponentSerializer.toString(header),
-                ComponentSerializer.toString(footer)
+                GsonComponentSerializer.INSTANCE.serialize(header),
+                GsonComponentSerializer.INSTANCE.serialize(footer)
         ));
     }
 
     @Override
     public void resetTabHeader() {
-        this.setTabHeader(new BaseComponent[0], new BaseComponent[0]);
+        this.setTabHeader(TextComponent.empty(), TextComponent.empty());
     }
 
     @Override
@@ -272,16 +259,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void sendMessage(@NotNull String message) {
-        this.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(Constants.MESSAGE_PREFIX + message));
+        this.sendMessage(ChatMessageType.CHAT, GsonComponentSerializer.INSTANCE.deserialize(Constants.MESSAGE_PREFIX + message));
     }
 
     @Override
-    public void sendMessage(@NotNull BaseComponent component) {
-        this.sendMessage(ChatMessageType.CHAT, component);
-    }
-
-    @Override
-    public void sendMessage(@NotNull BaseComponent[] component) {
+    public void sendMessage(@NotNull Component component) {
         this.sendMessage(ChatMessageType.CHAT, component);
     }
 
@@ -303,17 +285,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public void disconnect(@NotNull String reason) {
-        this.disconnect(TextComponent.fromLegacyText(reason));
-    }
-
-    @Override
-    public void disconnect(BaseComponent... reason) {
-        this.disconnect0(reason);
-    }
-
-    @Override
-    public void disconnect(@NotNull BaseComponent reason) {
+    public void disconnect(@NotNull Component reason) {
         this.disconnect0(reason);
     }
 
@@ -332,7 +304,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason) {
+    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason) {
         if (!this.connected) {
             return;
         }
@@ -345,14 +317,14 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
         ServiceConnection nextClient = MCProxy.getInstance().findBestConnection(this);
         if (nextClient == null || nextClient.equals(connection)) {
-            this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress() + ", no fallback client found. Reason:\n§r" + TextComponent.toLegacyText(reason));
+            this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
+                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));
             return;
         }
 
-        if (reason != null) {
-            this.sendMessage(ChatMessageType.CHAT, reason);
-            this.sendActionBar(200, TextComponent.fromLegacyText(TextComponent.toPlainText(reason).replace('\n', ' ')));
-        }
+        Component actionBar = GsonComponentSerializer.INSTANCE.deserialize(LegacyComponentSerializer.legacy().serialize(reason).replace('\n', ' '));
+        this.sendMessage(ChatMessageType.CHAT, reason);
+        this.sendActionBar(200, actionBar);
 
         ProvidedTitle title = MCProxy.getInstance()
                 .createTitle()
@@ -430,7 +402,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         this.sendPacket(new PacketPlayServerChatMessage(message, (byte) position.ordinal()));
     }
 
-    public void disconnect0(BaseComponent... reason) {
+    public void disconnect0(Component reason) {
         if (this.channel.isClosing()) {
             return;
         }
@@ -444,7 +416,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             reason = event.getReason();
         }
 
-        this.channel.close(new PacketPlayServerKickPlayer(ComponentSerializer.toString(reason)));
+        this.channel.close(new PacketPlayServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
         if (this.connectedClient != null) {
             this.connectedClient.getClient().free();
         }

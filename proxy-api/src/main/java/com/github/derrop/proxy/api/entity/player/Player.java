@@ -26,12 +26,12 @@ package com.github.derrop.proxy.api.entity.player;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityLiving;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -89,7 +89,7 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
      * @param position the screen position
      * @param message  the message to send
      */
-    void sendMessage(ChatMessageType position, BaseComponent... message);
+    void sendMessage(ChatMessageType position, Component... messages);
 
     /**
      * Send a message to the specified screen position of this player.
@@ -97,9 +97,9 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
      * @param position the screen position
      * @param message  the message to send
      */
-    void sendMessage(ChatMessageType position, BaseComponent message);
+    void sendMessage(ChatMessageType position, Component message);
 
-    void sendActionBar(int units, BaseComponent... message);
+    void sendActionBar(int units, Component... message);
 
     /**
      * Send a plugin message to this player.
@@ -139,15 +139,7 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
      * @param header The header for the tab player list, null to clear it.
      * @param footer The footer for the tab player list, null to clear it.
      */
-    void setTabHeader(BaseComponent header, BaseComponent footer);
-
-    /**
-     * Set the header and footer displayed in the tab player list.
-     *
-     * @param header The header for the tab player list, null to clear it.
-     * @param footer The footer for the tab player list, null to clear it.
-     */
-    void setTabHeader(BaseComponent[] header, BaseComponent[] footer);
+    void setTabHeader(Component header, Component footer);
 
     /**
      * Clears the header and footer displayed in the tab player list.

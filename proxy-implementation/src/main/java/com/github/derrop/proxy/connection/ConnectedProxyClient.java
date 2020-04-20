@@ -25,8 +25,6 @@
 package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -74,6 +72,9 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     private Map<Predicate<Packet>, Long> blockedPackets = new ConcurrentHashMap<>();
 
-    private BaseComponent[] lastKickReason;
+    private Component lastKickReason;
 
     private PlayerVelocityHandler velocityHandler = new PlayerVelocityHandler(this);
 
@@ -269,11 +270,11 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         return this.credentials.isOffline() ? UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.credentials.getUsername()).getBytes()) : this.authentication.getSelectedProfile().getId();
     }
 
-    public BaseComponent[] getLastKickReason() {
+    public Component getLastKickReason() {
         return lastKickReason;
     }
 
-    public void setLastKickReason(BaseComponent[] lastKickReason) {
+    public void setLastKickReason(Component lastKickReason) {
         this.lastKickReason = lastKickReason;
     }
 
@@ -447,20 +448,21 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     public void connectionFailed() {
         if (this.connectionHandler != null) {
-            this.connectionHandler.completeExceptionally(new KickedException(TextComponent.toLegacyText(this.lastKickReason)));
+            this.connectionHandler.completeExceptionally(new KickedException(GsonComponentSerializer.INSTANCE.serialize(this.lastKickReason)));
             this.connectionHandler = null;
         }
     }
 
     private boolean receivedServerDisconnect = false;
 
-    public void handleDisconnect(BaseComponent[] reason) {
+    public void handleDisconnect(Component reason) {
         if (this.receivedServerDisconnect) {
             return;
         }
         this.receivedServerDisconnect = true;
 
-        System.out.println("Disconnected " + this.getCredentials() + " (" + this.getAccountName() + "#" + this.getAccountUUID() + ") with " + TextComponent.toPlainText(reason));
+        System.out.println("Disconnected " + this.getCredentials() + " (" + this.getAccountName() + "#" + this.getAccountUUID() + ") with "
+                + LegacyComponentSerializer.legacy().serialize(reason));
 
         if (this.getRedirector() != null) {
             com.github.derrop.proxy.api.entity.player.Player con = this.getRedirector();
@@ -471,7 +473,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.connection.getClient().setLastKickReason(reason);
         this.connection.getClient().connectionFailed();
 
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new ServiceDisconnectEvent(this.connection, reason));
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ServiceDisconnectEvent(this.connection, reason));
     }
 
 }

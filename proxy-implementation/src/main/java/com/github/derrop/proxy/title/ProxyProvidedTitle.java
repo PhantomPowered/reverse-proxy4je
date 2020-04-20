@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.title;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import net.md_5.bungee.chat.ComponentSerializer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTitle;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ProxyProvidedTitle implements ProvidedTitle {
@@ -56,45 +56,23 @@ public abstract class ProxyProvidedTitle implements ProvidedTitle {
 
     @Override
     @NotNull
-    public ProvidedTitle title(@NotNull BaseComponent text) {
+    public ProvidedTitle title(@NotNull Component text) {
         if (this.title == null) {
             this.title = createTitle(PacketPlayServerTitle.Action.TITLE);
         }
 
-        this.title.setText(ComponentSerializer.toString(text));
+        this.title.setText(GsonComponentSerializer.INSTANCE.serialize(text));
         return this;
     }
 
     @Override
     @NotNull
-    public ProvidedTitle title(@NotNull BaseComponent... text) {
-        if (this.title == null) {
-            this.title = createTitle(PacketPlayServerTitle.Action.TITLE);
-        }
-
-        this.title.setText(ComponentSerializer.toString(text));
-        return this;
-    }
-
-    @Override
-    @NotNull
-    public ProvidedTitle subTitle(@NotNull BaseComponent text) {
+    public ProvidedTitle subTitle(@NotNull Component text) {
         if (this.subtitle == null) {
             this.subtitle = createTitle(PacketPlayServerTitle.Action.SUBTITLE);
         }
 
-        this.subtitle.setText(ComponentSerializer.toString(text));
-        return this;
-    }
-
-    @Override
-    @NotNull
-    public ProvidedTitle subTitle(@NotNull BaseComponent... text) {
-        if (this.subtitle == null) {
-            this.subtitle = createTitle(PacketPlayServerTitle.Action.SUBTITLE);
-        }
-
-        this.subtitle.setText(ComponentSerializer.toString(text));
+        this.subtitle.setText(GsonComponentSerializer.INSTANCE.serialize(text));
         return this;
     }
 

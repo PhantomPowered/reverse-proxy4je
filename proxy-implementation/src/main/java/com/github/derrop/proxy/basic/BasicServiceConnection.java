@@ -30,8 +30,6 @@ import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.entity.player.Player;
@@ -55,7 +53,8 @@ import com.google.common.base.Preconditions;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -171,30 +170,26 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public void chat(@NotNull BaseComponent component) {
-        this.chat(ComponentSerializer.toString(component));
+    public void chat(@NotNull Component component) {
+        this.chat(GsonComponentSerializer.INSTANCE.serialize(component));
     }
 
     @Override
-    public void displayMessage(@NotNull ChatMessageType type, @NotNull BaseComponent component) {
-        if (type == ChatMessageType.ACTION_BAR) {
-            this.displayMessage(type, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(component))));
-        } else {
-            this.displayMessage(type, ComponentSerializer.toString(component));
+    public void displayMessage(@NotNull ChatMessageType type, @NotNull Component component) {
+        this.displayMessage(type, GsonComponentSerializer.INSTANCE.serialize(component));
+    }
+
+    @Override
+    public void chat(@NotNull Component... components) {
+        for (Component component : components) {
+            this.chat(component);
         }
     }
 
     @Override
-    public void chat(@NotNull BaseComponent... components) {
-        this.chat(ComponentSerializer.toString(components));
-    }
-
-    @Override
-    public void displayMessage(@NotNull ChatMessageType type, @NotNull BaseComponent... components) {
-        if (type == ChatMessageType.ACTION_BAR) {
-            this.displayMessage(type, ComponentSerializer.toString(new TextComponent(BaseComponent.toLegacyText(components))));
-        } else {
-            this.displayMessage(type, ComponentSerializer.toString(components));
+    public void displayMessage(@NotNull ChatMessageType type, @NotNull Component... components) {
+        for (Component component : components) {
+            this.displayMessage(type, component);
         }
     }
 
@@ -294,12 +289,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public void disconnect(BaseComponent... reason) {
-        this.close();
-    }
-
-    @Override
-    public void disconnect(@NotNull BaseComponent reason) {
+    public void disconnect(@NotNull Component reason) {
         this.close();
     }
 
@@ -314,7 +304,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason) {
+    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason) {
     }
 
     @Override

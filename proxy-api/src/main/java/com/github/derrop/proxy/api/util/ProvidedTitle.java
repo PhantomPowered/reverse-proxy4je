@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.util;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 public interface ProvidedTitle {
@@ -38,21 +38,12 @@ public interface ProvidedTitle {
      * @return This title configuration.
      */
     @NotNull
-    ProvidedTitle title(@NotNull BaseComponent text);
+    ProvidedTitle title(@NotNull Component text);
 
     @NotNull
     default ProvidedTitle title(@NotNull String text) {
-        return this.title(TextComponent.fromLegacyText(text));
+        return this.title(TextComponent.of(text));
     }
-
-    /**
-     * Set the title to send to the player.
-     *
-     * @param text The text to use as the title.
-     * @return This title configuration.
-     */
-    @NotNull
-    ProvidedTitle title(@NotNull BaseComponent... text);
 
     /**
      * Set the subtitle to send to the player.
@@ -61,21 +52,12 @@ public interface ProvidedTitle {
      * @return This title configuration.
      */
     @NotNull
-    ProvidedTitle subTitle(@NotNull BaseComponent text);
+    ProvidedTitle subTitle(@NotNull Component text);
 
     @NotNull
     default ProvidedTitle subTitle(@NotNull String text) {
-        return this.title(TextComponent.fromLegacyText(text));
+        return this.subTitle(TextComponent.of(text));
     }
-
-    /**
-     * Set the subtitle to send to the player.
-     *
-     * @param text The text to use as the subtitle.
-     * @return This title configuration.
-     */
-    @NotNull
-    ProvidedTitle subTitle(@NotNull BaseComponent... text);
 
     /**
      * Set the duration in ticks of the fade in effect of the title. Once this

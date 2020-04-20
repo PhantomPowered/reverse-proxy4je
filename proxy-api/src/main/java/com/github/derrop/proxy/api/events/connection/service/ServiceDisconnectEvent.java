@@ -24,24 +24,24 @@
  */
 package com.github.derrop.proxy.api.events.connection.service;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.Cancelable;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ServiceDisconnectEvent extends ServiceConnectionEvent implements Cancelable {
 
     private boolean cancel;
-    private BaseComponent[] reason;
+    private Component reason;
 
-    public ServiceDisconnectEvent(@NotNull ServiceConnection connection, @Nullable BaseComponent[] reason) {
+    public ServiceDisconnectEvent(@NotNull ServiceConnection connection, @Nullable Component reason) {
         super(connection);
         this.reason = reason;
     }
 
     @Nullable
-    public BaseComponent[] getReason() {
+    public Component getReason() {
         return this.reason;
     }
 

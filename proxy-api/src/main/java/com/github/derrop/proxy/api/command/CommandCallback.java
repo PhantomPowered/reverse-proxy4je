@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.api.command;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,5 +41,5 @@ public interface CommandCallback {
 
     boolean testPermission(@NotNull CommandSender commandSender);
 
-    @NotNull BaseComponent[] getHelp(@NotNull CommandSender commandSender);
+    @NotNull Component getHelp(@NotNull CommandSender commandSender);
 }

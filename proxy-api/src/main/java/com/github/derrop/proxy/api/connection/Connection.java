@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.chat.component.BaseComponent;
-import com.github.derrop.proxy.api.chat.component.TextComponent;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
@@ -51,7 +51,7 @@ public interface Connection extends PacketSender, NetworkChannel {
      *               disconnect
      */
     default void disconnect(@NotNull String reason) {
-        this.disconnect(TextComponent.fromLegacyText(reason));
+        this.disconnect(LegacyComponentSerializer.legacy().deserialize(reason));
     }
 
     /**
@@ -62,17 +62,7 @@ public interface Connection extends PacketSender, NetworkChannel {
      * @param reason the reason shown to the player / sent to the server on
      *               disconnect
      */
-    void disconnect(@NotNull BaseComponent... reason);
-
-    /**
-     * Disconnects this end of the connection for the specified reason. If this
-     * is an {@link Player} the respective server connection will be
-     * closed too.
-     *
-     * @param reason the reason shown to the player / sent to the server on
-     *               disconnect
-     */
-    void disconnect(@NotNull BaseComponent reason);
+    void disconnect(@NotNull Component reason);
 
     /**
      * Gets whether this connection is currently open, ie: not disconnected, and
@@ -82,5 +72,5 @@ public interface Connection extends PacketSender, NetworkChannel {
      */
     boolean isConnected();
 
-    void handleDisconnected(@NotNull ServiceConnection connection, @NotNull BaseComponent[] reason);
+    void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason);
 }
