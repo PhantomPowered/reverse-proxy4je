@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.login;
 
-import com.github.derrop.proxy.account.CryptManager;
+import com.github.derrop.proxy.network.encryption.ClientEncryptionUtils;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventPriority;
@@ -69,10 +69,10 @@ public class ProxyClientLoginHandler {
             throw new IllegalStateException("Joined with an offline account on an online mode server");
         }
 
-        final SecretKey secretKey = CryptManager.createNewSharedKey();
+        final SecretKey secretKey = ClientEncryptionUtils.createNewSharedKey();
         String s = request.getServerId();
-        PublicKey publicKey = CryptManager.decodePublicKey(request.getPublicKey());
-        String s1 = (new BigInteger(CryptManager.getServerIdHash(s, publicKey, secretKey))).toString(16);
+        PublicKey publicKey = ClientEncryptionUtils.decodePublicKey(request.getPublicKey());
+        String s1 = (new BigInteger(ClientEncryptionUtils.getServerIdHash(s, publicKey, secretKey))).toString(16);
 
         try {
             proxyClient.getSessionService().joinServer(proxyClient.getAuthentication().getSelectedProfile(), proxyClient.getAuthentication().getAuthenticatedToken(), s1);
@@ -80,8 +80,8 @@ public class ProxyClientLoginHandler {
             throw new Error("Failed to join server on auth servers!", exception);
         }
 
-        byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretKey.getEncoded());
-        byte[] verifyTokenEncrypted = CryptManager.encryptData(publicKey, request.getVerifyToken());
+        byte[] secretKeyEncrypted = ClientEncryptionUtils.cipherOperation(publicKey, secretKey.getEncoded());
+        byte[] verifyTokenEncrypted = ClientEncryptionUtils.cipherOperation(publicKey, request.getVerifyToken());
         proxyClient.write(new PacketLoginOutEncryptionResponse(secretKeyEncrypted, verifyTokenEncrypted));
 
         proxyClient.getWrappedChannel().pipeline().addBefore(

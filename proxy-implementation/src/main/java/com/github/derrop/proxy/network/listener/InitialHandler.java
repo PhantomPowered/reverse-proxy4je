@@ -42,6 +42,7 @@ import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
+import com.github.derrop.proxy.network.encryption.ServerEncryptionUtils;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
@@ -61,7 +62,6 @@ import com.google.common.base.Preconditions;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.EncryptionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
@@ -166,7 +166,7 @@ public class InitialHandler {
             return;
         }
 
-        PacketLoginInEncryptionRequest request = EncryptionUtil.encryptRequest();
+        PacketLoginInEncryptionRequest request = ServerEncryptionUtils.getLoginEncryptionRequestPacket();
         channel.setProperty("encryptionRequest", request);
         channel.write(request);
         channel.setProperty(INIT_STATE, State.ENCRYPT);
@@ -177,7 +177,11 @@ public class InitialHandler {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.ENCRYPT, "Not expecting ENCRYPT");
 
         PacketLoginInEncryptionRequest encryptionRequest = channel.getProperty("encryptionRequest");
-        SecretKey sharedKey = EncryptionUtil.getSecret(encryptResponse, encryptionRequest);
+        SecretKey sharedKey = ServerEncryptionUtils.getSecretKey(encryptResponse, encryptionRequest);
+        if (sharedKey == null) {
+            channel.close();
+            return;
+        }
 
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_DECODER, NetworkUtils.DECRYPT, new PacketCipherDecoder(sharedKey));
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_ENCODER, NetworkUtils.ENCRYPT, new PacketCipherEncoder(sharedKey));
@@ -185,10 +189,11 @@ public class InitialHandler {
         String encName = URLEncoder.encode(channel.getProperty("requestedName"), "UTF-8");
 
         MessageDigest sha = MessageDigest.getInstance("SHA-1");
-        for (byte[] bit : new byte[][]
-                {
-                        encryptionRequest.getServerId().getBytes("ISO_8859_1"), sharedKey.getEncoded(), EncryptionUtil.keys.getPublic().getEncoded()
-                }) {
+        for (byte[] bit : new byte[][]{
+                encryptionRequest.getServerId().getBytes("ISO_8859_1"),
+                sharedKey.getEncoded(),
+                ServerEncryptionUtils.KEY_PAIR.getPublic().getEncoded()
+        }) {
             sha.update(bit);
         }
         String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16), "UTF-8");
