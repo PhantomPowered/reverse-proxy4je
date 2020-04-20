@@ -22,35 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.protocol.play.client;
+package com.github.derrop.proxy.protocol.play.client.position;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
-import java.util.Set;
-
-public class PacketPlayClientPositionLook implements Packet {
+public class PacketPlayClientPositionLook extends PacketPlayClientPlayerPosition {
 
     private double x;
     private double y;
     private double z;
     private float yaw;
     private float pitch;
-    private Set<EnumFlags> flags;
 
-    public PacketPlayClientPositionLook(Location location, Set<EnumFlags> flags) {
+    public PacketPlayClientPositionLook(Location location) {
+        super(location.isOnGround());
         this.x = location.getX();
         this.y = location.getY();
         this.z = location.getZ();
-        this.yaw = PlayerPositionPacketUtil.getFixLocation(location.getYaw());
-        this.pitch = PlayerPositionPacketUtil.getFixLocation(location.getPitch());
-        this.flags = flags;
+        this.yaw = location.getYaw();
+        this.pitch = location.getPitch();
     }
 
     public PacketPlayClientPositionLook() {
@@ -68,7 +63,7 @@ public class PacketPlayClientPositionLook implements Packet {
         this.z = protoBuf.readDouble();
         this.yaw = protoBuf.readFloat();
         this.pitch = protoBuf.readFloat();
-        this.flags = EnumFlags.read(protoBuf.readUnsignedByte());
+        super.read(protoBuf, direction, protocolVersion);
     }
 
     @Override
@@ -78,7 +73,7 @@ public class PacketPlayClientPositionLook implements Packet {
         protoBuf.writeDouble(this.z);
         protoBuf.writeFloat(this.yaw);
         protoBuf.writeFloat(this.pitch);
-        protoBuf.writeByte(EnumFlags.write(this.flags));
+        super.write(protoBuf, direction, protocolVersion);
     }
 
     public double getX() {
@@ -101,50 +96,9 @@ public class PacketPlayClientPositionLook implements Packet {
         return this.pitch;
     }
 
-    public Set<EnumFlags> getFlags() {
-        return this.flags;
+    @Override
+    public Location getLocation(@Nullable Location before) {
+        return new Location(this.x, this.y, this.z, this.yaw, this.pitch, super.isOnGround());
     }
 
-    public enum EnumFlags {
-        X(0),
-        Y(1),
-        Z(2),
-        Y_ROT(3),
-        X_ROT(4);
-
-        private final int id;
-
-        EnumFlags(int id) {
-            this.id = id;
-        }
-
-        private int id() {
-            return 1 << this.id;
-        }
-
-        private boolean shouldAccept(int full) {
-            return (full & this.id()) == this.id();
-        }
-
-        @NotNull
-        public static Set<EnumFlags> read(int full) {
-            Set<EnumFlags> set = EnumSet.noneOf(EnumFlags.class);
-            for (EnumFlags flags : values()) {
-                if (flags.shouldAccept(full)) {
-                    set.add(flags);
-                }
-            }
-
-            return set;
-        }
-
-        public static int write(@NotNull Set<EnumFlags> flags) {
-            int i = 0;
-            for (EnumFlags values : flags) {
-                i |= values.id();
-            }
-
-            return i;
-        }
-    }
 }

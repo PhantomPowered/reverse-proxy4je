@@ -95,7 +95,6 @@ public class LoginCache implements PacketCacheHandler {
                     (byte) (this.lastLogin.isReducedDebugInfo() ? 22 : 23)
             );
             player.sendPacket(entityStatus);
-            player.setDimensionChange(true);
         }
 
         if (!(con instanceof Player) || this.lastLogin.getDimension() == ((Player) con).getDimension()) {

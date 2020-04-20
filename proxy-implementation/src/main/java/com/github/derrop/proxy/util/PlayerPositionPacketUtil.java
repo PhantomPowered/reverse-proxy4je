@@ -34,6 +34,14 @@ public class PlayerPositionPacketUtil {
         return floor(in * 32D);
     }
 
+    public static double getRealLocation(int in) {
+        return (double) in / 32D;
+    }
+
+    public static float getRealRotation(byte in) {
+        return (((float) in * 360F) / 256F);
+    }
+    
     public static int floor(double d0) {
         int i = (int) d0;
 

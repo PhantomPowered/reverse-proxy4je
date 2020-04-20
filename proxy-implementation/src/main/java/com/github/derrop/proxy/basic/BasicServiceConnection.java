@@ -33,6 +33,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
@@ -45,7 +46,9 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -101,6 +104,22 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private boolean reScheduleOnFailure;
 
+    private Location location;
+
+    private final Unsafe unsafe = location -> {
+        this.handleLocationUpdate(location);
+        this.location = location;
+    };
+
+    private void handleLocationUpdate(Location newLocation) {
+        Packet clientPacket = PacketPlayClientPlayerPosition.create(this.location, newLocation);
+        if (clientPacket == null) {
+            return;
+        }
+        this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location));
+        this.client.write(clientPacket);
+    }
+
     @Override
     public @NotNull Proxy getProxy() {
         return this.proxy;
@@ -134,6 +153,37 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public int getEntityId() {
         return this.client.getEntityId();
+    }
+
+    @Override
+    public int getDimension() {
+        return this.client.getDimension();
+    }
+
+    @Override
+    public void setDimension(int dimension) {
+        this.client.setDimension(dimension);
+    }
+
+    @Override
+    public @NotNull Unsafe unsafe() {
+        return this.unsafe;
+    }
+
+    @Override
+    public @NotNull Location getLocation() {
+        return this.location;
+    }
+
+    @Override
+    public void setLocation(@NotNull Location location) {
+        if (this.location != null && this.location.distanceSquared(location) < 4) {
+            this.unsafe().setLocationUnchecked(location);
+        }
+    }
+
+    public void updateLocation(@NotNull Location location) {
+        this.location = location;
     }
 
     @Override

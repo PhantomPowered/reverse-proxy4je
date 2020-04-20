@@ -28,12 +28,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class Location {
 
+    public static final Location ZERO = new Location(0, 0, 0, 0, 0);
+
     public Location(double x, double y, double z, float yaw, float pitch) {
+        this(x, y, z, yaw, pitch, false);
+    }
+
+    public Location(double x, double y, double z, float yaw, float pitch, boolean onGround) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+        this.onGround = onGround;
     }
 
     private double x;
@@ -41,6 +48,7 @@ public class Location {
     private double z;
     private float yaw;
     private float pitch;
+    private boolean onGround;
 
     public double getX() {
         return x;
@@ -62,6 +70,10 @@ public class Location {
         return pitch;
     }
 
+    public boolean isOnGround() {
+        return onGround;
+    }
+
     public void setX(double x) {
         this.x = x;
     }
@@ -80,6 +92,10 @@ public class Location {
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
     }
 
     @NotNull
@@ -110,6 +126,18 @@ public class Location {
 
     public double distance(@NotNull Location other) {
         return Math.sqrt(this.distanceSquared(other));
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", yaw=" + yaw +
+                ", pitch=" + pitch +
+                ", onGround=" + onGround +
+                '}';
     }
 
     @NotNull

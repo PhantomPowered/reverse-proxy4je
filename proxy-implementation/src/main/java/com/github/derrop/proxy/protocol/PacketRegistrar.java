@@ -36,6 +36,9 @@ import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutServerKickPlayer;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.client.*;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPosition;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.*;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
@@ -94,6 +97,8 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientTabCompleteRequest());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientCustomPayload());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerPluginMessage());
+        registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientPosition());
+        registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientLook());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientPositionLook());
         // Keep alive
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayKeepAlive());

@@ -42,15 +42,16 @@ public class PacketPlayServerEntityTeleport implements Packet {
     private byte pitch;
     private boolean onGround;
 
-    public PacketPlayServerEntityTeleport(int entityId, @NotNull Location location, boolean onGround) {
+    public PacketPlayServerEntityTeleport(int entityId, @NotNull Location location) {
         this.entityId = entityId;
-        this.onGround = onGround;
 
         this.x = PlayerPositionPacketUtil.getFixLocation(location.getX());
         this.y = PlayerPositionPacketUtil.getFixLocation(location.getY());
         this.z = PlayerPositionPacketUtil.getFixLocation(location.getZ());
         this.yaw = PlayerPositionPacketUtil.getFixRotation(location.getYaw());
         this.pitch = PlayerPositionPacketUtil.getFixRotation(location.getPitch());
+
+        this.onGround = location.isOnGround();
     }
 
     public PacketPlayServerEntityTeleport(int entityId, int x, int y, int z, byte yaw, byte pitch, boolean onGround) {
@@ -113,6 +114,17 @@ public class PacketPlayServerEntityTeleport implements Packet {
 
     public void setZ(int z) {
         this.z = z;
+    }
+
+    public Location getLocation() {
+        return new Location(
+                PlayerPositionPacketUtil.getRealLocation(this.x),
+                PlayerPositionPacketUtil.getRealLocation(this.y),
+                PlayerPositionPacketUtil.getRealLocation(this.z),
+                PlayerPositionPacketUtil.getRealRotation(this.yaw),
+                PlayerPositionPacketUtil.getRealRotation(this.pitch),
+                this.onGround
+        );
     }
 
     @Override

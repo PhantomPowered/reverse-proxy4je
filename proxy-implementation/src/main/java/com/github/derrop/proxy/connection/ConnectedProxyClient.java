@@ -250,8 +250,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         return proxy;
     }
 
-    public ServiceConnection getConnection() {
-        return connection;
+    public BasicServiceConnection getConnection() {
+        return this.connection;
     }
 
     public NetworkAddress getServerAddress() {

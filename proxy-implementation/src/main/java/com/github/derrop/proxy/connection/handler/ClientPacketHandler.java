@@ -10,14 +10,20 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPosition;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -39,6 +45,31 @@ public class ClientPacketHandler {
 
             player.getConnectedClient().sendPacket(packet);
         }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.POSITION, directions = ProtocolDirection.TO_SERVER)
+    public void handlePosition(DefaultPlayer player, PacketPlayClientPosition position) {
+        this.updatePosition(player, position);
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.POSITION_LOOK, directions = ProtocolDirection.TO_SERVER)
+    public void handlePosition(DefaultPlayer player, PacketPlayClientPositionLook position) {
+        this.updatePosition(player, position);
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.LOOK, directions = ProtocolDirection.TO_SERVER)
+    public void handlePosition(DefaultPlayer player, PacketPlayClientLook position) {
+        this.updatePosition(player, position);
+    }
+
+    private void updatePosition(DefaultPlayer player, PacketPlayClientPlayerPosition position) {
+        BasicServiceConnection connection = player.getConnectedClient();
+        if (connection == null) {
+            return;
+        }
+
+        Location newLocation = position.getLocation(connection.getLocation());
+        connection.updateLocation(newLocation);
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)

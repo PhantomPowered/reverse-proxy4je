@@ -42,10 +42,6 @@ public interface EntityLiving {
 
     void setDimension(int dimension);
 
-    boolean isDimensionChange();
-
-    void setDimensionChange(boolean dimensionChange);
-
     @NotNull
     Unsafe unsafe();
 

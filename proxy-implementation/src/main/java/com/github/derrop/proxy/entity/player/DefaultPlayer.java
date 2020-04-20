@@ -42,12 +42,10 @@ import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import io.netty.buffer.ByteBuf;
 import com.github.derrop.proxy.connection.LoginResult;
 import net.kyori.text.Component;
@@ -57,10 +55,11 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
-import java.util.Collections;
 import java.util.UUID;
 
 public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
+
+    private static final Unsafe EMPTY_UNSAFE = location -> { };
 
     public DefaultPlayer(MCProxy proxy, UUID uniqueId, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
         super(uniqueId, loginResult.getName(), System.currentTimeMillis(), version);
@@ -87,8 +86,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private BasicServiceConnection connectedClient;
 
-    private Location location;
-
     private boolean connected = false;
 
     private boolean autoReconnect = true;
@@ -97,13 +94,9 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private int compression = -1;
 
-    private boolean dimensionChange;
-
     private String displayName;
 
     private String lastCommandCompleteRequest;
-
-    private final EntityLiving.Unsafe unsafe = new Unsafe0();
 
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
 
@@ -351,13 +344,13 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public @NotNull Location getLocation() {
-        return this.location;
+        return this.connectedClient != null ? this.connectedClient.getLocation() : Location.ZERO;
     }
 
     @Override
     public void setLocation(@NotNull Location location) {
-        if (this.location != null && this.location.distance(location) > 2) {
-            this.unsafe().setLocationUnchecked(location);
+        if (this.connectedClient != null) {
+            this.connectedClient.setLocation(location);
         }
     }
 
@@ -382,18 +375,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public boolean isDimensionChange() {
-        return this.dimensionChange;
-    }
-
-    @Override
-    public void setDimensionChange(boolean dimensionChange) {
-        this.dimensionChange = dimensionChange;
-    }
-
-    @Override
     public @NotNull EntityLiving.Unsafe unsafe() {
-        return this.unsafe;
+        return this.connectedClient != null ? this.connectedClient.unsafe() : EMPTY_UNSAFE;
     }
 
     private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {
@@ -420,25 +403,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         }
     }
 
-    private void handleLocationUpdate() {
-        this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location, this.isOnGround()));
-        this.connectedClient.sendPacket(new PacketPlayClientPositionLook(this.location, Collections.emptySet()));
-    }
-
-    private class Unsafe0 implements EntityLiving.Unsafe {
-
-        @Override
-        public void setLocationUnchecked(@NotNull Location locationUnchecked) {
-            DefaultPlayer.this.location = locationUnchecked;
-        }
-    }
-
     private class PacketSenderUnsafe implements PacketSender.NetworkUnsafe {
 
         @Override
         public void sendPacket(@NotNull Object packet) {
             DefaultPlayer.this.channel.write(packet);
-            DefaultPlayer.this.handleLocationUpdate();
         }
     }
 }

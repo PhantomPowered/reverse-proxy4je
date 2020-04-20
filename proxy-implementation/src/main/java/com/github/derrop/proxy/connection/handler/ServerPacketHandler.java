@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.service.TitleReceiveEvent;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
@@ -15,15 +16,25 @@ import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.*;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 public class ServerPacketHandler {
 
-    @PacketHandler
+    @PacketHandler(directions = ProtocolDirection.TO_CLIENT)
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
         client.redirectPacket(packet.getProtoBuf().clone(), packet.getPacket());
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_TELEPORT, directions = ProtocolDirection.TO_CLIENT)
+    public void handleEntityTeleport(ConnectedProxyClient client, PacketPlayServerEntityTeleport teleport) {
+        if (teleport.getEntityId() != client.getEntityId()) {
+            return;
+        }
+
+        client.getConnection().updateLocation(teleport.getLocation());
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KEEP_ALIVE, directions = ProtocolDirection.TO_CLIENT)
@@ -88,7 +99,7 @@ public class ServerPacketHandler {
 
         DefaultPlayer player = (DefaultPlayer) client.getRedirector();
 
-        if (player.getLastCommandCompleteRequest() != null) {
+        if (player.getLastCommandCompleteRequest() != null) { // TODO this is also called when executing "/tp <tab>"
             player.setLastCommandCompleteRequest(null);
             response.getCommands().add("/proxy");
         }
