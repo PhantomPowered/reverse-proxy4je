@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.service.TitleReceiveEvent;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -17,6 +18,7 @@ import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.*;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -35,6 +37,13 @@ public class ServerPacketHandler {
         }
 
         client.getConnection().updateLocation(teleport.getLocation());
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SPAWN_POSITION, directions = ProtocolDirection.TO_CLIENT)
+    public void handleSpawnPosition(ConnectedProxyClient client, PacketPlayServerSpawnPosition spawnPosition) {
+        BlockPos pos = spawnPosition.getSpawnPosition();
+        Location location = new Location(pos.getX(), pos.getY(), pos.getZ(), 0, 0);
+        client.getConnection().updateLocation(location);
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KEEP_ALIVE, directions = ProtocolDirection.TO_CLIENT)

@@ -188,7 +188,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public boolean isOnGround() {
-        return this.client.isOnGround();
+        return this.location != null && this.location.isOnGround();
     }
 
     @Override

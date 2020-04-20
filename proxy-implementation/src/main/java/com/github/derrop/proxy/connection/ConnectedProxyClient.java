@@ -56,8 +56,10 @@ import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
@@ -78,6 +80,7 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -101,9 +104,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     private int entityId;
     private int dimension;
-
-    public int posX, posY, posZ;
-    private boolean onGround;
 
     private PacketPlayServerEntityMetadata entityMetadata;
 
@@ -240,10 +240,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     public void disableGlobal() {
         this.globalAccount = false;
-    }
-
-    public boolean isOnGround() {
-        return onGround;
     }
 
     public MCProxy getProxy() {
@@ -391,18 +387,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             }
         }
 
-        if (deserialized instanceof PositionedPacket) {
-            if (((PositionedPacket) deserialized).getEntityId() == this.getEntityId()) {
-                this.posX = ((PositionedPacket) deserialized).getX();
-                this.posY = ((PositionedPacket) deserialized).getY();
-                this.posZ = ((PositionedPacket) deserialized).getZ();
-            }
-        } else if (deserialized instanceof PacketPlayServerSpawnPosition) {
-            BlockPos pos = ((PacketPlayServerSpawnPosition) deserialized).getSpawnPosition();
-            this.posX = pos.getX();
-            this.posY = pos.getY();
-            this.posZ = pos.getZ();
-        } else if (deserialized instanceof PacketPlayServerEntityMetadata) {
+        if (deserialized instanceof PacketPlayServerEntityMetadata) {
             this.entityMetadata = (PacketPlayServerEntityMetadata) deserialized;
         }
     }
@@ -412,29 +397,13 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             this.clientPacketHandler.accept(packetWrapper);
         }
 
-        if (packetWrapper instanceof PositionedPacket) {
-            this.posX = ((PositionedPacket) packetWrapper).getX();
-            this.posY = ((PositionedPacket) packetWrapper).getY();
-            this.posZ = ((PositionedPacket) packetWrapper).getZ();
-        }
-
         this.packetCache.handleClientPacket(packetWrapper);
-
-        // TODO
-        /*if (packetWrapper instanceof PacketPlayOutPlayerPositionLook) {
-            this.onGround = ((PacketPlayOutPlayerPositionLook) packetWrapper).isOnGround();
-        } else if (packetWrapper instanceof PlayerLook) {
-            this.onGround = ((PlayerLook) packetWrapper).isOnGround();
-        } else if (packetWrapper instanceof PlayerPosition) {
-            this.onGround = ((PlayerPosition) packetWrapper).isOnGround();
-        } else if (packetWrapper instanceof Player) {
-            this.onGround = ((Player) packetWrapper).isOnGround();
-        }*/
     }
 
     public void redirectPackets(com.github.derrop.proxy.api.entity.player.Player con, boolean switched) {
         this.packetCache.send(con, switched);
         this.redirector = con;
+        con.sendPacket(new PacketPlayServerEntityTeleport(this.entityId, this.connection.getLocation()));
     }
 
     public void connectionSuccess() {
