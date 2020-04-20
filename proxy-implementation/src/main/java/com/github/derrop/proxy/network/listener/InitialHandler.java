@@ -71,7 +71,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.UUID;
 
-public class InitialHandler { // TODO pinging the proxy doesn't work anymore
+public class InitialHandler {
 
     static final String INIT_STATE = "initialState";
 

@@ -3,6 +3,7 @@ package com.github.derrop.proxy.util;
 import com.github.derrop.proxy.api.ping.Favicon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -11,7 +12,7 @@ public class Utils {
 
     private static final Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
-    public static final Gson GSON = new GsonBuilder()
+    public static final Gson GSON = GsonComponentSerializer.populate(new GsonBuilder())
             .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter())
             .create();
 
