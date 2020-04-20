@@ -20,6 +20,7 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayloa
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, GsonComponentSerializer.INSTANCE.deserialize(chat.getMessage()));
+        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, LegacyComponentSerializer.legacy().deserialize(chat.getMessage()));
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
