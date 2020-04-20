@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.api;
 
+import com.github.derrop.proxy.api.ping.ServerPing;
+
 public interface Configuration {
 
     void load();
@@ -37,5 +39,9 @@ public interface Configuration {
     int getWebPort();
 
     void setWebPort(int webPort);
+
+    ServerPing getMotd();
+
+    void setMotd(ServerPing motd);
 
 }

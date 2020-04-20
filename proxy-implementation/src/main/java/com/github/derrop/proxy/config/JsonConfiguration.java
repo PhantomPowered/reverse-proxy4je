@@ -22,13 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy;
+package com.github.derrop.proxy.config;
 
 import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.ping.ServerPing;
+import com.github.derrop.proxy.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -41,9 +45,14 @@ public class JsonConfiguration implements Configuration {
 
     private static final Path PATH = Paths.get("config.json");
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Component.class, new LegacyGsonComponentSerializer())
+            .setPrettyPrinting()
+            .create();
 
     private JsonObject jsonObject;
+
+    private ServerPing motd;
 
     @Override
     public void load() {
@@ -51,6 +60,12 @@ public class JsonConfiguration implements Configuration {
             this.jsonObject = new JsonObject();
             this.jsonObject.addProperty("proxyPort", 25565);
             this.jsonObject.addProperty("webPort", 80);
+            this.motd = new ServerPing(
+                    new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
+                    new ServerPing.Players(0, 0, null),
+                    TextComponent.of("\n§7Available/Online Accounts: §e$free§7/§e$online"),
+                    null
+            );
 
             this.save();
             return;
@@ -61,6 +76,8 @@ public class JsonConfiguration implements Configuration {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+
+        this.motd = Utils.GSON.fromJson(this.jsonObject.get("motd"), ServerPing.class);
     }
 
     @Override
@@ -69,6 +86,8 @@ public class JsonConfiguration implements Configuration {
             this.load();
             return;
         }
+
+        this.jsonObject.add("motd", this.gson.toJsonTree(this.motd));
 
         try (Writer writer = new OutputStreamWriter(Files.newOutputStream(PATH, StandardOpenOption.CREATE), StandardCharsets.UTF_8)) {
             this.gson.toJson(this.jsonObject, writer);
@@ -95,5 +114,15 @@ public class JsonConfiguration implements Configuration {
     @Override
     public void setWebPort(int webPort) {
         this.jsonObject.addProperty("webPort", webPort);
+    }
+
+    @Override
+    public ServerPing getMotd() {
+        return this.motd.clone();
+    }
+
+    @Override
+    public void setMotd(ServerPing motd) {
+        this.motd = motd;
     }
 }

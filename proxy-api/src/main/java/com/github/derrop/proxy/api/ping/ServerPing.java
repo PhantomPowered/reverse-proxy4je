@@ -28,7 +28,7 @@ import net.kyori.text.Component;
 
 import java.util.UUID;
 
-public class ServerPing {
+public class ServerPing implements Cloneable {
 
     private Protocol version;
     private Players players;
@@ -72,6 +72,16 @@ public class ServerPing {
 
     public void setFavicon(Favicon favicon) {
         this.favicon = favicon;
+    }
+
+    @Override
+    public ServerPing clone() {
+        try {
+            return (ServerPing) super.clone();
+        } catch (CloneNotSupportedException exception) {
+            exception.printStackTrace();
+        }
+        return null;
     }
 
     public static class Protocol {

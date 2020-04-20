@@ -26,6 +26,7 @@ package com.github.derrop.proxy.network.listener;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -62,6 +63,7 @@ import com.google.common.base.Preconditions;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
@@ -89,14 +91,14 @@ public class InitialHandler {
     public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
-        final String motd = "\n§7Available/Online Accounts: §e" + MCProxy.getInstance().getFreeClients().size() + "§7/§e" + MCProxy.getInstance().getOnlineClients().size();
+        ServerPing response = this.proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getMotd();
 
-        channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(new ServerPing(
-                new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
-                new ServerPing.Players(0, 0, null),
-                TextComponent.of(motd),
-                null
-        ))));
+        response.setDescription(TextComponent.of(LegacyComponentSerializer.legacy().serialize(response.getDescription())
+                .replace("$free", String.valueOf(this.proxy.getFreeClients().size()))
+                .replace("$online", String.valueOf(this.proxy.getOnlineClients().size()))
+        ));
+
+        channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(response)));
 
         channel.setProperty(INIT_STATE, State.PING);
     }

@@ -50,6 +50,7 @@ import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
+import com.github.derrop.proxy.config.JsonConfiguration;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
 import com.github.derrop.proxy.connection.handler.PingPacketHandler;
