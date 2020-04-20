@@ -63,6 +63,12 @@ public class DefaultPlayerRepository implements PlayerRepository {
 
     @Override
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
+        if (offlinePlayer instanceof Player) {
+            // create a new player because we don't want the online player to be stored in the database
+            offlinePlayer = new DefaultOfflinePlayer(
+                    offlinePlayer.getUniqueId(), offlinePlayer.getName(), offlinePlayer.getLastLogin(), offlinePlayer.getLastVersion()
+            );
+        }
         this.storage.updateOfflinePlayer(offlinePlayer);
     }
 

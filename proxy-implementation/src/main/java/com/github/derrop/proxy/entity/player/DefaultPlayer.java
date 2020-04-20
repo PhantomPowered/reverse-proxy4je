@@ -76,9 +76,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             channel.setCompression(compression);
         }
 
-        proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).updateOfflinePlayer(new DefaultOfflinePlayer(
-                uniqueId, super.getName(), super.getLastLogin(), super.getLastVersion()
-        )); // create a new player because we don't want the online player to be stored in the database
+        proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).updateOfflinePlayer(this);
     }
 
 
