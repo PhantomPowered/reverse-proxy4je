@@ -313,7 +313,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             return;
         }
 
-        Component actionBar = GsonComponentSerializer.INSTANCE.deserialize(LegacyComponentSerializer.legacy().serialize(reason).replace('\n', ' '));
+        Component actionBar = LegacyComponentSerializer.legacyLinking().deserialize(LegacyComponentSerializer.legacy().serialize(reason).replace('\n', ' '));
         this.sendMessage(ChatMessageType.CHAT, reason);
         this.sendActionBar(200, actionBar);
 
