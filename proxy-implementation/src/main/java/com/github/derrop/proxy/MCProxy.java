@@ -138,6 +138,7 @@ public class MCProxy extends Proxy {
 
     public void unregisterConnection(ServiceConnection proxyClient) {
         this.onlineClients.remove(proxyClient);
+        proxyClient.close();
     }
 
     @Override

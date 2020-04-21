@@ -42,6 +42,7 @@ public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddre
     public void accept(MCCredentials mcCredentials, NetworkAddress networkAddress) {
         try {
             ServiceConnection connection = new BasicServiceConnection(MCProxy.getInstance(), mcCredentials, networkAddress);
+            connection.setReScheduleOnFailure(true);
 
             connection.connect(new TaskFutureListener<Boolean>() {
                 @Override
@@ -69,7 +70,7 @@ public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddre
                         return;
                     }
 
-                    System.err.println("Unable to open connection to " + connection.getServerAddress() + " as " + connection.getCredentials());
+                    System.err.println("Unable to open connection to " + connection.getServerAddress() + " as " + connection.getCredentials() + (task.getException() != null ? ": " + task.getException().getMessage() : ""));
                 }
             });
             Thread.sleep(500);

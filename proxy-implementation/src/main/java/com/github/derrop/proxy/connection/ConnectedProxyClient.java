@@ -152,18 +152,22 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.address = null;
         this.packetCache.reset();
 
-        this.lastKickReason = null;
-        this.lastAlivePacket = -1;
         if (this.connectionHandler != null) {
-            this.connectionHandler.complete(false);
+            if (this.lastKickReason != null) {
+                this.connectionHandler.completeExceptionally(new KickedException(LegacyComponentSerializer.legacy().serialize(this.lastKickReason)));
+            } else {
+                this.connectionHandler.complete(false);
+            }
             this.connectionHandler = null;
         }
+        this.lastKickReason = null;
+        this.lastAlivePacket = -1;
         this.velocityHandler = new PlayerVelocityHandler(this);
         this.entityId = -1;
         this.dimension = -1;
 
         if (MCProxy.getInstance() != null && this.globalAccount) {
-            MCProxy.getInstance().getOnlineClients().remove(this);
+            MCProxy.getInstance().getOnlineClients().remove(this.connection);
         }
 
         if (this.disconnectionHandler != null) {
@@ -199,7 +203,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
                 super.write(new PacketHandshakingClientSetProtocol(47, address.getHost(), address.getPort(), 2));
                 super.setProtocolState(ProtocolState.LOGIN);
                 super.write(new PacketLoginInLoginRequest(this.getAccountName()));
-                future.complete(true);
             } else {
                 future1.channel().close();
                 future.complete(false);

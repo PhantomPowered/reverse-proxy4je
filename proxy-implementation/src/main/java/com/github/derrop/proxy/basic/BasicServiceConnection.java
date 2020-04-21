@@ -286,6 +286,9 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
                     task.complete(true);
                 } else {
                     task.complete(false);
+                    if (this.isReScheduleOnFailure()) {
+                        this.reSchedule(listener);
+                    }
                 }
             } catch (final InterruptedException | ExecutionException | TimeoutException exception) {
                 task.completeExceptionally(exception);
@@ -382,7 +385,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     private void reSchedule(Collection<TaskFutureListener<Boolean>> listener) {
-        Preconditions.checkArgument(this.client == null);
+        if (this.client != null && this.client.isConnected()) {
+            this.client.close();
+            this.client = null;
+        }
 
         try {
             Thread.sleep(20000);
