@@ -4,17 +4,50 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerEntityHeadRotation implements Packet {
+public class PacketPlayServerEntityHeadRotation implements Packet, EntityPacket {
+
+    private int entityId;
+    private byte yaw;
+
+    public PacketPlayServerEntityHeadRotation(int entityId, byte yaw) {
+        this.entityId = entityId;
+        this.yaw = yaw;
+    }
+
+    public PacketPlayServerEntityHeadRotation() {
+    }
+
+    @Override
+    public int getEntityId() {
+        return entityId;
+    }
+
+    @Override
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    public byte getYaw() {
+        return yaw;
+    }
+
+    public void setYaw(byte yaw) {
+        this.yaw = yaw;
+    }
+
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-
+        this.entityId = protoBuf.readVarInt();
+        this.yaw = protoBuf.readByte();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-
+        protoBuf.writeVarInt(this.entityId);
+        protoBuf.writeByte(this.yaw);
     }
 
     @Override
