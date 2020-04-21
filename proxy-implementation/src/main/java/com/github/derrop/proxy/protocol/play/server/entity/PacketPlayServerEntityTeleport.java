@@ -32,7 +32,7 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerEntityTeleport implements Packet {
+public class PacketPlayServerEntityTeleport implements Packet, EntityPacket {
 
     private int entityId;
     private int x;

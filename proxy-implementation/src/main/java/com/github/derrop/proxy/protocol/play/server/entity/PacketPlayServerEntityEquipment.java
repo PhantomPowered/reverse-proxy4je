@@ -8,7 +8,7 @@ import com.github.derrop.proxy.connection.cache.InventoryItem;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerEntityEquipment implements Packet {
+public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
 
     private int entityId;
     private int slot;

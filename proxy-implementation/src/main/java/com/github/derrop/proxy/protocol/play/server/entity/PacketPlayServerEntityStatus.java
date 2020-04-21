@@ -30,7 +30,7 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerEntityStatus implements Packet {
+public class PacketPlayServerEntityStatus implements Packet, EntityPacket {
 
     private int entityId;
     private byte status;

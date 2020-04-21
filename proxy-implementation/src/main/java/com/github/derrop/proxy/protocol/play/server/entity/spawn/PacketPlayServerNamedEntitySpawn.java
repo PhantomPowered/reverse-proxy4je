@@ -29,6 +29,7 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import com.github.derrop.proxy.util.DataWatcher;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public class PacketPlayServerNamedEntitySpawn implements PositionedPacket {
+public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, EntityPacket {
 
     private int entityId;
     private UUID playerId;

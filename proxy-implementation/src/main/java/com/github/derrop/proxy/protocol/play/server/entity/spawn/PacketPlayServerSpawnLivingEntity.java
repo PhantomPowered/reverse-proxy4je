@@ -28,13 +28,14 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import com.github.derrop.proxy.util.DataWatcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
 
-public class PacketPlayServerSpawnLivingEntity implements PositionedPacket {
+public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, EntityPacket {
 
     private int entityId;
     private int x;

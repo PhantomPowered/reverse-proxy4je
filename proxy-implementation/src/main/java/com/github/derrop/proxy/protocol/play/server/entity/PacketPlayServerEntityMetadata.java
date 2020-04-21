@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 
-public class PacketPlayServerEntityMetadata implements Packet {
+public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
 
     private int entityId;
     private List<DataWatcher.WatchableObject> watchableObjects;

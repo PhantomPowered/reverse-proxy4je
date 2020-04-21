@@ -28,20 +28,21 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerRemoveEntityEffect implements Packet {
+public class PacketPlayServerRemoveEntityEffect implements Packet, EntityPacket {
 
-    public PacketPlayServerRemoveEntityEffect() {
-    }
+    private int entityId;
+    private int effectId;
 
     public PacketPlayServerRemoveEntityEffect(int entityId, int effectId) {
         this.entityId = entityId;
         this.effectId = effectId;
     }
 
-    private int entityId;
-    private int effectId;
+    public PacketPlayServerRemoveEntityEffect() {
+    }
 
     @Override
     public int getId() {

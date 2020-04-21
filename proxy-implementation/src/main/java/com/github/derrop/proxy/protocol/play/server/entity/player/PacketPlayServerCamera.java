@@ -28,9 +28,10 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerCamera implements Packet {
+public class PacketPlayServerCamera implements Packet, EntityPacket {
 
     private int entityId;
 

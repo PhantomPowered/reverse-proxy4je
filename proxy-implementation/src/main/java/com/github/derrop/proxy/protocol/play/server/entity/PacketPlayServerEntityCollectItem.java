@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerEntityCollectItem implements Packet {
+public class PacketPlayServerEntityCollectItem implements Packet, EntityPacket {
 
     private int collectedItemEntityId;
     private int entityId;

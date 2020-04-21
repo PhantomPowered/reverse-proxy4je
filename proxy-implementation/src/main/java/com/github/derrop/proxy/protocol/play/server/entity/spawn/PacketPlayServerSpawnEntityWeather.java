@@ -28,9 +28,10 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerSpawnEntityWeather implements PositionedPacket {
+public class PacketPlayServerSpawnEntityWeather implements PositionedPacket, EntityPacket {
 
     private int entityId;
     private int x;
