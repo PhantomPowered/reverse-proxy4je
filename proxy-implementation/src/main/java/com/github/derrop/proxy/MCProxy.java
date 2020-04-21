@@ -39,7 +39,7 @@ import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistr
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.plugin.PluginManager;
-import com.github.derrop.proxy.api.repository.PlayerRepository;
+import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.util.MCCredentials;

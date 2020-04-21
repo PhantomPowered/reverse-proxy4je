@@ -31,7 +31,7 @@ import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
-import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.PacketSender;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

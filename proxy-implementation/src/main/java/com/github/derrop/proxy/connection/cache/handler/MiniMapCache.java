@@ -29,7 +29,7 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMap;
-import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.PacketSender;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

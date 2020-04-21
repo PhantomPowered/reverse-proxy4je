@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler.scoreboard;
 
-import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.PacketConstants;
@@ -37,9 +37,6 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 import com.github.derrop.proxy.scoreboard.minecraft.*;
 import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
-
-import java.util.Arrays;
-import java.util.function.Consumer;
 
 public class ScoreboardCache implements PacketCacheHandler {
 

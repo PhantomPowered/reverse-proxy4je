@@ -24,9 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
-import com.github.derrop.proxy.api.entity.PlayerInfo;
-
-import java.util.UUID;
+import com.github.derrop.proxy.api.entity.player.PlayerInfo;
 
 public class PlayerKilledEvent extends MatchEvent {
 

@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.Constants;
-import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;

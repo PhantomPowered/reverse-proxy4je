@@ -29,7 +29,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.EntityLiving;
+import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * Represents a player who's connection is being connected to somewhere else,
  * whether it be a remote or embedded server.
  */
-public interface Player extends OfflinePlayer, Connection, CommandSender, EntityLiving {
+public interface Player extends OfflinePlayer, Connection, CommandSender, Entity {
 
     /**
      * Represents the player's chat state.

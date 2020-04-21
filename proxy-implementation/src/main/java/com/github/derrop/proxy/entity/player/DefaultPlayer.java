@@ -28,16 +28,16 @@ import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.EntityLiving;
+import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
-import com.github.derrop.proxy.api.repository.PlayerRepository;
+import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -375,7 +375,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public @NotNull EntityLiving.Unsafe unsafe() {
+    public @NotNull Entity.Unsafe unsafe() {
         return this.connectedClient != null ? this.connectedClient.unsafe() : EMPTY_UNSAFE;
     }
 

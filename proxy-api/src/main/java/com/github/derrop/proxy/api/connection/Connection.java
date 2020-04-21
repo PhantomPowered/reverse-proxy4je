@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;

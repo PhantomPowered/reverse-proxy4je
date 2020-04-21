@@ -22,25 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.connection;
+package com.github.derrop.proxy.api.entity.player;
 
-import com.github.derrop.proxy.api.network.Packet;
-import io.netty.buffer.ByteBuf;
-import org.jetbrains.annotations.NotNull;
+import java.util.UUID;
 
-public interface PacketSender {
+public interface PlayerInfo {
 
-    void sendPacket(@NotNull Packet packet);
+    UUID getUniqueId();
 
-    void sendPacket(@NotNull ByteBuf byteBuf);
+    String getUsername();
 
-    @NotNull
-    NetworkUnsafe networkUnsafe();
+    String[][] getProperties();
 
-    interface NetworkUnsafe {
+    GameMode getGamemode();
 
-        void sendPacket(@NotNull Object packet);
+    int getPing();
 
-    }
+    String getDisplayName();
 
 }

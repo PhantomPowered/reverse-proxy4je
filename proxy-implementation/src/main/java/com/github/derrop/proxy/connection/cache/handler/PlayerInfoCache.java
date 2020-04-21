@@ -28,7 +28,7 @@ import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.api.connection.PacketSender;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 
 import java.util.ArrayList;

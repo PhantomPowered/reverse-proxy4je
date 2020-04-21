@@ -22,24 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity;
+package com.github.derrop.proxy.api.entity.player;
 
-import com.github.derrop.proxy.api.entity.player.GameMode;
+import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 
+import java.util.Collection;
 import java.util.UUID;
 
-public interface PlayerInfo {
+public interface PlayerRepository {
 
-    UUID getUniqueId();
+    Collection<Player> getOnlinePlayers();
 
-    String getUsername();
+    Player getOnlinePlayer(String name);
 
-    String[][] getProperties();
+    Player getOnlinePlayer(UUID uniqueId);
 
-    GameMode getGamemode();
 
-    int getPing();
+    void updateOfflinePlayer(OfflinePlayer offlinePlayer);
 
-    String getDisplayName();
+    Collection<? extends OfflinePlayer> getOfflinePlayers();
 
+    OfflinePlayer getOfflinePlayer(String name);
+
+    OfflinePlayer getOfflinePlayer(UUID uniqueId);
+    
 }

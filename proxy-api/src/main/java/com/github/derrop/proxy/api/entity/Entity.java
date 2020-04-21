@@ -27,7 +27,7 @@ package com.github.derrop.proxy.api.entity;
 import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 
-public interface EntityLiving {
+public interface Entity {
 
     @NotNull
     Location getLocation();

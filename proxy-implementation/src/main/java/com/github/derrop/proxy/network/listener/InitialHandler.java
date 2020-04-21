@@ -36,7 +36,7 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
-import com.github.derrop.proxy.api.repository.PlayerRepository;
+import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientPacketListener;

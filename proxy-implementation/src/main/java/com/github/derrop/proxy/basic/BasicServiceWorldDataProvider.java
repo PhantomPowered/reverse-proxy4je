@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.basic;
 
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.entity.player.PlayerInfo;
 import com.github.derrop.proxy.api.entity.player.GameMode;
 import com.github.derrop.proxy.connection.cache.handler.GameStateCache;
 import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
