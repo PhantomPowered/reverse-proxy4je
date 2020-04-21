@@ -59,7 +59,7 @@ public class PacketPlayServerWorldBorder implements Packet {
 
     @Override
     public int getId() {
-        return ProtocolIds.ToClient.Play.WORLD_BOARDER;
+        return ProtocolIds.ToClient.Play.WORLD_BORDER;
     }
 
     public Action getAction() {

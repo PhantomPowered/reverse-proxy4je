@@ -24,14 +24,14 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.connection.PacketConstants;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
-import com.github.derrop.proxy.api.network.PacketSender;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,7 +42,7 @@ public class EntityEffectCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.ENTITY_EFFECT, PacketConstants.REMOVE_ENTITY_EFFECT};
+        return new int[]{ProtocolIds.ToClient.Play.ENTITY_EFFECT, ProtocolIds.ToClient.Play.REMOVE_ENTITY_EFFECT};
     }
 
     @Override

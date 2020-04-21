@@ -25,12 +25,12 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.connection.PacketConstants;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerUpdateSign;
 
 import java.util.Map;
@@ -44,7 +44,7 @@ public class SignCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.UPDATE_SIGN};
+        return new int[]{ProtocolIds.ToClient.Play.UPDATE_SIGN};
     }
 
     @Override

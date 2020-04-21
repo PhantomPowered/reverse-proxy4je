@@ -190,7 +190,7 @@ public interface ProtocolIds {
 
             int CAMERA = 67;
 
-            int WORLD_BOARDER = 68;
+            int WORLD_BORDER = 68;
 
             int TITLE = 69;
 

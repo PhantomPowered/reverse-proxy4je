@@ -33,7 +33,6 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -147,12 +146,12 @@ public class PacketCache {
         this.handlers.addAll(Arrays.asList(
                 // THE ORDER IS IMPORTANT
                 new LoginCache(),
-                new SimplePacketCache(PacketConstants.PLAYER_ABILITIES),
-                new SimplePacketCache(PacketConstants.TIME_UPDATE),
-                new SimplePacketCache(PacketConstants.UPDATE_HEALTH),
-                new MappedPacketCache<>(PacketConstants.GAME_STATE_CHANGE, PacketPlayServerGameStateChange::getState, gameStateChange -> false),
-                new SimplePacketCache(71), // header/footer
-                new ListPacketCache(2, 30), // chat
+                new SimplePacketCache(ProtocolIds.ToClient.Play.ABILITIES),
+                new SimplePacketCache(ProtocolIds.ToClient.Play.UPDATE_TIME),
+                new SimplePacketCache(ProtocolIds.ToClient.Play.UPDATE_HEALTH),
+                new MappedPacketCache<>(ProtocolIds.ToClient.Play.GAME_STATE_CHANGE, PacketPlayServerGameStateChange::getState, gameStateChange -> false),
+                new SimplePacketCache(ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER),
+                new ListPacketCache(ProtocolIds.ToClient.Play.CHAT, 30),
                 new HeldItemSlotCache(),
                 new WorldBorderCache(),
                 new PlayerInventoryCache(),

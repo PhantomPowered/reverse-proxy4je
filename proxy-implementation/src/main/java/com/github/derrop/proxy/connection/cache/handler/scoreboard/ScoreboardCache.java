@@ -24,13 +24,13 @@
  */
 package com.github.derrop.proxy.connection.cache.handler.scoreboard;
 
-import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.connection.PacketConstants;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
@@ -52,7 +52,12 @@ public class ScoreboardCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.SCOREBOARD_DISPLAY, PacketConstants.SCOREBOARD_OBJECTIVE, PacketConstants.SCOREBOARD_SCORE, PacketConstants.SCOREBOARD_TEAM};
+        return new int[]{
+                ProtocolIds.ToClient.Play.SCOREBOARD_DISPLAY_OBJECTIVE,
+                ProtocolIds.ToClient.Play.SCOREBOARD_OBJECTIVE,
+                ProtocolIds.ToClient.Play.SCOREBOARD_SCORE,
+                ProtocolIds.ToClient.Play.SCOREBOARD_TEAM
+        };
     }
 
     @Override

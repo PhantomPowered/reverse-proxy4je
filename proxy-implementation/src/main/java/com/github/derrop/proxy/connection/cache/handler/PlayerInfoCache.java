@@ -29,6 +29,7 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class PlayerInfoCache implements PacketCacheHandler {
     @Override
     public int[] getPacketIDs() {
-        return new int[]{56};
+        return new int[]{ProtocolIds.ToClient.Play.PLAYER_INFO};
     }
 
     private Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();

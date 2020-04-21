@@ -26,10 +26,10 @@ package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.network.PacketSender;
-import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerCamera;
 
 public class CameraCache implements PacketCacheHandler { // TODO if you go into the camera of another player (spectator mode) and rejoin, you will be stuck in the login screen
@@ -38,7 +38,7 @@ public class CameraCache implements PacketCacheHandler { // TODO if you go into 
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.CAMERA};
+        return new int[]{ProtocolIds.ToClient.Play.CAMERA};
     }
 
     @Override

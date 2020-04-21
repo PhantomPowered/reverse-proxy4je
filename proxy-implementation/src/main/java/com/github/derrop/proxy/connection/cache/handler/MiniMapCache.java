@@ -24,12 +24,12 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.connection.PacketConstants;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMap;
-import com.github.derrop.proxy.api.network.PacketSender;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +40,7 @@ public class MiniMapCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.MAPS};
+        return new int[]{ProtocolIds.ToClient.Play.MAP};
     }
 
     @Override

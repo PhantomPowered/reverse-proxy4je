@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.connection.PacketConstants;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerWorldBorder;
 import com.github.derrop.proxy.api.network.PacketSender;
 
@@ -37,7 +37,7 @@ public class WorldBorderCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.WORLD_BORDER};
+        return new int[]{ProtocolIds.ToClient.Play.WORLD_BORDER};
     }
 
     @Override

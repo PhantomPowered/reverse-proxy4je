@@ -24,13 +24,13 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.connection.PacketConstants;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.InventoryItem;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
 
@@ -51,7 +51,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{PacketConstants.WINDOW_ITEMS, PacketConstants.SET_SLOT};
+        return new int[]{ProtocolIds.ToClient.Play.WINDOW_ITEMS, ProtocolIds.ToClient.Play.SET_SLOT};
     }
 
     @Override
