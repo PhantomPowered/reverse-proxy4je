@@ -106,18 +106,19 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private Location location;
 
-    private final Unsafe unsafe = location -> {
-        this.handleLocationUpdate(location);
-        this.location = location;
-    };
+    private final Unsafe unsafe = this::handleLocationUpdate;
 
     private void handleLocationUpdate(Location newLocation) {
         Packet clientPacket = PacketPlayClientPlayerPosition.create(this.location, newLocation);
         if (clientPacket == null) {
             return;
         }
-        this.sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location));
+        if (this.getPlayer() != null) {
+            this.getPlayer().sendPacket(new PacketPlayServerEntityTeleport(this.getEntityId(), this.location));
+        }
         this.client.write(clientPacket);
+
+        this.location = newLocation;
     }
 
     @Override
