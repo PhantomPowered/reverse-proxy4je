@@ -73,7 +73,8 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
             return CommandResult.END;
         }
 
-        MCProxy.getInstance().switchClientSafe((Player) commandSender, optionalClient.get());
+        ((Player) commandSender).useClient(optionalClient.get());
+        //MCProxy.getInstance().switchClientSafe((Player) commandSender, optionalClient.get());
         return CommandResult.END;
     }
 }

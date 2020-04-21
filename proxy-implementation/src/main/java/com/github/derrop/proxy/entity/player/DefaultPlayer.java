@@ -28,26 +28,28 @@ import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
-import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
+import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
+import com.github.derrop.proxy.protocol.rewrite.EntityRewrite_1_8;
 import io.netty.buffer.ByteBuf;
-import com.github.derrop.proxy.connection.LoginResult;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -83,6 +85,9 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private final NetworkChannel channel;
     private final int version;
+
+    private boolean firstConnection = true;
+    private int entityId;
 
     private BasicServiceConnection connectedClient;
 
@@ -190,6 +195,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         if (this.connectedClient != null && this.connectedClient.getCredentials().equals(connection.getCredentials())) {
             this.sendMessage("Already connected with this client");
             return;
+        }
+
+        if (this.firstConnection) {
+            this.firstConnection = false;
+            this.entityId = connection.getEntityId();
         }
 
         if (this.connectedClient != null) {
@@ -328,7 +338,17 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
+    public void write(@NotNull Packet packet) {
+        if (this.connectedClient != null) {
+            this.connectedClient.getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
+        }
+    }
+
+    @Override
     public void sendPacket(@NotNull Packet packet) {
+        if (this.connectedClient != null) {
+            this.connectedClient.getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
+        }
         this.channel.write(packet);
     }
 
@@ -361,7 +381,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public int getEntityId() {
-        return this.connectedClient == null ? 0 : this.connectedClient.getEntityId();
+        return this.entityId;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.event.EventPriority;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.location.Location;
@@ -32,10 +33,13 @@ import java.util.List;
 
 public class ClientPacketHandler {
 
-    @PacketHandler(protocolState = ProtocolState.PLAY, directions = ProtocolDirection.TO_SERVER)
+    @PacketHandler(protocolState = ProtocolState.PLAY, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.FIRST)
     public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
         if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
+
             if (packet.getPacket() != null) {
+                player.getConnectedClient().getEntityRewrite().updatePacketToServer(packet.getPacket(), player.getEntityId(), player.getConnectedClient().getEntityId());
+
                 player.getConnectedClient().getClient().handleClientPacket(packet.getPacket());
             }
 

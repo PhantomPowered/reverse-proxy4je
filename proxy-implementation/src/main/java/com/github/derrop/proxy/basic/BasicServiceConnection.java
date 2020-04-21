@@ -49,6 +49,8 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.rewrite.EntityRewrite;
+import com.github.derrop.proxy.protocol.rewrite.EntityRewrite_1_8;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.task.util.TaskUtil;
@@ -100,6 +102,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
 
+    private final EntityRewrite entityRewrite = new EntityRewrite_1_8();
+
     private ConnectedProxyClient client;
 
     private boolean reScheduleOnFailure;
@@ -139,6 +143,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public @Nullable UserAuthentication getAuthentication() {
         return this.client.getAuthentication();
+    }
+
+    public EntityRewrite getEntityRewrite() {
+        return this.entityRewrite;
     }
 
     @Override

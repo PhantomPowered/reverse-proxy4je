@@ -27,14 +27,11 @@ package com.github.derrop.proxy.connection;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
-import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
@@ -56,11 +53,9 @@ import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
-import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
@@ -80,7 +75,6 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -370,17 +364,17 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         }
 
         if (this.redirector != null) {
+            ProtoBuf buf = packet;
+
             if (deserialized != null) { // rewrite to allow modifications by the packet handlers
                 int id = ByteBufUtils.readVarInt(packet);
 
-                ProtoBuf buf = new DefaultProtoBuf(packet.getProtocolVersion(), Unpooled.buffer());
+                buf = new DefaultProtoBuf(packet.getProtocolVersion(), Unpooled.buffer());
                 ByteBufUtils.writeVarInt(id, buf);
                 deserialized.write(buf, ProtocolDirection.TO_CLIENT, buf.getProtocolVersion());
-
-                this.redirector.sendPacket(buf);
-            } else {
-                this.redirector.sendPacket(packet);
             }
+
+            this.redirector.sendPacket(buf);
 
             if (!this.redirector.isConnected()) {
                 this.redirector = null;
