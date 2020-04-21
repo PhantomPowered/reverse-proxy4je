@@ -80,7 +80,7 @@ public interface ProtocolIds {
 
             int NAMED_ENTITY_SPAWN = 12;
 
-            int COLLECT = 13;
+            int COLLECT_ITEM = 13;
 
             int SPAWN_ENTITY = 14;
 
@@ -96,11 +96,11 @@ public interface ProtocolIds {
 
             int ENTITY = 20;
 
-            int REL_ENTITY_REMOVE = 21;
+            int ENTITY_REL_MOVE = 21;
 
             int ENTITY_LOOK = 22;
 
-            int REL_ENTITY_MOVE_LOOK = 23;
+            int ENTITY_LOOK_MOVE = 23;
 
             int ENTITY_TELEPORT = 24;
 
@@ -108,7 +108,7 @@ public interface ProtocolIds {
 
             int ENTITY_STATUS = 26;
 
-            int ATTACH_ENTITY = 27;
+            int ENTITY_ATTACH = 27;
 
             int ENTITY_METADATA = 28;
 

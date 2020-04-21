@@ -40,12 +40,10 @@ import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLoo
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPosition;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.*;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.*;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
+import com.github.derrop.proxy.protocol.play.server.entity.position.*;
 import com.github.derrop.proxy.protocol.play.server.entity.player.*;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
@@ -124,6 +122,18 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityMetadata());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityStatus());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityTeleport());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityEquipment());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityUseBed());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityAnimation());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSpawnEntityPainting());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSpawnEntityExperienceOrb());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityVelocity());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntity());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityRelMove());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityLook());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityLookMove());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityHeadRotation());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityAttach());
         // Inventory
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSetSlot());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWindowItems());
