@@ -29,6 +29,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.player.PlayerRepository;
@@ -44,7 +45,7 @@ public class CommandList extends NonTabCompleteableCommandCallback {
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
-        Collection<? extends ServiceConnection> clients = MCProxy.getInstance().getOnlineClients();
+        Collection<? extends ServiceConnection> clients = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients();
         commandSender.sendMessage("Connected clients: (" + clients.size() + ")");
 
         for (ServiceConnection onlineClient : clients) {

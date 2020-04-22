@@ -1,8 +1,9 @@
 package com.github.derrop.proxy.connection.handler;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.util.Utils;
 import net.kyori.text.TextComponent;
@@ -25,15 +26,22 @@ public class ServerChannelListener implements ChannelListener {
             cause.printStackTrace();
         }
 
-        MCProxy.getInstance().unregisterConnection(this.client.getConnection());
+        this.unregister();
         this.client.handleDisconnect(TextComponent.of("§c" + Utils.stringifyException(cause)));
         this.client.getConnection().close();
     }
 
     @Override
     public void handleChannelInactive(@NotNull NetworkChannel channel) {
-        this.client.getProxy().unregisterConnection(this.client.getConnection());
+        this.unregister();
         this.client.handleDisconnect(TextComponent.of("§cNo reason given"));
+    }
+
+    private void unregister() {
+        ServiceConnector connector = this.client.getProxy().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        if (connector instanceof DefaultServiceConnector) {
+            ((DefaultServiceConnector) connector).unregisterConnection(this.client.getConnection());
+        }
     }
 
 }

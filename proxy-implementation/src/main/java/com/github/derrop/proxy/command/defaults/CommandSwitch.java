@@ -29,6 +29,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import org.jetbrains.annotations.NotNull;
@@ -52,21 +53,22 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
             commandSender.sendMessage("switch <account> | switch to another account");
             commandSender.sendMessage("Available clients:");
 
-            for (ServiceConnection freeClient : MCProxy.getInstance().getFreeClients()) {
+            for (ServiceConnection freeClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
                 commandSender.sendMessage("- " + freeClient.getName());
             }
 
             return CommandResult.END;
         }
 
-        Optional<ServiceConnection> optionalClient = MCProxy.getInstance()
+        Optional<? extends ServiceConnection> optionalClient = MCProxy.getInstance()
+                .getServiceRegistry().getProviderUnchecked(ServiceConnector.class)
                 .getFreeClients()
                 .stream()
                 .filter(proxyClient -> arguments[0].equalsIgnoreCase(proxyClient.getName()))
                 .findFirst();
         if (!optionalClient.isPresent()) {
             commandSender.sendMessage("§cThat account does not exist, available:");
-            for (ServiceConnection freeClient : MCProxy.getInstance().getFreeClients()) {
+            for (ServiceConnection freeClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
                 commandSender.sendMessage("- " + freeClient.getName());
             }
 

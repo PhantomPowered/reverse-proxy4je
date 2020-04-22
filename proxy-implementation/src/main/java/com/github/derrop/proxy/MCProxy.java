@@ -32,6 +32,7 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
@@ -45,12 +46,13 @@ import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
 import com.github.derrop.proxy.config.JsonConfiguration;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
 import com.github.derrop.proxy.connection.handler.PingPacketHandler;
@@ -102,9 +104,6 @@ public class MCProxy extends Proxy {
     private PermissionProvider permissionProvider = new PermissionProvider();
     private AccountReader accountReader = new AccountReader();
 
-    private Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
-    private Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
-
     private final ILogger logger;
 
     protected MCProxy(@NotNull ILogger logger) {
@@ -116,6 +115,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, PacketRegistry.class, new DefaultPacketRegistry(), false, true);
         this.serviceRegistry.setProvider(null, Configuration.class, new JsonConfiguration(), true);
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
+        this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
 
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(), false, true);
 
@@ -131,73 +131,19 @@ public class MCProxy extends Proxy {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
 
-    public void switchClientSafe(Player player, ServiceConnection proxyClient) {
-        player.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
-        this.setReconnectTarget(player.getUniqueId(), proxyClient.getUniqueId());
-    }
-
-    public void unregisterConnection(ServiceConnection proxyClient) {
-        this.onlineClients.remove(proxyClient);
-        proxyClient.close();
-    }
-
-    @Override
-    public @Nullable BasicServiceConnection findBestConnection(Player player) {
-        if (player != null && this.reconnectProfiles.containsKey(player.getUniqueId())) {
-            ReconnectProfile profile = this.reconnectProfiles.get(player.getUniqueId());
-            if (System.currentTimeMillis() < profile.getTimeout()) {
-                Optional<BasicServiceConnection> optionalClient = this.onlineClients.stream()
-                        .filter(connection -> connection.getPlayer() == null)
-                        .filter(connection -> profile.getTargetUniqueId().equals(connection.getUniqueId()))
-                        .findFirst();
-                if (optionalClient.isPresent()) {
-                    this.reconnectProfiles.remove(player.getUniqueId());
-                    return optionalClient.get();
-                }
-            }
-        }
-
-        return this.onlineClients.stream()
-                .filter(proxyClient -> proxyClient.getPlayer() == null)
-                .filter(proxyClient -> !this.reconnectProfiles.containsKey(proxyClient.getUniqueId()))
-                .findFirst().orElse(null);
-    }
-
     @Override
     public @NotNull ServiceRegistry getServiceRegistry() {
         return this.serviceRegistry;
     }
 
-    public void setReconnectTarget(UUID uniqueId, UUID targetUniqueId) {
-        this.reconnectProfiles.put(uniqueId, new ReconnectProfile(uniqueId, targetUniqueId));
-    }
-
-    public Optional<? extends ServiceConnection> getClientByEmail(String email) {
-        return this.onlineClients.stream()
-                .filter(connection -> connection.getCredentials().getEmail() != null)
-                .filter(connection -> connection.getCredentials().getEmail().equals(email))
-                .findFirst();
-    }
-
-    public Collection<BasicServiceConnection> getOnlineClients() {
-        return this.onlineClients;
-    }
-
-    public void addOnlineClient(BasicServiceConnection connection) {
-        this.onlineClients.add(connection);
-    }
-
-    public Collection<ServiceConnection> getFreeClients() {
-        return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getPlayer() == null).collect(Collectors.toList());
-    }
-
+    @Override
     public void shutdown() {
         if (!Thread.currentThread().getName().equals("Shutdown Thread")) {
             System.exit(0);
         } else {
             this.serviceRegistry.getProviderUnchecked(PluginManager.class).disablePlugins();
 
-            for (ServiceConnection onlineClient : this.getOnlineClients()) {
+            for (ServiceConnection onlineClient : this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {
                     onlineClient.getPlayer().disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
                 }
@@ -216,17 +162,9 @@ public class MCProxy extends Proxy {
         return new BasicTitle();
     }
 
-    @Override
-    public @NotNull ServiceConnection createConnection(MCCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
-        return new BasicServiceConnection(this, credentials, serverAddress);
-    }
 
     public PermissionProvider getPermissionProvider() {
         return permissionProvider;
-    }
-
-    public Map<UUID, ReconnectProfile> getReconnectProfiles() {
-        return reconnectProfiles;
     }
 
     public ILogger getLogger() {
@@ -248,7 +186,7 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
 
-        this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this), true);
+        this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins();
@@ -261,7 +199,7 @@ public class MCProxy extends Proxy {
         }
 
         this.accountReader.readAccounts(ACCOUNT_PATH, new AccountBiConsumer());
-        EntityTickHandler.startTick();
+        EntityTickHandler.startTick(this.serviceRegistry);
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
     }

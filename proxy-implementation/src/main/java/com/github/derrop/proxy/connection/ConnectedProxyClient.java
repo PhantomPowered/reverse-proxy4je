@@ -27,6 +27,7 @@ package com.github.derrop.proxy.connection;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
@@ -39,7 +40,6 @@ import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
@@ -167,7 +167,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.dimension = -1;
 
         if (MCProxy.getInstance() != null && this.globalAccount) {
-            MCProxy.getInstance().getOnlineClients().remove(this.connection);
+            MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this.connection);
         }
 
         if (this.disconnectionHandler != null) {

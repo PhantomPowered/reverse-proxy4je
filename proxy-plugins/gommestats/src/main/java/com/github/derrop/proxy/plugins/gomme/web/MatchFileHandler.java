@@ -1,13 +1,12 @@
 package com.github.derrop.proxy.plugins.gomme.web;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.ChatColor;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
 import com.github.derrop.proxy.plugins.gomme.match.MatchTeam;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.match.event.PlayerKilledEvent;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,7 +14,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MatchFileHandler extends WebFileHandler {
 
@@ -40,7 +38,7 @@ public class MatchFileHandler extends WebFileHandler {
 
         MatchInfo matchInfo = this.matchManager.getMatch(matchId);
         if (matchInfo == null) {
-            matchInfo = new MatchInfo(this.matchManager.getCore().getRegistry().getProviderUnchecked(Proxy.class).findBestConnection(null), GommeGameMode.CORES, matchId);
+            matchInfo = new MatchInfo(this.matchManager.getCore().getRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(null), GommeGameMode.CORES, matchId);
             this.matchManager.createMatch(matchInfo);
             //return null;
         }

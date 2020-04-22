@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.basic;
+package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.location.Location;
@@ -42,8 +43,6 @@ import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.KickedException;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
@@ -281,7 +280,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
                 Boolean result = this.client.connect(this.networkAddress, null).get(5, TimeUnit.SECONDS);
                 if (result != null && result) {
-                    this.proxy.addOnlineClient(this);
+                    ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+                    if (connector instanceof DefaultServiceConnector) {
+                        ((DefaultServiceConnector) connector).addOnlineClient(this);
+                    }
                     task.complete(true);
                 } else {
                     task.complete(false);
@@ -370,7 +372,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void unregister() {
-        this.proxy.unregisterConnection(this);
+        ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        if (connector instanceof DefaultServiceConnector) {
+            ((DefaultServiceConnector) connector).addOnlineClient(this);
+        }
     }
 
     @Override

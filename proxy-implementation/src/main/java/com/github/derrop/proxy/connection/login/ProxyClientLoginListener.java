@@ -24,8 +24,10 @@
  */
 package com.github.derrop.proxy.connection.login;
 
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +43,10 @@ public class ProxyClientLoginListener implements ChannelListener {
 
     @Override
     public void handleChannelInactive(@NotNull NetworkChannel channel) {
-        this.client.getProxy().unregisterConnection(this.client.getConnection());
+        ServiceConnector connector = this.client.getProxy().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        if (connector instanceof DefaultServiceConnector) {
+            ((DefaultServiceConnector) connector).unregisterConnection(this.client.getConnection());
+        }
     }
 
     @Override

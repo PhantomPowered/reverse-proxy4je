@@ -29,6 +29,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.entity.player.PlayerRepository;
@@ -39,7 +40,8 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
@@ -172,7 +174,12 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             return;
         }
 
-        this.proxy.switchClientSafe(this, connection);
+        ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        if (connector instanceof DefaultServiceConnector) {
+            ((DefaultServiceConnector) connector).switchClientSafe(this, connection);
+        } else {
+            this.useClient(connection);
+        }
     }
 
     @Override
@@ -314,7 +321,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             return;
         }
 
-        ServiceConnection nextClient = MCProxy.getInstance().findBestConnection(this);
+        ServiceConnection nextClient = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this);
         if (nextClient == null || nextClient.equals(connection)) {
             this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
                     + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));

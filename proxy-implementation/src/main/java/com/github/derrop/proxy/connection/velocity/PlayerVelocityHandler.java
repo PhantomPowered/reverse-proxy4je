@@ -27,8 +27,10 @@ package com.github.derrop.proxy.connection.velocity;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
@@ -128,12 +130,12 @@ public class PlayerVelocityHandler {
     public static void start() {
         Constants.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.interrupted()) {
-                for (BasicServiceConnection onlineClient : MCProxy.getInstance().getOnlineClients()) {
+                for (ServiceConnection onlineClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                     if (onlineClient.getPlayer() != null) {
                         continue;
                     }
 
-                    PlayerVelocityHandler velocityHandler = onlineClient.getClient().getVelocityHandler();
+                    /*PlayerVelocityHandler velocityHandler = onlineClient.getClient().getVelocityHandler();
 
                     ++velocityHandler.positionUpdateTicks;
 
@@ -143,7 +145,7 @@ public class PlayerVelocityHandler {
                     double d3 = velocityHandler.rotYaw - velocityHandler.lastReportedRotYaw;
                     double d4 = velocityHandler.rotPitch - velocityHandler.lastReportedRotPitch;
                     boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || velocityHandler.positionUpdateTicks >= 20;
-                    boolean flag3 = d3 != 0.0D || d4 != 0.0D;
+                    boolean flag3 = d3 != 0.0D || d4 != 0.0D;*/
 
                     /*onlineClient.sendPacket(new PlayerPosition(
                             velocityHandler.posX + (velocityHandler.motionX / 20),
@@ -167,7 +169,7 @@ public class PlayerVelocityHandler {
                         flag2 = false;
                     }*/
 
-                    if (flag2) {
+                    /*if (flag2) {
                         velocityHandler.lastReportedPosX = velocityHandler.posX;
                         velocityHandler.lastReportedPosY = velocityHandler.posY;
                         velocityHandler.lastReportedPosZ = velocityHandler.posZ;
@@ -177,7 +179,7 @@ public class PlayerVelocityHandler {
                     if (flag3) {
                         velocityHandler.lastReportedRotYaw = velocityHandler.rotYaw;
                         velocityHandler.lastReportedRotPitch = velocityHandler.rotPitch;
-                    }
+                    }*/
 
                 }
 

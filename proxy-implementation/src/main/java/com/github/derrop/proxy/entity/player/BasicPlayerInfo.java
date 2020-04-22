@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.basic;
+package com.github.derrop.proxy.entity.player;
 
 import com.github.derrop.proxy.api.entity.player.PlayerInfo;
 import com.github.derrop.proxy.api.entity.player.GameMode;

@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
@@ -68,7 +69,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         }
 
         try {
-            ServiceConnection newClient = connection.getProxy().createConnection(connection.getCredentials(), address);
+            ServiceConnection newClient = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).createConnection(connection.getCredentials(), address);
 
             try {
                 connection.close();
@@ -102,7 +103,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
     }
 
     private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
-        ServiceConnection nextClient = MCProxy.getInstance().findBestConnection(player);
+        ServiceConnection nextClient = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
         if (nextClient == null || nextClient.equals(oldClient)) {
             player.disconnect(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason"));
             return;
@@ -151,7 +152,8 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
-            Collection<ServiceConnection> clients = MCProxy.getInstance().getOnlineClients().stream()
+            Collection<ServiceConnection> clients = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class)
+                    .getOnlineClients().stream()
                     .filter(proxyClient -> arguments[0].equalsIgnoreCase("all") || arguments[0].equalsIgnoreCase(proxyClient.getName()))
                     .collect(Collectors.toList());
 

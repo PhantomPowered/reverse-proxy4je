@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
@@ -93,10 +94,11 @@ public class InitialHandler {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
         ServerPing response = this.proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getMotd();
+        ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
 
         response.setDescription(TextComponent.of(LegacyComponentSerializer.legacy().serialize(response.getDescription())
-                .replace("$free", String.valueOf(this.proxy.getFreeClients().size()))
-                .replace("$online", String.valueOf(this.proxy.getOnlineClients().size()))
+                .replace("$free", String.valueOf(connector.getFreeClients().size()))
+                .replace("$online", String.valueOf(connector.getOnlineClients().size()))
         ));
 
         PingEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PingEvent(channel, response));
@@ -245,7 +247,7 @@ public class InitialHandler {
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientPacketListener(player));
 
-                ServiceConnection client = MCProxy.getInstance().findBestConnection(player);
+                ServiceConnection client = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
 
                 PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player, client));
                 if (!channel.isConnected()) {

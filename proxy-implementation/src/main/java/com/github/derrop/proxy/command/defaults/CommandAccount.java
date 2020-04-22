@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
@@ -53,6 +54,8 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String fullLine) throws CommandExecutionException {
+        ServiceConnector connector = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+
         if (args.length == 3 && args[0].equalsIgnoreCase("add")) {
             MCCredentials credentials = MCCredentials.parse(args[2]);
             NetworkAddress address = NetworkAddress.parse(args[1]);
@@ -62,15 +65,15 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
-            if (MCProxy.getInstance().getClientByEmail(credentials.getEmail()).isPresent()) {
+            if (connector.getClientByEmail(credentials.getEmail()).isPresent()) {
                 sender.sendMessage("§cThat account is already registered");
                 return CommandResult.BREAK;
             }
 
             try {
-                boolean success = MCProxy.getInstance().createConnection(credentials, address).connect().get(5, TimeUnit.SECONDS);
+                boolean success = connector.createConnection(credentials, address).connect().get(5, TimeUnit.SECONDS);
 
-                ServiceConnection client = MCProxy.getInstance().getOnlineClients().stream()
+                ServiceConnection client = connector.getOnlineClients().stream()
                         .filter(proxyClient -> proxyClient.getCredentials().equals(credentials))
                         .filter(proxyClient -> proxyClient.getServerAddress().equals(address))
                         .findFirst()
@@ -94,7 +97,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 System.out.println("Invalid credentials for " + credentials.getEmail());
             }
         } else if (args.length == 2 && args[0].equalsIgnoreCase("close")) {
-            this.closeAll(sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1])) ||
+            this.closeAll(connector, sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1])) ||
                     args[1].equalsIgnoreCase(client.getName()));
         } else if (args.length == 2 && args[0].equalsIgnoreCase("closeAll")) {
             NetworkAddress address = NetworkAddress.parse(args[1]);
@@ -103,7 +106,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
-            this.closeAll(sender, client -> client.getServerAddress().equals(address));
+            this.closeAll(connector, sender, client -> client.getServerAddress().equals(address));
         } else {
             this.sendHelp(sender);
         }
@@ -111,8 +114,8 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         return CommandResult.END;
     }
 
-    private void closeAll(CommandSender sender, Predicate<ServiceConnection> tester) {
-        for (ServiceConnection client : MCProxy.getInstance().getOnlineClients()) {
+    private void closeAll(ServiceConnector connector, CommandSender sender, Predicate<ServiceConnection> tester) {
+        for (ServiceConnection client : connector.getOnlineClients()) {
             if (tester.test(client)) {
                 sender.sendMessage("§7Closing client §e" + client.getName() + "#" + client.getUniqueId() + " §7(§e" + client.getCredentials().getEmail() + "§7)...");
                 try {

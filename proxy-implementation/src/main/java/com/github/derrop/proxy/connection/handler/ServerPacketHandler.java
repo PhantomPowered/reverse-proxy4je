@@ -1,9 +1,9 @@
 package com.github.derrop.proxy.connection.handler;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
@@ -13,10 +13,13 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.*;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
@@ -90,7 +93,10 @@ public class ServerPacketHandler {
         client.handleDisconnect(reason);
         client.setLastKickReason(reason);
 
-        MCProxy.getInstance().unregisterConnection(client.getConnection());
+        ServiceConnector connector = client.getProxy().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        if (connector instanceof DefaultServiceConnector) {
+            ((DefaultServiceConnector) connector).unregisterConnection(client.getConnection());
+        }
         throw CancelProceedException.INSTANCE;
     }
 

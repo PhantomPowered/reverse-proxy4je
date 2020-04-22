@@ -29,6 +29,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,8 @@ public class CommandInfo extends NonTabCompleteableCommandCallback {
             commandSender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
         }
 
-        commandSender.sendMessage("§7Connected clients: §e" + MCProxy.getInstance().getOnlineClients().size() + " §7(Free: §a" + MCProxy.getInstance().getFreeClients().size() + "§7)");
+        ServiceConnector connector = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        commandSender.sendMessage("§7Connected clients: §e" + connector.getOnlineClients().size() + " §7(Free: §a" + connector.getFreeClients().size() + "§7)");
         return CommandResult.END;
     }
 }

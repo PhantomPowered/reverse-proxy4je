@@ -26,7 +26,11 @@ package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.basic.BasicServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 
@@ -38,17 +42,20 @@ public final class EntityTickHandler {
         throw new UnsupportedOperationException();
     }
 
-    public static void startTick() {
+    public static void startTick(ServiceRegistry registry) {
         Constants.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-            for (BasicServiceConnection onlineClient : MCProxy.getInstance().getOnlineClients()) {
+            ServiceConnector connector = registry.getProviderUnchecked(ServiceConnector.class);
+            for (ServiceConnection onlineClient : connector.getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {
                     onlineClient.getPlayer().sendPacket(new PacketPlayKeepAlive(System.nanoTime())); // TODO: wait for result (if no, disconnect)
                 }
             }
 
-            for (ReconnectProfile value : MCProxy.getInstance().getReconnectProfiles().values()) {
-                if (System.currentTimeMillis() >= value.getTimeout()) {
-                    MCProxy.getInstance().getReconnectProfiles().remove(value.getUniqueId());
+            if (connector instanceof DefaultServiceConnector) {
+                for (ReconnectProfile value : ((DefaultServiceConnector) connector).getReconnectProfiles().values()) {
+                    if (System.currentTimeMillis() >= value.getTimeout()) {
+                        ((DefaultServiceConnector) connector).getReconnectProfiles().remove(value.getUniqueId());
+                    }
                 }
             }
         }, 5, 5, TimeUnit.SECONDS);

@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -44,10 +45,12 @@ public class CommandChat extends NonTabCompleteableCommandCallback {
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        ServiceConnector connector = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+
         if (arguments.length < 2) {
             commandSender.sendMessage("chat <ALL|name> <message> | send a message as a specific user");
             commandSender.sendMessage("Available clients:");
-            for (ServiceConnection freeClient : MCProxy.getInstance().getFreeClients()) {
+            for (ServiceConnection freeClient : connector.getFreeClients()) {
                 commandSender.sendMessage("- " + freeClient.getName());
             }
 
@@ -55,8 +58,8 @@ public class CommandChat extends NonTabCompleteableCommandCallback {
         }
 
         Collection<? extends ServiceConnection> clients = arguments[0].equalsIgnoreCase("all")
-                ? MCProxy.getInstance().getOnlineClients()
-                : MCProxy.getInstance().getOnlineClients().stream().filter(proxyClient -> arguments[0].equalsIgnoreCase(proxyClient.getName())).collect(Collectors.toList());
+                ? connector.getOnlineClients()
+                : connector.getOnlineClients().stream().filter(proxyClient -> arguments[0].equalsIgnoreCase(proxyClient.getName())).collect(Collectors.toList());
         if (clients.isEmpty()) {
             commandSender.sendMessage("§cNo client matching the given name found");
             return CommandResult.BREAK;
