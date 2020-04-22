@@ -26,7 +26,7 @@ package com.github.derrop.proxy.block.chunk;
 
 import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunk;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunk;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -35,10 +35,10 @@ import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockChange;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunk;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMapChunkBulk;
-import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerMultiBlockChange;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunk;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunkBulk;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMultiBlockChange;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;

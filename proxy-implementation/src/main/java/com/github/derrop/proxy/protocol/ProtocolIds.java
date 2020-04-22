@@ -116,7 +116,7 @@ public interface ProtocolIds {
 
             int REMOVE_ENTITY_EFFECT = 30;
 
-            int EXPERIENCE = 31;
+            int SET_EXPERIENCE = 31;
 
             int UPDATE_ATTRIBUTES = 32;
 
@@ -134,7 +134,7 @@ public interface ProtocolIds {
 
             int EXPLOSION = 39;
 
-            int WORLD_EVENT = 40;
+            int WORLD_SOUND = 40;
 
             int NAMED_SOUND_EFFECT = 41;
 

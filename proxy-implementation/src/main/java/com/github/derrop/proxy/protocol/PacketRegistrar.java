@@ -43,6 +43,7 @@ import com.github.derrop.proxy.protocol.play.server.*;
 import com.github.derrop.proxy.protocol.play.server.entity.*;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerUpdateEntityAttributes;
 import com.github.derrop.proxy.protocol.play.server.entity.position.*;
 import com.github.derrop.proxy.protocol.play.server.entity.player.*;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
@@ -53,6 +54,14 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 import com.github.derrop.proxy.protocol.play.server.world.*;
+import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerBlockBreakAnimation;
+import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerExplosion;
+import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerSound;
+import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerWorldSound;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunk;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunkBulk;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMultiBlockChange;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
@@ -111,6 +120,7 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerUpdateHealth());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerHeldItemSlot());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.PLAY, new PacketPlayClientHeldItemSlot());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSetExperience());
         // Spawn
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerNamedEntitySpawn());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSpawnEntity());
@@ -134,6 +144,7 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityLookMove());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityHeadRotation());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerEntityAttach());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerUpdateEntityAttributes());
         // Inventory
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSetSlot());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWindowItems());
@@ -146,6 +157,11 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerTimeUpdate());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerUpdateSign());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWorldBorder());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerBlockAction());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWorldSound());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSound());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerExplosion());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerBlockBreakAnimation());
         // Scoreboard
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerScoreboardDisplay());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerScoreboardObjective());
