@@ -36,7 +36,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.entity.player.PacketPlayServerGameStateChange;
+import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerGameStateChange;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;

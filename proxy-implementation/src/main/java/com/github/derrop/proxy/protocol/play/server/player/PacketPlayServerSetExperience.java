@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.protocol.play.server.entity.player;
+package com.github.derrop.proxy.protocol.play.server.player;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;

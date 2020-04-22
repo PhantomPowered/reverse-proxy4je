@@ -22,50 +22,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.protocol.play.server.entity.player;
+package com.github.derrop.proxy.protocol.play.server.player;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerCamera implements Packet, EntityPacket {
+public class PacketPlayServerHeldItemSlot implements Packet {
 
-    private int entityId;
+    private int slot;
 
-    public PacketPlayServerCamera(int entityId) {
-        this.entityId = entityId;
+    public PacketPlayServerHeldItemSlot(int slot) {
+        this.slot = slot;
     }
 
-    public PacketPlayServerCamera() {
+    public PacketPlayServerHeldItemSlot() {
     }
 
-    @Override
-    public int getId() {
-        return ProtocolIds.ToClient.Play.CAMERA;
+    public int getSlot() {
+        return slot;
     }
 
-    public int getEntityId() {
-        return this.entityId;
-    }
-
-    public void setEntityId(int entityId) {
-        this.entityId = entityId;
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.entityId = protoBuf.readVarInt();
+        this.slot = protoBuf.readByte();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeVarInt(this.entityId);
+        protoBuf.writeByte(this.slot);
     }
 
-    public String toString() {
-        return "PacketPlayServerCamera(entityId=" + this.getEntityId() + ")";
+    @Override
+    public int getId() {
+        return ProtocolIds.ToClient.Play.HELD_ITEM_SLOT;
     }
 }

@@ -22,61 +22,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.protocol.play.server.entity.player;
+package com.github.derrop.proxy.protocol.play.server.player;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerGameStateChange implements Packet {
+public class PacketPlayServerCamera implements Packet, EntityPacket {
 
-    private int state;
-    private float value;
+    private int entityId;
 
-    public PacketPlayServerGameStateChange(int state, float value) {
-        this.state = state;
-        this.value = value;
+    public PacketPlayServerCamera(int entityId) {
+        this.entityId = entityId;
     }
 
-    public PacketPlayServerGameStateChange() {
+    public PacketPlayServerCamera() {
     }
 
     @Override
     public int getId() {
-        return ProtocolIds.ToClient.Play.GAME_STATE_CHANGE;
+        return ProtocolIds.ToClient.Play.CAMERA;
     }
 
-    public int getState() {
-        return this.state;
+    public int getEntityId() {
+        return this.entityId;
     }
 
-    public float getValue() {
-        return this.value;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public void setValue(float value) {
-        this.value = value;
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.state = protoBuf.readUnsignedByte();
-        this.value = protoBuf.readFloat();
+        this.entityId = protoBuf.readVarInt();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeByte(this.state);
-        protoBuf.writeFloat(this.value);
+        protoBuf.writeVarInt(this.entityId);
     }
 
     public String toString() {
-        return "PacketPlayServerGameStateChange(state=" + this.getState() + ", value=" + this.getValue() + ")";
+        return "PacketPlayServerCamera(entityId=" + this.getEntityId() + ")";
     }
 }
