@@ -4,7 +4,6 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
-import com.github.derrop.proxy.connection.PacketUtil;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,13 +41,13 @@ public class PacketPlayServerUpdateEntityNBT implements Packet, EntityPacket {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-        this.nbt = PacketUtil.readNBTTagCompound(protoBuf);
+        this.nbt = protoBuf.readNBTTagCompound();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-        PacketUtil.writeNBTTagCompound(protoBuf, this.nbt);
+        protoBuf.writeNBTTagCompound(this.nbt);
     }
 
     @Override

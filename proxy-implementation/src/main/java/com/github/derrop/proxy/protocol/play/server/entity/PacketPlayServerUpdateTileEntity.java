@@ -5,7 +5,6 @@ import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
-import com.github.derrop.proxy.connection.PacketUtil;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,16 +49,16 @@ public class PacketPlayServerUpdateTileEntity implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.pos = protoBuf.readBlockPos();
         this.metadata = protoBuf.readUnsignedByte();
-        this.nbt = PacketUtil.readNBTTagCompound(protoBuf);
+        this.nbt = protoBuf.readNBTTagCompound();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeBlockPos(this.pos);
         protoBuf.writeByte((byte) this.metadata);
-        PacketUtil.writeNBTTagCompound(protoBuf, nbt);
+        protoBuf.writeNBTTagCompound(this.nbt);
     }
 
     @Override

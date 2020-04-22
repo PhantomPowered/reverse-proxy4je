@@ -27,7 +27,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
-import com.github.derrop.proxy.connection.cache.InventoryItem;
+import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -41,13 +41,13 @@ import java.util.Map;
 public class PlayerInventoryCache implements PacketCacheHandler {
 
     private static final byte WINDOW_ID = 0; // 0 -> player inventory
-    private static final InventoryItem[] EMPTY_INVENTORY = new InventoryItem[45];
+    private static final ItemStack[] EMPTY_INVENTORY = new ItemStack[45];
 
     static {
-        Arrays.fill(EMPTY_INVENTORY, InventoryItem.NONE);
+        Arrays.fill(EMPTY_INVENTORY, ItemStack.NONE);
     }
 
-    private Map<Integer, InventoryItem> itemsBySlot = new HashMap<>();
+    private Map<Integer, ItemStack> itemsBySlot = new HashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -64,7 +64,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
             }
 
             for (int slot = 0; slot < items.getItems().length; slot++) {
-                InventoryItem item = items.getItems()[slot];
+                ItemStack item = items.getItems()[slot];
                 if (item.getItemId() > 0) {
                     this.itemsBySlot.put(slot, item);
                 } else {
@@ -73,7 +73,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
             }
         } else if (newPacket.getDeserializedPacket() instanceof PacketPlayServerSetSlot) {
             PacketPlayServerSetSlot setSlot = (PacketPlayServerSetSlot) newPacket.getDeserializedPacket();
-            InventoryItem item = setSlot.getItem();
+            ItemStack item = setSlot.getItem();
 
             if (setSlot.getWindowId() != WINDOW_ID) {
                 return;
@@ -90,9 +90,9 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     @Override
     public void sendCached(PacketSender con) {
         this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
-            InventoryItem[] items = new InventoryItem[count + 1];
+            ItemStack[] items = new ItemStack[count + 1];
             for (int slot = 0; slot < items.length; slot++) {
-                items[slot] = this.itemsBySlot.getOrDefault(slot, InventoryItem.NONE);
+                items[slot] = this.itemsBySlot.getOrDefault(slot, ItemStack.NONE);
             }
             con.sendPacket(new PacketPlayServerWindowItems(WINDOW_ID, items));
         });

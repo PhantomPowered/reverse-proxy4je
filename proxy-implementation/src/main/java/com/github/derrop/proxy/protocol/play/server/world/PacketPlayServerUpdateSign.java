@@ -61,7 +61,7 @@ public class PacketPlayServerUpdateSign implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.pos = protoBuf.readBlockPos();
         this.lines = new Component[4];
 
         for (int i = 0; i < 4; i++) {
@@ -71,7 +71,7 @@ public class PacketPlayServerUpdateSign implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeBlockPos(this.pos);
 
         for (int i = 0; i < 4; i++) {
             protoBuf.writeString(GsonComponentSerializer.INSTANCE.serialize(this.lines[i]));

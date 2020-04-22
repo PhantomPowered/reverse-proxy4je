@@ -3,8 +3,7 @@ package com.github.derrop.proxy.protocol.play.server.entity;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.connection.PacketUtil;
-import com.github.derrop.proxy.connection.cache.InventoryItem;
+import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,9 +11,9 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
 
     private int entityId;
     private int slot;
-    private InventoryItem item;
+    private ItemStack item;
 
-    public PacketPlayServerEntityEquipment(int entityId, int slot, InventoryItem item) {
+    public PacketPlayServerEntityEquipment(int entityId, int slot, ItemStack item) {
         this.entityId = entityId;
         this.slot = slot;
         this.item = item;
@@ -39,11 +38,11 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
         this.slot = slot;
     }
 
-    public InventoryItem getItem() {
+    public ItemStack getItem() {
         return item;
     }
 
-    public void setItem(InventoryItem item) {
+    public void setItem(ItemStack item) {
         this.item = item;
     }
 
@@ -51,14 +50,14 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
         this.slot = protoBuf.readShort();
-        this.item = PacketUtil.readItem(protoBuf);
+        this.item = protoBuf.readItemStack();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
         protoBuf.writeShort(this.slot);
-        PacketUtil.writeItem(protoBuf, this.item);
+        protoBuf.writeItemStack(this.item);
     }
 
     @Override

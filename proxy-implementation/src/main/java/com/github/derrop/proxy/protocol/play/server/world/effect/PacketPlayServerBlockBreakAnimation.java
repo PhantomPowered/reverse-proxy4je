@@ -50,14 +50,14 @@ public class PacketPlayServerBlockBreakAnimation implements Packet {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.breakerId = protoBuf.readVarInt();
-        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.pos = protoBuf.readBlockPos();
         this.progress = protoBuf.readUnsignedByte();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.breakerId);
-        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeBlockPos(this.pos);
         protoBuf.writeByte(this.progress);
     }
 

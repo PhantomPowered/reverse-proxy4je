@@ -24,10 +24,17 @@
  */
 package com.github.derrop.proxy.network.wrapper;
 
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.exception.ComponentTooLargeException;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
+import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.util.nbt.CompressedStreamTools;
+import com.github.derrop.proxy.api.util.nbt.NBTSizeTracker;
+import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import io.netty.util.ByteProcessor;
 import org.jetbrains.annotations.NotNull;
 
@@ -218,6 +225,72 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
             this.writeByte(temp);
         } while (value != 0);
+    }
+
+    @Override
+    public ItemStack readItemStack() {
+        int itemId = this.readShort();
+        if (itemId >= 0) {
+            int amount = this.readByte();
+            int meta = this.readShort();
+
+            return new ItemStack(itemId, amount, meta, this.readNBTTagCompound());
+        }
+        return ItemStack.NONE;
+    }
+
+    @Override
+    public void writeItemStack(ItemStack item) {
+        if (item.getItemId() <= 0) {
+            this.writeShort(-1);
+        } else {
+            this.writeShort(item.getItemId());
+            this.writeByte(item.getAmount());
+            this.writeShort(item.getMeta());
+
+            this.writeNBTTagCompound(item.getNbt());
+        }
+    }
+
+    @Override
+    public NBTTagCompound readNBTTagCompound() {
+        int index = this.readerIndex();
+        byte tagAvailable = this.readByte();
+
+        NBTTagCompound tag = null;
+        if (tagAvailable != 0) {
+            this.readerIndex(index);
+            try {
+                tag = CompressedStreamTools.read(new ByteBufInputStream(this.initByteBuf), new NBTSizeTracker(Integer.MAX_VALUE));
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+
+        return tag;
+    }
+
+    @Override
+    public void writeNBTTagCompound(NBTTagCompound nbt) {
+        if (nbt != null) {
+            try {
+                CompressedStreamTools.write(nbt, new ByteBufOutputStream(this.initByteBuf));
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            this.writeByte(0);
+        }
+    }
+
+    @Override
+    public BlockPos readBlockPos() {
+        return BlockPos.fromLong(this.readLong());
+    }
+
+    @Override
+    public void writeBlockPos(BlockPos pos) {
+        this.writeLong(pos.toLong());
     }
 
     @Override

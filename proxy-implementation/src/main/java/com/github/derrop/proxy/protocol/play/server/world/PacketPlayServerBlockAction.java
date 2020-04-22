@@ -59,7 +59,7 @@ public class PacketPlayServerBlockAction implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.pos = protoBuf.readBlockPos();
         this.instrument = protoBuf.readUnsignedByte();
         this.pitch = protoBuf.readUnsignedByte();
         this.material = Material.getMaterial(protoBuf.readVarInt() & 4095);
@@ -67,7 +67,7 @@ public class PacketPlayServerBlockAction implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeBlockPos(this.pos);
         protoBuf.writeByte(this.instrument);
         protoBuf.writeByte(this.pitch);
         protoBuf.writeVarInt(this.material.getId() & 4095);

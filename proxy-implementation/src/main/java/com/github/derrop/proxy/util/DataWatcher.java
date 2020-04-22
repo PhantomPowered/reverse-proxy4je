@@ -25,12 +25,11 @@
 package com.github.derrop.proxy.util;
 
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
-import com.github.derrop.proxy.connection.PacketUtil;
-import com.github.derrop.proxy.connection.cache.InventoryItem;
+import com.github.derrop.proxy.api.util.ItemStack;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -116,8 +115,8 @@ public class DataWatcher {
     /**
      * Get a watchable object as an ItemStack.
      */
-    public InventoryItem getWatchableObjectItemStack(int id) {
-        return (InventoryItem) this.getWatchedObject(id).getObject();
+    public ItemStack getWatchableObjectItemStack(int id) {
+        return (ItemStack) this.getWatchedObject(id).getObject();
     }
 
     /**
@@ -167,7 +166,7 @@ public class DataWatcher {
      * Writes the list of watched objects (entity attribute of type {byte, short, int, float, string, ItemStack,
      * ChunkCoordinates}) to the specified ByteBuf
      */
-    public static void writeWatchedListToByteBuf(List<DataWatcher.WatchableObject> objectsList, ByteBuf buffer) throws IOException {
+    public static void writeWatchedListToByteBuf(List<DataWatcher.WatchableObject> objectsList, ProtoBuf buffer) throws IOException {
         if (objectsList != null) {
             for (DataWatcher.WatchableObject datawatcher$watchableobject : objectsList) {
                 writeWatchableObjectToByteBuf(buffer, datawatcher$watchableobject);
@@ -202,7 +201,7 @@ public class DataWatcher {
         return list;
     }
 
-    public void writeTo(ByteBuf buffer) throws IOException {
+    public void writeTo(ProtoBuf buffer) throws IOException {
         this.lock.readLock().lock();
 
         for (DataWatcher.WatchableObject datawatcher$watchableobject : this.watchedObjects.values()) {
@@ -233,7 +232,7 @@ public class DataWatcher {
      * Writes a watchable object (entity attribute of type {byte, short, int, float, string, ItemStack,
      * ChunkCoordinates}) to the specified ByteBuf
      */
-    private static void writeWatchableObjectToByteBuf(ByteBuf buffer, DataWatcher.WatchableObject object) throws IOException {
+    private static void writeWatchableObjectToByteBuf(ProtoBuf buffer, DataWatcher.WatchableObject object) throws IOException {
         int i = (object.getObjectType() << 5 | object.getDataValueId() & 31) & 255;
         buffer.writeByte(i);
 
@@ -259,8 +258,8 @@ public class DataWatcher {
                 break;
 
             case 5:
-                InventoryItem itemstack = (InventoryItem) object.getObject();
-                PacketUtil.writeItem(buffer, itemstack);
+                ItemStack itemstack = (ItemStack) object.getObject();
+                buffer.writeItemStack(itemstack);
                 break;
 
             case 6:
@@ -278,7 +277,7 @@ public class DataWatcher {
         }
     }
 
-    public static List<DataWatcher.WatchableObject> readWatchedListFromByteBuf(ByteBuf buffer) throws IOException {
+    public static List<DataWatcher.WatchableObject> readWatchedListFromByteBuf(ProtoBuf buffer) throws IOException {
         List<DataWatcher.WatchableObject> list = null;
 
         for (int i = buffer.readByte(); i != 127; i = buffer.readByte()) {
@@ -308,11 +307,11 @@ public class DataWatcher {
                     break;
 
                 case 4:
-                    datawatcher$watchableobject = new DataWatcher.WatchableObject(j, k, ByteBufUtils.readString(buffer));
+                    datawatcher$watchableobject = new DataWatcher.WatchableObject(j, k, buffer.readString());
                     break;
 
                 case 5:
-                    datawatcher$watchableobject = new DataWatcher.WatchableObject(j, k, PacketUtil.readItem(buffer));
+                    datawatcher$watchableobject = new DataWatcher.WatchableObject(j, k, buffer.readItemStack());
                     break;
 
                 case 6:
@@ -364,7 +363,7 @@ public class DataWatcher {
         dataTypes.put(Integer.class, 2);
         dataTypes.put(Float.class, 3);
         dataTypes.put(String.class, 4);
-        dataTypes.put(InventoryItem.class, 5);
+        dataTypes.put(ItemStack.class, 5);
         dataTypes.put(BlockPos.class, 6);
         dataTypes.put(Rotations.class, 7);
     }

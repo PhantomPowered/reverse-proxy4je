@@ -28,12 +28,12 @@ public class PacketPlayServerOpenSignEditor implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.pos = protoBuf.readBlockPos();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeBlockPos(this.pos);
     }
 
     @Override

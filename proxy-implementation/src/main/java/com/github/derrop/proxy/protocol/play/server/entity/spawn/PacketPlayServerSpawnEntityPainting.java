@@ -64,7 +64,7 @@ public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
         this.title = protoBuf.readString();
-        this.pos = BlockPos.fromLong(protoBuf.readLong());
+        this.pos = protoBuf.readBlockPos();
         this.facing = Facing.getHorizontal(protoBuf.readUnsignedByte());
     }
 
@@ -72,7 +72,7 @@ public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
         protoBuf.writeString(this.title);
-        protoBuf.writeLong(this.pos.toLong());
+        protoBuf.writeBlockPos(this.pos);
         protoBuf.writeByte(this.facing.getHorizontalIndex());
     }
 

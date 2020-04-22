@@ -22,20 +22,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.connection.cache;
+package com.github.derrop.proxy.api.util;
 
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 
-public class InventoryItem {
+public class ItemStack {
 
-    public static final InventoryItem NONE = new InventoryItem(0, 0, 0, null);
+    public static final ItemStack NONE = new ItemStack(0, 0, 0, null);
 
     private int itemId;
     private int amount;
     private int meta;
     private NBTTagCompound nbt;
 
-    public InventoryItem(int itemId, int amount, int meta, NBTTagCompound nbt) {
+    public ItemStack(int itemId, int amount, int meta, NBTTagCompound nbt) {
         this.itemId = itemId;
         this.amount = amount;
         this.meta = meta;

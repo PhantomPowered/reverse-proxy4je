@@ -39,13 +39,13 @@ public class PacketPlayServerEntityUseBed implements Packet, EntityPacket {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-        this.bedPos = BlockPos.fromLong(protoBuf.readLong());
+        this.bedPos = protoBuf.readBlockPos();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-        protoBuf.writeLong(this.bedPos.toLong());
+        protoBuf.writeBlockPos(this.bedPos);
     }
 
     @Override

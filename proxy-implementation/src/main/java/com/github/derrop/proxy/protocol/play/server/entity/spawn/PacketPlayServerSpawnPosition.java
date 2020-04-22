@@ -54,12 +54,12 @@ public class PacketPlayServerSpawnPosition implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.spawnPosition = BlockPos.fromLong(protoBuf.readLong());
+        this.spawnPosition = protoBuf.readBlockPos();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeLong(this.spawnPosition.toLong());
+        protoBuf.writeBlockPos(this.spawnPosition);
     }
 
     public String toString() {

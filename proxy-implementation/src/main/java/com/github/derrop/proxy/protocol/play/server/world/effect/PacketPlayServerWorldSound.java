@@ -60,7 +60,7 @@ public class PacketPlayServerWorldSound implements Packet {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.soundType = protoBuf.readInt();
-        this.soundPos = BlockPos.fromLong(protoBuf.readLong());
+        this.soundPos = protoBuf.readBlockPos();
         this.soundData = protoBuf.readInt();
         this.serverWide = protoBuf.readBoolean();
     }
@@ -68,7 +68,7 @@ public class PacketPlayServerWorldSound implements Packet {
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeInt(this.soundType);
-        protoBuf.writeLong(this.soundPos.toLong());
+        protoBuf.writeBlockPos(this.soundPos);
         protoBuf.writeInt(this.soundData);
         protoBuf.writeBoolean(this.serverWide);
     }
