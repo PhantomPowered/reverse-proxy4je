@@ -40,7 +40,7 @@ public class PacketPlayServerPlayerStatistics implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeInt(this.statistics.size());
+        protoBuf.writeVarInt(this.statistics.size());
 
         for (Map.Entry<String, Integer> entry : this.statistics.entrySet()) {
             protoBuf.writeString(entry.getKey());
