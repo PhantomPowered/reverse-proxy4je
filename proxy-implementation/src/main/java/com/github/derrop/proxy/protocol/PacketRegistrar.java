@@ -54,10 +54,7 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 import com.github.derrop.proxy.protocol.play.server.world.*;
-import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerBlockBreakAnimation;
-import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerExplosion;
-import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerSound;
-import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerWorldSound;
+import com.github.derrop.proxy.protocol.play.server.world.effect.*;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunk;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunkBulk;
@@ -162,6 +159,7 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSound());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerExplosion());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerBlockBreakAnimation());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWorldParticles());
         // Scoreboard
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerScoreboardDisplay());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerScoreboardObjective());
