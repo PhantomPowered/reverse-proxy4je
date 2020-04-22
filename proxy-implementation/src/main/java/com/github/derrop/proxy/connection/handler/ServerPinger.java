@@ -7,7 +7,6 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;

@@ -26,7 +26,6 @@ package com.github.derrop.proxy.scoreboard.minecraft;
 
 import com.google.common.collect.Sets;
 
-import java.util.Collection;
 import java.util.Set;
 
 public class ScorePlayerTeam extends Team {

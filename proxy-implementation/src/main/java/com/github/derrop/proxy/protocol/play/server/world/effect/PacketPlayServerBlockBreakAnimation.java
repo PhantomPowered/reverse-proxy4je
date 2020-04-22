@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.protocol.play.server.world.effect;
 
-import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;

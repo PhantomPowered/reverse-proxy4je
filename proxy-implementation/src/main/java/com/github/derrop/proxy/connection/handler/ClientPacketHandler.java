@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.connection.handler;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;

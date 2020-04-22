@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.block;
 
 import com.github.derrop.proxy.api.block.*;
-import com.github.derrop.proxy.api.block.Facing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

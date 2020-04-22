@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.protocol.play.client;
 
-import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.Packet;

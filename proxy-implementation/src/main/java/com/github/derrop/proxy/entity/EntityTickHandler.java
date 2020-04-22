@@ -25,11 +25,9 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.Constants;
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;

@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.connection.cache;
 
-import com.github.derrop.proxy.api.network.Packet;
 import io.netty.buffer.ByteBuf;
 import com.github.derrop.proxy.api.network.Packet;
 

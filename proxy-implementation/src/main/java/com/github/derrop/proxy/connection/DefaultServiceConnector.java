@@ -2,7 +2,6 @@ package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;

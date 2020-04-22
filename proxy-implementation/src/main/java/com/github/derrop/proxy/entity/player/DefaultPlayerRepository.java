@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.entity.player;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;

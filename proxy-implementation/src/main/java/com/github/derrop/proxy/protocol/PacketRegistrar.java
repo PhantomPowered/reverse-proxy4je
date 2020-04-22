@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.protocol;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;

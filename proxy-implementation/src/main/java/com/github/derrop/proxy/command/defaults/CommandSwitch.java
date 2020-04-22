@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
