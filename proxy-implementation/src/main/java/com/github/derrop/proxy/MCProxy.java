@@ -162,8 +162,6 @@ public class MCProxy extends Proxy {
     public void bootstrap(int port) throws IOException {
         PacketRegistrar.registerPackets(this.serviceRegistry.getProviderUnchecked(PacketRegistry.class));
 
-        this.proxyServer.start(new InetSocketAddress(port));
-
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
@@ -186,6 +184,8 @@ public class MCProxy extends Proxy {
         EntityTickHandler.startTick(this.serviceRegistry);
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
+
+        this.proxyServer.start(new InetSocketAddress(port));
     }
 
     private void handleCommands() {
