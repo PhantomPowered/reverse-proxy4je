@@ -94,30 +94,23 @@ public class PacketPlayServerPlayerAbilities implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        byte b0 = 0;
-
-        if (this.isInvulnerable()) {
-            b0 = (byte) (b0 | 1);
+        byte b = 0;
+        if (this.invulnerable) {
+            b |= 1;
+        }
+        if (this.flying) {
+            b |= 2;
+        }
+        if (this.allowFlying) {
+            b |= 4;
+        }
+        if (this.creativeMode) {
+            b = 8;
         }
 
-        if (this.isFlying()) {
-            b0 = (byte) (b0 | 2);
-        }
-
-        if (this.isAllowFlying()) {
-            b0 = (byte) (b0 | 4);
-        }
-
-        if (this.isCreativeMode()) {
-            b0 = (byte) (b0 | 8);
-        }
-
-        protoBuf.writeByte(b0);
+        protoBuf.writeByte(b);
         protoBuf.writeFloat(this.flySpeed);
         protoBuf.writeFloat(this.walkSpeed);
     }
 
-    public String toString() {
-        return "PacketPlayServerPlayerAbilities(invulnerable=" + this.isInvulnerable() + ", flying=" + this.isFlying() + ", allowFlying=" + this.isAllowFlying() + ", creativeMode=" + this.isCreativeMode() + ", flySpeed=" + this.getFlySpeed() + ", walkSpeed=" + this.getWalkSpeed() + ")";
-    }
 }
