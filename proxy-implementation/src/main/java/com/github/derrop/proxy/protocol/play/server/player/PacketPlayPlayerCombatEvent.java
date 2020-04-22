@@ -9,17 +9,16 @@ import org.jetbrains.annotations.NotNull;
 public class PacketPlayPlayerCombatEvent implements Packet {
 
     private Event event;
-    // TODO what are these fields for?
-    private int a;
-    private int b;
-    private int c;
+    private int playerId; // event -> ENTITY_DIED
+    private int entityId; // event -> ENTITY_DIED | END_COMBAT
+    private int duration; // event -> END_COMBAT
     private String deathMessage;
 
-    public PacketPlayPlayerCombatEvent(Event event, int a, int b, int c, String deathMessage) {
+    public PacketPlayPlayerCombatEvent(Event event, int playerId, int entityId, int duration, String deathMessage) {
         this.event = event;
-        this.a = a;
-        this.b = b;
-        this.c = c;
+        this.playerId = playerId;
+        this.entityId = entityId;
+        this.duration = duration;
         this.deathMessage = deathMessage;
     }
 
@@ -34,28 +33,28 @@ public class PacketPlayPlayerCombatEvent implements Packet {
         this.event = event;
     }
 
-    public int getA() {
-        return a;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setA(int a) {
-        this.a = a;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
-    public int getB() {
-        return b;
+    public int getEntityId() {
+        return entityId;
     }
 
-    public void setB(int b) {
-        this.b = b;
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
     }
 
-    public int getC() {
-        return c;
+    public int getDuration() {
+        return duration;
     }
 
-    public void setC(int c) {
-        this.c = c;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public String getDeathMessage() {
@@ -71,11 +70,11 @@ public class PacketPlayPlayerCombatEvent implements Packet {
         this.event = Event.values()[protoBuf.readVarInt()];
 
         if (this.event == Event.END_COMBAT) {
-            this.c = protoBuf.readVarInt();
-            this.b = protoBuf.readInt();
+            this.duration = protoBuf.readVarInt();
+            this.entityId = protoBuf.readInt();
         } else if (this.event == Event.ENTITY_DIED) {
-            this.a = protoBuf.readVarInt();
-            this.b = protoBuf.readInt();
+            this.playerId = protoBuf.readVarInt();
+            this.entityId = protoBuf.readInt();
             this.deathMessage = protoBuf.readString();
         }
     }
@@ -85,11 +84,11 @@ public class PacketPlayPlayerCombatEvent implements Packet {
         protoBuf.writeVarInt(this.event.ordinal());
 
         if (this.event == Event.END_COMBAT) {
-            protoBuf.writeVarInt(this.c);
-            protoBuf.writeInt(this.b);
+            protoBuf.writeVarInt(this.duration);
+            protoBuf.writeInt(this.entityId);
         } else if (this.event == Event.ENTITY_DIED) {
-            protoBuf.writeVarInt(this.a);
-            protoBuf.writeInt(this.b);
+            protoBuf.writeVarInt(this.playerId);
+            protoBuf.writeInt(this.entityId);
             protoBuf.writeString(this.deathMessage);
         }
     }
