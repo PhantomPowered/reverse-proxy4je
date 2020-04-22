@@ -4,10 +4,11 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class PacketPlayClientPlayerPosition implements Packet {
+public class PacketPlayClientPlayerPosition implements Packet {
 
     private boolean onGround;
 
@@ -18,10 +19,20 @@ public abstract class PacketPlayClientPlayerPosition implements Packet {
     public PacketPlayClientPlayerPosition() {
     }
 
-    public abstract Location getLocation(@Nullable Location before);
+    public Location getLocation(@Nullable Location before) {
+        throw new UnsupportedOperationException("Not supported in PacketPlayClientPlayerPosition");
+    }
 
     public boolean isOnGround() {
         return this.onGround;
+    }
+
+    public boolean isMoving() {
+        return this instanceof PacketPlayClientPosition || this instanceof PacketPlayClientPositionLook;
+    }
+
+    public boolean isRotating() {
+        return this instanceof PacketPlayClientLook || this instanceof PacketPlayClientPositionLook;
     }
 
     public static PacketPlayClientPlayerPosition create(@Nullable Location before, @NotNull Location after) {
@@ -47,5 +58,10 @@ public abstract class PacketPlayClientPlayerPosition implements Packet {
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeByte(this.onGround ? 1 : 0);
+    }
+
+    @Override
+    public int getId() {
+        return ProtocolIds.FromClient.Play.FLYING;
     }
 }

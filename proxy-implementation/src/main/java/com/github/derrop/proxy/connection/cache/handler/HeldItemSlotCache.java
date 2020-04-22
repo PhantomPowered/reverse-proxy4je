@@ -30,7 +30,7 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientHeldItemSlot;
+import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientHeldItemSlot;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
 
 public class HeldItemSlotCache implements PacketCacheHandler {
