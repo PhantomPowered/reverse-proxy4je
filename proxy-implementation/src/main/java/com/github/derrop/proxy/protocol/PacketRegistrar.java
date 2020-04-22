@@ -47,8 +47,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServ
 import com.github.derrop.proxy.protocol.play.server.entity.position.*;
 import com.github.derrop.proxy.protocol.play.server.entity.player.*;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
-import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
-import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
+import com.github.derrop.proxy.protocol.play.server.inventory.*;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
@@ -145,6 +144,10 @@ public final class PacketRegistrar {
         // Inventory
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerSetSlot());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWindowItems());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerCloseWindow());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerOpenWindow());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerWindowProgressBar());
+        registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerConfirmTransaction());
         // World
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerBlockChange());
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.PLAY, new PacketPlayServerMap());

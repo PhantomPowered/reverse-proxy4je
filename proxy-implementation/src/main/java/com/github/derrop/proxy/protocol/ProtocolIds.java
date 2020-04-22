@@ -152,7 +152,7 @@ public interface ProtocolIds {
 
             int WINDOW_ITEMS = 48;
 
-            int WINDOW_DATA = 49;
+            int WINDOW_PROGRESS_BAR = 49;
 
             int TRANSACTION = 50;
 
