@@ -79,6 +79,7 @@ public class ScoreboardCache implements PacketCacheHandler {
                 ScoreObjective scoreobjective = scoreboard.getObjective(objective.getName());
 
                 if (objective.getAction() == 1) {
+                    // TODO the scores aren't removed ("A team with the name '...' already exists!")
                     scoreboard.removeObjective(scoreobjective);
                     if (this.handler != null) {
                         this.handler.handleObjectiveUnregistered(scoreobjective);
