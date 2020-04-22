@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.connection;
 
+import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.network.ServerConnectionChannelInitializer;
 import com.github.derrop.proxy.util.NettyUtils;
 import io.netty.bootstrap.ServerBootstrap;
@@ -34,6 +35,12 @@ import java.net.SocketAddress;
 
 public class ProxyServer {
 
+    private final MCProxy proxy;
+
+    public ProxyServer(MCProxy proxy) {
+        this.proxy = proxy;
+    }
+
     private EventLoopGroup bossGroup, workerGroup;
 
     public void start(SocketAddress address) {
@@ -43,7 +50,7 @@ public class ProxyServer {
         new ServerBootstrap()
                 .channel(NettyUtils.getServerSocketChannelClass())
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .childHandler(new ServerConnectionChannelInitializer())
+                .childHandler(new ServerConnectionChannelInitializer(this.proxy))
                 .group(this.bossGroup, this.workerGroup)
                 .bind(address)
                 .syncUninterruptibly();

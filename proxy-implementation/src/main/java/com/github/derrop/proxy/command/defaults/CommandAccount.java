@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.Constants;
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -33,6 +32,7 @@ import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -48,13 +48,16 @@ import java.util.function.Predicate;
 
 public class CommandAccount extends NonTabCompleteableCommandCallback {
 
-    public CommandAccount() {
+    private ServiceRegistry registry;
+    
+    public CommandAccount(ServiceRegistry registry) {
         super("proxy.command.help", null);
+        this.registry = registry;
     }
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String fullLine) throws CommandExecutionException {
-        ServiceConnector connector = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = this.registry.getProviderUnchecked(ServiceConnector.class);
 
         if (args.length == 3 && args[0].equalsIgnoreCase("add")) {
             MCCredentials credentials = MCCredentials.parse(args[2]);

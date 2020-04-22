@@ -87,7 +87,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
     private final BasicServiceConnection connection;
 
     private NetworkAddress address;
-    private final MinecraftSessionService sessionService = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).createSessionService();
+    private final MinecraftSessionService sessionService;
     private UserAuthentication authentication;
     private MCCredentials credentials;
 
@@ -121,6 +121,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.proxy = proxy;
         this.connection = connection;
 
+        this.sessionService = proxy.getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).createSessionService();
+
         this.packetCache = new PacketCache(this);
         this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
     }
@@ -132,7 +134,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         }
 
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
+        this.authentication = this.proxy.getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
         this.credentials = credentials;
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
         return true;
@@ -166,8 +168,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.entityId = -1;
         this.dimension = -1;
 
-        if (MCProxy.getInstance() != null && this.globalAccount) {
-            MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this.connection);
+        if (this.proxy != null && this.globalAccount) {
+            this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this.connection);
         }
 
         if (this.disconnectionHandler != null) {
@@ -183,13 +185,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
-                NetworkUtils.BASE.initChannel(ch);
+                ConnectedProxyClient.this.proxy.getBaseChannelInitializer().initChannel(ch);
 
                 if (proxy != null) {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
                 }
 
-                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
+                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER,
+                        new MinecraftDecoder(ConnectedProxyClient.this.proxy.getServiceRegistry(), ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
                 ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
                 ch.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ConnectedProxyClient.this);
                 ch.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));

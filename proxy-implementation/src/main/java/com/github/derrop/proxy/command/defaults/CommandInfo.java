@@ -24,20 +24,23 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandInfo extends NonTabCompleteableCommandCallback {
 
-    public CommandInfo() {
+    private final ServiceRegistry registry;
+    
+    public CommandInfo(ServiceRegistry registry) {
         super("proxy.command.info", null);
+        this.registry = registry;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class CommandInfo extends NonTabCompleteableCommandCallback {
             commandSender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
         }
 
-        ServiceConnector connector = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = this.registry.getProviderUnchecked(ServiceConnector.class);
         commandSender.sendMessage("§7Connected clients: §e" + connector.getOnlineClients().size() + " §7(Free: §a" + connector.getFreeClients().size() + "§7)");
         return CommandResult.END;
     }

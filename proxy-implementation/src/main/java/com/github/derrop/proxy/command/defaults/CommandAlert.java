@@ -24,27 +24,30 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandAlert extends NonTabCompleteableCommandCallback {
 
-    public CommandAlert() {
+    private ServiceRegistry registry;
+
+    public CommandAlert(ServiceRegistry registry) {
         super("proxy.command.alert", null);
+        this.registry = registry;
     }
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
         String message = "§cALERT §8| §7" + ChatColor.translateAlternateColorCodes('&', String.join(" ", arguments));
 
-        for (ServiceConnection onlineClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
+        for (ServiceConnection onlineClient : this.registry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
             if (onlineClient.getPlayer() != null) {
                 onlineClient.getPlayer().sendMessage("");
                 onlineClient.getPlayer().sendMessage(message);

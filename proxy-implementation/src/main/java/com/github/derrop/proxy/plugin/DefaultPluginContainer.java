@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.plugin;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Dependency;
@@ -38,8 +37,9 @@ import java.nio.file.Path;
 
 public final class DefaultPluginContainer implements PluginContainer {
 
-    DefaultPluginContainer(Plugin plugin, Class<?> mainClass, URLClassLoader urlClassLoader, Path path) {
+    DefaultPluginContainer(Plugin plugin, ServiceRegistry registry, Class<?> mainClass, URLClassLoader urlClassLoader, Path path) {
         this.plugin = plugin;
+        this.registry = registry;
         this.mainClass = mainClass;
         this.urlClassLoader = urlClassLoader;
         this.path = path;
@@ -47,6 +47,8 @@ public final class DefaultPluginContainer implements PluginContainer {
     }
 
     private final Plugin plugin;
+
+    private final ServiceRegistry registry;
 
     private final Class<?> mainClass;
 
@@ -98,7 +100,7 @@ public final class DefaultPluginContainer implements PluginContainer {
 
     @Override
     public @NotNull ServiceRegistry getServiceRegistry() {
-        return MCProxy.getInstance().getServiceRegistry();
+        return this.registry;
     }
 
     @Override

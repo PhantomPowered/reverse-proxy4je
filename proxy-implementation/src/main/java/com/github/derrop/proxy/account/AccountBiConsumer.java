@@ -38,10 +38,16 @@ import java.util.function.BiConsumer;
 
 public class AccountBiConsumer implements BiConsumer<MCCredentials, NetworkAddress> {
 
+    private MCProxy proxy;
+
+    public AccountBiConsumer(MCProxy proxy) {
+        this.proxy = proxy;
+    }
+
     @Override
     public void accept(MCCredentials mcCredentials, NetworkAddress networkAddress) {
         try {
-            ServiceConnection connection = new BasicServiceConnection(MCProxy.getInstance(), mcCredentials, networkAddress);
+            ServiceConnection connection = new BasicServiceConnection(this.proxy, mcCredentials, networkAddress);
             connection.setReScheduleOnFailure(true);
 
             connection.connect(new TaskFutureListener<Boolean>() {

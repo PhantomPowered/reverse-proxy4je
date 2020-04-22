@@ -29,17 +29,21 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 public class CommandSwitch extends NonTabCompleteableCommandCallback {
 
-    public CommandSwitch() {
+    private final ServiceRegistry registry;
+    
+    public CommandSwitch(ServiceRegistry registry) {
         super("proxy.command.switch", null);
+        this.registry = registry;
     }
 
     @Override
@@ -53,22 +57,21 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
             commandSender.sendMessage("switch <account> | switch to another account");
             commandSender.sendMessage("Available clients:");
 
-            for (ServiceConnection freeClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
+            for (ServiceConnection freeClient : this.registry.getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
                 commandSender.sendMessage("- " + freeClient.getName());
             }
 
             return CommandResult.END;
         }
 
-        Optional<? extends ServiceConnection> optionalClient = MCProxy.getInstance()
-                .getServiceRegistry().getProviderUnchecked(ServiceConnector.class)
+        Optional<? extends ServiceConnection> optionalClient = this.registry.getProviderUnchecked(ServiceConnector.class)
                 .getFreeClients()
                 .stream()
                 .filter(proxyClient -> arguments[0].equalsIgnoreCase(proxyClient.getName()))
                 .findFirst();
         if (!optionalClient.isPresent()) {
             commandSender.sendMessage("§cThat account does not exist, available:");
-            for (ServiceConnection freeClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
+            for (ServiceConnection freeClient : this.registry.getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
                 commandSender.sendMessage("- " + freeClient.getName());
             }
 

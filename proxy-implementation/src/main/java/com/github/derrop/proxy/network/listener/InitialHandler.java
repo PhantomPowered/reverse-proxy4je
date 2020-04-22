@@ -247,7 +247,7 @@ public class InitialHandler {
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientPacketListener(player));
 
-                ServiceConnection client = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
+                ServiceConnection client = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
 
                 PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player, client));
                 if (!channel.isConnected()) {

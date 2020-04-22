@@ -24,14 +24,14 @@
  */
 package com.github.derrop.proxy.account;
 
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.KickedException;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.chat.ChatColor;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.KickedException;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.BufferedReader;
@@ -42,18 +42,23 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+// TODO as plugin
 public class BanTester {
 
     private static final Path DATA_PATH = Paths.get("proxy_info.txt");
 
+    private MCProxy proxy;
+    
     private NetworkAddress[] proxies;
     private int currentProxyIndex = 0;
 
-    public BanTester() {
+    public BanTester(MCProxy proxy) {
+        this.proxy = proxy;
         try {
             this.init();
         } catch (IOException exception) {
@@ -139,7 +144,7 @@ public class BanTester {
                         return false;
 
                     case BANNED:
-                        MCProxy.getInstance().getLogger().warn("Account " + proxyClient.getAccountName() + "#" + proxyClient.getAccountUUID() + " (" + credentials.getEmail() + ") is banned on " + address);
+                        this.proxy.getLogger().warn("Account " + proxyClient.getAccountName() + "#" + proxyClient.getAccountUUID() + " (" + credentials.getEmail() + ") is banned on " + address);
                         ++this.currentProxyIndex; // prevent that more accounts get banned while connecting through this proxy
                         this.writeIndex();
                         return true;

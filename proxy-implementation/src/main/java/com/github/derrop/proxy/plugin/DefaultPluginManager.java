@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.plugin;
 
 import com.github.derrop.proxy.Constants;
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginManager;
@@ -63,12 +62,15 @@ public final class DefaultPluginManager implements PluginManager {
 
     private final Collection<Path> toLoad = new CopyOnWriteArrayList<>();
 
-    public DefaultPluginManager(Path pluginsDirectory) {
+    private final Path pluginsDirectory;
+    
+    private final ServiceRegistry registry;
+
+    public DefaultPluginManager(Path pluginsDirectory, ServiceRegistry registry) {
         this.pluginsDirectory = pluginsDirectory;
+        this.registry = registry;
         IOUtils.createDirectories(pluginsDirectory);
     }
-
-    private final Path pluginsDirectory;
 
     @Override
     public @NotNull Optional<PluginContainer> fromInstance(@NotNull Object instance) {
@@ -217,7 +219,7 @@ public final class DefaultPluginManager implements PluginManager {
                 }
 
                 Duo<Class<?>, Plugin> mainClass = mainClassPossibilities.get(0);
-                PluginContainer container = new DefaultPluginContainer(mainClass.getRight(), mainClass.getLeft(), classLoader, path);
+                PluginContainer container = new DefaultPluginContainer(mainClass.getRight(), this.registry, mainClass.getLeft(), classLoader, path);
 
                 Object instance;
                 try {
@@ -380,12 +382,12 @@ public final class DefaultPluginManager implements PluginManager {
         for (int i = 0; i < method.getParameters().length; i++) {
             Class<?> type = method.getParameters()[i].getType();
             if (Proxy.class.isAssignableFrom(type)) {
-                parameters[i] = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(Proxy.class);
+                parameters[i] = this.registry.getProviderUnchecked(Proxy.class);
                 continue;
             }
 
             if (ServiceRegistry.class.isAssignableFrom(type)) {
-                parameters[i] = MCProxy.getInstance().getServiceRegistry();
+                parameters[i] = this.registry;
                 continue;
             }
 
@@ -394,7 +396,7 @@ public final class DefaultPluginManager implements PluginManager {
                 continue;
             }
 
-            throw new IllegalStateException("Expecting type plugin container, service registry or proxy not " + type.getName());
+            throw new IllegalStateException("Expecting type plugin container, service registry or proxy, not " + type.getName());
         }
 
         method.invoke(instance, parameters);

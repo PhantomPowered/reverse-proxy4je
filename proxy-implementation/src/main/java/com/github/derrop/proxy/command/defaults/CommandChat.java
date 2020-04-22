@@ -24,13 +24,13 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -39,13 +39,16 @@ import java.util.stream.Collectors;
 
 public class CommandChat extends NonTabCompleteableCommandCallback {
 
-    public CommandChat() {
+    private ServiceRegistry registry;
+
+    public CommandChat(ServiceRegistry registry) {
         super("proxy.command.chat", null);
+        this.registry = registry;
     }
 
     @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
-        ServiceConnector connector = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = this.registry.getProviderUnchecked(ServiceConnector.class);
 
         if (arguments.length < 2) {
             commandSender.sendMessage("chat <ALL|name> <message> | send a message as a specific user");

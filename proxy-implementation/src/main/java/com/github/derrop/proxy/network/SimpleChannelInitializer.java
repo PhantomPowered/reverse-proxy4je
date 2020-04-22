@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.network;
 
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.network.length.LengthFrameDecoder;
 import com.github.derrop.proxy.network.listener.InitialListener;
@@ -36,6 +37,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SimpleChannelInitializer extends ChannelInitializer<Channel> {
 
+    private final ServiceRegistry registry;
+
+    public SimpleChannelInitializer(ServiceRegistry registry) {
+        this.registry = registry;
+    }
+
     @Override
     public void initChannel(@NotNull Channel channel) {
         channel.config().setOption(ChannelOption.IP_TOS, NetworkUtils.roundedPowDouble(4.899, 2));
@@ -46,6 +53,6 @@ public final class SimpleChannelInitializer extends ChannelInitializer<Channel> 
                 .addLast(NetworkUtils.TIMEOUT, new ReadTimeoutHandler(15))
                 .addLast(NetworkUtils.LENGTH_DECODER, new LengthFrameDecoder())
                 .addLast(NetworkUtils.LENGTH_ENCODER, NetworkUtils.LENGTH_FRAME_ENCODER)
-                .addLast(NetworkUtils.ENDPOINT, new HandlerEndpoint(new InitialListener()));
+                .addLast(NetworkUtils.ENDPOINT, new HandlerEndpoint(this.registry, new InitialListener()));
     }
 }

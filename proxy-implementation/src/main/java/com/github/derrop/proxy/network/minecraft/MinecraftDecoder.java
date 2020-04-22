@@ -24,11 +24,11 @@
  */
 package com.github.derrop.proxy.network.minecraft;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import io.netty.buffer.ByteBuf;
@@ -40,11 +40,13 @@ import java.util.List;
 
 public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
 
+    private final ServiceRegistry registry;
     private final ProtocolDirection direction;
 
     private ProtocolState protocolState;
 
-    public MinecraftDecoder(ProtocolDirection direction, ProtocolState protocolState) {
+    public MinecraftDecoder(ServiceRegistry registry, ProtocolDirection direction, ProtocolState protocolState) {
+        this.registry = registry;
         this.direction = direction;
         this.protocolState = protocolState;
     }
@@ -54,7 +56,7 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
         ByteBuf copy = byteBuf.copy();
 
         DefaultProtoBuf protoBuf = new DefaultProtoBuf(47, byteBuf);
-        Packet packet = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, protoBuf.readVarInt());
+        Packet packet = this.registry.getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, protoBuf.readVarInt());
         if (packet == null) {
             list.add(new DecodedPacket(new DefaultProtoBuf(47, copy), null));
             return;

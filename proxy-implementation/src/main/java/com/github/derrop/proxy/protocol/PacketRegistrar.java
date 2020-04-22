@@ -76,9 +76,7 @@ public final class PacketRegistrar {
         throw new UnsupportedOperationException();
     }
 
-    public static void registerPackets() {
-        PacketRegistry registry = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PacketRegistry.class);
-
+    public static void registerPackets(PacketRegistry registry) {
         // Handshake
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING, new PacketHandshakingClientSetProtocol());
 

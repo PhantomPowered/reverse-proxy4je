@@ -24,11 +24,11 @@
  */
 package com.github.derrop.proxy.network.handler;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
@@ -43,11 +43,14 @@ import java.net.InetSocketAddress;
 
 public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
 
+    private final ServiceRegistry registry;
+
     private NetworkChannel networkChannel;
 
     private ChannelListener channelListener;
 
-    public HandlerEndpoint(@Nullable ChannelListener channelListener) {
+    public HandlerEndpoint(@NotNull ServiceRegistry registry, @Nullable ChannelListener channelListener) {
+        this.registry = registry;
         this.channelListener = channelListener;
     }
 
@@ -129,7 +132,7 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
 
     @NotNull
     private PacketHandlerRegistry getHandlers() {
-        return MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(PacketHandlerRegistry.class);
+        return this.registry.getProviderUnchecked(PacketHandlerRegistry.class);
     }
 
 }

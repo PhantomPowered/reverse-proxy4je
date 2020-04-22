@@ -24,8 +24,10 @@
  */
 package com.github.derrop.proxy.network;
 
+import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
 import io.netty.channel.Channel;
@@ -33,12 +35,18 @@ import io.netty.channel.ChannelInitializer;
 
 public final class ServerConnectionChannelInitializer extends ChannelInitializer<Channel> {
 
+    private final MCProxy proxy;
+
+    public ServerConnectionChannelInitializer(MCProxy proxy) {
+        this.proxy = proxy;
+    }
+
     @Override
     protected void initChannel(Channel channel) {
-        NetworkUtils.BASE.initChannel(channel);
+        this.proxy.getBaseChannelInitializer().initChannel(channel);
 
         channel.pipeline()
-                .addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING))
+                .addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(this.proxy.getServiceRegistry(), ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING))
                 .addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_CLIENT));
     }
 }

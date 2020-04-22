@@ -25,16 +25,15 @@
 package com.github.derrop.proxy.connection.velocity;
 
 import com.github.derrop.proxy.Constants;
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import com.github.derrop.proxy.api.network.util.PositionedPacket;
 
 import java.util.Arrays;
 
@@ -127,10 +126,10 @@ public class PlayerVelocityHandler {
         this.onGround = (int) y == y;
     }
 
-    public static void start() {
+    public static void start(ServiceRegistry registry) {
         Constants.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.interrupted()) {
-                for (ServiceConnection onlineClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
+                for (ServiceConnection onlineClient : registry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                     if (onlineClient.getPlayer() != null) {
                         continue;
                     }

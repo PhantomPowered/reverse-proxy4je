@@ -24,22 +24,25 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 public class CommandForEach extends NonTabCompleteableCommandCallback {
 
-    public CommandForEach() {
+    private final ServiceRegistry registry;
+    
+    public CommandForEach(ServiceRegistry registry) {
         super("proxy.command.foreach", null);
+        this.registry = registry;
     }
 
     @Override
@@ -58,7 +61,7 @@ public class CommandForEach extends NonTabCompleteableCommandCallback {
         if (arguments[0].equalsIgnoreCase("execute")) {
             commandSender.sendMessage("Executing the commands...");
             ServiceConnection selfClient = ((Player) commandSender).getConnectedClient();
-            for (ServiceConnection onlineClient : MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
+            for (ServiceConnection onlineClient : this.registry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                 if (selfClient == null || (onlineClient.getUniqueId() != null && !onlineClient.getUniqueId().equals(selfClient.getUniqueId()))) {
                     ((Player) commandSender).chat(message.replace("{name}", onlineClient.getName() == null ? "null" : onlineClient.getName()));
                 }

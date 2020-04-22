@@ -57,8 +57,6 @@ public final class NetworkUtils {
     public static final String DE_COMPRESSOR = "de-compressor";
 
 
-    public static final SimpleChannelInitializer BASE = new SimpleChannelInitializer();
-
     public static final MessageToByteEncoder<ByteBuf> LENGTH_FRAME_ENCODER = new LengthFrameEncoder();
 
     public static final WriteBufferWaterMark WATER_MARK = new WriteBufferWaterMark(524288, 2097152);

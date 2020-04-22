@@ -85,7 +85,7 @@ public class ClientPacketHandler {
 
         if (chat.getMessage().startsWith("/proxy ")) {
             try {
-                CommandMap commandMap = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(CommandMap.class);
+                CommandMap commandMap = player.getProxy().getServiceRegistry().getProviderUnchecked(CommandMap.class);
                 if (commandMap.process(player, chat.getMessage().replaceFirst("/proxy ", "")) != CommandResult.NOT_FOUND) {
                     throw CancelProceedException.INSTANCE;
                 }

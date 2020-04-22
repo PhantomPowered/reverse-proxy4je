@@ -321,7 +321,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             return;
         }
 
-        ServiceConnection nextClient = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this);
+        ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this);
         if (nextClient == null || nextClient.equals(connection)) {
             this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
                     + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));
@@ -332,7 +332,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         this.sendMessage(ChatMessageType.CHAT, reason);
         this.sendActionBar(200, actionBar);
 
-        ProvidedTitle title = MCProxy.getInstance()
+        ProvidedTitle title = this.proxy
                 .createTitle()
                 .title("§cDisconnected")
                 .fadeIn(20)

@@ -26,6 +26,7 @@ package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -33,6 +34,7 @@ import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -45,8 +47,11 @@ import java.util.stream.Collectors;
 
 public class CommandConnect extends NonTabCompleteableCommandCallback {
 
-    public CommandConnect() {
+    private ServiceRegistry registry;
+    
+    public CommandConnect(ServiceRegistry registry) {
         super("proxy.command.connect", null);
+        this.registry = registry;
     }
 
     private CompletableFuture<Void> connect(ServiceConnection connection, NetworkAddress address) {
@@ -60,7 +65,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             player.disableAutoReconnect();
             player.useClient(null);
 
-            ProvidedTitle title = MCProxy.getInstance()
+            ProvidedTitle title = this.registry.getProviderUnchecked(Proxy.class)
                     .createTitle()
                     .title("§7Connecting to")
                     .subTitle("§e" + address + "§7...")
@@ -69,7 +74,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         }
 
         try {
-            ServiceConnection newClient = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).createConnection(connection.getCredentials(), address);
+            ServiceConnection newClient = this.registry.getProviderUnchecked(ServiceConnector.class).createConnection(connection.getCredentials(), address);
 
             try {
                 connection.close();
@@ -79,7 +84,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
 
             return newClient.connect().thenAccept(success -> {
                 if (player != null) {
-                    player.sendTitle(MCProxy.getInstance().createTitle().reset());
+                    player.sendTitle(this.registry.getProviderUnchecked(Proxy.class).createTitle().reset());
                     player.enableAutoReconnect();
                     if (success) {
                         player.useClientSafe(newClient);
@@ -89,7 +94,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
                 }
             }).exceptionally(throwable -> {
                 if (player != null) {
-                    player.sendTitle(MCProxy.getInstance().createTitle().reset());
+                    player.sendTitle(this.registry.getProviderUnchecked(Proxy.class).createTitle().reset());
                     player.sendActionBar(200, TextComponent.of(throwable.getMessage().replace('\n', ' ')));
                     this.fallback(player, connection, throwable);
                 }
@@ -103,7 +108,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
     }
 
     private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
-        ServiceConnection nextClient = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
+        ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
         if (nextClient == null || nextClient.equals(oldClient)) {
             player.disconnect(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason"));
             return;
@@ -152,7 +157,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
-            Collection<ServiceConnection> clients = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ServiceConnector.class)
+            Collection<ServiceConnection> clients = this.registry.getProviderUnchecked(ServiceConnector.class)
                     .getOnlineClients().stream()
                     .filter(proxyClient -> arguments[0].equalsIgnoreCase("all") || arguments[0].equalsIgnoreCase(proxyClient.getName()))
                     .collect(Collectors.toList());

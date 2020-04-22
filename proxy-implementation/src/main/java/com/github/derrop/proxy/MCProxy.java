@@ -34,19 +34,15 @@ import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.plugin.PluginManager;
-import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
-import com.github.derrop.proxy.api.util.MCCredentials;
-import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
@@ -58,11 +54,11 @@ import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
 import com.github.derrop.proxy.connection.handler.PingPacketHandler;
 import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
-import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.logging.ILogger;
+import com.github.derrop.proxy.network.SimpleChannelInitializer;
 import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
@@ -74,41 +70,30 @@ import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import com.github.derrop.proxy.title.BasicTitle;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 public class MCProxy extends Proxy {
 
     private static final Path ACCOUNT_PATH = Paths.get("accounts.txt");
 
-    private static MCProxy instance;
-
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
 
-    private ProxyServer proxyServer = new ProxyServer();
+    private ProxyServer proxyServer = new ProxyServer(this);
     private PermissionProvider permissionProvider = new PermissionProvider();
     private AccountReader accountReader = new AccountReader();
+
+    private SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
 
     private final ILogger logger;
 
     protected MCProxy(@NotNull ILogger logger) {
-        instance = this;
-
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
@@ -117,7 +102,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
 
-        this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(), false, true);
+        this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
 
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
@@ -162,27 +147,26 @@ public class MCProxy extends Proxy {
         return new BasicTitle();
     }
 
+    public SimpleChannelInitializer getBaseChannelInitializer() {
+        return this.baseChannelInitializer;
+    }
 
     public PermissionProvider getPermissionProvider() {
-        return permissionProvider;
+        return this.permissionProvider;
     }
 
     public ILogger getLogger() {
-        return logger;
-    }
-
-    public static MCProxy getInstance() {
-        return instance;
+        return this.logger;
     }
 
     public void bootstrap(int port) throws IOException {
-        PacketRegistrar.registerPackets();
+        PacketRegistrar.registerPackets(this.serviceRegistry.getProviderUnchecked(PacketRegistry.class));
 
         this.proxyServer.start(new InetSocketAddress(port));
 
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
-        this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins")), false, true);
+        this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
 
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
 
@@ -198,7 +182,7 @@ public class MCProxy extends Proxy {
             this.accountReader.writeDefaults(ACCOUNT_PATH);
         }
 
-        this.accountReader.readAccounts(ACCOUNT_PATH, new AccountBiConsumer());
+        this.accountReader.readAccounts(ACCOUNT_PATH, new AccountBiConsumer(this));
         EntityTickHandler.startTick(this.serviceRegistry);
 
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
@@ -207,16 +191,16 @@ public class MCProxy extends Proxy {
     private void handleCommands() {
         CommandMap commandMap = new DefaultCommandMap();
 
-        commandMap.registerCommand(null, new CommandAccount(), "acc", "account");
-        commandMap.registerCommand(null, new CommandAlert(), "alert");
-        commandMap.registerCommand(null, new CommandChat(), "chat");
-        commandMap.registerCommand(null, new CommandConnect(), "connect");
-        commandMap.registerCommand(null, new CommandForEach(), "foreach");
+        commandMap.registerCommand(null, new CommandAccount(this.serviceRegistry), "acc", "account");
+        commandMap.registerCommand(null, new CommandAlert(this.serviceRegistry), "alert");
+        commandMap.registerCommand(null, new CommandChat(this.serviceRegistry), "chat");
+        commandMap.registerCommand(null, new CommandConnect(this.serviceRegistry), "connect");
+        commandMap.registerCommand(null, new CommandForEach(this.serviceRegistry), "foreach");
         commandMap.registerCommand(null, new CommandHelp(commandMap), "help", "ask", "?");
-        commandMap.registerCommand(null, new CommandInfo(), "info", "information", "i");
-        commandMap.registerCommand(null, new CommandKick(), "kick");
-        commandMap.registerCommand(null, new CommandList(), "list", "glist");
-        commandMap.registerCommand(null, new CommandSwitch(), "switch");
+        commandMap.registerCommand(null, new CommandInfo(this.serviceRegistry), "info", "information", "i");
+        commandMap.registerCommand(null, new CommandKick(this.serviceRegistry), "kick");
+        commandMap.registerCommand(null, new CommandList(this.serviceRegistry), "list", "glist");
+        commandMap.registerCommand(null, new CommandSwitch(this.serviceRegistry), "switch");
 
         commandMap.registerCommand(null, new CommandAdf(), "adf");
 

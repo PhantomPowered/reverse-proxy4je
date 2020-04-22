@@ -87,7 +87,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         }
 
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = MCProxy.getInstance().getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
+        this.authentication = proxy.getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
     }
 
@@ -298,7 +298,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
                 if (exception.getCause() instanceof KickedException) {
                     if (BanTester.isBanned(exception.getMessage()) == BanTester.BanTestResult.BANNED) {
                         BANNED_ADDRESSES.add(this.networkAddress);
-                        MCProxy.getInstance().getLogger().warn("Preventing connections to " + networkAddress + " because " + credentials.getEmail() + " is banned");
+                        this.proxy.getLogger().warn("Preventing connections to " + networkAddress + " because " + credentials.getEmail() + " is banned");
                         return;
                     }
                 }
