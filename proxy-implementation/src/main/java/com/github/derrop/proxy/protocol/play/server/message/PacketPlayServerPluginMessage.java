@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.protocol.play.server;
+package com.github.derrop.proxy.protocol.play.server.message;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
@@ -30,53 +30,69 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerChatMessage implements Packet {
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
 
-    private String message;
-    private byte position;
+public class PacketPlayServerPluginMessage implements Packet {
 
-    public PacketPlayServerChatMessage(String message) {
-        this(message, (byte) 0);
+    private String tag;
+    private byte[] data;
+
+    public PacketPlayServerPluginMessage(String tag, byte[] data) {
+        this.tag = tag;
+        this.data = data;
     }
 
-    public PacketPlayServerChatMessage(String message, byte position) {
-        this.message = message;
-        this.position = position;
+    public PacketPlayServerPluginMessage() {
     }
 
-    public PacketPlayServerChatMessage() {
+    public DataInput getStream() {
+        return new DataInputStream(new ByteArrayInputStream(data));
     }
 
     @Override
     public int getId() {
-        return ProtocolIds.ToClient.Play.CHAT;
+        return ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.message = protoBuf.readString();
-        this.position = protoBuf.readByte();
+        this.tag = protoBuf.readString();
+
+        int maxLength = this.getId() == ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD ? 1048576 : Short.MAX_VALUE;
+        if (protoBuf.readableBytes() > maxLength) {
+            this.data = new byte[0];
+            return;
+        }
+
+        this.data = new byte[protoBuf.readableBytes()];
+        protoBuf.readBytes(this.data);
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeString(this.message);
-        protoBuf.writeByte(this.position);
+        protoBuf.writeString(this.tag);
+        protoBuf.writeBytes(this.data);
     }
 
-    public String getMessage() {
-        return this.message;
+    public String getTag() {
+        return this.tag;
     }
 
-    public byte getPosition() {
-        return this.position;
+    public byte[] getData() {
+        return this.data;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     public String toString() {
-        return "PacketPlayServerChatMessage(message=" + this.getMessage() + ", position=" + this.getPosition() + ")";
+        return "PacketPlayServerPluginMessage(tag=" + this.getTag() + ", data=" + java.util.Arrays.toString(this.getData()) + ")";
     }
 }

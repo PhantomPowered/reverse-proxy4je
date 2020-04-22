@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.protocol.play.server;
+package com.github.derrop.proxy.protocol.play.server.message;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
@@ -30,45 +30,41 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerPlayerListHeaderFooter implements Packet {
+public class PacketPlayServerKickPlayer implements Packet {
 
-    private String header;
-    private String footer;
+    private String message;
 
-    public PacketPlayServerPlayerListHeaderFooter(String header, String footer) {
-        this.header = header;
-        this.footer = footer;
+    public PacketPlayServerKickPlayer(String message) {
+        this.message = message;
     }
 
-    public PacketPlayServerPlayerListHeaderFooter() {
+    public PacketPlayServerKickPlayer() {
     }
 
     @Override
     public int getId() {
-        return ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER;
+        return ProtocolIds.ToClient.Play.KICK_DISCONNECT;
     }
 
-    public String getHeader() {
-        return this.header;
+    public String getMessage() {
+        return this.message;
     }
 
-    public String getFooter() {
-        return this.footer;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.header = protoBuf.readString();
-        this.footer = protoBuf.readString();
+        this.message = protoBuf.readString();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeString(this.header);
-        protoBuf.writeString(this.footer);
+        protoBuf.writeString(this.message);
     }
 
     public String toString() {
-        return "PacketPlayServerPlayerListHeaderFooter(header=" + this.getHeader() + ", footer=" + this.getFooter() + ")";
+        return "PacketPlayServerKickPlayer(message=" + this.getMessage() + ")";
     }
 }

@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.protocol.play.client;
 
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
 
 public class PacketPlayClientCustomPayload extends PacketPlayServerPluginMessage {
 

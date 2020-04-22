@@ -48,6 +48,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.position.*;
 import com.github.derrop.proxy.protocol.play.server.entity.player.*;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.*;
 import com.github.derrop.proxy.protocol.play.server.inventory.*;
+import com.github.derrop.proxy.protocol.play.server.message.*;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;

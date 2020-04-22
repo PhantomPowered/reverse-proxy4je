@@ -42,7 +42,7 @@ import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequ
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;

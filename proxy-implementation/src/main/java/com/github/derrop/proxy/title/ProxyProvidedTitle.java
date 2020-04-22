@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.title;
 
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTitle;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;

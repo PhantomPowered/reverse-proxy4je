@@ -53,7 +53,7 @@ import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutServerKickPlayer;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
