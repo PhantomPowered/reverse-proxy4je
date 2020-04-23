@@ -24,19 +24,24 @@
  */
 package com.github.derrop.proxy.plugins.pathfinding;
 
+import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
+
 import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Path {
 
+    private BlockPos beginPos;
     private Queue<PathPoint> points;
     private PathPoint[] allPoints;
     private boolean started;
     private boolean recursive;
     private boolean success;
 
-    public Path(Queue<PathPoint> points) {
+    public Path(BlockPos beginPos, Queue<PathPoint> points) {
+        this.beginPos = beginPos;
         this.points = points;
         this.success = !points.isEmpty();
     }
@@ -73,6 +78,24 @@ public class Path {
         }
 
         return this.points.poll();
+    }
+
+    public boolean hasPointsLeft() {
+        return !this.points.isEmpty();
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
+
+    public Location getAbsoluteLocation(PathPoint point) {
+        return new Location(
+                this.beginPos.getX() + point.getX(),
+                this.beginPos.getY() + point.getY() + 1,
+                this.beginPos.getZ() + point.getZ(),
+                0,
+                0
+        );
     }
 
     @Override

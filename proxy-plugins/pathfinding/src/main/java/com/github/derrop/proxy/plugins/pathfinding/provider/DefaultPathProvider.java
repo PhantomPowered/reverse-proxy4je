@@ -41,7 +41,7 @@ public class DefaultPathProvider implements PathProvider {
 
     @Override
     public Path findShortestPath(@NotNull BlockAccess access, @NotNull BlockPos start, @NotNull BlockPos end) {
-        return new Path(this.aStarPathFinder.findPath(access, start, end));
+        return new Path(start, this.aStarPathFinder.findPath(access, start, end));
     }
 
     @Override
@@ -51,6 +51,6 @@ public class DefaultPathProvider implements PathProvider {
 
     @Override
     public Path findRectanglePath(@NotNull BlockAccess access, @Nullable BlockPos start, @NotNull BlockPos pos1, @NotNull BlockPos pos2) {
-        return new Path(this.rectanglePathFinder.findRectanglePath(access, start, pos1, pos2));
+        return new Path(start, this.rectanglePathFinder.findRectanglePath(access, start, pos1, pos2));
     }
 }

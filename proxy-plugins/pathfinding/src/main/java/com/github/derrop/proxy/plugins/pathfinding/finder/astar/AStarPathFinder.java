@@ -131,7 +131,7 @@ public class AStarPathFinder {
         PathPoint[] array = points.toArray(new PathPoint[0]);
         Queue<PathPoint> result = new ConcurrentLinkedQueue<>();
 
-        for (int i = array.length - 1; i >= 0; i++) {
+        for (int i = array.length - 1; i >= 0; i--) {
             result.add(array[i]);
         }
 
