@@ -34,6 +34,7 @@ import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.handler.*;
+import com.github.derrop.proxy.connection.cache.handler.entity.EntityCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerGameStateChange;

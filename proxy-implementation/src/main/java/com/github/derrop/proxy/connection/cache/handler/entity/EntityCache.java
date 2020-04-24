@@ -22,45 +22,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.connection.cache.handler;
+package com.github.derrop.proxy.connection.cache.handler.entity;
 
-import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
-import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntity;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntityWeather;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 public class EntityCache implements PacketCacheHandler {
 
-    private final Map<Integer, PositionedPacket> entities = new ConcurrentHashMap<>();
-    private final Map<Integer, PacketPlayServerEntityMetadata> metadata = new ConcurrentHashMap<>();
+    private final Map<Integer, CachedEntity> entities = new ConcurrentHashMap<>();
 
     private PacketCache packetCache;
 
-    // todo the entity equipment packet is ignored
     @Override
     public int[] getPacketIDs() {
         return new int[]{
                 ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN,
-                ProtocolIds.ToClient.Play.SPAWN_ENTITY_WEATHER,
                 ProtocolIds.ToClient.Play.ENTITY_DESTROY,
                 ProtocolIds.ToClient.Play.ENTITY_TELEPORT,
                 ProtocolIds.ToClient.Play.ENTITY_EQUIPMENT,
@@ -78,48 +72,38 @@ public class EntityCache implements PacketCacheHandler {
 
         if (packet instanceof PacketPlayServerEntityTeleport) {
 
-            PacketPlayServerEntityTeleport entityTeleport = (PacketPlayServerEntityTeleport) packet;
+            PacketPlayServerEntityTeleport teleport = (PacketPlayServerEntityTeleport) packet;
 
-            if (this.entities.containsKey(entityTeleport.getEntityId())) {
-                PositionedPacket entity = this.entities.get(entityTeleport.getEntityId());
-                entity.setX(entityTeleport.getX());
-                entity.setY(entityTeleport.getY());
-                entity.setZ(entityTeleport.getZ());
-                entity.setYaw(entityTeleport.getYaw());
-                entity.setPitch(entityTeleport.getPitch());
+            if (this.entities.containsKey(teleport.getEntityId())) {
+                this.entities.get(teleport.getEntityId()).updateLocation(
+                        teleport.getX(), teleport.getY(), teleport.getZ(),
+                        teleport.getYaw(), teleport.getPitch()
+                );
             }
 
         } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
 
             PacketPlayServerNamedEntitySpawn spawnPlayer = (PacketPlayServerNamedEntitySpawn) packet;
 
-            this.entities.put(spawnPlayer.getEntityId(), spawnPlayer);
+            this.entities.put(spawnPlayer.getEntityId(), new CachedEntity(spawnPlayer));
 
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
 
             PacketPlayServerSpawnLivingEntity spawnMob = (PacketPlayServerSpawnLivingEntity) packet;
 
-            this.entities.put(spawnMob.getEntityId(), spawnMob);
+            this.entities.put(spawnMob.getEntityId(), new CachedEntity(spawnMob));
 
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
 
             PacketPlayServerSpawnEntity spawnObject = (PacketPlayServerSpawnEntity) packet;
 
-            this.entities.put(spawnObject.getEntityId(), spawnObject);
-
-        } else if (packet instanceof PacketPlayServerSpawnEntityWeather) {
-
-            PacketPlayServerSpawnEntityWeather spawnGlobalEntity = (PacketPlayServerSpawnEntityWeather) packet;
-
-            this.entities.put(spawnGlobalEntity.getEntityId(), spawnGlobalEntity);
+            this.entities.put(spawnObject.getEntityId(), new CachedEntity(spawnObject));
 
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
 
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
-            if (this.metadata.containsKey(metadata.getEntityId())) {
-                this.metadata.get(metadata.getEntityId()).getWatchableObjects().addAll(metadata.getWatchableObjects());
-            } else {
-                this.metadata.put(metadata.getEntityId(), metadata);
+            if (this.entities.containsKey(metadata.getEntityId())) {
+                this.entities.get(metadata.getEntityId()).updateMetadata(metadata);
             }
 
         } else if (packet instanceof PacketPlayServerEntityDestroy) {
@@ -127,7 +111,13 @@ public class EntityCache implements PacketCacheHandler {
             PacketPlayServerEntityDestroy destroyEntities = (PacketPlayServerEntityDestroy) packet;
             for (int entityId : destroyEntities.getEntityIds()) {
                 this.entities.remove(entityId);
-                this.metadata.remove(entityId);
+            }
+
+        } else if (packet instanceof PacketPlayServerEntityEquipment) {
+
+            PacketPlayServerEntityEquipment equipment = (PacketPlayServerEntityEquipment) packet;
+            if (this.entities.containsKey(equipment.getEntityId())) {
+                this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem());
             }
 
         }
@@ -140,23 +130,8 @@ public class EntityCache implements PacketCacheHandler {
         }
         PlayerInfoCache infoCache = (PlayerInfoCache) this.packetCache.getHandler(handler -> handler instanceof PlayerInfoCache);
 
-        for (PositionedPacket packet : this.entities.values()) {
-            if (packet instanceof PacketPlayServerNamedEntitySpawn && !infoCache.isCached(((PacketPlayServerNamedEntitySpawn) packet).getPlayerId())) {
-                // NPCs might get removed out of the player list after they have been spawned, but the client doesn't spawn them without them being in the list
-                PacketPlayServerPlayerInfo.Item item = infoCache.getRemovedItem(((PacketPlayServerNamedEntitySpawn) packet).getPlayerId());
-                con.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.ADD_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item}));
-                con.sendPacket(packet);
-                Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(
-                        () -> con.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item})),
-                        500, TimeUnit.MILLISECONDS
-                );
-            } else {
-                con.sendPacket(packet);
-            }
-        }
-
-        for (PacketPlayServerEntityMetadata metadata : this.metadata.values()) {
-            con.sendPacket(metadata);
+        for (CachedEntity entity : this.entities.values()) {
+            entity.spawn(infoCache, con);
         }
     }
 
