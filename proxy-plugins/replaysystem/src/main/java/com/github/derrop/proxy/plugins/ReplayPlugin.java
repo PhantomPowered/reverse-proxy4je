@@ -24,7 +24,15 @@
  */
 package com.github.derrop.proxy.plugins;
 
+import com.github.derrop.proxy.api.command.CommandMap;
+import com.github.derrop.proxy.api.plugin.PluginContainer;
+import com.github.derrop.proxy.api.plugin.PluginState;
+import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.replay.ReplaySystem;
+
+import java.io.IOException;
 
 @Plugin(
         id = "com.github.derrop.plugins.replay",
@@ -33,6 +41,17 @@ import com.github.derrop.proxy.api.plugin.annotation.Plugin;
         website = "https://github.com/derrop",
         authors = "derrop"
 )
-public class ReplayPlugin { // TODO
+public class ReplayPlugin {
+
+    @Inject(state = PluginState.ENABLED)
+    public void enable(PluginContainer container, ServiceRegistry registry) {
+        try {
+            registry.setProvider(container, ReplaySystem.class, new ReplaySystem(), false, true);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+        registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandReplay(registry), "replay");
+    }
 
 }

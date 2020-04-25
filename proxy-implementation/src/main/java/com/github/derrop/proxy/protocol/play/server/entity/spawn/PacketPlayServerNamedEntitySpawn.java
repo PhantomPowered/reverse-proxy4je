@@ -25,11 +25,13 @@
 package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import com.github.derrop.proxy.util.DataWatcher;
+import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -58,6 +60,14 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.pitch = pitch;
         this.currentItem = currentItem;
         this.watchableObjects = watchableObjects;
+    }
+
+    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, Location location, short currentItem, List<DataWatcher.WatchableObject> watchableObjects) {
+        this(entityId, playerId,
+                PlayerPositionPacketUtil.getFixLocation(location.getX()), PlayerPositionPacketUtil.getFixLocation(location.getY()), PlayerPositionPacketUtil.getFixLocation(location.getZ()),
+                PlayerPositionPacketUtil.getFixRotation(location.getYaw()), PlayerPositionPacketUtil.getFixRotation(location.getPitch()),
+                currentItem, watchableObjects
+        );
     }
 
     public PacketPlayServerNamedEntitySpawn() {

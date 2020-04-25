@@ -24,9 +24,44 @@
  */
 package com.github.derrop.proxy.plugins.replay;
 
+import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.util.DataWatcher;
+import com.google.common.base.Preconditions;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+
 public class ReplaySystem { // TODO
 
-/*    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
     private Path replayDirectory;
 
     private Map<ReplayInfo, ReplayOutputStream> runningReplays = new ConcurrentHashMap<>();
@@ -76,17 +111,17 @@ public class ReplaySystem { // TODO
         return new UUID[0];
     }
 
-    public UUID recordReplay(ServiceConnection proxyClient, UUID creatorId, String creatorName) throws IOException, ReplayNotFoundException {
+    public UUID recordReplay(BasicServiceConnection connection, UUID creatorId, String creatorName) throws IOException, ReplayNotFoundException {
         UUID replayId = UUID.randomUUID();
 
         OutputStream outputStream = Files.newOutputStream(this.replayDirectory.resolve(replayId + ".replay"));
 
-        this.recordReplay(proxyClient, creatorId, creatorName, outputStream);
+        this.recordReplay(connection, creatorId, creatorName, outputStream);
 
         return replayId;
     }
 
-    public CompletableFuture<Boolean> playReplayAsync(UserConnection player, UUID replayId, Consumer<ReplayInfo> infoConsumer) throws ReplayNotFoundException {
+    public CompletableFuture<Boolean> playReplayAsync(Player player, UUID replayId, Consumer<ReplayInfo> infoConsumer) throws ReplayNotFoundException {
         this.getPath(replayId);
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -107,20 +142,20 @@ public class ReplaySystem { // TODO
         return future;
     }
 
-    public void playReplay(UserConnection player, UUID replayId, Consumer<ReplayInfo> infoConsumer) throws IOException, ReplayNotFoundException {
+    public void playReplay(Player player, UUID replayId, Consumer<ReplayInfo> infoConsumer) throws IOException, ReplayNotFoundException {
         InputStream inputStream = Files.newInputStream(this.getPath(replayId));
 
         this.playReplay(player, inputStream, infoConsumer);
     }
 
-    public void playReplay(UserConnection player, InputStream inputStream, Consumer<ReplayInfo> infoConsumer) throws IOException {
+    public void playReplay(Player player, InputStream inputStream, Consumer<ReplayInfo> infoConsumer) throws IOException {
         ReplayInputStream replayInputStream = new ReplayInputStream(inputStream);
 
         infoConsumer.accept(replayInputStream.getReplayInfo());
 
         this.executorService.execute(() -> {
             while (!replayInputStream.isClosed()) {
-                player.sendPacket(new KeepAlive(System.nanoTime()));
+                player.sendPacket(new PacketPlayKeepAlive(System.nanoTime()));
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException exception) {
@@ -149,7 +184,8 @@ public class ReplaySystem { // TODO
                 }
             }
 
-            ByteBuf buf = Unpooled.wrappedBuffer(packet.getData());
+            player.networkUnsafe().sendPacket(Unpooled.wrappedBuffer(packet.getData()));
+            /*ByteBuf buf = Unpooled.wrappedBuffer(packet.getData());
             buf.markReaderIndex();
 
             int id = DefinedPacket.readVarInt(buf);
@@ -168,14 +204,15 @@ public class ReplaySystem { // TODO
 
             buf.resetReaderIndex();
 
-            player.sendPacket(buf);
+            player.sendPacket(buf);*/
         }
     }
 
-    public ReplayOutputStream recordReplay(ServiceConnection proxyClient, UUID creatorId, String creatorName, OutputStream outputStream) throws IOException {
+    public ReplayOutputStream recordReplay(BasicServiceConnection connection, UUID creatorId, String creatorName, OutputStream outputStream) throws IOException {
+        ConnectedProxyClient proxyClient = connection.getClient();
         Preconditions.checkArgument(proxyClient.getPacketCache().getPacketHandler() == null, "already recording a replay for that client");
 
-        ReplayInfo replayInfo = new ReplayInfo(proxyClient.getAddress(), creatorId, creatorName, proxyClient.getCredentials(), System.currentTimeMillis(), proxyClient.getEntityId());
+        ReplayInfo replayInfo = new ReplayInfo(proxyClient.getServerAddress(), creatorId, creatorName, proxyClient.getCredentials(), System.currentTimeMillis(), proxyClient.getEntityId());
 
         ReplayOutputStream replayOutputStream = new ReplayOutputStream(replayInfo, this.executorService, outputStream);
 
@@ -187,50 +224,62 @@ public class ReplaySystem { // TODO
             proxyClient.setDisconnectionHandler(null);
         });
 
-        PacketReceiver receiver = packet -> {
-            if (replayOutputStream.isClosed()) {
-                return;
+        PacketSender receiver = new PacketSender() {
+            @Override
+            public void sendPacket(@NotNull Packet packet) {
+                this.networkUnsafe().sendPacket(packet);
             }
 
-            ByteBuf buf;
-
-            if (packet instanceof DefinedPacket) {
-                buf = Unpooled.buffer();
-
-                DefinedPacket definedPacket = (DefinedPacket) packet;
-
-                DefinedPacket.writeVarInt(Protocol.GAME.TO_CLIENT.getId(definedPacket.getClass(), 47), buf);
-
-                ((DefinedPacket) packet).write(buf, ProtocolConstants.Direction.TO_CLIENT, 47);
-            } else if (packet instanceof PacketWrapper) {
-                buf = ((PacketWrapper) packet).buf.copy();
-            } else if (packet instanceof ByteBuf) {
-                buf = ((ByteBuf) packet).copy();
-            } else {
-                throw new IllegalArgumentException("Invalid packet received");
+            @Override
+            public void sendPacket(@NotNull ByteBuf byteBuf) {
+                this.networkUnsafe().sendPacket(byteBuf);
             }
 
-            buf.markReaderIndex();
+            @Override
+            public @NotNull NetworkUnsafe networkUnsafe() {
+                return packet -> {
+                    if (replayOutputStream.isClosed()) {
+                        return;
+                    }
 
-            int packetId = DefinedPacket.readVarInt(buf);
+                    ByteBuf buf;
 
-            buf.resetReaderIndex();
+                    if (packet instanceof Packet) {
+                        buf = Unpooled.buffer();
 
-            if (!ReplayIDs.isReplayPacket(packetId)) {
-                return;
+                        Packet definedPacket = (Packet) packet;
+
+                        ByteBufUtils.writeVarInt(definedPacket.getId(), buf);
+
+                        definedPacket.write(new DefaultProtoBuf(47, buf), ProtocolDirection.TO_CLIENT, 47);
+                    } else if (packet instanceof ByteBuf) {
+                        buf = ((ByteBuf) packet).copy();
+                    } else {
+                        throw new IllegalArgumentException("Invalid packet received");
+                    }
+
+                    buf.markReaderIndex();
+
+                    int packetId = ByteBufUtils.readVarInt(buf);
+
+                    buf.resetReaderIndex();
+
+                    if (!ReplayIDs.isReplayPacket(packetId)) {
+                        return;
+                    }
+
+                    byte[] data = new byte[buf.readableBytes()];
+                    buf.readBytes(data);
+
+                    replayOutputStream.write(new ReplayPacket(data, System.currentTimeMillis()));
+                };
             }
-
-            byte[] data = new byte[buf.readableBytes()];
-            buf.readBytes(data);
-
-            replayOutputStream.write(new ReplayPacket(data, System.currentTimeMillis()));
         };
         for (PacketCacheHandler handler : proxyClient.getPacketCache().getHandlers()) {
             handler.sendCached(receiver);
         }
-        receiver.sendPacket(new SpawnPlayer(proxyClient.getEntityId(), UUID.fromString("fdef0011-1c58-40c8-bfef-0bdcb1495938"),
-                PlayerPositionPacketUtil.getFixLocation(proxyClient.posX), PlayerPositionPacketUtil.getFixLocation(proxyClient.posY), PlayerPositionPacketUtil.getFixLocation(proxyClient.posZ),
-                PlayerPositionPacketUtil.getFixRotation(0), PlayerPositionPacketUtil.getFixRotation(0),
+        receiver.sendPacket(new PacketPlayServerNamedEntitySpawn(proxyClient.getEntityId(), UUID.fromString("fdef0011-1c58-40c8-bfef-0bdcb1495938"),
+                connection.getLocation(),
                 (short) 0,
                 Arrays.asList(
                         new DataWatcher.WatchableObject(2, 18, 0, true),
@@ -250,25 +299,13 @@ public class ReplaySystem { // TODO
         ));
         receiver.sendPacket(proxyClient.getEntityMetadata());
 
-        AtomicBoolean lastOnGround = new AtomicBoolean();
-        proxyClient.setClientPacketHandler(packetWrapper -> {
-            if (packetWrapper.packet instanceof PlayerPosLook) {
-                lastOnGround.set(((PlayerPosLook) packetWrapper.packet).isOnGround());
-            } else if (packetWrapper.packet instanceof PlayerLook) {
-                lastOnGround.set(((PlayerLook) packetWrapper.packet).isOnGround());
-            } else if (packetWrapper.packet instanceof PlayerPosition) {
-                lastOnGround.set(((PlayerPosition) packetWrapper.packet).isOnGround());
-            }
-
-            if (packetWrapper.packet instanceof PositionedPacket) {
-                PositionedPacket packet = (PositionedPacket) packetWrapper.packet;
-                receiver.sendPacket(new EntityTeleport(proxyClient.getEntityId(),
-                        PlayerPositionPacketUtil.getFixLocation(packet.getX()),
-                        PlayerPositionPacketUtil.getFixLocation(packet.getY()),
-                        PlayerPositionPacketUtil.getFixLocation(packet.getZ()),
-                        PlayerPositionPacketUtil.getFixRotation(packet.getYaw()),
-                        PlayerPositionPacketUtil.getFixRotation(packet.getPitch()),
-                        lastOnGround.get()
+        proxyClient.setClientPacketHandler(packet -> {
+            if (packet instanceof PositionedPacket) {
+                PositionedPacket positionedPacket = (PositionedPacket) packet;
+                receiver.sendPacket(new PacketPlayServerEntityTeleport(proxyClient.getEntityId(),
+                        positionedPacket.getX(), positionedPacket.getY(), positionedPacket.getZ(),
+                        positionedPacket.getYaw(), positionedPacket.getPitch(),
+                        connection.isOnGround()
                 ));
             }
         });
@@ -281,7 +318,7 @@ public class ReplaySystem { // TODO
         });
 
         return replayOutputStream;
-    }*/
+    }
 
 
 
