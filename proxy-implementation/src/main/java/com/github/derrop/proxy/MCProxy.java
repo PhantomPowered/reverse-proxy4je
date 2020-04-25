@@ -38,10 +38,12 @@ import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
+import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
+import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
@@ -78,6 +80,9 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class MCProxy extends Proxy {
 
@@ -162,6 +167,25 @@ public class MCProxy extends Proxy {
     public void bootstrap(int port) throws IOException {
         PacketRegistrar.registerPackets(this.serviceRegistry.getProviderUnchecked(PacketRegistry.class));
 
+        /*while (!Thread.interrupted()) {
+            ServerPing ping = this.serviceRegistry.getProviderUnchecked(ServerPingProvider.class).pingServer(NetworkAddress.parse("91.218.67.147")).getUninterruptedly(5, TimeUnit.SECONDS);
+            if (ping == null) {
+                System.out.println(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date()) + ": ERROR");
+            } else {
+                System.out.println(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date()) + ": " + ping.getPlayers().getOnline() + "/" + ping.getPlayers().getMax());
+            }
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
+        }
+
+        if (true) {
+            return;u
+        }*/
+
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
@@ -211,5 +235,7 @@ public class MCProxy extends Proxy {
     //  Or maybe an extra program (like a labymod addon) or a standalone program which can be opened on a second screen (or the mobile?) to display some information
     //  Or maybe just a website for that?
     //  And add bac click limit disable
+
+    // TODO every lightning is cached, this should not be the case
 
 }

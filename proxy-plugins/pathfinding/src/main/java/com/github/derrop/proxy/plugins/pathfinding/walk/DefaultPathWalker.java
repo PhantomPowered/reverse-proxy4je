@@ -1,18 +1,21 @@
 package com.github.derrop.proxy.plugins.pathfinding.walk;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
 import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DefaultPathWalker implements PathWalker {
 
     // TODO these two values should be adjusted a bit
-    private static final int TPS = 20; // ticks per second
+    private static final double TPS = 20; // ticks per second
     private static final double BPS = 7; // blocks per second
 
     private Map<UUID, WalkablePath> runningPaths = new ConcurrentHashMap<>();
@@ -21,7 +24,7 @@ public class DefaultPathWalker implements PathWalker {
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 try {
-                    Thread.sleep((long) (1000D / (double) TPS));
+                    Thread.sleep((long) (1000D / TPS));
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }
@@ -47,12 +50,20 @@ public class DefaultPathWalker implements PathWalker {
             if (point == null) {
                 PathPoint previousPoint = path.getCurrentPoint();
                 PathPoint currentPoint = path.getNextPoint();
+                path.setPreviousPoint(previousPoint);
                 path.setCurrentPoint(currentPoint);
                 path.setCurrentWay(this.smoothWay(previousPoint, currentPoint));
                 continue;
             }
 
-            path.getConnection().setLocation(path.getPath().getAbsoluteLocation(point));
+            Location location = path.getPath().getAbsoluteLocation(point);
+            PathPoint nextPoint = path.getCurrentPoint();
+            if (nextPoint != null) {
+                location.setDirection(path.getPath().getAbsoluteLocation(nextPoint));
+            } else {
+                location.setDirection(path.getConnection().getLocation());
+            }
+            path.getConnection().setLocation(location);
             System.out.println(point);
         }
     }
@@ -82,7 +93,7 @@ public class DefaultPathWalker implements PathWalker {
 
     private Queue<PathPoint> smoothWay0(PathPoint previousPoint, PathPoint currentPoint) {
         // TODO you can fall off corners easily
-        double pointCount = BPS / (double) TPS;
+        double pointCount = BPS / TPS;
 
         double deltaX = (currentPoint.getX() - previousPoint.getX());
         double deltaY = (currentPoint.getY() - previousPoint.getY());

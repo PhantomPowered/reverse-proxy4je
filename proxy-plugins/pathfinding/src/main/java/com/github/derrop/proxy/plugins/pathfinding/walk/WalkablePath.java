@@ -4,7 +4,6 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
 import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 
-import java.util.Collection;
 import java.util.Queue;
 
 public class WalkablePath {
@@ -13,6 +12,7 @@ public class WalkablePath {
     private final Path path;
     private final Runnable finishHandler;
 
+    private PathPoint previousPoint;
     private PathPoint currentPoint;
     private Queue<PathPoint> currentWay;
 
@@ -44,6 +44,14 @@ public class WalkablePath {
 
     public void setCurrentPoint(PathPoint currentPoint) {
         this.currentPoint = currentPoint;
+    }
+
+    public PathPoint getPreviousPoint() {
+        return previousPoint;
+    }
+
+    public void setPreviousPoint(PathPoint previousPoint) {
+        this.previousPoint = previousPoint;
     }
 
     public Queue<PathPoint> getCurrentWay() {

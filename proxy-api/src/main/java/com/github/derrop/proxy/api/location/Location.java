@@ -124,6 +124,33 @@ public class Location {
         return (d1 * d1) + (d2 * d2) + (d3 * d3);
     }
 
+    public void setDirection(Location location) {
+        /*
+         * Sin = Opp / Hyp
+         * Cos = Adj / Hyp
+         * Tan = Opp / Adj
+         *
+         * x = -Opp
+         * z = Adj
+         */
+        final double _2PI = 2 * Math.PI;
+        final double x = location.getX();
+        final double z = location.getZ();
+
+        if (x == 0 && z == 0) {
+            pitch = location.getY() > 0 ? -90 : 90;
+            return;
+        }
+
+        double theta = Math.atan2(-x, z);
+        yaw = (float) Math.toDegrees((theta + _2PI) % _2PI);
+
+        double x2 = x * x;
+        double z2 = z * z;
+        double xz = Math.sqrt(x2 + z2);
+        pitch = (float) Math.toDegrees(Math.atan(-location.getY() / xz));
+    }
+
     public double distance(@NotNull Location other) {
         return Math.sqrt(this.distanceSquared(other));
     }
