@@ -151,7 +151,9 @@ public class ClientPacketHandler {
             return;
         }
         if (!request.getCursor().startsWith("/proxy")) {
-            player.setLastCommandCompleteRequest(request.getCursor());
+            if (!request.getCursor().contains(" ")) {
+                player.setLastCommandCompleteRequest(request.getCursor());
+            }
             return;
         }
         List<String> suggestions = player.getProxy().getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring("/proxy ".length()));

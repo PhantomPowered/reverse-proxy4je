@@ -118,7 +118,7 @@ public class ServerPacketHandler {
 
         DefaultPlayer player = (DefaultPlayer) client.getRedirector();
 
-        if (player.getLastCommandCompleteRequest() != null) { // TODO this is also called when executing "/tp <tab>"
+        if (player.getLastCommandCompleteRequest() != null) {
             player.setLastCommandCompleteRequest(null);
             response.getCommands().add("/proxy");
         }
