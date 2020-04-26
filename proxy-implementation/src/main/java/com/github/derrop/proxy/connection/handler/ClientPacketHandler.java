@@ -6,10 +6,14 @@ import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.player.inventory.ClickType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.EventPriority;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.events.connection.player.PlayerInventoryClickEvent;
+import com.github.derrop.proxy.api.events.connection.player.PlayerInventoryCloseEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -20,11 +24,15 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
+import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientClickWindow;
+import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientCloseWindow;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPosition;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
+import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
@@ -36,17 +44,39 @@ public class ClientPacketHandler {
     public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
         if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
 
-            if (packet.getPacket() != null) {
-                player.getConnectedClient().getEntityRewrite().updatePacketToServer(packet.getPacket(), player.getEntityId(), player.getConnectedClient().getEntityId());
+            if (packet.getPacket() != null && player.getConnectedClient() instanceof BasicServiceConnection) {
+                ((BasicServiceConnection) player.getConnectedClient()).getEntityRewrite().updatePacketToServer(packet.getPacket(), player.getEntityId(), player.getConnectedClient().getEntityId());
 
-                player.getConnectedClient().getClient().handleClientPacket(packet.getPacket());
+                ((BasicServiceConnection) player.getConnectedClient()).getClient().handleClientPacket(packet.getPacket());
+
+                ((BasicServiceConnection) player.getConnectedClient()).getClient().getVelocityHandler().handlePacket(ProtocolDirection.TO_SERVER, packet.getPacket());
             }
 
-            if (packet.getPacket() != null) {
-                player.getConnectedClient().getClient().getVelocityHandler().handlePacket(ProtocolDirection.TO_SERVER, packet.getPacket());
-            }
+            player.getConnectedClient().networkUnsafe().sendPacket(packet);
+        }
+    }
 
-            player.getConnectedClient().sendPacket(packet);
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.WINDOW_CLICK, directions = ProtocolDirection.TO_SERVER)
+    public void handleWindowClick(DefaultPlayer player, PacketPlayClientClickWindow packet) {
+        ClickType click = packet.getClick();
+        if (click == null) {
+            return;
+        }
+
+        PlayerInventoryClickEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new PlayerInventoryClickEvent(player, packet.getSlot(), click));
+        if (event.isCancelled()) {
+            throw CancelProceedException.INSTANCE;
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CLOSE_WINDOW, directions = ProtocolDirection.TO_SERVER)
+    public void handleWindowClose(DefaultPlayer player, PacketPlayClientCloseWindow packet) {
+        PlayerInventoryCloseEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new PlayerInventoryCloseEvent(player));
+        if (event.isCancelled() && packet.getWindowId() == player.getInventory().getWindowId()) {
+            player.getInventory().open();
+            throw CancelProceedException.INSTANCE;
         }
     }
 
@@ -66,13 +96,13 @@ public class ClientPacketHandler {
     }
 
     private void updatePosition(DefaultPlayer player, PacketPlayClientPlayerPosition position) {
-        BasicServiceConnection connection = player.getConnectedClient();
-        if (connection == null) {
+        ServiceConnection connection = player.getConnectedClient();
+        if (!(connection instanceof BasicServiceConnection)) {
             return;
         }
 
         Location newLocation = position.getLocation(connection.getLocation());
-        connection.updateLocation(newLocation);
+        ((BasicServiceConnection) connection).updateLocation(newLocation);
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)

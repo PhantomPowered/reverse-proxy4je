@@ -25,11 +25,14 @@
 package com.github.derrop.proxy.api.entity.player;
 
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.Nullable;
@@ -154,4 +157,11 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
      * @see ProvidedTitle
      */
     void sendTitle(ProvidedTitle providedTitle);
+
+    void sendBlockChange(BlockPos pos, int blockState);
+
+    void sendBlockChange(BlockPos pos, Material material);
+
+    PlayerInventory getInventory();
+
 }

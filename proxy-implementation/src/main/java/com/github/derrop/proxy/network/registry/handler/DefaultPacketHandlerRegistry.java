@@ -86,7 +86,9 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                         if (ex.getCause() instanceof CancelProceedException) {
                             return null;
                         }
-                        ex.printStackTrace();
+                        if (ex.getCause() != null) {
+                            ex.getCause().printStackTrace();
+                        }
                     } catch (final CancelProceedException ex) {
                         return null;
                     }

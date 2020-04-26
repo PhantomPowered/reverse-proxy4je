@@ -241,7 +241,7 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
     @Override
     public void writeItemStack(ItemStack item) {
-        if (item.getItemId() <= 0) {
+        if (item == null || item.getItemId() <= 0) {
             this.writeShort(-1);
         } else {
             this.writeShort(item.getItemId());

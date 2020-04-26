@@ -1,10 +1,12 @@
 package com.github.derrop.proxy.protocol.play.client.inventory;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.entity.player.inventory.ClickType;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.google.gson.internal.$Gson$Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientClickWindow implements Packet {
@@ -74,6 +76,37 @@ public class PacketPlayClientClickWindow implements Packet {
 
     public void setMode(int mode) {
         this.mode = mode;
+    }
+
+    public ClickType getClick() {
+        if (this.slot == -1) {
+            return this.usedButton == 0 ? ClickType.WINDOW_BORDER_LEFT : ClickType.WINDOW_BORDER_RIGHT;
+        } else if (this.mode == 0) {
+            if (this.usedButton == 0) {
+                return ClickType.LEFT;
+            } else if (this.usedButton == 1) {
+                return ClickType.RIGHT;
+            }
+        } else if (this.mode == 1) {
+            if (this.usedButton == 0) {
+                return ClickType.SHIFT_LEFT;
+            } else if (this.usedButton == 1) {
+                return ClickType.SHIFT_RIGHT;
+            }
+        } else if (this.mode == 2) {
+            return ClickType.NUMBER_KEY;
+        } else if (this.mode == 3) {
+            return this.usedButton == 2 ? ClickType.MIDDLE : ClickType.UNKNOWN;
+        } else if (this.mode == 4) {
+            if (this.slot >= 0) {
+                return this.usedButton == 0 ? ClickType.DROP : ClickType.CONTROL_DROP;
+            } else {
+                return this.usedButton == 1 ? ClickType.RIGHT : ClickType.LEFT;
+            }
+        } else if (this.mode == 6) {
+            return ClickType.DOUBLE_CLICK;
+        }
+        return null;
     }
 
     @Override

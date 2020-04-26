@@ -113,4 +113,15 @@ public class PacketPlayServerPlayerAbilities implements Packet {
         protoBuf.writeFloat(this.walkSpeed);
     }
 
+    @Override
+    public String toString() {
+        return "PacketPlayServerPlayerAbilities{" +
+                "invulnerable=" + invulnerable +
+                ", flying=" + flying +
+                ", allowFlying=" + allowFlying +
+                ", creativeMode=" + creativeMode +
+                ", flySpeed=" + flySpeed +
+                ", walkSpeed=" + walkSpeed +
+                '}';
+    }
 }

@@ -113,4 +113,6 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
 
     BlockAccess getBlockAccess();
 
+    void syncPackets(Player player, boolean switched);
+
 }

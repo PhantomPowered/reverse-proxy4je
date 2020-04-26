@@ -57,7 +57,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePack
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.scoreboard.BasicScoreboard;
-import com.github.derrop.proxy.task.DefaultTask;
+import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;

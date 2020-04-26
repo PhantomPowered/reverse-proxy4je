@@ -22,27 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.task;
+package com.github.derrop.proxy.api.task.util;
 
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
+import com.github.derrop.proxy.api.task.DefaultTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collections;
 
-public final class DefaultTask<V> extends Task<V> {
+public final class TaskUtil {
 
-    private final Collection<TaskFutureListener<V>> listeners = new CopyOnWriteArrayList<>();
-
-    @Override
-    public @NotNull Task<V> addListener(@NotNull TaskFutureListener<V> listener) {
-        this.listeners.add(listener);
-        return this;
+    private TaskUtil() {
+        throw new UnsupportedOperationException();
     }
 
-    @Override
-    public @NotNull Collection<TaskFutureListener<V>> getListeners() {
-        return this.listeners;
+    @NotNull
+    public static <V> Task<V> completedTask(@NotNull V result) {
+        return completedTask(result, Collections.emptyList());
+    }
+
+    @NotNull
+    public static <V> Task<V> completedTask(@NotNull V result, @NotNull Collection<TaskFutureListener<V>> listeners) {
+        Task<V> task = new DefaultTask<>();
+        for (TaskFutureListener<V> listener : listeners) {
+            task.addListener(listener);
+        }
+
+        task.complete(result);
+        return task;
     }
 }

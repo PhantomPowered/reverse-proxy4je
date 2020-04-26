@@ -33,7 +33,7 @@ import com.github.derrop.proxy.network.compression.PacketCompressor;
 import com.github.derrop.proxy.network.compression.PacketDeCompressor;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
-import com.github.derrop.proxy.task.DefaultTask;
+import com.github.derrop.proxy.api.task.DefaultTask;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;

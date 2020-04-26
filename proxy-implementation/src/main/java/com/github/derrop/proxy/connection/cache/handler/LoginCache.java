@@ -38,6 +38,10 @@ public class LoginCache implements PacketCacheHandler {
 
     private PacketPlayServerLogin lastLogin;
 
+    public PacketPlayServerLogin getLastLogin() {
+        return lastLogin;
+    }
+
     @Override
     public int[] getPacketIDs() {
         return new int[]{1}; // login packet

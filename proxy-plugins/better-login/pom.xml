@@ -6,20 +6,20 @@
 
     <parent>
         <groupId>com.github.derrop.minecraft.proxy</groupId>
-        <artifactId>MCProxy</artifactId>
+        <artifactId>proxy-plugins</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>proxy-plugins</artifactId>
+    <artifactId>better-login</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
-    <modules>
-        <module>labymod</module>
-        <module>replaysystem</module>
-        <module>pathfinding</module>
-        <module>gommestats</module>
-        <module>better-login</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.derrop.minecraft.proxy</groupId>
+            <artifactId>proxy-implementation</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

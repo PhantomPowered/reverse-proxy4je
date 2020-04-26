@@ -22,13 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.task;
+package com.github.derrop.proxy.api.task;
 
+import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
+import org.jetbrains.annotations.NotNull;
 
-public class EmptyTaskFutureListener {
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-    public static final TaskFutureListener<Boolean> BOOL_INSTANCE = new TaskFutureListener<Boolean>() {
-    };
+public final class DefaultTask<V> extends Task<V> {
 
+    private final Collection<TaskFutureListener<V>> listeners = new CopyOnWriteArrayList<>();
+
+    @Override
+    public @NotNull Task<V> addListener(@NotNull TaskFutureListener<V> listener) {
+        this.listeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public @NotNull Collection<TaskFutureListener<V>> getListeners() {
+        return this.listeners;
+    }
 }

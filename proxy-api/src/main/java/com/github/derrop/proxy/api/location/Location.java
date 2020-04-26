@@ -98,6 +98,10 @@ public class Location {
         this.onGround = onGround;
     }
 
+    public BlockPos toBlockPos() {
+        return new BlockPos(this.x, this.y, this.z);
+    }
+
     @NotNull
     public Location substract(@NotNull Location location) {
         this.x -= location.x;

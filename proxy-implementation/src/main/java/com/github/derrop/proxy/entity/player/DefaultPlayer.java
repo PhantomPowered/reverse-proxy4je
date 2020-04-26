@@ -27,19 +27,24 @@ package com.github.derrop.proxy.entity.player;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.block.BlockStateRegistry;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.entity.player.PlayerRepository;
+import com.github.derrop.proxy.api.entity.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
@@ -49,6 +54,7 @@ import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChat
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import io.netty.buffer.ByteBuf;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
@@ -89,7 +95,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private boolean firstConnection = true;
     private int entityId;
 
-    private BasicServiceConnection connectedClient;
+    private ServiceConnection connectedClient;
 
     private boolean connected = false;
 
@@ -102,6 +108,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private String displayName;
 
     private String lastCommandCompleteRequest;
+
+    private final PlayerInventory inventory = new DefaultPlayerInventory(this);
 
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
 
@@ -142,8 +150,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void sendActionBar(int units, Component... message) {
-        if (this.connectedClient != null) {
-            this.connectedClient.getClient().blockPacketUntil(packet -> packet instanceof PacketPlayServerChatMessage
+        if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
+            ((BasicServiceConnection) this.connectedClient).getClient().blockPacketUntil(packet -> packet instanceof PacketPlayServerChatMessage
                             && ((PacketPlayServerChatMessage) packet).getPosition() == ChatMessageType.ACTION_BAR.ordinal(),
                     System.currentTimeMillis() + (units * 100)
             );
@@ -189,8 +197,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         }
 
         if (connection == null) {
-            if (this.connectedClient != null) {
-                this.connectedClient.getClient().free();
+            if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
+                ((BasicServiceConnection) this.connectedClient).getClient().free();
                 this.connectedClient = null;
             }
 
@@ -207,19 +215,20 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             this.entityId = connection.getEntityId();
         }
 
-        if (this.connectedClient != null) {
-            this.connectedClient.getClient().free();
+        if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
+            ((BasicServiceConnection) this.connectedClient).getClient().free();
         }
 
         this.connected = true;
 
-        ((BasicServiceConnection) connection).getClient().redirectPackets(this, this.connectedClient != null);
-        this.sendMessage("§7Your name: §e" + connection.getName());
-        this.connectedClient = (BasicServiceConnection) connection;
+        connection.syncPackets(this, this.connectedClient != null);
+        this.connectedClient = connection;
+
+        //this.sendMessage("§7Your name: §e" + connection.getName());
     }
 
     @Override
-    public BasicServiceConnection getConnectedClient() {
+    public ServiceConnection getConnectedClient() {
         return this.connectedClient;
     }
 
@@ -261,6 +270,21 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     @Override
     public void sendTitle(ProvidedTitle providedTitle) {
         providedTitle.send(this);
+    }
+
+    @Override
+    public void sendBlockChange(BlockPos pos, int blockState) {
+        this.sendPacket(new PacketPlayServerBlockChange(pos, blockState));
+    }
+
+    @Override
+    public void sendBlockChange(BlockPos pos, Material material) {
+        this.sendBlockChange(pos, this.proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getDefaultBlockState(material));
+    }
+
+    @Override
+    public PlayerInventory getInventory() {
+        return this.inventory;
     }
 
     @Override
@@ -344,17 +368,16 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void write(@NotNull Packet packet) {
-        if (this.connectedClient != null) {
-            this.connectedClient.getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
-        }
+        this.sendPacket(packet);
     }
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
-        if (this.connectedClient != null) {
-            this.connectedClient.getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
+        if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
+            ((BasicServiceConnection) this.connectedClient).getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
         }
         this.channel.write(packet);
+        System.out.println(packet.getClass().getName() + " -> " + packet);
     }
 
     @Override
@@ -423,8 +446,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         }
 
         this.channel.close(new PacketPlayServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
-        if (this.connectedClient != null) {
-            this.connectedClient.getClient().free();
+        if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
+            ((BasicServiceConnection) this.connectedClient).getClient().free();
         }
     }
 

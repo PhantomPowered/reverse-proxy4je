@@ -50,9 +50,9 @@ import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChat
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.rewrite.EntityRewrite;
 import com.github.derrop.proxy.protocol.rewrite.EntityRewrite_1_8;
-import com.github.derrop.proxy.task.DefaultTask;
-import com.github.derrop.proxy.task.EmptyTaskFutureListener;
-import com.github.derrop.proxy.task.util.TaskUtil;
+import com.github.derrop.proxy.api.task.DefaultTask;
+import com.github.derrop.proxy.api.task.EmptyTaskFutureListener;
+import com.github.derrop.proxy.api.task.util.TaskUtil;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
@@ -386,6 +386,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public BlockAccess getBlockAccess() {
         return this.client.getPacketCache().getBlockAccess();
+    }
+
+    @Override
+    public void syncPackets(Player player, boolean switched) {
+        this.client.redirectPackets(player, switched);
     }
 
     private void reSchedule(Collection<TaskFutureListener<Boolean>> listener) {

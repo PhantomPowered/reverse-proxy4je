@@ -21,7 +21,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnPosition;
+import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;

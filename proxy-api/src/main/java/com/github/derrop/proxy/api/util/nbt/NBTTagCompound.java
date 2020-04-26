@@ -84,78 +84,89 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Stores the given tag into the map with the given string key. This is mostly used to store tag lists.
      */
-    public void setTag(String key, NBTBase value) {
+    public NBTTagCompound setTag(String key, NBTBase value) {
         this.tagMap.put(key, value);
+        return this;
     }
 
     /**
      * Stores a new NBTTagByte with the given byte value into the map with the given string key.
      */
-    public void setByte(String key, byte value) {
+    public NBTTagCompound setByte(String key, byte value) {
         this.tagMap.put(key, new NBTTagByte(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagShort with the given short value into the map with the given string key.
      */
-    public void setShort(String key, short value) {
+    public NBTTagCompound setShort(String key, short value) {
         this.tagMap.put(key, new NBTTagShort(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagInt with the given integer value into the map with the given string key.
      */
-    public void setInteger(String key, int value) {
+    public NBTTagCompound setInteger(String key, int value) {
         this.tagMap.put(key, new NBTTagInt(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagLong with the given long value into the map with the given string key.
      */
-    public void setLong(String key, long value) {
+    public NBTTagCompound setLong(String key, long value) {
         this.tagMap.put(key, new NBTTagLong(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagFloat with the given float value into the map with the given string key.
      */
-    public void setFloat(String key, float value) {
+    public NBTTagCompound setFloat(String key, float value) {
         this.tagMap.put(key, new NBTTagFloat(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagDouble with the given double value into the map with the given string key.
      */
-    public void setDouble(String key, double value) {
+    public NBTTagCompound setDouble(String key, double value) {
         this.tagMap.put(key, new NBTTagDouble(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagString with the given string value into the map with the given string key.
      */
-    public void setString(String key, String value) {
+    public NBTTagCompound setString(String key, String value) {
         this.tagMap.put(key, new NBTTagString(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagByteArray with the given array as data into the map with the given string key.
      */
-    public void setByteArray(String key, byte[] value) {
+    public NBTTagCompound setByteArray(String key, byte[] value) {
         this.tagMap.put(key, new NBTTagByteArray(value));
+        return this;
     }
 
     /**
      * Stores a new NBTTagIntArray with the given array as data into the map with the given string key.
      */
-    public void setIntArray(String key, int[] value) {
+    public NBTTagCompound setIntArray(String key, int[] value) {
         this.tagMap.put(key, new NBTTagIntArray(value));
+        return this;
     }
 
     /**
      * Stores the given boolean value as a NBTTagByte, storing 1 for true and 0 for false, using the given string key.
      */
-    public void setBoolean(String key, boolean value) {
+    public NBTTagCompound setBoolean(String key, boolean value) {
         this.setByte(key, (byte) (value ? 1 : 0));
+        return this;
     }
 
     /**

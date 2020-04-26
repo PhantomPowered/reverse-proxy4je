@@ -15,7 +15,7 @@ import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
-import com.github.derrop.proxy.task.DefaultTask;
+import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
