@@ -59,6 +59,10 @@ public class GommeSpectatorDetector extends MatchParser {
                 continue;
             }
 
+            if (event.getConnection().getPlayer() != null) {
+                event.getConnection().getPlayer().sendMessage("§eGomme-Spectator §8| §7Spectator joined: §e" + name);
+            }
+
             System.out.println("Spectator joined: " + name);
             matchInfo.setProperty("spectator-" + name, new SpectatorEntry(name, event.getTeam().getName()));
             matchInfo.callEvent(new SpectatorJoinEvent(name));
@@ -86,6 +90,11 @@ public class GommeSpectatorDetector extends MatchParser {
 
                     // TODO this doesn't work in BedWars yet
                     System.out.println("Spectator left: " + name);
+
+                    if (event.getConnection().getPlayer() != null) {
+                        event.getConnection().getPlayer().sendMessage("§eGomme-Spectator §8| §7Spectator left: §e" + name);
+                    }
+
                     matchInfo.getProperties().remove("spectator-" + name);
                     matchInfo.callEvent(new SpectatorLeaveEvent(name));
                 } else {
