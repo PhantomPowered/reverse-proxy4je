@@ -56,7 +56,7 @@ public class GommeStatsPlugin {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-        Javalin javalin = Javalin.create().start(80);
+        Javalin javalin = Javalin.create(e -> e.showJavalinBanner = false).start(80);
         javalin.get("/matches", new MatchFileHandler("/matches", core.getMatchManager()));
 
         Thread.currentThread().setContextClassLoader(old);
