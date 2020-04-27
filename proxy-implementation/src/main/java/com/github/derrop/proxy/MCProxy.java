@@ -38,12 +38,10 @@ import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
-import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
-import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
@@ -59,7 +57,6 @@ import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.entity.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.event.DefaultEventManager;
-import com.github.derrop.proxy.logging.ILogger;
 import com.github.derrop.proxy.network.SimpleChannelInitializer;
 import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
@@ -72,7 +69,6 @@ import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import com.github.derrop.proxy.title.BasicTitle;
-import com.github.derrop.proxy.util.Utils;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,10 +77,6 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class MCProxy extends Proxy {
 
@@ -98,9 +90,7 @@ public class MCProxy extends Proxy {
 
     private SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
 
-    private final ILogger logger;
-
-    protected MCProxy(@NotNull ILogger logger) {
+    protected MCProxy() {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
@@ -119,7 +109,6 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.getProviderUnchecked(Configuration.class).load();
 
-        this.logger = logger;
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
     }
 
@@ -160,10 +149,6 @@ public class MCProxy extends Proxy {
 
     public PermissionProvider getPermissionProvider() {
         return this.permissionProvider;
-    }
-
-    public ILogger getLogger() {
-        return this.logger;
     }
 
     public void bootstrap(int port) throws IOException {

@@ -298,7 +298,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
                 if (exception.getCause() instanceof KickedException) {
                     if (BanTester.isBanned(exception.getMessage()) == BanTester.BanTestResult.BANNED) {
                         BANNED_ADDRESSES.add(this.networkAddress);
-                        this.proxy.getLogger().warn("Preventing connections to " + networkAddress + " because " + credentials.getEmail() + " is banned");
+                        System.out.println("Preventing connections to " + networkAddress + " because " + credentials.getEmail() + " is banned");
                         return;
                     }
                 }

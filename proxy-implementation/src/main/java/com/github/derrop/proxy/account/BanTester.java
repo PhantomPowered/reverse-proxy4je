@@ -144,7 +144,7 @@ public class BanTester {
                         return false;
 
                     case BANNED:
-                        this.proxy.getLogger().warn("Account " + proxyClient.getAccountName() + "#" + proxyClient.getAccountUUID() + " (" + credentials.getEmail() + ") is banned on " + address);
+                        System.out.println("Account " + proxyClient.getAccountName() + "#" + proxyClient.getAccountUUID() + " (" + credentials.getEmail() + ") is banned on " + address);
                         ++this.currentProxyIndex; // prevent that more accounts get banned while connecting through this proxy
                         this.writeIndex();
                         return true;

@@ -29,26 +29,29 @@ import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.command.console.ConsoleCommandSender;
 import com.github.derrop.proxy.logging.DefaultLogger;
 import com.github.derrop.proxy.logging.FileLoggerHandler;
 import com.github.derrop.proxy.logging.ILogger;
 import com.github.derrop.proxy.logging.JAnsiConsole;
 
+import java.io.Console;
 import java.io.IOException;
 
 public final class ProxyBootstrap {
 
     public static synchronized void main(String[] args) throws IOException {
-        ILogger logger = new DefaultLogger(new JAnsiConsole(
+        /*ILogger logger = new DefaultLogger(new JAnsiConsole(
                 () -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))
         ));
-        logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));
+        logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));*/
 
-        MCProxy proxy = new MCProxy(logger);
+        MCProxy proxy = new MCProxy();
         proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort());
 
         CommandMap commandMap = proxy.getServiceRegistry().getProviderUnchecked(CommandMap.class);
-        while (!Thread.interrupted()) {
+        /*while (!Thread.interrupted()) {
             String line = logger.getConsole().readLine().join();
             if (line == null || line.trim().isEmpty()) {
                 continue;
@@ -60,6 +63,22 @@ public final class ProxyBootstrap {
                 }
             } catch (final CommandExecutionException | PermissionDeniedException ex) {
                 logger.warn(ex.getMessage());
+            }
+        }*/
+        CommandSender sender = new ConsoleCommandSender();
+        Console console = System.console();
+        if (console == null) {
+            System.err.println("Console not supported! No commands can be executed in the console");
+            return;
+        }
+        String line;
+        while ((line = console.readLine()) != null) {
+            try {
+                if (commandMap.process(sender, line) == CommandResult.NOT_FOUND) {
+                    System.out.println("Unable to find command by this name. Use \"help\" to get a list of all commands");
+                }
+            } catch (final CommandExecutionException | PermissionDeniedException ex) {
+                System.out.println(ex.getMessage());
             }
         }
     }
