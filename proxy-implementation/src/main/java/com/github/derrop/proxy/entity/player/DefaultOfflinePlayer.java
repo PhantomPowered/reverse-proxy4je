@@ -25,25 +25,31 @@
 package com.github.derrop.proxy.entity.player;
 
 import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
-import com.github.derrop.proxy.entity.permission.DefaultPermissionHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultOfflinePlayer extends DefaultPermissionHolder implements OfflinePlayer, Serializable {
+public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
 
     public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin, int lastVersion) {
         this.uniqueID = uniqueID;
         this.name = name;
         this.lastLogin = lastLogin;
         this.lastVersion = lastVersion;
+
+        this.permissions = new ConcurrentHashMap<>();
     }
 
     private final UUID uniqueID;
     private final String name;
     private final long lastLogin;
     private final int lastVersion;
+
+    private final Map<String, Boolean> permissions;
 
     @Override
     public @NotNull UUID getUniqueId() {
@@ -63,5 +69,34 @@ public class DefaultOfflinePlayer extends DefaultPermissionHolder implements Off
     @Override
     public int getLastVersion() {
         return this.lastVersion;
+    }
+
+    @Override
+    public boolean hasPermission(@NotNull String permission) {
+        return this.permissions.containsKey(permission) && this.permissions.get(permission);
+    }
+
+    @Override
+    public void addPermission(@NotNull String permission, boolean set) {
+        if (this.permissions.containsKey(permission)) {
+            return;
+        }
+
+        this.permissions.put(permission, set);
+    }
+
+    @Override
+    public void removePermission(@NotNull String permission) {
+        this.permissions.remove(permission);
+    }
+
+    @Override
+    public void clearPermissions() {
+        this.permissions.clear();
+    }
+
+    @Override
+    public @NotNull Map<String, Boolean> getEffectivePermissions() {
+        return Collections.unmodifiableMap(this.permissions);
     }
 }

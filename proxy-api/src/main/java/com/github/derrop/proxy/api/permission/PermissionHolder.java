@@ -25,6 +25,9 @@
 package com.github.derrop.proxy.api.permission;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.Map;
 
 public interface PermissionHolder {
 
@@ -34,4 +37,7 @@ public interface PermissionHolder {
 
     void removePermission(@NotNull String permission);
 
+    void clearPermissions();
+
+    @NotNull @UnmodifiableView Map<String, Boolean> getEffectivePermissions();
 }

@@ -61,7 +61,6 @@ import com.github.derrop.proxy.network.SimpleChannelInitializer;
 import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
-import com.github.derrop.proxy.permission.PermissionProvider;
 import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
@@ -84,11 +83,10 @@ public class MCProxy extends Proxy {
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
 
-    private ProxyServer proxyServer = new ProxyServer(this);
-    private PermissionProvider permissionProvider = new PermissionProvider();
-    private AccountReader accountReader = new AccountReader();
+    private final ProxyServer proxyServer = new ProxyServer(this);
+    private final AccountReader accountReader = new AccountReader();
 
-    private SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
+    private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
 
     protected MCProxy() {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
@@ -145,10 +143,6 @@ public class MCProxy extends Proxy {
 
     public SimpleChannelInitializer getBaseChannelInitializer() {
         return this.baseChannelInitializer;
-    }
-
-    public PermissionProvider getPermissionProvider() {
-        return this.permissionProvider;
     }
 
     public void bootstrap(int port) throws IOException {
@@ -212,6 +206,7 @@ public class MCProxy extends Proxy {
         commandMap.registerCommand(null, new CommandKick(this.serviceRegistry), "kick");
         commandMap.registerCommand(null, new CommandList(this.serviceRegistry), "list", "glist");
         commandMap.registerCommand(null, new CommandSwitch(this.serviceRegistry), "switch");
+        commandMap.registerCommand(null, new CommandPermissions(this.serviceRegistry), "perms");
 
         commandMap.registerCommand(null, new CommandAdf(), "adf");
 

@@ -22,88 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// TODO: replace this with new command
+package com.github.derrop.proxy.command.defaults;
 
-/*package com.github.derrop.proxy.command.defaults;
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
+import com.github.derrop.proxy.api.entity.player.PlayerRepository;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import org.jetbrains.annotations.NotNull;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.command.Command;
-import com.github.derrop.proxy.api.command.CommandSender;
-import com.github.derrop.proxy.permission.PermissionEntity;
+import java.util.Map;
 
-import java.util.ArrayList;
-import java.util.UUID;
+public class CommandPermissions extends NonTabCompleteableCommandCallback {
 
-public class CommandPermissions extends Command {
-
-    public CommandPermissions() {
-        super("perms", "permissions", "perm", "permission");
-        super.setPermission("command.permissions");
+    public CommandPermissions(@NotNull ServiceRegistry serviceRegistry) {
+        super("proxy.command.perms", null);
+        this.serviceRegistry = serviceRegistry;
     }
 
-    @Override
-    public void execute(CommandSender sender, String input, String[] args) {
-        if (args.length < 1) {
-            this.sendHelp(sender);
-            return;
-        }
-
-        if (!args[0].equalsIgnoreCase("user")) {
-            return;
-        }
-
-        UUID uniqueId = MCProxy.getInstance().getUUIDStorage().getUniqueId(args[1]);
-
-        if (uniqueId == null) {
-            sender.sendMessage("That user doesn't exist");
-            return;
-        }
-
-        String name = MCProxy.getInstance().getUUIDStorage().getName(uniqueId);
-
-        PermissionEntity entity = MCProxy.getInstance().getPermissionProvider().getEntity(uniqueId);
-
-        if (entity == null) {
-            entity = new PermissionEntity(uniqueId, new ArrayList<>());
-        }
-
-
-        if (args.length == 4 && args[2].equalsIgnoreCase("clear") && args[3].equalsIgnoreCase("permissions")) {
-            entity.getPermissions().clear();
-            MCProxy.getInstance().getPermissionProvider().updatePermissionEntity(entity);
-            sender.sendMessage("The permissions of the user " + name + " have been successfully cleared!");
-        } else if (args.length == 5 && args[2].equalsIgnoreCase("add") && args[3].equalsIgnoreCase("permission")) {
-            String permission = args[4];
-            if (entity.getPermissions().contains(permission.toLowerCase())) {
-                sender.sendMessage("The user " + name + " already has this permission");
-                return;
-            }
-
-            entity.getPermissions().add(permission.toLowerCase());
-
-            MCProxy.getInstance().getPermissionProvider().updatePermissionEntity(entity);
-            sender.sendMessage("The permission has been successfully added to the user " + name + "!");
-        } else if (args.length == 5 && args[2].equalsIgnoreCase("remove") && args[3].equalsIgnoreCase("permission")) {
-            String permission = args[4];
-            if (!entity.getPermissions().contains(permission.toLowerCase())) {
-                sender.sendMessage("The user " + name + " doesn't have this permission");
-                return;
-            }
-
-            entity.getPermissions().remove(permission.toLowerCase());
-
-            MCProxy.getInstance().getPermissionProvider().updatePermissionEntity(entity);
-            sender.sendMessage("The permission has been successfully removed from the user " + name + "!");
-        } else if (args.length == 2) {
-            sender.sendMessage(name + "#" + uniqueId + ":");
-            sender.sendMessage("Permissions:");
-            for (String permission : entity.getPermissions()) {
-                sender.sendMessage("- " + permission);
-            }
-        } else {
-            this.sendHelp(sender);
-        }
-    }
+    private final ServiceRegistry serviceRegistry;
 
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("perms user <name> add permission <permission>");
@@ -112,6 +51,102 @@ public class CommandPermissions extends Command {
         sender.sendMessage("perms user <name>");
     }
 
-}
+    @Override
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        if (arguments.length < 2 || !arguments[0].equalsIgnoreCase("user")) {
+            this.sendHelp(commandSender);
+            return CommandResult.BREAK;
+        }
 
- */
+        PlayerRepository playerRepository = serviceRegistry.getProviderUnchecked(PlayerRepository.class);
+        if (arguments.length == 2) {
+            OfflinePlayer offlinePlayer = playerRepository.getOfflinePlayer(arguments[1]);
+            if (offlinePlayer == null) {
+                commandSender.sendMessage("Unknown player");
+                return CommandResult.BREAK;
+            }
+
+            commandSender.sendMessage("Permissions of player " + offlinePlayer.getName() + ":");
+            for (Map.Entry<String, Boolean> stringBooleanEntry : offlinePlayer.getEffectivePermissions().entrySet()) {
+                commandSender.sendMessage(" -> " + stringBooleanEntry.getKey() + "#" + stringBooleanEntry.getValue());
+            }
+
+            return CommandResult.END;
+        }
+
+        if (arguments.length == 4) {
+            if (!arguments[2].equalsIgnoreCase("clear") && !arguments[3].equalsIgnoreCase("permissions")) {
+                this.sendHelp(commandSender);
+                return CommandResult.BREAK;
+            }
+
+            OfflinePlayer offlinePlayer = playerRepository.getOfflinePlayer(arguments[1]);
+            if (offlinePlayer == null) {
+                commandSender.sendMessage("Unknown player");
+                return CommandResult.BREAK;
+            }
+
+            offlinePlayer.clearPermissions();
+            playerRepository.updateOfflinePlayer(offlinePlayer);
+
+            commandSender.sendMessage("Cleared permissions of user " + offlinePlayer.getName());
+            return CommandResult.END;
+        }
+
+        if (arguments.length == 5) {
+            if (arguments[2].equalsIgnoreCase("remove") && arguments[3].equalsIgnoreCase("permission")) {
+                OfflinePlayer offlinePlayer = playerRepository.getOfflinePlayer(arguments[1]);
+                if (offlinePlayer == null) {
+                    commandSender.sendMessage("Unknown player");
+                    return CommandResult.BREAK;
+                }
+
+                offlinePlayer.removePermission(arguments[4]);
+                playerRepository.updateOfflinePlayer(offlinePlayer);
+
+                commandSender.sendMessage("Removed permission " + arguments[4] + " from user " + offlinePlayer.getName());
+                return CommandResult.END;
+            }
+
+            if (arguments[2].equalsIgnoreCase("add") && arguments[3].equalsIgnoreCase("permission")) {
+                OfflinePlayer offlinePlayer = playerRepository.getOfflinePlayer(arguments[1]);
+                if (offlinePlayer == null) {
+                    commandSender.sendMessage("Unknown player");
+                    return CommandResult.BREAK;
+                }
+
+                offlinePlayer.addPermission(arguments[4], true);
+                playerRepository.updateOfflinePlayer(offlinePlayer);
+
+                commandSender.sendMessage("Added permission " + arguments[4] + " to user " + offlinePlayer.getName());
+                return CommandResult.END;
+            }
+
+            this.sendHelp(commandSender);
+            return CommandResult.BREAK;
+        }
+
+        if (arguments.length == 6) {
+            if (!arguments[2].equalsIgnoreCase("add") && !arguments[3].equalsIgnoreCase("permission")) {
+                this.sendHelp(commandSender);
+                return CommandResult.BREAK;
+            }
+
+            OfflinePlayer offlinePlayer = playerRepository.getOfflinePlayer(arguments[1]);
+            if (offlinePlayer == null) {
+                commandSender.sendMessage("Unknown player");
+                return CommandResult.BREAK;
+            }
+
+            offlinePlayer.addPermission(arguments[4], arguments[5].equalsIgnoreCase("true"));
+            playerRepository.updateOfflinePlayer(offlinePlayer);
+
+            commandSender.sendMessage("Added permission " + arguments[4] + " with value " + arguments[5].equalsIgnoreCase("true")
+                    + " to user " + offlinePlayer.getName());
+            return CommandResult.END;
+        }
+
+        this.sendHelp(commandSender);
+        return CommandResult.END;
+    }
+}
