@@ -33,6 +33,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.entity.player.inventory.PlayerInventory;
@@ -63,14 +64,15 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
+import java.util.Map;
 import java.util.UUID;
 
 public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
 
     private static final Unsafe EMPTY_UNSAFE = location -> { };
 
-    public DefaultPlayer(MCProxy proxy, UUID uniqueId, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
-        super(uniqueId, loginResult.getName(), System.currentTimeMillis(), version);
+    public DefaultPlayer(MCProxy proxy, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
+        super(offlinePlayer.getUniqueId(), loginResult.getName(), System.currentTimeMillis(), version, offlinePlayer.getEffectivePermissions());
         this.proxy = proxy;
         this.displayName = loginResult.getName();
 

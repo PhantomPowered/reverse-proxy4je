@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
@@ -41,6 +42,7 @@ import com.github.derrop.proxy.api.entity.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientPacketListener;
+import com.github.derrop.proxy.entity.player.DefaultOfflinePlayer;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
@@ -241,7 +243,12 @@ public class InitialHandler {
 
         channel.getWrappedChannel().eventLoop().execute(() -> {
             if (!channel.isClosing()) {
-                DefaultPlayer player = new DefaultPlayer(this.proxy, uniqueId, result, channel, channel.getProperty("sentProtocol"), 256);
+                PlayerRepository repository = this.proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class);
+                OfflinePlayer offlinePlayer = repository.getOfflinePlayer(uniqueId);
+                if (offlinePlayer == null) {
+                    offlinePlayer = new DefaultOfflinePlayer(uniqueId, result.getName(), System.currentTimeMillis(), -1);
+                }
+                DefaultPlayer player = new DefaultPlayer(this.proxy, offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);

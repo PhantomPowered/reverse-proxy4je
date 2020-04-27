@@ -36,12 +36,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
 
     public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin, int lastVersion) {
+        this(uniqueID, name, lastLogin, lastVersion, new ConcurrentHashMap<>());
+    }
+
+    public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin, int lastVersion, Map<String, Boolean> permissions) {
         this.uniqueID = uniqueID;
         this.name = name;
         this.lastLogin = lastLogin;
         this.lastVersion = lastVersion;
-
-        this.permissions = new ConcurrentHashMap<>();
+        this.permissions = permissions;
     }
 
     private final UUID uniqueID;

@@ -37,7 +37,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class DefaultPlayerRepository implements PlayerRepository {
+public class
+DefaultPlayerRepository implements PlayerRepository {
 
     private final ServiceRegistry registry;
     private final OfflinePlayerStorage storage;
@@ -90,11 +91,13 @@ public class DefaultPlayerRepository implements PlayerRepository {
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
-        return this.storage.getOfflinePlayer(name);
+        Player player = this.getOnlinePlayer(name);
+        return player != null ? player : this.storage.getOfflinePlayer(name);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
-        return this.storage.getOfflinePlayer(uniqueId);
+        Player player = this.getOnlinePlayer(uniqueId);
+        return player != null ? player : this.storage.getOfflinePlayer(uniqueId);
     }
 }
