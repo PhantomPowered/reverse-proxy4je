@@ -26,7 +26,9 @@ package com.github.derrop.proxy.scoreboard.minecraft;
 
 import com.google.common.collect.Sets;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ScorePlayerTeam extends Team {
 
@@ -42,10 +44,16 @@ public class ScorePlayerTeam extends Team {
     private EnumVisible deathMessageVisibility = EnumVisible.ALWAYS;
     private int chatFormat = -1;
 
+    private final Map<String, Object> properties = new ConcurrentHashMap<>();
+
     public ScorePlayerTeam(Scoreboard theScoreboardIn, String name) {
         this.theScoreboard = theScoreboardIn;
         this.registeredName = name;
         this.teamNameSPT = name;
+    }
+
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 
     /**

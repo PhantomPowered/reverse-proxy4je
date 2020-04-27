@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.gomme.secret.GommeNickDetector;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 import com.github.derrop.proxy.plugins.gomme.web.MatchFileHandler;
 import io.javalin.Javalin;
@@ -50,6 +51,7 @@ public class GommeStatsPlugin {
         //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(container, new TeamParser(core));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeSpectatorDetector(core));
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeNickDetector(core));
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());

@@ -377,7 +377,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             ((BasicServiceConnection) this.connectedClient).getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
         }
         this.channel.write(packet);
-        System.out.println(packet.getClass().getName() + " -> " + packet);
     }
 
     @Override

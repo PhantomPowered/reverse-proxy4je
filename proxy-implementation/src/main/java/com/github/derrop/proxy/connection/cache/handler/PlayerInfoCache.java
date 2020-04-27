@@ -24,11 +24,19 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.player.GameMode;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
+import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
+import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoUpdateEvent;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.entity.player.BasicPlayerInfo;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 
@@ -37,8 +45,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 public class PlayerInfoCache implements PacketCacheHandler {
+
+    // TODO if the real player doesn't have the same uuid as the player connected with the server, the player will be displayed twice in the tablist
+
     @Override
     public int[] getPacketIDs() {
         return new int[]{ProtocolIds.ToClient.Play.PLAYER_INFO};
@@ -53,6 +65,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         this.packetCache = packetCache;
+        ServiceConnection connection = packetCache.getTargetProxyClient().getConnection();
 
         PacketPlayServerPlayerInfo playerListItem = (PacketPlayServerPlayerInfo) newPacket.getDeserializedPacket();
 
@@ -62,23 +75,38 @@ public class PlayerInfoCache implements PacketCacheHandler {
                     if (item.getUniqueId().equals(item1.getUniqueId())) {
                         this.lastRemovedItems.add(item);
                         this.items.remove(item);
+                        connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerInfoRemoveEvent(connection, this.toPlayerInfo(item)));
                     }
                 }
             }
-        }
-
-        if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.ADD_PLAYER) {
+        } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.ADD_PLAYER) {
             this.items.addAll(Arrays.asList(playerListItem.getItems()));
+            for (PacketPlayServerPlayerInfo.Item item : playerListItem.getItems()) {
+                connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerInfoAddEvent(connection, this.toPlayerInfo(item)));
+            }
         } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.UPDATE_DISPLAY_NAME) {
             this.items.forEach(item -> Arrays.stream(playerListItem.getItems()).filter(item1 -> item1.getUniqueId().equals(item.getUniqueId())).findFirst()
-                    .ifPresent(newItem -> item.setDisplayName(newItem.getDisplayName())));
+                    .ifPresent(newItem -> {
+                        item.setDisplayName(newItem.getDisplayName());
+                        this.callUpdate(item, connection);
+                    }));
         } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.UPDATE_GAMEMODE) {
             this.items.forEach(item -> Arrays.stream(playerListItem.getItems()).filter(item1 -> item1.getUniqueId().equals(item.getUniqueId())).findFirst()
-                    .ifPresent(newItem -> item.setGamemode(newItem.getGamemode())));
+                    .ifPresent(newItem -> {
+                        item.setGamemode(newItem.getGamemode());
+                        this.callUpdate(item, connection);
+                    }));
         } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.UPDATE_LATENCY) {
             this.items.forEach(item -> Arrays.stream(playerListItem.getItems()).filter(item1 -> item1.getUniqueId().equals(item.getUniqueId())).findFirst()
-                    .ifPresent(newItem -> item.setPing(newItem.getPing())));
+                    .ifPresent(newItem -> {
+                        item.setPing(newItem.getPing());
+                        this.callUpdate(item, connection);
+                    }));
         }
+    }
+
+    private void callUpdate(PacketPlayServerPlayerInfo.Item item, ServiceConnection connection) {
+        connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerInfoUpdateEvent(connection, this.toPlayerInfo(item)));
     }
 
     @Override
@@ -133,4 +161,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
         return this.lastRemovedItems.stream().filter(item -> item.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
     }
 
+    public PlayerInfo toPlayerInfo(PacketPlayServerPlayerInfo.Item item) {
+        return new BasicPlayerInfo(item.getUniqueId(), item.getUsername(), item.getProperties(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName());
+    }
 }

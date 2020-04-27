@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.api.scoreboard;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface Team {
@@ -64,5 +65,7 @@ public interface Team {
     String getSuffix();
 
     void setSuffix(String suffix);
+
+    Map<String, Object> getProperties();
 
 }

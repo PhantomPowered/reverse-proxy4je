@@ -31,6 +31,8 @@ import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class BasicTeam implements Team {
@@ -198,5 +200,10 @@ public class BasicTeam implements Team {
         }
         this.handle.setNameSuffix(suffix);
         this.scoreboard.getCache().sendTeamUpdate((byte) 2, this.handle);
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        return this.handle == null ? new HashMap<>() : this.handle.getProperties();
     }
 }

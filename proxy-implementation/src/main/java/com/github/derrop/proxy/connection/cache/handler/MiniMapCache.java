@@ -59,7 +59,7 @@ public class MiniMapCache implements PacketCacheHandler {
                 for (int j = 0; j < maps.getMapMaxX(); ++j) {
                     for (int k = 0; k < maps.getMapMaxY(); ++k) {
                         int i = j + k * maps.getMapMaxX();
-                        oldMaps.getMapDataBytes()[i] = maps.getMapDataBytes()[i];
+                        oldMaps.getMapDataBytes()[i] = maps.getMapDataBytes()[i]; // TODO This threw a NullPointerException?
                     }
                 }
             }

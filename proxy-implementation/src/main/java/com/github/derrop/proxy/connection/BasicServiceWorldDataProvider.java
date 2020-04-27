@@ -96,7 +96,7 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
         PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
 
         return cache.getItems().stream()
-                .map(this.itemToPlayerInfoFunction())
+                .map(cache::toPlayerInfo)
                 .toArray(PlayerInfo[]::new);
     }
 
@@ -107,12 +107,8 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
         return cache.getItems().stream()
                 .filter(item -> item.getUniqueId().equals(uniqueId))
                 .findFirst()
-                .map(this.itemToPlayerInfoFunction())
+                .map(cache::toPlayerInfo)
                 .orElse(null);
-    }
-
-    private Function<PacketPlayServerPlayerInfo.Item, PlayerInfo> itemToPlayerInfoFunction() {
-        return item -> new BasicPlayerInfo(item.getUniqueId(), item.getUsername(), item.getProperties(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName());
     }
 
 }
