@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityCache implements PacketCacheHandler {
+    // TODO Remove all entities on Bungee ServerSwitch
 
     private final Map<Integer, CachedEntity> entities = new ConcurrentHashMap<>();
 
