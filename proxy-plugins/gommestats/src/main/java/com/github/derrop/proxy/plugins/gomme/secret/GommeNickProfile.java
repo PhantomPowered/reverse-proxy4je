@@ -1,18 +1,25 @@
 package com.github.derrop.proxy.plugins.gomme.secret;
 
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.player.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
 
 public class GommeNickProfile {
 
+    private ServiceConnection invoker;
     private String realName;
     private Team realTeam;
     private String nickName; // this might not be correct
     private PlayerInfo nickInfo; // this might not be correct
 
-    public GommeNickProfile(String realName, Team realTeam) {
+    public GommeNickProfile(ServiceConnection invoker, String realName, Team realTeam) {
+        this.invoker = invoker;
         this.realName = realName;
         this.realTeam = realTeam;
+    }
+
+    public ServiceConnection getInvoker() {
+        return invoker;
     }
 
     public String getRealName() {
