@@ -33,12 +33,22 @@ import java.util.Objects;
 
 public class NetworkAddress {
 
+    private String rawHost;
     private String host;
     private int port;
 
-    public NetworkAddress(String host, int port) {
+    public NetworkAddress(String rawHost, String host, int port) {
+        this.rawHost = rawHost;
         this.host = host;
         this.port = port;
+    }
+
+    public NetworkAddress(String host, int port) {
+        this(host, host, port);
+    }
+
+    public String getRawHost() {
+        return rawHost;
     }
 
     public String getHost() {
@@ -55,6 +65,8 @@ public class NetworkAddress {
         if (hostAndPort.length == 0) {
             return null;
         }
+
+        String rawHost = hostAndPort[0];
 
         String host;
         if (hostAndPort[0].split("\\.").length != 4) {
@@ -80,12 +92,12 @@ public class NetworkAddress {
             }
         }
 
-        return new NetworkAddress(host, port);
+        return new NetworkAddress(rawHost, host, port);
     }
 
     @Override
     public String toString() {
-        return this.host + ":" + this.port;
+        return (this.rawHost != null ? this.rawHost + "#" + this.host : this.host) + ":" + this.port;
     }
 
     @Override

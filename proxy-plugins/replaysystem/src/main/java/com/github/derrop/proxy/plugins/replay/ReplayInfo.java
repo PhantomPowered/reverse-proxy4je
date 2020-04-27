@@ -80,6 +80,7 @@ public class ReplayInfo {
     public void write(DataOutputStream outputStream) throws IOException {
         outputStream.writeInt(this.ownEntityId);
 
+        outputStream.writeUTF(this.serverAddress.getRawHost());
         outputStream.writeUTF(this.serverAddress.getHost());
         outputStream.writeInt(this.serverAddress.getPort());
 
@@ -102,7 +103,7 @@ public class ReplayInfo {
     public void read(DataInputStream inputStream) throws IOException {
         this.ownEntityId = inputStream.readInt();
 
-        this.serverAddress = new NetworkAddress(inputStream.readUTF(), inputStream.readInt());
+        this.serverAddress = new NetworkAddress(inputStream.readUTF(), inputStream.readUTF(), inputStream.readInt());
 
         this.creatorId = new UUID(inputStream.readLong(), inputStream.readLong());
         this.creatorName = inputStream.readUTF();
