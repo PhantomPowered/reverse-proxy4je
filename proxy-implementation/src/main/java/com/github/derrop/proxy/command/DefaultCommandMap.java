@@ -88,6 +88,11 @@ public class DefaultCommandMap implements CommandMap {
         String[] split = fullLine.split(" ");
         try {
             CommandContainer commandContainer = this.getContainer(commandSender, split);
+            if (!commandContainer.getCallback().testPermission(commandSender)) {
+                commandSender.sendMessage("You do not have permission to execute this command");
+                return CommandResult.FAILURE;
+            }
+
             String[] args = split.length > 1 ? Arrays.copyOfRange(split, 1, split.length) : new String[0];
             return commandContainer.getCallback().process(commandSender, args, fullLine);
         } catch (final UnknownCommandException ex) {
