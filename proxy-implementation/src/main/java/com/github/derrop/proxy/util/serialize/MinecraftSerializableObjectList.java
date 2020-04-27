@@ -98,6 +98,8 @@ public class MinecraftSerializableObjectList {
             SerializableObject previous = this.objects.get(object.getId());
             if (previous != null) {
                 previous.setValue(object.getValue().orElse(null));
+            } else {
+                this.objects.put(object.getId(), object);
             }
         }
 
