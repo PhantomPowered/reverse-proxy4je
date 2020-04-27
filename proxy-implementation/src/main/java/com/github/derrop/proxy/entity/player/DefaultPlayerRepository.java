@@ -81,6 +81,12 @@ DefaultPlayerRepository implements PlayerRepository {
                     offlinePlayer.getUniqueId(), offlinePlayer.getName(), offlinePlayer.getLastLogin(), offlinePlayer.getLastVersion()
             );
         }
+
+        Player onlinePlayer = this.getOnlinePlayer(offlinePlayer.getUniqueId());
+        if (onlinePlayer instanceof DefaultPlayer) {
+            ((DefaultPlayer) onlinePlayer).applyPermissions(offlinePlayer);
+        }
+
         this.storage.updateOfflinePlayer(offlinePlayer);
     }
 

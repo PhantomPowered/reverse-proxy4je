@@ -27,6 +27,7 @@ package com.github.derrop.proxy.entity.player;
 import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
     private final long lastLogin;
     private final int lastVersion;
 
-    private final Map<String, Boolean> permissions;
+    private Map<String, Boolean> permissions;
 
     @Override
     public @NotNull UUID getUniqueId() {
@@ -100,6 +101,13 @@ public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
 
     @Override
     public @NotNull Map<String, Boolean> getEffectivePermissions() {
-        return Collections.unmodifiableMap(this.permissions);
+        return this.permissions;
     }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        this.permissions = new ConcurrentHashMap<>(this.permissions);
+    }
+
 }
