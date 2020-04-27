@@ -116,11 +116,7 @@ public class H2DatabaseDriver implements DatabaseDriver {
                 return def;
             }
 
-            try (ObjectInputStream stream = new ObjectInputStream(new ByteArrayInputStream(resultSet.getBytes("value")))) {
-                return databaseObjectToken.deserialize(stream);
-            } catch (final IOException ex) {
-                ex.printStackTrace();
-            }
+            return databaseObjectToken.deserialize(resultSet.getBytes("value"));
         } catch (final SQLException ex) {
             ex.printStackTrace();
         }

@@ -246,9 +246,13 @@ public class InitialHandler {
                 PlayerRepository repository = this.proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class);
                 OfflinePlayer offlinePlayer = repository.getOfflinePlayer(uniqueId);
                 if (offlinePlayer == null) {
-                    offlinePlayer = new DefaultOfflinePlayer(uniqueId, result.getName(), System.currentTimeMillis(), -1);
+                    offlinePlayer = new DefaultOfflinePlayer(uniqueId, result.getName(), -1, -1);
+                    repository.insertOfflinePlayer(offlinePlayer);
                 }
                 DefaultPlayer player = new DefaultPlayer(this.proxy, offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
+
+                repository.updateOfflinePlayer(offlinePlayer);
+
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);

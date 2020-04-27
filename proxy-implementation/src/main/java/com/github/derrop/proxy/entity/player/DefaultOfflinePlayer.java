@@ -36,6 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
 
+    private static final long serialVersionUID = 3018504430617681860L;
+
     public DefaultOfflinePlayer(UUID uniqueID, String name, long lastLogin, int lastVersion) {
         this(uniqueID, name, lastLogin, lastVersion, new ConcurrentHashMap<>());
     }
@@ -77,7 +79,10 @@ public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
 
     @Override
     public boolean hasPermission(@NotNull String permission) {
-        return this.permissions.containsKey(permission) && this.permissions.get(permission);
+        if (this.permissions.containsKey(permission)) {
+            return this.permissions.get(permission);
+        }
+        return this.permissions.containsKey("*") && this.permissions.get("*");
     }
 
     @Override
@@ -102,12 +107,6 @@ public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
     @Override
     public @NotNull Map<String, Boolean> getEffectivePermissions() {
         return this.permissions;
-    }
-
-    private void readObject(java.io.ObjectInputStream stream)
-            throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
-        this.permissions = new ConcurrentHashMap<>(this.permissions);
     }
 
 }

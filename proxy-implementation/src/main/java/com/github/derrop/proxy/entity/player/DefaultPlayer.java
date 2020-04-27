@@ -84,8 +84,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             this.channel.writeWithResult(new PacketLoginOutSetCompression(compressionThreshold)).join();
             channel.setCompression(compression);
         }
-
-        proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).updateOfflinePlayer(this);
     }
 
 
@@ -116,6 +114,9 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
 
     public void applyPermissions(OfflinePlayer offlinePlayer) {
+        if (offlinePlayer == this) {
+            return;
+        }
         super.getEffectivePermissions().clear();
         super.getEffectivePermissions().putAll(offlinePlayer.getEffectivePermissions());
     }

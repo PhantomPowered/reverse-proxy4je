@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.database.object.DatabaseObjectToken;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -108,6 +109,11 @@ public interface DatabaseDriver {
         Collection<T> out = new ArrayList<>();
         this.forEachInTable(table, mapper, out::add);
         return out;
+    }
+
+    @NotNull
+    default <T> Collection<T> getAll(@NotNull String table, @NotNull Type type) {
+        return this.getAll(table, bytes -> DatabaseObjectToken.GSON.fromJson(new String(bytes), type));
     }
 
     /**

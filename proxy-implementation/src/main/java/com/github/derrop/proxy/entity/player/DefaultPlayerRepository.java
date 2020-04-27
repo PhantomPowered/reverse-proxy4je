@@ -74,20 +74,28 @@ DefaultPlayerRepository implements PlayerRepository {
     }
 
     @Override
-    public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
-        if (offlinePlayer instanceof Player) {
-            // create a new player because we don't want the online player to be stored in the database
-            offlinePlayer = new DefaultOfflinePlayer(
-                    offlinePlayer.getUniqueId(), offlinePlayer.getName(), offlinePlayer.getLastLogin(), offlinePlayer.getLastVersion()
-            );
-        }
+    public void insertOfflinePlayer(OfflinePlayer offlinePlayer) {
+        this.storage.insertOfflinePlayer(this.asOfflinePlayer(offlinePlayer));
+    }
 
+    @Override
+    public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
         Player onlinePlayer = this.getOnlinePlayer(offlinePlayer.getUniqueId());
         if (onlinePlayer instanceof DefaultPlayer) {
             ((DefaultPlayer) onlinePlayer).applyPermissions(offlinePlayer);
         }
 
-        this.storage.updateOfflinePlayer(offlinePlayer);
+        this.storage.updateOfflinePlayer(this.asOfflinePlayer(offlinePlayer));
+    }
+
+    private OfflinePlayer asOfflinePlayer(OfflinePlayer offlinePlayer) {
+        if (offlinePlayer instanceof Player) {
+            // create a new player because we don't want the online player to be stored in the database
+            return new DefaultOfflinePlayer(
+                    offlinePlayer.getUniqueId(), offlinePlayer.getName(), offlinePlayer.getLastLogin(), offlinePlayer.getLastVersion(), offlinePlayer.getEffectivePermissions()
+            );
+        }
+        return offlinePlayer;
     }
 
     @Override

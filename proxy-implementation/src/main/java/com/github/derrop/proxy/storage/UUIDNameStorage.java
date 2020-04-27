@@ -31,7 +31,7 @@ import java.util.UUID;
 class UUIDNameStorage extends DatabaseProvidedStorage<UUID> {
 
     public UUIDNameStorage(ServiceRegistry registry, String table) {
-        super(registry, table);
+        super(registry, table, UUID.class);
     }
 
     public void remove(String name) {

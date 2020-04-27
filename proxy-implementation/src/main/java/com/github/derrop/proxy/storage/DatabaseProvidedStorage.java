@@ -34,16 +34,19 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 public class DatabaseProvidedStorage<T extends Serializable> {
 
     private final ServiceRegistry registry;
     private final String table;
+    private final Type type;
 
-    public DatabaseProvidedStorage(ServiceRegistry registry, String table) {
+    public DatabaseProvidedStorage(ServiceRegistry registry, String table, Type type) {
         this.registry = registry;
         this.table = table;
+        this.type = type;
         this.registry.getProviderUnchecked(DatabaseDriver.class).createTable(table);
     }
 
@@ -52,18 +55,11 @@ public class DatabaseProvidedStorage<T extends Serializable> {
     }
 
     protected @NotNull Collection<T> getAll() {
-        return this.registry.getProviderUnchecked(DatabaseDriver.class).getAll(table, bytes -> {
-            try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-                return (T) inputStream.readObject();
-            } catch (IOException | ClassNotFoundException exception) {
-                exception.printStackTrace();
-            }
-            return null;
-        });
+        return this.registry.getProviderUnchecked(DatabaseDriver.class).getAll(table, this.type);
     }
 
     protected T get(String key) {
-        return this.registry.getProviderUnchecked(DatabaseDriver.class).get(DatabaseObjectToken.newToken(key, this.table));
+        return this.registry.getProviderUnchecked(DatabaseDriver.class).get(DatabaseObjectToken.newToken(key, this.table, this.type));
     }
 
     protected void insert(String key, T value) {

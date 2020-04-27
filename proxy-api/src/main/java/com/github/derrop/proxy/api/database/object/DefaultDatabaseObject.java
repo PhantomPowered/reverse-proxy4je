@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.api.database.object;
 
+import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
@@ -33,14 +34,16 @@ import java.io.Serializable;
 
 public class DefaultDatabaseObject implements DatabaseObject {
 
+    private static final Gson GSON = new Gson();
+
     private final String key;
     private final String table;
-    private final Serializable serializable;
+    private final Object object;
 
-    public DefaultDatabaseObject(String key, String table, Serializable serializable) {
+    public DefaultDatabaseObject(String key, String table, Object object) {
         this.key = key;
         this.table = table;
-        this.serializable = serializable;
+        this.object = object;
     }
 
     @Override
@@ -55,10 +58,6 @@ public class DefaultDatabaseObject implements DatabaseObject {
 
     @Override
     public @NotNull byte[] serialize() throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream)) {
-            outputStream.writeObject(this.serializable);
-        }
-        return byteArrayOutputStream.toByteArray();
+        return GSON.toJson(this.object).getBytes();
     }
 }

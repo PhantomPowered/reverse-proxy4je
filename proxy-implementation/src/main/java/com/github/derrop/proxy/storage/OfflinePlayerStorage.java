@@ -27,6 +27,7 @@ package com.github.derrop.proxy.storage;
 import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.entity.player.DefaultOfflinePlayer;
+import com.google.gson.Gson;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -36,12 +37,16 @@ public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOffline
     private UUIDNameStorage uuidNameStorage;
 
     public OfflinePlayerStorage(ServiceRegistry registry) {
-        super(registry, "player_storage");
+        super(registry, "player_storage", DefaultOfflinePlayer.class);
         this.uuidNameStorage = new UUIDNameStorage(registry, "name_uuid_map");
     }
 
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
         return super.get(uniqueId.toString());
+    }
+
+    public void insertOfflinePlayer(OfflinePlayer player) {
+        super.insert(player.getUniqueId().toString(), (DefaultOfflinePlayer) player);
     }
 
     public void updateOfflinePlayer(OfflinePlayer player) {
@@ -52,7 +57,7 @@ public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOffline
 
         this.uuidNameStorage.put(player.getName(), player.getUniqueId());
 
-        super.insertOrUpdate(player.getUniqueId().toString(), (DefaultOfflinePlayer) player);
+        super.update(player.getUniqueId().toString(), (DefaultOfflinePlayer) player);
     }
 
     public Collection<? extends OfflinePlayer> getOfflinePlayers() {

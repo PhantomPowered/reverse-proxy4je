@@ -24,30 +24,34 @@
  */
 package com.github.derrop.proxy.api.database.object;
 
+import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.lang.reflect.Type;
 import java.util.function.Function;
 
 public abstract class DatabaseObjectToken<T> {
 
+    public static final Gson GSON = new Gson();
+
     /**
      * Creates a new token to read the an object from the database.
      *
-     * @param mapFunction The function which maps the stream to the required object
+     * @param mapFunction The function which maps the bytes to the required object
      * @param key         The key of the database object in the database itself
      * @param table       The table in which the database object is located
      * @param <T>         The type of the object which gets deserialize from the stream
      * @return The token to deserialize an object from the database
      */
     @NotNull
-    public static <T> DatabaseObjectToken<T> newToken(@NotNull Function<ObjectInputStream, T> mapFunction,
+    public static <T> DatabaseObjectToken<T> newToken(@NotNull Function<byte[], T> mapFunction,
                                                       @NotNull String key, @NotNull String table) {
         return new DatabaseObjectToken<T>() {
+
+            @NotNull
             @Override
-            public @NotNull T deserialize(@NotNull ObjectInputStream stream) {
-                return mapFunction.apply(stream);
+            public T deserialize(@NotNull byte[] bytes) {
+                return mapFunction.apply(bytes);
             }
 
             @Override
@@ -63,25 +67,18 @@ public abstract class DatabaseObjectToken<T> {
     }
 
     @NotNull
-    public static <T> DatabaseObjectToken<T> newToken(@NotNull String key, @NotNull String table) {
-        return newToken(objectInputStream -> {
-            try {
-                return (T) objectInputStream.readObject();
-            } catch (IOException | ClassNotFoundException exception) {
-                exception.printStackTrace();
-            }
-            return null;
-        }, key, table);
+    public static <T> DatabaseObjectToken<T> newToken(@NotNull String key, @NotNull String table, @NotNull Type type) {
+        return newToken(bytes -> GSON.fromJson(new String(bytes), type), key, table);
     }
 
     /**
      * Deserializes an object from the database.
      *
-     * @param stream The stream created from the database
+     * @param bytes The bytes out of the database
      * @return The deserialize object from the given stream
      */
     @NotNull
-    public abstract T deserialize(@NotNull ObjectInputStream stream) throws IOException;
+    public abstract T deserialize(@NotNull byte[] bytes);
 
     /**
      * @return The table in which the object is located

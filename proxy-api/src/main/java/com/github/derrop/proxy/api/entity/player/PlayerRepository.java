@@ -38,6 +38,7 @@ public interface PlayerRepository {
 
     Player getOnlinePlayer(UUID uniqueId);
 
+    void insertOfflinePlayer(OfflinePlayer offlinePlayer);
 
     void updateOfflinePlayer(OfflinePlayer offlinePlayer);
 
