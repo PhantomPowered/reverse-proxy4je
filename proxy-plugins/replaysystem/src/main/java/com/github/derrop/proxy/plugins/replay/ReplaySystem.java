@@ -37,7 +37,7 @@ import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import com.github.derrop.proxy.util.DataWatcher;
+import com.github.derrop.proxy.util.serialize.SerializableObject;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -282,19 +282,19 @@ public class ReplaySystem { // TODO
                 connection.getLocation(),
                 (short) 0,
                 Arrays.asList(
-                        new DataWatcher.WatchableObject(2, 18, 0, true),
-                        new DataWatcher.WatchableObject(3, 17, 0F, true),
-                        new DataWatcher.WatchableObject(0, 16, (byte) 0, true),
-                        new DataWatcher.WatchableObject(0, 10, (byte) 127, true),
-                        new DataWatcher.WatchableObject(0, 9, (byte) 0, true),
-                        new DataWatcher.WatchableObject(0, 8, (byte) 0, true),
-                        new DataWatcher.WatchableObject(2, 7, 0, true),
-                        new DataWatcher.WatchableObject(3, 6, 20F, true),
-                        new DataWatcher.WatchableObject(0, 4, (byte) 0, true),
-                        new DataWatcher.WatchableObject(0, 3, (byte) 0, true),
-                        new DataWatcher.WatchableObject(4, 2, "", true),
-                        new DataWatcher.WatchableObject(1, 1, (short) 300, true),
-                        new DataWatcher.WatchableObject(0, 0, (byte) 0, true)
+                        new SerializableObject(2, 18, 0),
+                        new SerializableObject(3, 17, 0F),
+                        new SerializableObject(0, 16, (byte) 0),
+                        new SerializableObject(0, 10, (byte) 127),
+                        new SerializableObject(0, 9, (byte) 0),
+                        new SerializableObject(0, 8, (byte) 0),
+                        new SerializableObject(2, 7, 0),
+                        new SerializableObject(3, 6, 20F),
+                        new SerializableObject(0, 4, (byte) 0),
+                        new SerializableObject(0, 3, (byte) 0),
+                        new SerializableObject(4, 2, ""),
+                        new SerializableObject(1, 1, (short) 300),
+                        new SerializableObject(0, 0, (byte) 0)
                 )
         ));
         receiver.sendPacket(proxyClient.getEntityMetadata());

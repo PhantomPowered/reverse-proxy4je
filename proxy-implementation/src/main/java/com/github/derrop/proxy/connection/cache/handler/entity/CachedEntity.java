@@ -9,7 +9,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import com.github.derrop.proxy.util.DataWatcher;
+import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class CachedEntity {
     private int entityId;
     private PositionedPacket spawnPacket;
     private Map<Integer, ItemStack> equipment;
-    private DataWatcher watcher = new DataWatcher();
+    private MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
 
     public CachedEntity(PositionedPacket spawnPacket) {
         this.entityId = spawnPacket.getEntityId();
@@ -29,8 +29,8 @@ public class CachedEntity {
     }
 
     public void updateMetadata(PacketPlayServerEntityMetadata metadata) {
-        if (metadata.getWatchableObjects() != null) {
-            this.watcher.updateWatchedObjectsFromList(metadata.getWatchableObjects());
+        if (metadata.getObjects() != null) {
+            this.objectList.applyUpdate(metadata.getObjects());
         }
     }
 
@@ -60,7 +60,7 @@ public class CachedEntity {
             sender.sendPacket(this.spawnPacket);
         }
 
-        sender.sendPacket(new PacketPlayServerEntityMetadata(this.entityId, this.watcher.getAllWatched()));
+        sender.sendPacket(new PacketPlayServerEntityMetadata(this.entityId, this.objectList.getObjects()));
         this.equipment.forEach((slot, item) -> sender.sendPacket(new PacketPlayServerEntityEquipment(this.entityId, slot, item)));
     }
 

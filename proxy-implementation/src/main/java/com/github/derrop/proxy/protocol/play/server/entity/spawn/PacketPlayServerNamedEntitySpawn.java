@@ -30,11 +30,12 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
-import com.github.derrop.proxy.util.DataWatcher;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
+import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.util.serialize.SerializableObject;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, EntityPacket {
@@ -47,9 +48,9 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
     private byte yaw;
     private byte pitch;
     private short currentItem;
-    private List<DataWatcher.WatchableObject> watchableObjects;
+    private Collection<SerializableObject> objects;
 
-    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, int x, int y, int z, byte yaw, byte pitch, short currentItem, List<DataWatcher.WatchableObject> watchableObjects) {
+    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, int x, int y, int z, byte yaw, byte pitch, short currentItem, Collection<SerializableObject> objects) {
         this.entityId = entityId;
         this.playerId = playerId;
         this.x = x;
@@ -58,14 +59,14 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.yaw = yaw;
         this.pitch = pitch;
         this.currentItem = currentItem;
-        this.watchableObjects = watchableObjects;
+        this.objects = objects;
     }
 
-    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, Location location, short currentItem, List<DataWatcher.WatchableObject> watchableObjects) {
+    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, Location location, short currentItem, Collection<SerializableObject> objects) {
         this(entityId, playerId,
                 PlayerPositionPacketUtil.getFixLocation(location.getX()), PlayerPositionPacketUtil.getFixLocation(location.getY()), PlayerPositionPacketUtil.getFixLocation(location.getZ()),
                 PlayerPositionPacketUtil.getFixRotation(location.getYaw()), PlayerPositionPacketUtil.getFixRotation(location.getPitch()),
-                currentItem, watchableObjects
+                currentItem, objects
         );
     }
 
@@ -109,8 +110,8 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         return this.currentItem;
     }
 
-    public List<DataWatcher.WatchableObject> getWatchableObjects() {
-        return this.watchableObjects;
+    public Collection<SerializableObject> getObjects() {
+        return this.objects;
     }
 
     public void setEntityId(int entityId) {
@@ -145,8 +146,8 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.currentItem = currentItem;
     }
 
-    public void setWatchableObjects(List<DataWatcher.WatchableObject> watchableObjects) {
-        this.watchableObjects = watchableObjects;
+    public void setObjects(Collection<SerializableObject> objects) {
+        this.objects = objects;
     }
 
     @Override
@@ -161,7 +162,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.pitch = protoBuf.readByte();
         this.currentItem = protoBuf.readShort();
 
-        this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
+        this.objects = MinecraftSerializableObjectList.readList(protoBuf);
     }
 
     @Override
@@ -176,10 +177,21 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         protoBuf.writeByte(this.pitch);
         protoBuf.writeShort(this.currentItem);
 
-        DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
+        MinecraftSerializableObjectList.writeList(protoBuf, this.objects);
     }
 
+    @Override
     public String toString() {
-        return "PacketPlayServerNamedEntitySpawn(entityId=" + this.getEntityId() + ", playerId=" + this.getPlayerId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", yaw=" + this.getYaw() + ", pitch=" + this.getPitch() + ", currentItem=" + this.getCurrentItem() + ", watchableObjects=" + this.getWatchableObjects() + ")";
+        return "PacketPlayServerNamedEntitySpawn{" +
+                "entityId=" + entityId +
+                ", playerId=" + playerId +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", yaw=" + yaw +
+                ", pitch=" + pitch +
+                ", currentItem=" + currentItem +
+                ", objects=" + objects +
+                '}';
     }
 }

@@ -28,19 +28,20 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.util.DataWatcher;
+import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.util.serialize.SerializableObject;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
 
 public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
 
     private int entityId;
-    private List<DataWatcher.WatchableObject> watchableObjects;
+    private Collection<SerializableObject> objects;
 
-    public PacketPlayServerEntityMetadata(int entityId, List<DataWatcher.WatchableObject> watchableObjects) {
+    public PacketPlayServerEntityMetadata(int entityId, Collection<SerializableObject> objects) {
         this.entityId = entityId;
-        this.watchableObjects = watchableObjects;
+        this.objects = objects;
     }
 
     public PacketPlayServerEntityMetadata() {
@@ -55,31 +56,35 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
         return this.entityId;
     }
 
-    public List<DataWatcher.WatchableObject> getWatchableObjects() {
-        return this.watchableObjects;
+    public Collection<SerializableObject> getObjects() {
+        return objects;
     }
 
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }
 
-    public void setWatchableObjects(List<DataWatcher.WatchableObject> watchableObjects) {
-        this.watchableObjects = watchableObjects;
+    public void setObjects(Collection<SerializableObject> objects) {
+        this.objects = objects;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-        this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
+        this.objects = MinecraftSerializableObjectList.readList(protoBuf);
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-        DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
+        MinecraftSerializableObjectList.writeList(protoBuf, this.objects);
     }
 
+    @Override
     public String toString() {
-        return "PacketPlayServerEntityMetadata(entityId=" + this.getEntityId() + ", watchableObjects=" + this.getWatchableObjects() + ")";
+        return "PacketPlayServerEntityMetadata{" +
+                "entityId=" + entityId +
+                ", objects=" + objects +
+                '}';
     }
 }

@@ -29,10 +29,11 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
-import com.github.derrop.proxy.util.DataWatcher;
+import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.util.serialize.SerializableObject;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
 
 public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, EntityPacket {
 
@@ -47,9 +48,9 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
     private byte yaw;
     private byte pitch;
     private byte headPitch;
-    private List<DataWatcher.WatchableObject> watcher;
+    private Collection<SerializableObject> objects;
 
-    public PacketPlayServerSpawnLivingEntity(int entityId, int x, int y, int z, int type, int velocityX, int velocityY, int velocityZ, byte yaw, byte pitch, byte headPitch, List<DataWatcher.WatchableObject> watcher) {
+    public PacketPlayServerSpawnLivingEntity(int entityId, int x, int y, int z, int type, int velocityX, int velocityY, int velocityZ, byte yaw, byte pitch, byte headPitch, Collection<SerializableObject> objects) {
         this.entityId = entityId;
         this.x = x;
         this.y = y;
@@ -61,7 +62,7 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         this.yaw = yaw;
         this.pitch = pitch;
         this.headPitch = headPitch;
-        this.watcher = watcher;
+        this.objects = objects;
     }
 
     public PacketPlayServerSpawnLivingEntity() {
@@ -116,8 +117,8 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         return this.headPitch;
     }
 
-    public List<DataWatcher.WatchableObject> getWatcher() {
-        return this.watcher;
+    public Collection<SerializableObject> getObjects() {
+        return this.objects;
     }
 
     public void setEntityId(int entityId) {
@@ -164,8 +165,8 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         this.headPitch = headPitch;
     }
 
-    public void setWatcher(List<DataWatcher.WatchableObject> watcher) {
-        this.watcher = watcher;
+    public void setObjects(Collection<SerializableObject> objects) {
+        this.objects = objects;
     }
 
     @Override
@@ -182,7 +183,7 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         this.velocityY = protoBuf.readShort();
         this.velocityZ = protoBuf.readShort();
 
-        this.watcher = DataWatcher.readWatchedListFromByteBuf(protoBuf);
+        this.objects = MinecraftSerializableObjectList.readList(protoBuf);
     }
 
     @Override
@@ -199,10 +200,24 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         protoBuf.writeShort(this.velocityY);
         protoBuf.writeShort(this.velocityZ);
 
-        DataWatcher.writeWatchedListToByteBuf(this.watcher, protoBuf);
+        MinecraftSerializableObjectList.writeList(protoBuf, this.objects);
     }
 
+    @Override
     public String toString() {
-        return "PacketPlayServerSpawnLivingEntity(entityId=" + this.getEntityId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", type=" + this.getType() + ", velocityX=" + this.getVelocityX() + ", velocityY=" + this.getVelocityY() + ", velocityZ=" + this.getVelocityZ() + ", yaw=" + this.getYaw() + ", pitch=" + this.getPitch() + ", headPitch=" + this.getHeadPitch() + ", watcher=" + this.getWatcher() + ")";
+        return "PacketPlayServerSpawnLivingEntity{" +
+                "entityId=" + entityId +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", type=" + type +
+                ", velocityX=" + velocityX +
+                ", velocityY=" + velocityY +
+                ", velocityZ=" + velocityZ +
+                ", yaw=" + yaw +
+                ", pitch=" + pitch +
+                ", headPitch=" + headPitch +
+                ", objects=" + objects +
+                '}';
     }
 }
