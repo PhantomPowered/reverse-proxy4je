@@ -73,9 +73,9 @@ public class NetworkAddress {
             port = 25565;
         } else {
             try {
-                port = Integer.parseInt(hostAndPort[2]);
+                port = Integer.parseInt(hostAndPort[1]);
             } catch (final NumberFormatException ex) {
-                System.err.println("Wrong port " + hostAndPort[2]);
+                System.err.println("Wrong port " + hostAndPort[1]);
                 return null;
             }
         }
