@@ -29,7 +29,9 @@ public class CachedEntity {
     }
 
     public void updateMetadata(PacketPlayServerEntityMetadata metadata) {
-        this.watcher.updateWatchedObjectsFromList(metadata.getWatchableObjects());
+        if (metadata.getWatchableObjects() != null) {
+            this.watcher.updateWatchedObjectsFromList(metadata.getWatchableObjects());
+        }
     }
 
     public void updateLocation(int x, int y, int z, byte yaw, byte pitch) {
