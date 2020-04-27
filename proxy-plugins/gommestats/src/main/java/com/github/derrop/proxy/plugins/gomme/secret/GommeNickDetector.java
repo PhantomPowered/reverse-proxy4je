@@ -43,8 +43,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GommeNickDetector extends MatchParser {
+
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     private long lastNickedJoin;
     private GommeNickProfile lastProfile;
@@ -74,13 +79,15 @@ public class GommeNickDetector extends MatchParser {
 
         String name = entries.iterator().next();
 
-        if (name.indexOf((char) 167) != -1) {
+        if (name.trim().isEmpty() || name.indexOf((char) 167) != -1 || (this.nickProfiles.containsKey(name) && this.nickProfiles.get(name).getNickName() != null)) {
             return;
         }
 
         if (this.lastNickedJoin >= System.currentTimeMillis() - 3 && this.lastProfile != null) {
             GommeNickProfile profile = this.lastProfile;
             this.lastProfile = null;
+
+            System.out.println("Nickname for " + profile.getRealName() + " detected: " + name);
 
             profile.setNickName(name);
 
@@ -119,15 +126,20 @@ public class GommeNickDetector extends MatchParser {
 
     @Listener
     public void handlePlayerInfoRemove(PlayerInfoRemoveEvent event) {
-        for (GommeNickProfile profile : this.nickProfiles.values()) {
-            if (profile.getNickName() != null && profile.getNickName().equals(event.getPlayerInfo().getUsername())) {
-                System.out.println("UnNick/Disconnect detected: " + profile.getRealName() + " (Nick was: " + profile.getNickName() + ")");
-                if (event.getConnection().getPlayer() != null && profile.getNickInfo() != null) {
-                    this.setSubtitle(event.getConnection().getPlayer(), profile.getNickInfo().getUniqueId(), null);
-                }
-                this.nickProfiles.values().remove(profile);
+        this.executorService.schedule(() -> {
+            if (event.getConnection().getWorldDataProvider().getOnlinePlayer(event.getPlayerInfo().getUniqueId()) != null) { // maybe the server just went ingame?
+                return;
             }
-        }
+            for (GommeNickProfile profile : this.nickProfiles.values()) {
+                if (profile.getNickName() != null && profile.getNickName().equals(event.getPlayerInfo().getUsername())) {
+                    System.out.println("UnNick/Disconnect detected: " + profile.getRealName() + " (Nick was: " + profile.getNickName() + ")");
+                    if (event.getConnection().getPlayer() != null && profile.getNickInfo() != null) {
+                        this.setSubtitle(event.getConnection().getPlayer(), profile.getNickInfo().getUniqueId(), null);
+                    }
+                    this.nickProfiles.values().remove(profile);
+                }
+            }
+        }, 50, TimeUnit.MILLISECONDS);
     }
 
     @Listener
