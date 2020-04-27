@@ -24,12 +24,15 @@
  */
 package com.github.derrop.proxy.plugins.gomme;
 
+import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.gomme.command.CommandNicklist;
+import com.github.derrop.proxy.plugins.gomme.command.CommandSpectatorlist;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeNickDetector;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 import com.github.derrop.proxy.plugins.gomme.web.MatchFileHandler;
@@ -50,14 +53,17 @@ public class GommeStatsPlugin {
 
         //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(container, new TeamParser(core));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
-        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeSpectatorDetector(core));
-        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeNickDetector(core));
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getSpectatorDetector());
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getNickDetector());
+
+        registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandNicklist(registry, core.getNickDetector()), "nicklist");
+        registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandSpectatorlist(registry, core.getSpectatorDetector()), "spectatorlist", "speclist");
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-        Javalin javalin = Javalin.create(e -> e.showJavalinBanner = false).start(80);
-        javalin.get("/matches", new MatchFileHandler("/matches", core.getMatchManager()));
+        //Javalin javalin = Javalin.create(e -> e.showJavalinBanner = false).start(80);
+        //javalin.get("/matches", new MatchFileHandler("/matches", core.getMatchManager()));
 
         Thread.currentThread().setContextClassLoader(old);
     }

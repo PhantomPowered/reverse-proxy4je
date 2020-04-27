@@ -89,6 +89,10 @@ public class GommeNickDetector extends MatchParser {
 
             System.out.println("Nickname for " + profile.getRealName() + " detected: " + name);
 
+            if (event.getConnection().getPlayer() != null) {
+                event.getConnection().getPlayer().sendMessage("§eGomme-Nick §8| §cNick §7detected: §e" + profile.getRealTeam().getPrefix() + profile.getRealName() + profile.getRealTeam().getSuffix() + " §7(probably the nick name is §e" + name + "§7)");
+            }
+
             profile.setNickName(name);
 
             Arrays.stream(event.getConnection().getWorldDataProvider().getOnlinePlayers())
@@ -119,7 +123,7 @@ public class GommeNickDetector extends MatchParser {
         event.getTeam().getProperties().put("GommeNicked", true);
 
         this.lastNickedJoin = System.currentTimeMillis();
-        GommeNickProfile profile = new GommeNickProfile(name, event.getTeam());
+        GommeNickProfile profile = new GommeNickProfile(event.getConnection(), name, event.getTeam());
         this.lastProfile = profile;
         this.nickProfiles.put(profile.getRealName(), profile);
     }
@@ -132,6 +136,10 @@ public class GommeNickDetector extends MatchParser {
             }
             for (GommeNickProfile profile : this.nickProfiles.values()) {
                 if (profile.getNickName() != null && profile.getNickName().equals(event.getPlayerInfo().getUsername())) {
+                    if (event.getConnection().getPlayer() != null) {
+                        event.getConnection().getPlayer().sendMessage("§eGomme-Nick §8| §aUnNick/Disconnect §7detected: §e" + profile.getRealTeam().getPrefix() + profile.getRealName() + profile.getRealTeam().getSuffix() + " §7(probably the nick name is §e" + profile.getNickName() + "§7)");
+                    }
+
                     System.out.println("UnNick/Disconnect detected: " + profile.getRealName() + " (Nick was: " + profile.getNickName() + ")");
                     if (event.getConnection().getPlayer() != null && profile.getNickInfo() != null) {
                         this.setSubtitle(event.getConnection().getPlayer(), profile.getNickInfo().getUniqueId(), null);

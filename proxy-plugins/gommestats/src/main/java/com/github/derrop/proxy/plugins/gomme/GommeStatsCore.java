@@ -27,11 +27,16 @@ package com.github.derrop.proxy.plugins.gomme;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
 import com.github.derrop.proxy.plugins.gomme.player.PlayerDataProvider;
+import com.github.derrop.proxy.plugins.gomme.secret.GommeNickDetector;
+import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 
 public class GommeStatsCore {
 
     private final MatchManager matchManager = new MatchManager(this);
     private final PlayerDataProvider playerDataProvider = new PlayerDataProvider();
+
+    private final GommeNickDetector nickDetector = new GommeNickDetector(this);
+    private final GommeSpectatorDetector spectatorDetector = new GommeSpectatorDetector(this);
 
     private final ServiceRegistry registry;
 
@@ -49,5 +54,13 @@ public class GommeStatsCore {
 
     public ServiceRegistry getRegistry() {
         return this.registry;
+    }
+
+    public GommeNickDetector getNickDetector() {
+        return this.nickDetector;
+    }
+
+    public GommeSpectatorDetector getSpectatorDetector() {
+        return this.spectatorDetector;
     }
 }
