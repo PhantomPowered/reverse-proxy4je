@@ -34,7 +34,6 @@ import com.github.derrop.proxy.util.DataWatcher;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -162,11 +161,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.pitch = protoBuf.readByte();
         this.currentItem = protoBuf.readShort();
 
-        try {
-            this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
-        } catch (final IOException ex) {
-            ex.printStackTrace();
-        }
+        this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
     }
 
     @Override
@@ -181,11 +176,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         protoBuf.writeByte(this.pitch);
         protoBuf.writeShort(this.currentItem);
 
-        try {
-            DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
-        } catch (final IOException ex) {
-            ex.printStackTrace();
-        }
+        DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
     }
 
     public String toString() {

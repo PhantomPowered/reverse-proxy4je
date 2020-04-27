@@ -31,7 +31,6 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.util.DataWatcher;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.List;
 
 public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
@@ -71,23 +70,13 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-
-        try {
-            this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
-        } catch (final IOException exception) {
-            exception.printStackTrace();
-        }
+        this.watchableObjects = DataWatcher.readWatchedListFromByteBuf(protoBuf);
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-
-        try {
-            DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        DataWatcher.writeWatchedListToByteBuf(this.watchableObjects, protoBuf);
     }
 
     public String toString() {

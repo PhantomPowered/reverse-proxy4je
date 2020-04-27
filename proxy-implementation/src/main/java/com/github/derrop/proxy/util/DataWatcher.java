@@ -166,7 +166,7 @@ public class DataWatcher {
      * Writes the list of watched objects (entity attribute of type {byte, short, int, float, string, ItemStack,
      * ChunkCoordinates}) to the specified ByteBuf
      */
-    public static void writeWatchedListToByteBuf(List<DataWatcher.WatchableObject> objectsList, ProtoBuf buffer) throws IOException {
+    public static void writeWatchedListToByteBuf(List<DataWatcher.WatchableObject> objectsList, ProtoBuf buffer) {
         if (objectsList != null) {
             for (DataWatcher.WatchableObject datawatcher$watchableobject : objectsList) {
                 writeWatchableObjectToByteBuf(buffer, datawatcher$watchableobject);
@@ -232,7 +232,7 @@ public class DataWatcher {
      * Writes a watchable object (entity attribute of type {byte, short, int, float, string, ItemStack,
      * ChunkCoordinates}) to the specified ByteBuf
      */
-    private static void writeWatchableObjectToByteBuf(ProtoBuf buffer, DataWatcher.WatchableObject object) throws IOException {
+    private static void writeWatchableObjectToByteBuf(ProtoBuf buffer, DataWatcher.WatchableObject object) {
         int i = (object.getObjectType() << 5 | object.getDataValueId() & 31) & 255;
         buffer.writeByte(i);
 
@@ -277,7 +277,7 @@ public class DataWatcher {
         }
     }
 
-    public static List<DataWatcher.WatchableObject> readWatchedListFromByteBuf(ProtoBuf buffer) throws IOException {
+    public static List<DataWatcher.WatchableObject> readWatchedListFromByteBuf(ProtoBuf buffer) {
         List<DataWatcher.WatchableObject> list = null;
 
         for (int i = buffer.readByte(); i != 127; i = buffer.readByte()) {
