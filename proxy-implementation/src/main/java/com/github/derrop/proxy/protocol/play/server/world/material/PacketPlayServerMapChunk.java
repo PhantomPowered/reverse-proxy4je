@@ -76,6 +76,10 @@ public class PacketPlayServerMapChunk implements Packet {
         return this.extracted;
     }
 
+    public void setExtracted(Extracted extracted) {
+        this.extracted = extracted;
+    }
+
     public void setX(int x) {
         this.x = x;
     }

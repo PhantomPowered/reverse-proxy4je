@@ -69,7 +69,6 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        PacketPlayServerMapChunk[] data = null;
         Packet packet = newPacket.getDeserializedPacket();
 
         if (packet instanceof PacketPlayServerRespawn) {
@@ -79,15 +78,24 @@ public class ChunkCache implements PacketCacheHandler {
 
         } else if (packet instanceof PacketPlayServerMapChunk) {
 
-            data = new PacketPlayServerMapChunk[]{(PacketPlayServerMapChunk) packet};
+            PacketPlayServerMapChunk chunkData = (PacketPlayServerMapChunk) packet;
+
+            Chunk chunk = this.load(chunkData);
+            if (chunk != null) {
+                chunkData.setExtracted(chunk.getBytes(this.dimension));
+            }
 
         } else if (packet instanceof PacketPlayServerMapChunkBulk) {
 
             PacketPlayServerMapChunkBulk chunkBulk = (PacketPlayServerMapChunkBulk) packet;
 
-            data = new PacketPlayServerMapChunk[chunkBulk.getX().length];
-            for (int i = 0; i < data.length; i++) {
-                data[i] = new PacketPlayServerMapChunk(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
+            for (int i = 0; i < chunkBulk.getX().length; i++) {
+                PacketPlayServerMapChunk chunkData = new PacketPlayServerMapChunk(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
+
+                Chunk chunk = this.load(chunkData);
+                if (chunk != null) {
+                    chunkBulk.getExtracted()[i] = chunk.getBytes(this.dimension);
+                }
             }
 
         } else if (packet instanceof PacketPlayServerBlockChange) {
@@ -106,18 +114,6 @@ public class ChunkCache implements PacketCacheHandler {
 
         }
 
-        if (data == null) {
-            return;
-        }
-
-        for (PacketPlayServerMapChunk chunkData : data) {
-            if (chunkData.getExtracted().dataLength == 0) {
-                this.unload(chunkData.getX(), chunkData.getZ());
-                continue;
-            }
-
-            this.load(chunkData);
-        }
     }
 
     private void handleBlockUpdate(BlockPos pos, int newBlockState) {
@@ -131,7 +127,12 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
-    private void load(PacketPlayServerMapChunk chunkData) {
+    private Chunk load(PacketPlayServerMapChunk chunkData) {
+        if (chunkData.getExtracted().dataLength == 0) {
+            this.unload(chunkData.getX(), chunkData.getZ());
+            return null;
+        }
+
         Chunk chunk = new Chunk();
         chunk.fillChunk(chunkData, this.dimension);
         this.chunks.add(chunk);
@@ -139,6 +140,8 @@ public class ChunkCache implements PacketCacheHandler {
         if (this.blockAccess != null) {
             this.blockAccess.handleChunkLoad(chunk);
         }
+
+        return chunk;
     }
 
     private void unload(int x, int z) {
