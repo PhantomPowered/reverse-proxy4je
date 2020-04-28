@@ -62,43 +62,67 @@ public class PacketPlayServerMap implements Packet {
     }
 
     public int getMapId() {
-        return this.mapId;
+        return mapId;
+    }
+
+    public void setMapId(int mapId) {
+        this.mapId = mapId;
     }
 
     public byte getMapScale() {
-        return this.mapScale;
-    }
-
-    public Vec4b[] getMapVisiblePlayersVec4b() {
-        return this.mapVisiblePlayersVec4b;
-    }
-
-    public int getMapMinX() {
-        return this.mapMinX;
-    }
-
-    public int getMapMinY() {
-        return this.mapMinY;
-    }
-
-    public int getMapMaxX() {
-        return this.mapMaxX;
-    }
-
-    public int getMapMaxY() {
-        return this.mapMaxY;
-    }
-
-    public byte[] getMapDataBytes() {
-        return this.mapDataBytes;
+        return mapScale;
     }
 
     public void setMapScale(byte mapScale) {
         this.mapScale = mapScale;
     }
 
+    public Vec4b[] getMapVisiblePlayersVec4b() {
+        return mapVisiblePlayersVec4b;
+    }
+
     public void setMapVisiblePlayersVec4b(Vec4b[] mapVisiblePlayersVec4b) {
         this.mapVisiblePlayersVec4b = mapVisiblePlayersVec4b;
+    }
+
+    public int getMapMinX() {
+        return mapMinX;
+    }
+
+    public void setMapMinX(int mapMinX) {
+        this.mapMinX = mapMinX;
+    }
+
+    public int getMapMinY() {
+        return mapMinY;
+    }
+
+    public void setMapMinY(int mapMinY) {
+        this.mapMinY = mapMinY;
+    }
+
+    public int getMapMaxX() {
+        return mapMaxX;
+    }
+
+    public void setMapMaxX(int mapMaxX) {
+        this.mapMaxX = mapMaxX;
+    }
+
+    public int getMapMaxY() {
+        return mapMaxY;
+    }
+
+    public void setMapMaxY(int mapMaxY) {
+        this.mapMaxY = mapMaxY;
+    }
+
+    public byte[] getMapDataBytes() {
+        return mapDataBytes;
+    }
+
+    public void setMapDataBytes(byte[] mapDataBytes) {
+        this.mapDataBytes = mapDataBytes;
     }
 
     @Override

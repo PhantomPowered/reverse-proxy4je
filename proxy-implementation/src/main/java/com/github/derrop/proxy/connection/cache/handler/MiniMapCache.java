@@ -45,33 +45,32 @@ public class MiniMapCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        PacketPlayServerMap maps = (PacketPlayServerMap) newPacket.getDeserializedPacket();
-        if (!this.maps.containsKey(maps.getMapId())) {
-            this.maps.put(maps.getMapId(), maps);
+        PacketPlayServerMap map = (PacketPlayServerMap) newPacket.getDeserializedPacket();
+        if (!this.maps.containsKey(map.getMapId())) {
+            this.maps.put(map.getMapId(), map);
             return;
         }
 
-        if (this.maps.containsKey(maps.getMapId())) {
-            PacketPlayServerMap oldMaps = this.maps.get(maps.getMapId());
-            oldMaps.setMapVisiblePlayersVec4b(maps.getMapVisiblePlayersVec4b());
-            oldMaps.setMapScale(maps.getMapScale());
-            if (maps.getMapMaxX() > 0) {
-                for (int j = 0; j < maps.getMapMaxX(); ++j) {
-                    for (int k = 0; k < maps.getMapMaxY(); ++k) {
-                        int i = j + k * maps.getMapMaxX();
-                        oldMaps.getMapDataBytes()[i] = maps.getMapDataBytes()[i]; // TODO This threw a NullPointerException?
-                    }
-                }
+        if (this.maps.containsKey(map.getMapId())) {
+            PacketPlayServerMap oldMap = this.maps.get(map.getMapId());
+            oldMap.setMapVisiblePlayersVec4b(map.getMapVisiblePlayersVec4b());
+            oldMap.setMapScale(map.getMapScale());
+            if (map.getMapMaxX() > 0) {
+                oldMap.setMapDataBytes(new byte[map.getMapDataBytes().length]);
+                System.arraycopy(map.getMapDataBytes(), 0, oldMap.getMapDataBytes(), 0, map.getMapDataBytes().length);
             }
         } else {
-            this.maps.put(maps.getMapId(), maps);
+            this.maps.put(map.getMapId(), map);
         }
     }
 
     @Override
     public void sendCached(PacketSender con) {
-        for (PacketPlayServerMap maps : this.maps.values()) {
-            con.sendPacket(maps);
+        for (PacketPlayServerMap map : this.maps.values()) {
+            con.sendPacket(map);
         }
     }
+
+    // TODO the maps aren't always correctly displayed
+
 }
