@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.storage;
 
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 
 import java.util.UUID;

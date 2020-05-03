@@ -24,9 +24,12 @@
  */
 package com.github.derrop.proxy.connection.cache.handler.entity;
 
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.entity.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -68,6 +71,7 @@ public class EntityCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         this.packetCache = packetCache;
+        ServiceRegistry registry = packetCache.getTargetProxyClient().getProxy().getServiceRegistry();
 
         Packet packet = newPacket.getDeserializedPacket();
 
@@ -86,19 +90,19 @@ public class EntityCache implements PacketCacheHandler {
 
             PacketPlayServerNamedEntitySpawn spawnPlayer = (PacketPlayServerNamedEntitySpawn) packet;
 
-            this.entities.put(spawnPlayer.getEntityId(), new CachedEntity(spawnPlayer));
+            this.entities.put(spawnPlayer.getEntityId(), new CachedEntity(registry, packetCache.getTargetProxyClient(), spawnPlayer));
 
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
 
             PacketPlayServerSpawnLivingEntity spawnMob = (PacketPlayServerSpawnLivingEntity) packet;
 
-            this.entities.put(spawnMob.getEntityId(), new CachedEntity(spawnMob));
+            this.entities.put(spawnMob.getEntityId(), new CachedEntity(registry, packetCache.getTargetProxyClient(), spawnMob));
 
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
 
             PacketPlayServerSpawnEntity spawnObject = (PacketPlayServerSpawnEntity) packet;
 
-            this.entities.put(spawnObject.getEntityId(), new CachedEntity(spawnObject));
+            this.entities.put(spawnObject.getEntityId(), new CachedEntity(registry, packetCache.getTargetProxyClient(), spawnObject));
 
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
 

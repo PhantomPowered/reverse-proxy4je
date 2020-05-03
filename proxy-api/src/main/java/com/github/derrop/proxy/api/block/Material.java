@@ -446,9 +446,7 @@ public enum Material {
      * Gets the item ID or block ID of this Material
      *
      * @return ID of this material
-     * @deprecated Magic value
      */
-    @Deprecated
     public int getId() {
         return id;
     }
@@ -526,9 +524,7 @@ public enum Material {
      *
      * @param id ID of the material to get
      * @return Material if found, or null
-     * @deprecated Magic value
      */
-    @Deprecated
     public static Material getMaterial(final int id) {
         if (byId.length > id && id >= 0) {
             return byId[id];
@@ -565,20 +561,20 @@ public enum Material {
     public static Material matchMaterial(final String name) {
         Validate.notNull(name, "Name cannot be null");
 
-        /*Material result = null;
+        Material result = null;
 
         try {
             result = getMaterial(Integer.parseInt(name));
         } catch (NumberFormatException ex) {}
 
-        if (result == null) {*/
+        if (result == null) {
             String filtered = name.toUpperCase();
 
             filtered = filtered.replaceAll("\\s+", "_").replaceAll("\\W", "");
-            return /*result = */BY_NAME.get(filtered);
-        /*}
+            result = BY_NAME.get(filtered);
+        }
 
-        return result;*/
+        return result;
     }
 
     static {

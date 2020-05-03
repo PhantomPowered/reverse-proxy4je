@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.storage;
 
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.entity.player.DefaultOfflinePlayer;
-import com.google.gson.Gson;
 
 import java.util.Collection;
 import java.util.UUID;
