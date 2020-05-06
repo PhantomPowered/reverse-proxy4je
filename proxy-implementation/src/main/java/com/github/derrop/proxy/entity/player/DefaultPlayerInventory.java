@@ -46,7 +46,11 @@ public class DefaultPlayerInventory implements PlayerInventory {
         if (this.type != null) {
             // TODO support other types than chests and custom sizes
             this.player.sendPacket(new PacketPlayServerOpenWindow(this.windowId, "minecraft:container", this.title != null ? this.title : TextComponent.of(this.type.getDefaultTitle()), this.type.getDefaultSize(), -1));
-            this.player.sendPacket(new PacketPlayServerWindowItems(this.windowId, this.content));
+            for (int i = 0; i < this.content.length; i++) {
+                if (this.content[i] != null && this.content[i].getItemId() != 0) {
+                    this.player.sendPacket(new PacketPlayServerSetSlot(this.windowId, i, this.content[i]));
+                }
+            }
             this.opened = true;
         }
     }

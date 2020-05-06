@@ -16,6 +16,7 @@ import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
@@ -29,6 +30,7 @@ import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPos
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
+import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockAction;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
@@ -66,6 +68,8 @@ public class ClientPacketHandler {
         PlayerInventoryClickEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerInventoryClickEvent(player, packet.getSlot(), click));
         if (event.isCancelled()) {
+            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ItemStack.NONE));
+            player.sendPacket(new PacketPlayServerSetSlot(player.getInventory().getWindowId(), packet.getSlot(), player.getInventory().getItem(packet.getSlot())));
             throw CancelProceedException.INSTANCE;
         }
     }
