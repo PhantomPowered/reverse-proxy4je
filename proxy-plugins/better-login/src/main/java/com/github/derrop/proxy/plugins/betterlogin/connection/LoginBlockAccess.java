@@ -5,14 +5,42 @@ import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.util.Vec3i;
+import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 public class LoginBlockAccess implements BlockAccess {
+
+    private static final Material MATERIAL = Material.DIRT;
+
+    private final Collection<BlockPos> filledBlocks = new ArrayList<>();
+
+    private final int state;
+    private final BlockStateRegistry registry;
+
+    public LoginBlockAccess(DefaultPlayer player) {
+        this.registry = player.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class);
+        this.state = this.registry.getDefaultBlockState(MATERIAL);
+
+        BlockPos origin = LoginPrepareListener.SPAWN.toBlockPos();
+        BlockPos lower = origin.subtract(new Vec3i(5, 3, 5));
+        BlockPos upper = origin.add(new Vec3i(5, -3, 5));
+
+        player.sendBlockChange(origin.down(2), Material.DIRT);
+        for (int x = lower.getX(); x < upper.getX(); x++) {
+            for (int z = lower.getZ(); z < upper.getZ(); z++) {
+                BlockPos pos = new BlockPos(x, origin.getY(), z);
+                player.sendBlockChange(pos, MATERIAL);
+                this.filledBlocks.add(pos);
+            }
+        }
+    }
+
+
     @Override
     public void trackBlockUpdates(UUID trackerId, int[] states, BlockConsumer consumer) {
     }
@@ -25,34 +53,38 @@ public class LoginBlockAccess implements BlockAccess {
     public void untrackBlockUpdates(UUID trackerId) {
     }
 
+    private boolean isFilled(BlockPos pos) {
+        return this.filledBlocks.contains(pos);
+    }
+
     @Override
     public Collection<BlockPos> getPositions(int state) {
-        return Collections.emptyList();
+        return state == this.state ? this.filledBlocks : Collections.emptyList();
     }
 
     @Override
     public Collection<BlockPos> getPositions(int[] states) {
-        return Collections.emptyList();
+        return Arrays.stream(states).anyMatch(value -> value == this.state) ? this.filledBlocks : Collections.emptyList();
     }
 
     @Override
     public Collection<BlockPos> getPositions(Material material) {
-        return Collections.emptyList();
+        return material == MATERIAL ? this.filledBlocks : Collections.emptyList();
     }
 
     @Override
     public int getBlockState(@NotNull BlockPos pos) {
-        return 0;
+        return this.isFilled(pos) ? this.state : 0;
     }
 
     @Override
     public @NotNull Material getMaterial(@NotNull BlockPos pos) {
-        return Material.AIR;
+        return this.isFilled(pos) ? MATERIAL : Material.AIR;
     }
 
     @Override
     public boolean isAirBlock(@NotNull BlockPos pos) {
-        return true;
+        return this.getMaterial(pos) == Material.AIR;
     }
 
     @Override
@@ -75,7 +107,7 @@ public class LoginBlockAccess implements BlockAccess {
 
     @Override
     public BlockStateRegistry getBlockStateRegistry() {
-        return null;
+        return this.registry;
     }
 
     @Override

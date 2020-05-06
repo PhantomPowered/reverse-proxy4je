@@ -28,6 +28,7 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
@@ -36,6 +37,7 @@ import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.UserAuthentication;
 import net.kyori.text.Component;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,5 +116,8 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
     BlockAccess getBlockAccess();
 
     void syncPackets(Player player, boolean switched);
+
+    @ApiStatus.Internal
+    void updateLocation(@NotNull Location location);
 
 }

@@ -12,8 +12,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.EventPriority;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
-import com.github.derrop.proxy.api.events.connection.player.PlayerInventoryClickEvent;
-import com.github.derrop.proxy.api.events.connection.player.PlayerInventoryCloseEvent;
+import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -21,9 +20,7 @@ import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientCustomPayload;
-import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
+import com.github.derrop.proxy.protocol.play.client.*;
 import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientClickWindow;
 import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientCloseWindow;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
@@ -32,6 +29,9 @@ import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPos
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
+import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
+import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerBlockAction;
+import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -40,7 +40,7 @@ import java.util.List;
 
 public class ClientPacketHandler {
 
-    @PacketHandler(protocolState = ProtocolState.PLAY, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.FIRST)
+    @PacketHandler(protocolState = ProtocolState.PLAY, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.LAST)
     public void handleGeneral(DefaultPlayer player, DecodedPacket packet) {
         if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
 
@@ -97,12 +97,51 @@ public class ClientPacketHandler {
 
     private void updatePosition(DefaultPlayer player, PacketPlayClientPlayerPosition position) {
         ServiceConnection connection = player.getConnectedClient();
-        if (!(connection instanceof BasicServiceConnection)) {
+        if (connection == null) {
             return;
         }
 
         Location newLocation = position.getLocation(connection.getLocation());
-        ((BasicServiceConnection) connection).updateLocation(newLocation);
+
+        if (newLocation == null) {
+            return;
+        }
+
+        PlayerMoveEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new PlayerMoveEvent(player, connection.getLocation(), newLocation));
+        if (event.isCancelled()) {
+            player.sendPacket(new PacketPlayServerPosition(event.getTo()));
+            return;
+        }
+
+        connection.updateLocation(newLocation);
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_DIG, directions = ProtocolDirection.TO_SERVER)
+    public void handleBlockDig(DefaultPlayer player, PacketPlayClientPlayerDigging packet) {
+        if (player.getConnectedClient() == null) {
+            return;
+        }
+        PlayerBlockBreakEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new PlayerBlockBreakEvent(player, packet.getPos(), PlayerBlockBreakEvent.Action.values()[packet.getAction().ordinal()]));
+        if (event.isCancelled()) {
+            player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos())));
+            throw CancelProceedException.INSTANCE;
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
+    public void handleBlockPlace(DefaultPlayer player, PacketPlayClientBlockPlace packet) {
+        if (player.getConnectedClient() == null) {
+            return;
+        }
+
+        PlayerBlockPlaceEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new PlayerBlockPlaceEvent(player, packet.getPos(), packet.getStack()));
+        if (event.isCancelled()) {
+            // player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos()))); TODO should we send this?
+            throw CancelProceedException.INSTANCE;
+        }
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)

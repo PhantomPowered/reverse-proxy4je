@@ -4,9 +4,7 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.annotation.Listener;
-import com.github.derrop.proxy.api.events.connection.player.PlayerInventoryClickEvent;
-import com.github.derrop.proxy.api.events.connection.player.PlayerInventoryCloseEvent;
-import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
+import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
@@ -14,7 +12,7 @@ import com.github.derrop.proxy.plugins.betterlogin.connection.LoginServiceConnec
 
 public class LoginPrepareListener {
 
-    public static final Location SPAWN = new Location(0, 100, 0, 0, 90);
+    public static final Location SPAWN = new Location(0, 100, 0, 0, 0);
     public static final ItemStack[] PARENT_INVENTORY = new ItemStack[]{
             null,
             new ItemStack(Material.COMPASS.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cWatch replay"))),
@@ -46,6 +44,28 @@ public class LoginPrepareListener {
 
     @Listener
     public void handleInventoryClick(PlayerInventoryClickEvent event) {
+        if (event.getPlayer().getConnectedClient() instanceof LoginServiceConnection) {
+            event.cancel(true);
+        }
+    }
+
+    @Listener
+    public void handlePlayerMove(PlayerMoveEvent event) {
+        if (event.getPlayer().getConnectedClient() instanceof LoginServiceConnection &&
+                ((LoginServiceConnection) event.getPlayer().getConnectedClient()).getConnectionTimestamp() + 1000 < System.currentTimeMillis()) {
+            event.cancel(true);
+        }
+    }
+
+    @Listener
+    public void handleBlockBreak(PlayerBlockBreakEvent event) {
+        if (event.getPlayer().getConnectedClient() instanceof LoginServiceConnection) {
+            event.cancel(true);
+        }
+    }
+
+    @Listener
+    public void handleBlockPlace(PlayerBlockPlaceEvent event) {
         if (event.getPlayer().getConnectedClient() instanceof LoginServiceConnection) {
             event.cancel(true);
         }

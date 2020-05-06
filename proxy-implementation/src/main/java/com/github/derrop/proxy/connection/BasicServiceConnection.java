@@ -189,6 +189,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         }
     }
 
+    @Override
     public void updateLocation(@NotNull Location location) {
         this.location = location;
     }

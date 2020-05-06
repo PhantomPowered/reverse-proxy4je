@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.plugins.betterlogin.connection;
 
+import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
@@ -22,6 +23,7 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.Vec3i;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.PacketCache;
+import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
@@ -45,6 +47,7 @@ import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class LoginServiceConnection implements ServiceConnection {
 
@@ -55,9 +58,17 @@ public class LoginServiceConnection implements ServiceConnection {
 
     private boolean connected = false;
 
+    private LoginBlockAccess blockAccess;
+
+    private long connectionTimestamp = System.currentTimeMillis();
+
     public LoginServiceConnection(Proxy proxy, Player player) {
         this.proxy = proxy;
         this.player = player;
+    }
+
+    public long getConnectionTimestamp() {
+        return this.connectionTimestamp;
     }
 
     @Override
@@ -297,7 +308,7 @@ public class LoginServiceConnection implements ServiceConnection {
 
     @Override
     public BlockAccess getBlockAccess() {
-        return null;
+        return this.blockAccess;
     }
 
     @Override
@@ -319,20 +330,11 @@ public class LoginServiceConnection implements ServiceConnection {
                 new PacketPlayServerPlayerInfo.Item(player.getUniqueId(), player.getName(), new String[0][], 1, 0, player.getName())
         }));
 
-        BlockPos origin = LoginPrepareListener.SPAWN.toBlockPos();
-        BlockPos lower = origin.subtract(new Vec3i(5, 3, 5));
-        BlockPos upper = origin.add(new Vec3i(5, -3, 5));
+        this.blockAccess = new LoginBlockAccess((DefaultPlayer) player);
 
-        player.sendBlockChange(origin.down(2), Material.DIRT);
-        for (int x = lower.getX(); x < upper.getX(); x++) {
-            for (int z = lower.getZ(); z < upper.getZ(); z++) {
-                player.sendBlockChange(new BlockPos(x, origin.getY(), z), Material.DIRT);
-            }
-        }
+        player.sendPacket(new PacketPlayServerPosition(LoginPrepareListener.SPAWN.clone().add(new Location(0, 3, 0, 0, 0))));
 
-        player.sendPacket(new PacketPlayServerPosition(LoginPrepareListener.SPAWN.clone().add(new Location(0, 3, 0, 0, 90))));
-
-        player.getInventory().setWindowId((byte) 1);
+        player.getInventory().setWindowId((byte) 0);
         player.getInventory().setContent(LoginPrepareListener.PARENT_INVENTORY);
         player.getInventory().setType(InventoryType.HOPPER);
         player.getInventory().open(); // TODO the inventory is not opened
@@ -340,6 +342,10 @@ public class LoginServiceConnection implements ServiceConnection {
         // TODO send keep alive packets
 
         this.connected = true;
+    }
+
+    @Override
+    public void updateLocation(@NotNull Location location) {
     }
 
     @Override
