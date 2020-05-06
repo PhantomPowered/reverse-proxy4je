@@ -32,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public interface NetworkChannel extends AutoCloseable {
 
@@ -71,5 +73,9 @@ public interface NetworkChannel extends AutoCloseable {
     @Nullable <T> T getProperty(String key);
 
     <T> void setProperty(String key, T value);
+
+    void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer);
+
+    void removeOutgoingPacketListener(UUID key);
 
 }

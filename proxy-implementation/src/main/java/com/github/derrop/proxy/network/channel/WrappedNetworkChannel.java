@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public interface WrappedNetworkChannel extends NetworkChannel {
 
@@ -106,5 +108,15 @@ public interface WrappedNetworkChannel extends NetworkChannel {
     @Override
     default <T> void setProperty(String key, T value) {
         this.getWrappedNetworkChannel().setProperty(key, value);
+    }
+
+    @Override
+    default void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer) {
+        this.getWrappedNetworkChannel().addOutgoingPacketListener(key, consumer);
+    }
+
+    @Override
+    default void removeOutgoingPacketListener(UUID key) {
+        this.getWrappedNetworkChannel().removeOutgoingPacketListener(key);
     }
 }

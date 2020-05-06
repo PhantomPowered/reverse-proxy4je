@@ -32,5 +32,8 @@ public enum ProtocolState {
 
     LOGIN,
 
-    HANDSHAKING
+    HANDSHAKING,
+
+    REDIRECTING
+
 }

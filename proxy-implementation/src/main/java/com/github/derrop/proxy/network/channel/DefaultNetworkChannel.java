@@ -43,9 +43,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class DefaultNetworkChannel implements NetworkChannel {
 
@@ -57,6 +60,8 @@ public class DefaultNetworkChannel implements NetworkChannel {
     private boolean closing = false;
 
     private boolean closed = false;
+
+    private final Map<UUID, Consumer<Packet>> outgoingPacketListeners = new HashMap<>();
 
     public DefaultNetworkChannel() {
     }
@@ -82,8 +87,20 @@ public class DefaultNetworkChannel implements NetworkChannel {
         }
 
         if (packet instanceof DecodedPacket) {
+            if (((DecodedPacket) packet).getPacket() != null) {
+                for (Consumer<Packet> listener : this.outgoingPacketListeners.values()) {
+                    listener.accept(((DecodedPacket) packet).getPacket());
+                }
+            }
+
             this.channel.writeAndFlush(((DecodedPacket) packet).getProtoBuf(), this.channel.voidPromise());
         } else {
+            if (packet instanceof Packet) {
+                for (Consumer<Packet> listener : this.outgoingPacketListeners.values()) {
+                    listener.accept((Packet) packet);
+                }
+            }
+
             this.channel.writeAndFlush(packet, this.channel.voidPromise());
         }
     }
@@ -190,6 +207,16 @@ public class DefaultNetworkChannel implements NetworkChannel {
     @Override
     public <T> void setProperty(String key, T value) {
         this.properties.put(key, value);
+    }
+
+    @Override
+    public void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer) {
+        this.outgoingPacketListeners.put(key, consumer);
+    }
+
+    @Override
+    public void removeOutgoingPacketListener(UUID key) {
+        this.outgoingPacketListeners.remove(key);
     }
 
     public void addBefore(String baseName, String name, ChannelHandler handler) {

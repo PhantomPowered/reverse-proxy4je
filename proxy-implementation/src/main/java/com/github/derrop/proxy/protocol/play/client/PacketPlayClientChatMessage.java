@@ -68,7 +68,10 @@ public class PacketPlayClientChatMessage implements Packet {
         protoBuf.writeString(this.message);
     }
 
+    @Override
     public String toString() {
-        return "PacketPlayClientChatMessage()";
+        return "PacketPlayClientChatMessage{" +
+                "message='" + message + '\'' +
+                '}';
     }
 }

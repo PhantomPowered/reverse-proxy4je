@@ -70,47 +70,83 @@ public class PacketPlayServerScoreboardTeam implements Packet {
     }
 
     public String getName() {
-        return this.name;
-    }
-
-    public byte getMode() {
-        return this.mode;
-    }
-
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    public String getPrefix() {
-        return this.prefix;
-    }
-
-    public String getSuffix() {
-        return this.suffix;
-    }
-
-    public String getNameTagVisibility() {
-        return this.nameTagVisibility;
-    }
-
-    public String getCollisionRule() {
-        return this.collisionRule;
-    }
-
-    public int getColor() {
-        return this.color;
-    }
-
-    public byte getFriendlyFire() {
-        return this.friendlyFire;
-    }
-
-    public String[] getPlayers() {
-        return this.players;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public byte getMode() {
+        return mode;
+    }
+
+    public void setMode(byte mode) {
+        this.mode = mode;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public String getNameTagVisibility() {
+        return nameTagVisibility;
+    }
+
+    public void setNameTagVisibility(String nameTagVisibility) {
+        this.nameTagVisibility = nameTagVisibility;
+    }
+
+    public String getCollisionRule() {
+        return collisionRule;
+    }
+
+    public void setCollisionRule(String collisionRule) {
+        this.collisionRule = collisionRule;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public byte getFriendlyFire() {
+        return friendlyFire;
+    }
+
+    public void setFriendlyFire(byte friendlyFire) {
+        this.friendlyFire = friendlyFire;
+    }
+
+    public String[] getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(String[] players) {
+        this.players = players;
     }
 
     @Override

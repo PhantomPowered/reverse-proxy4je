@@ -57,23 +57,31 @@ public class PacketPlayServerScoreboardScore implements Packet {
     }
 
     public String getItemName() {
-        return this.itemName;
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public byte getAction() {
-        return this.action;
-    }
-
-    public String getObjectiveName() {
-        return this.objectiveName;
-    }
-
-    public int getValue() {
-        return this.value;
+        return action;
     }
 
     public void setAction(byte action) {
         this.action = action;
+    }
+
+    public String getObjectiveName() {
+        return objectiveName;
+    }
+
+    public void setObjectiveName(String objectiveName) {
+        this.objectiveName = objectiveName;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public void setValue(int value) {

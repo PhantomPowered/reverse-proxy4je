@@ -1,17 +1,13 @@
 package com.github.derrop.proxy.plugins.betterlogin.connection;
 
-import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
-import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.entity.player.inventory.InventoryType;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
@@ -20,21 +16,16 @@ import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.util.Vec3i;
-import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.entity.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
-import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
+import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerEmptyMapChunk;
-import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMultiBlockChange;
 import com.mojang.authlib.UserAuthentication;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -47,7 +38,7 @@ import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class LoginServiceConnection implements ServiceConnection {
 
@@ -291,6 +282,14 @@ public class LoginServiceConnection implements ServiceConnection {
 
     @Override
     public <T> void setProperty(String key, T value) {
+    }
+
+    @Override
+    public void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer) {
+    }
+
+    @Override
+    public void removeOutgoingPacketListener(UUID key) {
     }
 
     @Override

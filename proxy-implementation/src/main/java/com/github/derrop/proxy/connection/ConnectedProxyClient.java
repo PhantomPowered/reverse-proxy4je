@@ -28,11 +28,13 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.entity.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
@@ -91,7 +93,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
     private UserAuthentication authentication;
     private MCCredentials credentials;
 
-    private com.github.derrop.proxy.api.entity.player.Player redirector;
+    private Player redirector;
+    private UUID redirectorListenerKey = UUID.randomUUID();
 
     private PacketCache packetCache;
     private Scoreboard scoreboard;
@@ -329,6 +332,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
     public void free() {
         if (this.redirector != null) {
             this.packetCache.handleFree(this.redirector);
+            this.redirector.removeOutgoingPacketListener(this.redirectorListenerKey);
         }
         this.redirector = null;
     }
@@ -370,17 +374,13 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         }
 
         if (this.redirector != null) {
-            ProtoBuf buf = packet;
-
-            if (deserialized != null) { // rewrite to allow modifications by the packet handlers
-                int id = ByteBufUtils.readVarInt(packet);
-
-                buf = new DefaultProtoBuf(packet.getProtocolVersion(), Unpooled.buffer());
-                ByteBufUtils.writeVarInt(id, buf);
-                deserialized.write(buf, ProtocolDirection.TO_CLIENT, buf.getProtocolVersion());
+            if (deserialized != null) {
+                // rewrite to allow modifications by the packet handlers
+                this.redirector.sendPacket(deserialized);
+            } else {
+                this.redirector.sendPacket(packet);
             }
 
-            this.redirector.sendPacket(buf);
 
             if (!this.redirector.isConnected()) {
                 this.redirector = null;
@@ -392,6 +392,12 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         }
     }
 
+    public void handlePacketRedirected(Packet packet) {
+        if (this.redirector != null) {
+            this.proxy.getServiceRegistry().getProviderUnchecked(PacketHandlerRegistry.class).handlePacketReceive(packet, ProtocolDirection.TO_CLIENT, ProtocolState.REDIRECTING, this.connection);
+        }
+    }
+
     public void handleClientPacket(Packet packetWrapper) {
         if (this.clientPacketHandler != null) {
             this.clientPacketHandler.accept(packetWrapper);
@@ -400,9 +406,11 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         this.packetCache.handleClientPacket(packetWrapper);
     }
 
-    public void redirectPackets(com.github.derrop.proxy.api.entity.player.Player con, boolean switched) {
-        this.packetCache.send(con, switched);
+    public void redirectPackets(Player con, boolean switched) {
         this.redirector = con;
+        con.addOutgoingPacketListener(this.redirectorListenerKey, this::handlePacketRedirected);
+
+        this.packetCache.send(con, switched);
         con.sendPacket(new PacketPlayServerEntityTeleport(this.entityId, this.connection.getLocation()));
     }
 

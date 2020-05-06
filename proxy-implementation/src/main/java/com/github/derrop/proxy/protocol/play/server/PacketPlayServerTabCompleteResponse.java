@@ -52,6 +52,10 @@ public class PacketPlayServerTabCompleteResponse implements Packet {
         return this.commands;
     }
 
+    public void setCommands(List<String> commands) {
+        this.commands = commands;
+    }
+
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.commands = protoBuf.readStringArray();

@@ -54,7 +54,8 @@ public class ClientPacketHandler {
                 ((BasicServiceConnection) player.getConnectedClient()).getClient().getVelocityHandler().handlePacket(ProtocolDirection.TO_SERVER, packet.getPacket());
             }
 
-            player.getConnectedClient().networkUnsafe().sendPacket(packet);
+            // rewrite to allow modifications by the packet handlers
+            player.getConnectedClient().networkUnsafe().sendPacket(packet.getPacket() != null ? packet.getPacket() : packet);
         }
     }
 
@@ -174,7 +175,7 @@ public class ClientPacketHandler {
             throw CancelProceedException.INSTANCE;
         }
 
-        chat.setMessage(GsonComponentSerializer.INSTANCE.serialize(event.getMessage()));
+        chat.setMessage(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)

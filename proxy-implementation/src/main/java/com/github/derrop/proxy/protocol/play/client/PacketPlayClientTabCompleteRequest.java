@@ -75,18 +75,30 @@ public class PacketPlayClientTabCompleteRequest implements Packet {
     }
 
     public String getCursor() {
-        return this.cursor;
+        return cursor;
     }
 
-    public boolean isHasPosition() {
-        return this.hasPosition;
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
+    }
+
+    public boolean hasPosition() {
+        return hasPosition;
+    }
+
+    public void setHasPosition(boolean hasPosition) {
+        this.hasPosition = hasPosition;
     }
 
     public long getPosition() {
-        return this.position;
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
     }
 
     public String toString() {
-        return "PacketPlayClientTabCompleteRequest(cursor=" + this.getCursor() + ", hasPosition=" + this.isHasPosition() + ", position=" + this.getPosition() + ")";
+        return "PacketPlayClientTabCompleteRequest(cursor=" + this.getCursor() + ", hasPosition=" + this.hasPosition() + ", position=" + this.getPosition() + ")";
     }
 }
