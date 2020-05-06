@@ -13,13 +13,14 @@ import com.github.derrop.proxy.plugins.betterlogin.connection.LoginServiceConnec
 public class LoginPrepareListener {
 
     public static final Location SPAWN = new Location(0, 100, 0, 0, 0);
-    public static final ItemStack[] PARENT_INVENTORY = new ItemStack[]{
-            null,
-            new ItemStack(Material.COMPASS.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cWatch replay"))),
-            null,
-            new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cConnect with client"))),
-            null
-    };
+    public static final ItemStack[] PARENT_INVENTORY = new ItemStack[63];
+
+    static {
+        PARENT_INVENTORY[3] = new ItemStack(Material.COMPASS.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cWatch replay")));
+        PARENT_INVENTORY[5] = new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cConnect with client")));
+        PARENT_INVENTORY[8] = new ItemStack(Material.BARRIER.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cExit")));
+        // TODO items are not added
+    }
 
     private Proxy proxy;
 
@@ -32,7 +33,6 @@ public class LoginPrepareListener {
         Player player = event.getPlayer();
 
         event.setTargetConnection(new LoginServiceConnection(this.proxy, player));
-
     }
 
     @Listener

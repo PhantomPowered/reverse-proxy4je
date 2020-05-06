@@ -334,10 +334,10 @@ public class LoginServiceConnection implements ServiceConnection {
 
         player.sendPacket(new PacketPlayServerPosition(LoginPrepareListener.SPAWN.clone().add(new Location(0, 3, 0, 0, 0))));
 
-        player.getInventory().setWindowId((byte) 0);
+        player.getInventory().setWindowId((byte) 1);
         player.getInventory().setContent(LoginPrepareListener.PARENT_INVENTORY);
-        player.getInventory().setType(InventoryType.HOPPER);
-        player.getInventory().open(); // TODO the inventory is not opened
+        player.getInventory().setType(InventoryType.CHEST);
+        player.getInventory().open();
 
         // TODO send keep alive packets
 

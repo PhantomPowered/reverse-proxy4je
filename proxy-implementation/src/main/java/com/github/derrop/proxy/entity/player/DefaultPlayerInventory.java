@@ -9,6 +9,7 @@ import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOp
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class DefaultPlayerInventory implements PlayerInventory {
@@ -42,9 +43,10 @@ public class DefaultPlayerInventory implements PlayerInventory {
 
     @Override
     public void open() {
-        if (!this.opened && this.type != null) {
-            this.player.sendPacket(new PacketPlayServerOpenWindow(this.windowId, this.type.getDefaultTitle(), this.title, this.type.getDefaultSize(), -1));
-            this.setContent(this.content);
+        if (this.type != null) {
+            // TODO support other types than chests and custom sizes
+            this.player.sendPacket(new PacketPlayServerOpenWindow(this.windowId, "minecraft:container", this.title != null ? this.title : TextComponent.of(this.type.getDefaultTitle()), this.type.getDefaultSize(), -1));
+            this.player.sendPacket(new PacketPlayServerWindowItems(this.windowId, this.content));
             this.opened = true;
         }
     }
