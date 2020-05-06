@@ -15,9 +15,6 @@ import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServe
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +24,12 @@ public class NameUUIDRewritePacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.FIRST)
     public void rewriteChatInput(DefaultPlayer player, PacketPlayClientChatMessage packet) {
-        this.acceptNames(player, (clientName, serverName) -> packet.setMessage(packet.getMessage().replace(clientName, serverName)));
+        this.acceptNames(player, (clientName, serverName) -> packet.setMessage(this.replaceNames(packet.getMessage(), clientName, serverName)));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING, priority = EventPriority.FIRST)
     public void rewriteChatOutput(ServiceConnection connection, PacketPlayServerChatMessage packet) {
-        this.acceptNames(connection, (clientName, serverName) -> packet.setMessage(packet.getMessage().replace(serverName, clientName)));
+        this.acceptNames(connection, (clientName, serverName) -> packet.setMessage(this.replaceNames(packet.getMessage(), serverName, clientName)));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING, priority = EventPriority.FIRST)
@@ -87,7 +84,7 @@ public class NameUUIDRewritePacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SCOREBOARD_SCORE, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING, priority = EventPriority.FIRST)
     public void rewriteScoreboardScore(ServiceConnection connection, PacketPlayServerScoreboardScore packet) {
-        this.acceptNames(connection,(clientName, serverName) -> packet.setItemName(packet.getItemName().replace(serverName, clientName)));
+        this.acceptNames(connection,(clientName, serverName) -> packet.setItemName(this.replaceNames(packet.getItemName(), serverName, clientName)));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SCOREBOARD_TEAM, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING, priority = EventPriority.FIRST)
@@ -99,15 +96,19 @@ public class NameUUIDRewritePacketHandler {
                 }
             }
             if (packet.getPrefix() != null) {
-                packet.setPrefix(packet.getPrefix().replace(serverName, clientName));
+                packet.setPrefix(this.replaceNames(packet.getPrefix(), serverName, clientName));
             }
             if (packet.getSuffix() != null) {
-                packet.setSuffix(packet.getSuffix().replace(serverName, clientName));
+                packet.setSuffix(this.replaceNames(packet.getSuffix(), serverName, clientName));
             }
             if (packet.getDisplayName() != null) {
-                packet.setDisplayName(packet.getDisplayName().replace(serverName, clientName));
+                packet.setDisplayName(this.replaceNames(packet.getDisplayName(), serverName, clientName));
             }
         });
+    }
+
+    private String replaceNames(String input, String pattern, String replacement) {
+        return input.replaceAll("(?i)" + pattern, replacement);
     }
 
     private void acceptNames(DefaultPlayer player, BiConsumer<String, String> consumer) {
