@@ -83,6 +83,14 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
         this.attributes = attributes;
     }
 
+    @Override
+    public String toString() {
+        return "PacketPlayServerUpdateEntityAttributes{" +
+                "entityId=" + entityId +
+                ", attributes=" + attributes +
+                '}';
+    }
+
     public class Attribute {
         private String name;
         private double value;
@@ -116,6 +124,15 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
 
         public void setModifiers(Collection<AttributeModifier> modifiers) {
             this.modifiers = modifiers;
+        }
+
+        @Override
+        public String toString() {
+            return "Attribute{" +
+                    "name='" + name + '\'' +
+                    ", value=" + value +
+                    ", modifiers=" + modifiers +
+                    '}';
         }
     }
 
@@ -162,6 +179,16 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
 
         public void setId(UUID id) {
             this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return "AttributeModifier{" +
+                    "amount=" + amount +
+                    ", operation=" + operation +
+                    ", name='" + name + '\'' +
+                    ", id=" + id +
+                    '}';
         }
     }
 

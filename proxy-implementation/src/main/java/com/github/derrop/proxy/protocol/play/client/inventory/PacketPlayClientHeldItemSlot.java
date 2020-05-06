@@ -63,4 +63,11 @@ public class PacketPlayClientHeldItemSlot implements Packet {
     public int getId() {
         return ProtocolIds.FromClient.Play.HELD_ITEM_SLOT;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayClientHeldItemSlot{" +
+                "slot=" + slot +
+                '}';
+    }
 }

@@ -103,4 +103,18 @@ public class PacketPlayServerEntity implements Packet, EntityPacket {
     public int getId() {
         return ProtocolIds.ToClient.Play.ENTITY;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerEntity{" +
+                "entityId=" + entityId +
+                ", posX=" + posX +
+                ", posY=" + posY +
+                ", posZ=" + posZ +
+                ", yaw=" + yaw +
+                ", pitch=" + pitch +
+                ", onGround=" + onGround +
+                ", hasRotation=" + hasRotation +
+                '}';
+    }
 }

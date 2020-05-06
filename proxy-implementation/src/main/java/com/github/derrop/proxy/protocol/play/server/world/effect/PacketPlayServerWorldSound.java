@@ -77,4 +77,14 @@ public class PacketPlayServerWorldSound implements Packet {
     public int getId() {
         return ProtocolIds.ToClient.Play.WORLD_SOUND;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerWorldSound{" +
+                "soundType=" + soundType +
+                ", soundPos=" + soundPos +
+                ", soundData=" + soundData +
+                ", serverWide=" + serverWide +
+                '}';
+    }
 }

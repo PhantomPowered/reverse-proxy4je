@@ -114,6 +114,13 @@ public class PacketPlayServerMapChunk implements Packet {
     public static class Extracted {
         public byte[] data;
         public int dataLength;
+
+        @Override
+        public String toString() {
+            return "Extracted{" +
+                    "dataLength=" + dataLength +
+                    '}';
+        }
     }
 
 }

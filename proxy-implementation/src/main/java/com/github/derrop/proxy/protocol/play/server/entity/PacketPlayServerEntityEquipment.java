@@ -64,4 +64,13 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
     public int getId() {
         return ProtocolIds.ToClient.Play.ENTITY_EQUIPMENT;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerEntityEquipment{" +
+                "entityId=" + entityId +
+                ", slot=" + slot +
+                ", item=" + item +
+                '}';
+    }
 }

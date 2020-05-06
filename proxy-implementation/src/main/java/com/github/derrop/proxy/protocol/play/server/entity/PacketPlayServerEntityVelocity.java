@@ -102,4 +102,14 @@ public class PacketPlayServerEntityVelocity implements Packet, EntityPacket {
     public int getId() {
         return ProtocolIds.ToClient.Play.ENTITY_VELOCITY;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerEntityVelocity{" +
+                "entityId=" + entityId +
+                ", motionX=" + motionX +
+                ", motionY=" + motionY +
+                ", motionZ=" + motionZ +
+                '}';
+    }
 }

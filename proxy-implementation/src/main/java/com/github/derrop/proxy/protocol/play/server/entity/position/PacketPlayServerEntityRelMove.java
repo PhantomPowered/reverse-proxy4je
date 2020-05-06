@@ -39,4 +39,16 @@ public class PacketPlayServerEntityRelMove extends PacketPlayServerEntity {
     public int getId() {
         return ProtocolIds.ToClient.Play.ENTITY_REL_MOVE;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerEntityRelMove{" +
+                "entityId=" + entityId +
+                ", posX=" + posX +
+                ", posY=" + posY +
+                ", posZ=" + posZ +
+                ", onGround=" + onGround +
+                ", hasRotation=false" +
+                "} ";
+    }
 }

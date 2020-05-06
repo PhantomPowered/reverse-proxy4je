@@ -54,4 +54,12 @@ public class PacketPlayServerEntityHeadRotation implements Packet, EntityPacket 
     public int getId() {
         return ProtocolIds.ToClient.Play.ENTITY_HEAD_ROTATION;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerEntityHeadRotation{" +
+                "entityId=" + entityId +
+                ", yaw=" + yaw +
+                '}';
+    }
 }

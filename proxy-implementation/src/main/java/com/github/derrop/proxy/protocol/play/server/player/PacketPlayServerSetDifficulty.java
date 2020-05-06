@@ -39,4 +39,11 @@ public class PacketPlayServerSetDifficulty implements Packet {
     public int getId() {
         return ProtocolIds.ToClient.Play.SERVER_DIFFICULTY;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerSetDifficulty{" +
+                "difficulty=" + difficulty +
+                '}';
+    }
 }

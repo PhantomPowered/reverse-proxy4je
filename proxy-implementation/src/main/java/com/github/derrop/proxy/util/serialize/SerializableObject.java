@@ -33,6 +33,10 @@ public class SerializableObject {
         return DATA_TYPES.getOrDefault(type, -1);
     }
 
+    public static Class<?> getDataType(int typeId) {
+        return DATA_TYPES.entrySet().stream().filter(entry -> entry.getValue() == typeId).findFirst().map(Map.Entry::getKey).orElse(null);
+    }
+
     private final int objectType;
     private final int id;
     private Object value;
@@ -57,6 +61,16 @@ public class SerializableObject {
 
     public int getObjectType() {
         return this.objectType;
+    }
+
+    @Override
+    public String toString() {
+        Class<?> dataType = getDataType(objectType);
+        return "SerializableObject{" +
+                "objectType=" + objectType + "(" + (dataType != null ? dataType.getSimpleName() : null) + ")" +
+                ", id=" + id +
+                ", value=" + value +
+                '}';
     }
 
     public void write(ProtoBuf buffer) {

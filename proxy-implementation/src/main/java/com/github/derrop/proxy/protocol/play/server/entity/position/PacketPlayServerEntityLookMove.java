@@ -14,6 +14,7 @@ public class PacketPlayServerEntityLookMove extends PacketPlayServerEntity {
         super.yaw = yaw;
         super.pitch = pitch;
         super.onGround = onGround;
+        super.hasRotation = true;
     }
 
     public PacketPlayServerEntityLookMove() {
@@ -44,5 +45,19 @@ public class PacketPlayServerEntityLookMove extends PacketPlayServerEntity {
     @Override
     public int getId() {
         return ProtocolIds.ToClient.Play.ENTITY_LOOK_MOVE;
+    }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerEntityLookMove{" +
+                "entityId=" + entityId +
+                ", posX=" + posX +
+                ", posY=" + posY +
+                ", posZ=" + posZ +
+                ", yaw=" + yaw +
+                ", pitch=" + pitch +
+                ", onGround=" + onGround +
+                ", hasRotation=true" +
+                "} " + super.toString();
     }
 }

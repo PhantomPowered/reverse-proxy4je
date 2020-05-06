@@ -57,4 +57,14 @@ public class ItemStack {
     public NBTTagCompound getNbt() {
         return nbt;
     }
+
+    @Override
+    public String toString() {
+        return "ItemStack{" +
+                "itemId=" + itemId +
+                ", amount=" + amount +
+                ", meta=" + meta +
+                ", nbt=" + nbt +
+                '}';
+    }
 }

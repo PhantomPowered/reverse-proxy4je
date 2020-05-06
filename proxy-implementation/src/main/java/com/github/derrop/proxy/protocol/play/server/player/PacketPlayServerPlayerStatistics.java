@@ -52,4 +52,11 @@ public class PacketPlayServerPlayerStatistics implements Packet {
     public int getId() {
         return ProtocolIds.ToClient.Play.STATISTIC;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayServerPlayerStatistics{" +
+                "statistics=" + statistics +
+                '}';
+    }
 }
