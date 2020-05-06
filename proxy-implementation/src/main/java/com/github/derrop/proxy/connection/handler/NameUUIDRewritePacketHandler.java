@@ -22,7 +22,7 @@ import java.util.function.BiConsumer;
 
 public class NameUUIDRewritePacketHandler {
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.FIRST)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.SECOND)
     public void rewriteChatInput(DefaultPlayer player, PacketPlayClientChatMessage packet) {
         this.acceptNames(player, (clientName, serverName) -> packet.setMessage(this.replaceNames(packet.getMessage(), clientName, serverName)));
     }

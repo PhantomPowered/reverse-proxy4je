@@ -149,7 +149,7 @@ public class ClientPacketHandler {
         }
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY, priority = EventPriority.FIRST)
     private void handleChat(DefaultPlayer player, PacketPlayClientChatMessage chat) throws Exception {
         int maxLength = (player.getVersion() >= ProtocolIds.Versions.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
