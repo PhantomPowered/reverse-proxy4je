@@ -25,9 +25,9 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.player.GameMode;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
@@ -36,7 +36,7 @@ import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.api.network.PacketSender;
-import com.github.derrop.proxy.entity.player.BasicPlayerInfo;
+import com.github.derrop.proxy.connection.player.BasicPlayerInfo;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 
@@ -45,7 +45,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
 
 public class PlayerInfoCache implements PacketCacheHandler {
 
@@ -56,9 +55,9 @@ public class PlayerInfoCache implements PacketCacheHandler {
         return new int[]{ProtocolIds.ToClient.Play.PLAYER_INFO};
     }
 
-    private Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
+    private final Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
 
-    private Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new ArrayList<>();
+    private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new ArrayList<>(); // TODO Remove players when despawn packet received?
 
     private PacketCache packetCache;
 

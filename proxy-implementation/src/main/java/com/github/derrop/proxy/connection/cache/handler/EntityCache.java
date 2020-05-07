@@ -22,18 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.connection.cache.handler.entity;
+package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
+import com.github.derrop.proxy.entity.CachedEntity;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
@@ -68,6 +67,10 @@ public class EntityCache implements PacketCacheHandler {
         };
     }
 
+    public Map<Integer, CachedEntity> getEntities() {
+        return this.entities;
+    }
+
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         this.packetCache = packetCache;
@@ -82,27 +85,28 @@ public class EntityCache implements PacketCacheHandler {
             if (this.entities.containsKey(teleport.getEntityId())) {
                 this.entities.get(teleport.getEntityId()).updateLocation(
                         teleport.getX(), teleport.getY(), teleport.getZ(),
-                        teleport.getYaw(), teleport.getPitch()
+                        teleport.getYaw(), teleport.getPitch(),
+                        teleport.isOnGround()
                 );
             }
 
         } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
 
-            PacketPlayServerNamedEntitySpawn spawnPlayer = (PacketPlayServerNamedEntitySpawn) packet;
+            PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) packet;
 
-            this.entities.put(spawnPlayer.getEntityId(), new CachedEntity(registry, packetCache.getTargetProxyClient(), spawnPlayer));
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn));
 
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
 
-            PacketPlayServerSpawnLivingEntity spawnMob = (PacketPlayServerSpawnLivingEntity) packet;
+            PacketPlayServerSpawnLivingEntity spawn = (PacketPlayServerSpawnLivingEntity) packet;
 
-            this.entities.put(spawnMob.getEntityId(), new CachedEntity(registry, packetCache.getTargetProxyClient(), spawnMob));
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn));
 
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
 
-            PacketPlayServerSpawnEntity spawnObject = (PacketPlayServerSpawnEntity) packet;
+            PacketPlayServerSpawnEntity spawn = (PacketPlayServerSpawnEntity) packet;
 
-            this.entities.put(spawnObject.getEntityId(), new CachedEntity(registry, packetCache.getTargetProxyClient(), spawnObject));
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn));
 
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
 
@@ -122,7 +126,9 @@ public class EntityCache implements PacketCacheHandler {
 
             PacketPlayServerEntityEquipment equipment = (PacketPlayServerEntityEquipment) packet;
             if (this.entities.containsKey(equipment.getEntityId())) {
-                this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem());
+                if (!this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem())) {
+                    throw CancelProceedException.INSTANCE;
+                }
             }
 
         }
@@ -133,10 +139,9 @@ public class EntityCache implements PacketCacheHandler {
         if (this.packetCache == null) {
             return;
         }
-        PlayerInfoCache infoCache = (PlayerInfoCache) this.packetCache.getHandler(handler -> handler instanceof PlayerInfoCache);
 
         for (CachedEntity entity : this.entities.values()) {
-            entity.spawn(infoCache, con);
+            entity.spawn(con);
         }
     }
 

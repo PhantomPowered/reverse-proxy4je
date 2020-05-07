@@ -24,9 +24,13 @@
  */
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
-import com.github.derrop.proxy.api.entity.player.GameMode;
+import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public interface ServiceWorldDataProvider {
@@ -43,10 +47,22 @@ public interface ServiceWorldDataProvider {
 
     float getThunderStrength();
 
+    @NotNull
     GameMode getOwnGameMode();
 
+    @NotNull
     PlayerInfo[] getOnlinePlayers();
 
-    PlayerInfo getOnlinePlayer(UUID uniqueId);
+    PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId);
+
+    @NotNull
+    Collection<EntityPlayer> getPlayersInWorld();
+
+    EntityPlayer getPlayerInWorld(@NotNull UUID uniqueId);
+
+    @NotNull
+    Collection<? extends Entity> getEntitiesInWorld();
+
+    Entity getEntityInWorld(int entityId);
 
 }

@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.connection.player.GameMode;
 import com.github.derrop.proxy.api.network.PacketSender;
-import com.github.derrop.proxy.api.entity.player.GameMode;
 import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;

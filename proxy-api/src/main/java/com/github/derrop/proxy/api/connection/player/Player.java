@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.player;
+package com.github.derrop.proxy.api.connection.player;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
@@ -31,7 +31,8 @@ import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.entity.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;

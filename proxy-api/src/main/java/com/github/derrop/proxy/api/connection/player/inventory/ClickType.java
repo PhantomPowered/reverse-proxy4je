@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.api.entity.player.inventory;
+package com.github.derrop.proxy.api.connection.player.inventory;
 
 /**
  * What the client did to trigger this action (not the result).

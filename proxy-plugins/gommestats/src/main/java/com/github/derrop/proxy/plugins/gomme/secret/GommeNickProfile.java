@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.plugins.gomme.secret;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
 
 public class GommeNickProfile {

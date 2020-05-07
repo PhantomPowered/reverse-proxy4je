@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.plugins.pwarner.storage;
 
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 
 public class WarnedEquipmentSlot {
 

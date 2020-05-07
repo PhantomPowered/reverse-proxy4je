@@ -22,21 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.player;
+package com.github.derrop.proxy.api.entity;
 
-import com.github.derrop.proxy.api.permission.PermissionHolder;
-import org.jetbrains.annotations.NotNull;
+import com.github.derrop.proxy.api.connection.player.GameMode;
 
 import java.util.UUID;
 
-public interface OfflinePlayer extends PermissionHolder {
+public interface PlayerInfo {
 
-    @NotNull UUID getUniqueId();
+    UUID getUniqueId();
 
-    @NotNull String getName();
+    String getUsername();
 
-    long getLastLogin();
+    String[][] getProperties();
 
-    int getLastVersion();
+    GameMode getGamemode();
+
+    int getPing();
+
+    String getDisplayName();
 
 }

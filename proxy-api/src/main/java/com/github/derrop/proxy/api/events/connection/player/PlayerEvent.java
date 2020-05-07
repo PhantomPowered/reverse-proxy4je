@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
 import com.github.derrop.proxy.api.events.connection.ConnectionEvent;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PlayerEvent extends ConnectionEvent {

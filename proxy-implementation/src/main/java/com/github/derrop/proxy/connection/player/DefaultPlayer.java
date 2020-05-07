@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity.player;
+package com.github.derrop.proxy.connection.player;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
@@ -33,10 +33,10 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.PlayerRepository;
-import com.github.derrop.proxy.api.entity.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.PlayerRepository;
+import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
@@ -45,7 +45,6 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
@@ -64,8 +63,6 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
-import java.util.Map;
-import java.util.UUID;
 
 public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
 
@@ -422,11 +419,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     @Override
     public int getDimension() {
         return this.dimension;
-    }
-
-    @Override
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
     }
 
     @Override

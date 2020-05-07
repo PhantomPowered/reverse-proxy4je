@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.secret;
 
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoUpdateEvent;

@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 
 public class PlayerKilledEvent extends MatchEvent {
 

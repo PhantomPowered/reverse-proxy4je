@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.plugins.replay;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;

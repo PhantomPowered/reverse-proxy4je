@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.exceptions.AuthenticationException;

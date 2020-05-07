@@ -1,8 +1,8 @@
-package com.github.derrop.proxy.entity.player;
+package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.entity.player.inventory.InventoryType;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerCloseWindow;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;

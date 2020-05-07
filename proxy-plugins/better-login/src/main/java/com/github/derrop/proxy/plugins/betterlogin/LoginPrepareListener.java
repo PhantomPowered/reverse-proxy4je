@@ -2,7 +2,7 @@ package com.github.derrop.proxy.plugins.betterlogin;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;

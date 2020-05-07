@@ -22,14 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity.player;
+package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.entity.player.OfflinePlayer;
+import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

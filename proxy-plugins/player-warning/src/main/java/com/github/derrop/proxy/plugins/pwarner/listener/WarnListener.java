@@ -1,9 +1,11 @@
 package com.github.derrop.proxy.plugins.pwarner.listener;
 
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.event.annotation.Listener;
-import com.github.derrop.proxy.api.events.connection.service.PlayerEquipmentSlotChangeEvent;
+import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningData;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningDatabase;
 
@@ -16,7 +18,11 @@ public class WarnListener {
     }
 
     @Listener
-    public void handleEquipmentSlotChange(PlayerEquipmentSlotChangeEvent event) {
+    public void handleEquipmentSlotChange(EquipmentSlotChangeEvent event) {
+        if (!(event.getEntity() instanceof EntityPlayer)) {
+            return;
+        }
+        EntityPlayer entity = (EntityPlayer) event.getEntity();
         Player player = event.getConnection().getPlayer();
         if (player == null) {
             return;
@@ -27,7 +33,12 @@ public class WarnListener {
             return;
         }
 
-        String name = event.getPlayerInfo().getDisplayName() != null ? event.getPlayerInfo().getDisplayName() : event.getPlayerInfo().getUsername();
+        PlayerInfo playerInfo = entity.getPlayerInfo();
+        if (playerInfo == null) {
+            return;
+        }
+
+        String name = playerInfo.getDisplayName() != null ? playerInfo.getDisplayName() : playerInfo.getUsername();
         Material material = Material.getMaterial(event.getItem().getItemId());
 
         if (data.shouldWarnEquipmentSlot(event.getSlot().getSlotId(), material)) {

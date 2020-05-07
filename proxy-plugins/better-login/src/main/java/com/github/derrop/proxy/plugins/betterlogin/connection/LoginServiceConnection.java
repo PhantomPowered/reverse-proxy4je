@@ -6,8 +6,8 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.inventory.InventoryType;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
@@ -16,7 +16,7 @@ import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
@@ -100,11 +100,6 @@ public class LoginServiceConnection implements ServiceConnection {
     @Override
     public int getDimension() {
         return this.player.getDimension();
-    }
-
-    @Override
-    public void setDimension(int dimension) {
-        this.player.setDimension(dimension);
     }
 
     @Override

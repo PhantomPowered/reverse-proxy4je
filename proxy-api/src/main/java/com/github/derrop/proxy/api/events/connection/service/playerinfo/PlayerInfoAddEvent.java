@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.events.connection.service.playerinfo;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectionEvent;
 import org.jetbrains.annotations.NotNull;
 

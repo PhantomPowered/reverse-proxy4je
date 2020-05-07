@@ -33,7 +33,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -165,11 +165,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public int getDimension() {
         return this.client.getDimension();
-    }
-
-    @Override
-    public void setDimension(int dimension) {
-        this.client.setDimension(dimension);
     }
 
     @Override

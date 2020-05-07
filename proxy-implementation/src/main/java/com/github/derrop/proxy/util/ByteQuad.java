@@ -22,52 +22,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.player;
+package com.github.derrop.proxy.util;
 
-public enum GameMode {
+import java.util.Objects;
 
-    NOT_SET(-1, ""),
-    SURVIVAL(0, "survival"),
-    CREATIVE(1, "creative"),
-    ADVENTURE(2, "adventure"),
-    SPECTATOR(3, "spectator"),
-    ;
+public class ByteQuad {
 
-    private int id;
-    private String name;
+    private byte first;
+    private byte second;
+    private byte third;
+    private byte fourth;
 
-    GameMode(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public ByteQuad(byte first, byte second, byte third, byte fourth) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
+        this.fourth = fourth;
     }
 
-    public int getId() {
-        return this.id;
+    public ByteQuad copy() {
+        return new ByteQuad(this.first, this.second, this.third, this.fourth);
     }
 
-    public String getName() {
-        return this.name;
+    public byte getFirst() {
+        return this.first;
     }
 
-    public boolean isAdventure() {
-        return this == ADVENTURE || this == SPECTATOR;
+    public byte getSecond() {
+        return this.second;
     }
 
-    public boolean isCreative() {
-        return this == CREATIVE;
+    public byte getThird() {
+        return this.third;
     }
 
-    public boolean isSurvivalOrAdventure() {
-        return this == SURVIVAL || this == ADVENTURE;
+    public byte getFourth() {
+        return this.fourth;
     }
 
-    public static GameMode getById(int id) {
-        for (GameMode value : values()) {
-            if (value.id == id) {
-                return value;
-            }
-        }
-        return SURVIVAL;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ByteQuad byteQuad = (ByteQuad) o;
+        return first == byteQuad.first &&
+                second == byteQuad.second &&
+                third == byteQuad.third &&
+                fourth == byteQuad.fourth;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second, third, fourth);
     }
 
 }

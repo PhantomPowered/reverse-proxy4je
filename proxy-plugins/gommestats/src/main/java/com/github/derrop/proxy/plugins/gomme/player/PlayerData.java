@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.player;
 
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 
 import java.util.Collection;

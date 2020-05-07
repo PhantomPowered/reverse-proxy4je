@@ -53,7 +53,7 @@ public class MiniMapCache implements PacketCacheHandler {
 
         if (this.maps.containsKey(map.getMapId())) {
             PacketPlayServerMap oldMap = this.maps.get(map.getMapId());
-            oldMap.setMapVisiblePlayersVec4b(map.getMapVisiblePlayersVec4b());
+            oldMap.setVisiblePlayers(map.getVisiblePlayers());
             oldMap.setMapScale(map.getMapScale());
             if (map.getMapMaxX() > 0) {
                 oldMap.setMapDataBytes(new byte[map.getMapDataBytes().length]);

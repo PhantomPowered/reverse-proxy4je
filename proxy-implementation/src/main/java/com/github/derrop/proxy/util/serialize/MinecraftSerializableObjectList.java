@@ -38,6 +38,15 @@ public class MinecraftSerializableObjectList {
         }
     }
 
+    public void updateObject(int id, Object value) {
+        Optional<SerializableObject> optional = this.getObject(id);
+        if (optional.isPresent()) {
+            optional.get().setValue(value);
+        } else {
+            this.addObject(id, value);
+        }
+    }
+
     public void addEmptyObjectByDataType(int id, int type) {
         SerializableObject serializableObject = new SerializableObject(type, id, null);
         this.lock.writeLock().lock();
@@ -49,28 +58,64 @@ public class MinecraftSerializableObjectList {
         return (byte) this.getObjectValue(id).orElse(-1);
     }
 
+    public void updateByte(int id, int value) {
+        this.updateObject(id, (byte) value);
+    }
+
+    public boolean getBoolean(int id) {
+        return this.getByte(id) == 1;
+    }
+
+    public void updateBoolean(int id, boolean value) {
+        this.updateByte(id, value ? 1 : 0);
+    }
+
     public short getShort(int id) {
         return (short) this.getObjectValue(id).orElse(-1);
+    }
+
+    public void updateShort(int id, int value) {
+        this.updateObject(id, (short) value);
     }
 
     public int getInt(int id) {
         return (int) this.getObjectValue(id).orElse(-1);
     }
 
+    public void updateInt(int id, int value) {
+        this.updateObject(id, value);
+    }
+
     public float getFloat(int id) {
         return (float) this.getObjectValue(id).orElse(-1);
+    }
+
+    public void updateFloat(int id, double value) {
+        this.updateObject(id, (float) value);
     }
 
     public String getString(int id) {
         return (String) this.getObjectValue(id).orElse(null);
     }
 
+    public void updateString(int id, String value) {
+        this.updateObject(id, value);
+    }
+
     public ItemStack getItemStack(int id) {
         return (ItemStack) this.getObjectValue(id).orElse(null);
     }
 
+    public void updateItemStack(int id, ItemStack itemStack) {
+        this.updateObject(id, itemStack);
+    }
+
     public Rotations getRotations(int id) {
         return (Rotations) this.getObjectValue(id).orElse(null);
+    }
+
+    public void updateRotations(int id, Rotations rotations) {
+        this.updateObject(id, rotations);
     }
 
     private Optional<SerializableObject> getObject(int id) {

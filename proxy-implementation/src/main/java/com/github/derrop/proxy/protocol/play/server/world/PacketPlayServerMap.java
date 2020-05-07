@@ -27,25 +27,27 @@ package com.github.derrop.proxy.protocol.play.server.world;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.Vec4b;
+import com.github.derrop.proxy.util.ByteQuad;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 public class PacketPlayServerMap implements Packet {
 
     private int mapId;
     private byte mapScale;
-    private Vec4b[] mapVisiblePlayersVec4b;
+    private ByteQuad[] visiblePlayers;
     private int mapMinX;
     private int mapMinY;
     private int mapMaxX;
     private int mapMaxY;
     private byte[] mapDataBytes;
 
-    public PacketPlayServerMap(int mapId, byte mapScale, Vec4b[] mapVisiblePlayersVec4b, int mapMinX, int mapMinY, int mapMaxX, int mapMaxY, byte[] mapDataBytes) {
+    public PacketPlayServerMap(int mapId, byte mapScale, ByteQuad[] visiblePlayers, int mapMinX, int mapMinY, int mapMaxX, int mapMaxY, byte[] mapDataBytes) {
         this.mapId = mapId;
         this.mapScale = mapScale;
-        this.mapVisiblePlayersVec4b = mapVisiblePlayersVec4b;
+        this.visiblePlayers = visiblePlayers;
         this.mapMinX = mapMinX;
         this.mapMinY = mapMinY;
         this.mapMaxX = mapMaxX;
@@ -77,12 +79,12 @@ public class PacketPlayServerMap implements Packet {
         this.mapScale = mapScale;
     }
 
-    public Vec4b[] getMapVisiblePlayersVec4b() {
-        return mapVisiblePlayersVec4b;
+    public ByteQuad[] getVisiblePlayers() {
+        return visiblePlayers;
     }
 
-    public void setMapVisiblePlayersVec4b(Vec4b[] mapVisiblePlayersVec4b) {
-        this.mapVisiblePlayersVec4b = mapVisiblePlayersVec4b;
+    public void setVisiblePlayers(ByteQuad[] visiblePlayers) {
+        this.visiblePlayers = visiblePlayers;
     }
 
     public int getMapMinX() {
@@ -130,10 +132,10 @@ public class PacketPlayServerMap implements Packet {
         this.mapId = protoBuf.readVarInt();
         this.mapScale = protoBuf.readByte();
 
-        this.mapVisiblePlayersVec4b = new Vec4b[protoBuf.readVarInt()];
-        for (int i = 0; i < this.mapVisiblePlayersVec4b.length; i++) {
+        this.visiblePlayers = new ByteQuad[protoBuf.readVarInt()];
+        for (int i = 0; i < this.visiblePlayers.length; i++) {
             short b = protoBuf.readByte();
-            this.mapVisiblePlayersVec4b[i] = new Vec4b((byte) (b >> 4 % 15), protoBuf.readByte(), protoBuf.readByte(), (byte) (b & 15));
+            this.visiblePlayers[i] = new ByteQuad((byte) (b >> 4 % 15), protoBuf.readByte(), protoBuf.readByte(), (byte) (b & 15));
         }
 
         this.mapMaxX = protoBuf.readUnsignedByte();
@@ -151,11 +153,11 @@ public class PacketPlayServerMap implements Packet {
         protoBuf.writeVarInt(this.mapId);
         protoBuf.writeByte(this.mapScale);
 
-        protoBuf.writeVarInt(this.mapVisiblePlayersVec4b.length);
-        for (Vec4b vec : this.mapVisiblePlayersVec4b) {
-            protoBuf.writeByte((vec.getB1() % 15) << 4 | vec.getB4() % 15);
-            protoBuf.writeByte(vec.getB2());
-            protoBuf.writeByte(vec.getB3());
+        protoBuf.writeVarInt(this.visiblePlayers.length);
+        for (ByteQuad vec : this.visiblePlayers) {
+            protoBuf.writeByte((vec.getFirst() % 15) << 4 | vec.getFourth() % 15);
+            protoBuf.writeByte(vec.getSecond());
+            protoBuf.writeByte(vec.getThird());
         }
 
         protoBuf.writeByte(this.mapMaxX);
@@ -167,7 +169,18 @@ public class PacketPlayServerMap implements Packet {
         }
     }
 
+    @Override
     public String toString() {
-        return "PacketPlayServerMap(mapId=" + this.getMapId() + ", mapScale=" + this.getMapScale() + ", mapVisiblePlayersVec4b=" + java.util.Arrays.deepToString(this.getMapVisiblePlayersVec4b()) + ", mapMinX=" + this.getMapMinX() + ", mapMinY=" + this.getMapMinY() + ", mapMaxX=" + this.getMapMaxX() + ", mapMaxY=" + this.getMapMaxY() + ", mapDataBytes=" + java.util.Arrays.toString(this.getMapDataBytes()) + ")";
+        return "PacketPlayServerMap{" +
+                "mapId=" + mapId +
+                ", mapScale=" + mapScale +
+                ", visiblePlayers=" + Arrays.toString(visiblePlayers) +
+                ", mapMinX=" + mapMinX +
+                ", mapMinY=" + mapMinY +
+                ", mapMaxX=" + mapMaxX +
+                ", mapMaxY=" + mapMaxY +
+                ", mapDataBytes=" + Arrays.toString(mapDataBytes) +
+                '}';
     }
+
 }

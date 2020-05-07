@@ -64,8 +64,8 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
 
     public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, Location location, short currentItem, Collection<SerializableObject> objects) {
         this(entityId, playerId,
-                PlayerPositionPacketUtil.getFixLocation(location.getX()), PlayerPositionPacketUtil.getFixLocation(location.getY()), PlayerPositionPacketUtil.getFixLocation(location.getZ()),
-                PlayerPositionPacketUtil.getFixRotation(location.getYaw()), PlayerPositionPacketUtil.getFixRotation(location.getPitch()),
+                PlayerPositionPacketUtil.getClientLocation(location.getX()), PlayerPositionPacketUtil.getClientLocation(location.getY()), PlayerPositionPacketUtil.getClientLocation(location.getZ()),
+                PlayerPositionPacketUtil.getClientRotation(location.getYaw()), PlayerPositionPacketUtil.getClientRotation(location.getPitch()),
                 currentItem, objects
         );
     }

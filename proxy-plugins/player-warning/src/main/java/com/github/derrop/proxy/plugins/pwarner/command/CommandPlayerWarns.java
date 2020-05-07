@@ -5,8 +5,8 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningData;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningDatabase;
 import com.github.derrop.proxy.plugins.pwarner.storage.WarnedEquipmentSlot;

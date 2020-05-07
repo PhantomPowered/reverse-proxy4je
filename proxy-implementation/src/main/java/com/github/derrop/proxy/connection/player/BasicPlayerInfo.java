@@ -22,10 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity.player;
+package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
-import com.github.derrop.proxy.api.entity.player.GameMode;
+import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 
 import java.util.Arrays;
 import java.util.UUID;

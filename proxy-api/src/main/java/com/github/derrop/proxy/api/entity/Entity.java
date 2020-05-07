@@ -40,8 +40,6 @@ public interface Entity {
 
     int getDimension();
 
-    void setDimension(int dimension);
-
     @NotNull
     Unsafe unsafe();
 

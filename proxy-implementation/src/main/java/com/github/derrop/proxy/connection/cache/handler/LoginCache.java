@@ -25,8 +25,10 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.network.PacketSender;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -89,7 +91,6 @@ public class LoginCache implements PacketCacheHandler {
                         this.lastLogin.isReducedDebugInfo()
                 );
                 player.sendPacket(login);
-                player.setDimension(this.lastLogin.getDimension());
 
                 return;
             }
@@ -117,7 +118,11 @@ public class LoginCache implements PacketCacheHandler {
                 this.lastLogin.getLevelType()
         ));
         if (con instanceof Player) {
-            ((Player) con).setDimension(this.lastLogin.getDimension());
+            ServiceConnection connection = ((Player) con).getConnectedClient();
+            if (connection instanceof BasicServiceConnection) {
+                ((BasicServiceConnection) connection).getClient().setDimension(this.lastLogin.getDimension());
+                // TODO The dimension can be changed
+            }
         }
 
     }

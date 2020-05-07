@@ -24,25 +24,22 @@
  */
 package com.github.derrop.proxy.plugins;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.PlayerRepository;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.plugins.replay.ReplayInfo;
 import com.github.derrop.proxy.plugins.replay.ReplayOutputStream;
 import com.github.derrop.proxy.plugins.replay.ReplaySystem;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

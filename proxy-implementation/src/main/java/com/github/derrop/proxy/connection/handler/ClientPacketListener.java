@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLogoutEvent;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.util.Utils;
 import org.jetbrains.annotations.NotNull;

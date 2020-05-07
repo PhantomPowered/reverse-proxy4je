@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
-import com.github.derrop.proxy.api.entity.player.Player;
-import com.github.derrop.proxy.api.entity.player.inventory.ClickType;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
 import com.github.derrop.proxy.api.event.Cancelable;
 import org.jetbrains.annotations.NotNull;
 

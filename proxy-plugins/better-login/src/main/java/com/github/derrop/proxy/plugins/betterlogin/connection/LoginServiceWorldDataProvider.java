@@ -1,9 +1,14 @@
 package com.github.derrop.proxy.plugins.betterlogin.connection;
 
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.entity.player.GameMode;
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
+import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 public class LoginServiceWorldDataProvider implements ServiceWorldDataProvider {
@@ -38,7 +43,7 @@ public class LoginServiceWorldDataProvider implements ServiceWorldDataProvider {
     }
 
     @Override
-    public GameMode getOwnGameMode() {
+    public @NotNull GameMode getOwnGameMode() {
         return GameMode.CREATIVE;
     }
 
@@ -48,7 +53,27 @@ public class LoginServiceWorldDataProvider implements ServiceWorldDataProvider {
     }
 
     @Override
-    public PlayerInfo getOnlinePlayer(UUID uniqueId) {
+    public PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Collection<EntityPlayer> getPlayersInWorld() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public EntityPlayer getPlayerInWorld(@NotNull UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public @NotNull Collection<? extends Entity> getEntitiesInWorld() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Entity getEntityInWorld(int entityId) {
         return null;
     }
 }

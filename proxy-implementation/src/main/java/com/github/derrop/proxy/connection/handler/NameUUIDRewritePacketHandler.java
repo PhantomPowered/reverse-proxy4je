@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventPriority;
 import com.github.derrop.proxy.api.network.PacketHandler;
-import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;

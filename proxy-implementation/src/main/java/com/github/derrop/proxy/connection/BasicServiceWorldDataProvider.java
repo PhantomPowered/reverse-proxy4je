@@ -25,18 +25,21 @@
 package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.entity.player.PlayerInfo;
-import com.github.derrop.proxy.api.entity.player.GameMode;
+import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.connection.cache.handler.EntityCache;
 import com.github.derrop.proxy.connection.cache.handler.GameStateCache;
 import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
-import com.github.derrop.proxy.entity.player.BasicPlayerInfo;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
@@ -52,6 +55,10 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
     private GameStateCache getGameStateCache() {
         return (GameStateCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof GameStateCache);
+    }
+
+    private EntityCache getEntityCache() {
+        return (EntityCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof EntityCache);
     }
 
     @Override
@@ -87,7 +94,7 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
     }
 
     @Override
-    public GameMode getOwnGameMode() {
+    public @NotNull GameMode getOwnGameMode() {
         return this.getGameStateCache().getGameMode();
     }
 
@@ -101,7 +108,7 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
     }
 
     @Override
-    public PlayerInfo getOnlinePlayer(UUID uniqueId) {
+    public PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId) {
         PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
 
         return cache.getItems().stream()
@@ -109,6 +116,34 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
                 .findFirst()
                 .map(cache::toPlayerInfo)
                 .orElse(null);
+    }
+
+    @Override
+    public @NotNull Collection<EntityPlayer> getPlayersInWorld() {
+        return this.getEntitiesInWorld().stream()
+                .filter(entity -> entity instanceof EntityPlayer)
+                .map(entity -> (EntityPlayer) entity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public EntityPlayer getPlayerInWorld(@NotNull UUID uniqueId) {
+        return this.getEntityCache().getEntities().values().stream()
+                .filter(entity -> entity instanceof EntityPlayer)
+                .map(entity -> (EntityPlayer) entity)
+                .filter(player -> player.getUniqueId().equals(uniqueId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public @NotNull Collection<? extends Entity> getEntitiesInWorld() {
+        return this.getEntityCache().getEntities().values();
+    }
+
+    @Override
+    public Entity getEntityInWorld(int entityId) {
+        return this.getEntityCache().getEntities().get(entityId);
     }
 
 }

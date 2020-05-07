@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.api.entity.player.inventory;
+package com.github.derrop.proxy.api.connection.player.inventory;
 
 public enum EquipmentSlot {
 

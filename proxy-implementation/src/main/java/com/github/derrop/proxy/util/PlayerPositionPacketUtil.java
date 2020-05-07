@@ -26,19 +26,19 @@ package com.github.derrop.proxy.util;
 
 public class PlayerPositionPacketUtil {
 
-    public static byte getFixRotation(float in) {
+    public static byte getClientRotation(float in) {
         return (byte) ((int) (in * 256F / 360F));
     }
 
-    public static int getFixLocation(double in) {
+    public static int getClientLocation(double in) {
         return floor(in * 32D);
     }
 
-    public static double getRealLocation(int in) {
+    public static double getServerLocation(int in) {
         return (double) in / 32D;
     }
 
-    public static float getRealRotation(byte in) {
+    public static float getServerRotation(byte in) {
         return (((float) in * 360F) / 256F);
     }
     

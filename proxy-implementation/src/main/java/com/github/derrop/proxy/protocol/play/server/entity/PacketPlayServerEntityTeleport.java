@@ -45,11 +45,11 @@ public class PacketPlayServerEntityTeleport implements Packet, EntityPacket {
     public PacketPlayServerEntityTeleport(int entityId, @NotNull Location location) {
         this.entityId = entityId;
 
-        this.x = PlayerPositionPacketUtil.getFixLocation(location.getX());
-        this.y = PlayerPositionPacketUtil.getFixLocation(location.getY());
-        this.z = PlayerPositionPacketUtil.getFixLocation(location.getZ());
-        this.yaw = PlayerPositionPacketUtil.getFixRotation(location.getYaw());
-        this.pitch = PlayerPositionPacketUtil.getFixRotation(location.getPitch());
+        this.x = PlayerPositionPacketUtil.getClientLocation(location.getX());
+        this.y = PlayerPositionPacketUtil.getClientLocation(location.getY());
+        this.z = PlayerPositionPacketUtil.getClientLocation(location.getZ());
+        this.yaw = PlayerPositionPacketUtil.getClientRotation(location.getYaw());
+        this.pitch = PlayerPositionPacketUtil.getClientRotation(location.getPitch());
 
         this.onGround = location.isOnGround();
     }
@@ -118,11 +118,11 @@ public class PacketPlayServerEntityTeleport implements Packet, EntityPacket {
 
     public Location getLocation() {
         return new Location(
-                PlayerPositionPacketUtil.getRealLocation(this.x),
-                PlayerPositionPacketUtil.getRealLocation(this.y),
-                PlayerPositionPacketUtil.getRealLocation(this.z),
-                PlayerPositionPacketUtil.getRealRotation(this.yaw),
-                PlayerPositionPacketUtil.getRealRotation(this.pitch),
+                PlayerPositionPacketUtil.getServerLocation(this.x),
+                PlayerPositionPacketUtil.getServerLocation(this.y),
+                PlayerPositionPacketUtil.getServerLocation(this.z),
+                PlayerPositionPacketUtil.getServerRotation(this.yaw),
+                PlayerPositionPacketUtil.getServerRotation(this.pitch),
                 this.onGround
         );
     }

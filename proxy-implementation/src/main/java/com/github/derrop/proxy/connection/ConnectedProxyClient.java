@@ -28,7 +28,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.entity.player.Player;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
@@ -39,7 +39,6 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
@@ -51,7 +50,6 @@ import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.handler.HandlerEndpoint;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.minecraft.MinecraftEncoder;
-import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
@@ -65,7 +63,6 @@ import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
@@ -297,7 +294,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
         return credentials;
     }
 
-    public com.github.derrop.proxy.api.entity.player.Player getRedirector() {
+    public Player getRedirector() {
         return redirector;
     }
 
@@ -442,7 +439,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
                 + LegacyComponentSerializer.legacy().serialize(reason));
 
         if (this.getRedirector() != null) {
-            com.github.derrop.proxy.api.entity.player.Player con = this.getRedirector();
+            Player con = this.getRedirector();
             this.connection.getClient().free();
             con.handleDisconnected(this.connection, reason);
         }

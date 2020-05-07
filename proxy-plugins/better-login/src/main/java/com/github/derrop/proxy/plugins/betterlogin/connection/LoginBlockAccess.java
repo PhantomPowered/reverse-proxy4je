@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.util.Vec3i;
-import com.github.derrop.proxy.entity.player.DefaultPlayer;
+import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
