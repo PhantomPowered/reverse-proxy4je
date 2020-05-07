@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.plugins.pathfinding;
 
+import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 
@@ -33,17 +35,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Path {
 
-    private BlockPos beginPos;
+    private final BlockPos beginPos;
+    private final PathPoint[] allPoints;
+    private final boolean success;
+
     private Queue<PathPoint> points;
-    private PathPoint[] allPoints;
     private boolean started;
     private boolean recursive;
-    private boolean success;
+
+    private int[] oldBlocks;
 
     public Path(BlockPos beginPos, Queue<PathPoint> points) {
         this.beginPos = beginPos;
         this.points = points;
         this.success = !points.isEmpty();
+        this.allPoints = points.toArray(new PathPoint[0]);
+    }
+
+    public PathPoint[] getAllPoints() {
+        return this.allPoints;
     }
 
     public boolean isSuccess() {
@@ -58,7 +68,6 @@ public class Path {
             throw new IllegalStateException("Cannot change recursive state when path is already started");
         }
 
-        this.allPoints = this.points.toArray(new PathPoint[0]);
         this.recursive = true;
 
         return this;
@@ -78,6 +87,40 @@ public class Path {
         }
 
         return this.points.poll();
+    }
+
+    public void fill(BlockAccess access, Material material, boolean save) {
+        save = save && this.oldBlocks == null;
+
+        if (save) {
+            this.oldBlocks = new int[this.allPoints.length];
+        }
+
+        for (int i = 0; i < this.allPoints.length; i++) {
+            PathPoint point = this.allPoints[i];
+            BlockPos pos = this.getAbsoluteLocation(point).toBlockPos().down();
+
+            if (save) {
+                this.oldBlocks[i] = access.getBlockState(pos);
+            }
+
+            access.setMaterial(pos, material);
+        }
+    }
+
+    public void refill(BlockAccess access) {
+        if (this.oldBlocks == null) {
+            throw new IllegalStateException("No blocks for refilling provided, do this by using fill and provide true as the save argument");
+        }
+
+        for (int i = 0; i < this.allPoints.length; i++) {
+            PathPoint point = this.allPoints[i];
+            BlockPos pos = this.getAbsoluteLocation(point).toBlockPos().down();
+
+            access.setBlockState(pos, this.oldBlocks[i]);
+        }
+
+        this.oldBlocks = null;
     }
 
     public boolean hasPointsLeft() {

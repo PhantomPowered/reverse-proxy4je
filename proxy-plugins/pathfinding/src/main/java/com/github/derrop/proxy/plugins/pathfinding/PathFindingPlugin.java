@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.pathfinding;
 
+import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
@@ -33,6 +34,7 @@ import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.pathfinding.command.CommandPath;
 import com.github.derrop.proxy.plugins.pathfinding.provider.DefaultPathProvider;
 import com.github.derrop.proxy.plugins.pathfinding.provider.PathProvider;
 import com.github.derrop.proxy.plugins.pathfinding.walk.DefaultPathWalker;
@@ -47,40 +49,14 @@ import com.github.derrop.proxy.plugins.pathfinding.walk.PathWalker;
 )
 public class PathFindingPlugin {
 
-    private ServiceRegistry serviceRegistry;
-
     @Inject(state = PluginState.ENABLED)
     public void enable(PluginContainer plugin, ServiceRegistry registry, PluginContainer container) {
-        this.serviceRegistry = registry;
-
         registry.getProviderUnchecked(EventManager.class).registerListener(container, this);
         registry.setProvider(plugin, PathProvider.class, new DefaultPathProvider());
 
         registry.setProvider(plugin, PathWalker.class, new DefaultPathWalker());
+
+        registry.getProviderUnchecked(CommandMap.class).registerCommand(plugin, new CommandPath(registry), "path");
     }
 
-    @Listener
-    public void handle(PlayerLoginEvent event) {
-        System.out.println("Login: " + event.getPlayer().getName());
-        new Thread(() -> {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException exception) {
-                exception.printStackTrace();
-            }
-
-            PathProvider provider = this.serviceRegistry.getProviderUnchecked(PathProvider.class);
-            //provider.findRectanglePath(event.getTargetConnection().getBlockAccess(), null, new BlockPos(57, 66, 425), new BlockPos(65, 66, 418));
-            Path path = provider.findShortestPath(event.getTargetConnection().getBlockAccess(), new BlockPos(-389, 66, 450), new BlockPos(-379, 66, 458));
-            if (!path.isSuccess()) {
-                System.err.println("Failed!");
-                return;
-            }
-            System.out.println("Found path: " + path);
-            this.serviceRegistry.getProviderUnchecked(PathWalker.class).walkPath(event.getTargetConnection(), path, () -> {
-                System.out.println("Done");
-            });
-
-        }).start();
-    }
 }

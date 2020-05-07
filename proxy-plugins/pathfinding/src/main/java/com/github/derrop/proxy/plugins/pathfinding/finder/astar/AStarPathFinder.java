@@ -102,8 +102,7 @@ public class AStarPathFinder {
                 continue;
             }
 
-            if (point.equals(endPoint)) {
-                System.out.println("FOUND " + endPoint);
+            if (point.equals(endPoint) || (point.getX() == endPoint.getX() && point.getY() - 1 == endPoint.getY() && point.getZ() == endPoint.getZ())) {
                 PathPoint previous = point;
                 previous.setY(previous.getY() + 1.3);
 
@@ -111,10 +110,6 @@ public class AStarPathFinder {
 
                 do {
                     points.add(previous);
-                    System.out.println("Point: " + previous);
-                    BlockPos pos = new BlockPos(start.getX() + previous.getX(), start.getY() + previous.getY(), start.getZ() + previous.getZ());
-                    System.out.println("-> " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
-                    access.setMaterial(pos, Material.EMERALD_BLOCK); // TODO remove this debug
                 } while ((previous = previous.getPreviousPoint()) != startPoint);
                 System.out.println("Success: " + points);
 

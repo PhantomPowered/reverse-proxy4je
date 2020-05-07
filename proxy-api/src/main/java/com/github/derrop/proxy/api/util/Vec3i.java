@@ -130,6 +130,10 @@ public class Vec3i implements Comparable<Vec3i> {
         return this.distanceSq(to.getX(), to.getY(), to.getZ());
     }
 
+    public String toShortString() {
+        return x + ", " + y + ", " + z;
+    }
+
     @Override
     public String toString() {
         return "Vec3i{" +

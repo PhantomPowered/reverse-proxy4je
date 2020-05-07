@@ -42,7 +42,7 @@ public class WarnListener {
         Material material = Material.getMaterial(event.getItem().getItemId());
 
         if (data.shouldWarnEquipmentSlot(event.getSlot().getSlotId(), material)) {
-            player.sendMessage("§eEquipment §8| §7The player §e" + name + " §7has §e" + material + " §7in the §e" + event.getSlot().getFormattedName());
+            player.sendMessage("§eEquipment §8| §7The player §e" + name + " §7has §e" + material + " §7in their §e" + event.getSlot().getFormattedName());
         }
     }
 
