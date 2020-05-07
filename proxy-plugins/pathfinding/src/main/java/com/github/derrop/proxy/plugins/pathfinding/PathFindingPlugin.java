@@ -26,9 +26,6 @@ package com.github.derrop.proxy.plugins.pathfinding;
 
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.event.annotation.Listener;
-import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;

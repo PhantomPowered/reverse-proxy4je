@@ -25,9 +25,9 @@
 package com.github.derrop.proxy.plugins.pathfinding.finder.astar;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
-import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
+import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -40,7 +40,7 @@ public class AStarPathFinder {
     private static final Queue<PathPoint> EMPTY_QUEUE = new ConcurrentLinkedQueue<>();
 
     // This can take pretty long with paths that aren't straight forward
-    public Queue<PathPoint> findPath(BlockAccess access, BlockPos start, BlockPos end) {
+    public Queue<PathPoint> findPath(PathFindInteraction interaction, BlockAccess access, boolean canFly, BlockPos start, BlockPos end) {
         PathPoint startPoint = new PathPoint(0, 0, 0);
         PathPoint endPoint = new PathPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
 
@@ -60,12 +60,18 @@ public class AStarPathFinder {
 
 
         while (!frontier.isEmpty()) {
+            if (interaction.isCancelled()) {
+                return EMPTY_QUEUE;
+            }
+
             PathPoint point = frontier.poll();
 
-            if (visitedPoints.contains(point)) {
+            if (point == null || visitedPoints.contains(point)) {
                 continue;
             }
             visitedPoints.add(point);
+
+            interaction.setCurrentPoint(point);
 
             BlockPos absolutePoint = new BlockPos(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
 
@@ -73,36 +79,38 @@ public class AStarPathFinder {
                 continue;
             }
 
-            int solidDown = -1;
+            if (!canFly) {
+                int solidDown = -1;
 
-            for (int i = 0; i < fallHeight; i++) {
-                if (access.getMaterial(absolutePoint.down(i)).isSolid()) {
-                    solidDown = i;
-                    break;
+                for (int i = 0; i < fallHeight; i++) {
+                    if (access.getMaterial(absolutePoint.down(i)).isSolid()) {
+                        solidDown = i;
+                        break;
+                    }
+                }
+                if (solidDown == -1) {
+                    continue;
+                }
+                if (solidDown != 0) {
+                    PathPoint next = new PathPoint(point.getX(), point.getY() - solidDown, point.getZ(), point);
+                    this.loadNeighbors(next);
+                    frontier.add(next);
+                    continue;
+                }
+
+                if (access.getMaterial(absolutePoint.up(jumpHeight + 1)).isSolid()) {
+                    continue;
+                }
+
+                if (access.getMaterial(absolutePoint.up(jumpHeight)).isSolid()) {
+                    PathPoint next = new PathPoint(point.getX(), point.getY() + jumpHeight, point.getZ(), point);
+                    this.loadNeighbors(next);
+                    frontier.add(next);
+                    continue;
                 }
             }
-            if (solidDown == -1) {
-                continue;
-            }
-            if (solidDown != 0) {
-                PathPoint next = new PathPoint(point.getX(), point.getY() - solidDown, point.getZ(), point);
-                this.loadNeighbors(next);
-                frontier.add(next);
-                continue;
-            }
 
-            if (access.getMaterial(absolutePoint.up(jumpHeight + 1)).isSolid()) {
-                continue;
-            }
-
-            if (access.getMaterial(absolutePoint.up(jumpHeight)).isSolid()) {
-                PathPoint next = new PathPoint(point.getX(), point.getY() + jumpHeight, point.getZ(), point);
-                this.loadNeighbors(next);
-                frontier.add(next);
-                continue;
-            }
-
-            if (point.equals(endPoint) || (point.getX() == endPoint.getX() && point.getY() - 1 == endPoint.getY() && point.getZ() == endPoint.getZ())) {
+            if (this.isCompleted(point, endPoint)) {
                 PathPoint previous = point;
                 previous.setY(previous.getY() + 1.3);
 
@@ -122,6 +130,19 @@ public class AStarPathFinder {
         return EMPTY_QUEUE;
     }
 
+    private boolean isCompleted(PathPoint current, PathPoint end) {
+        if (current.equals(end)) {
+            return true;
+        }
+        if (current.getX() == end.getX() && current.getZ() == end.getZ()) {
+            return current.getY() - 1 == end.getY() || current.getY() + 1 == end.getY();
+        }
+        double dx = Math.abs(current.getX() - end.getX());
+        double dy = Math.abs(current.getY() - end.getY());
+        double dz = Math.abs(current.getZ() - end.getZ());
+        return dx <= 1 && dy <= 1 && dz <= 1;
+    }
+
     private Queue<PathPoint> reverse(Queue<PathPoint> points) {
         PathPoint[] array = points.toArray(new PathPoint[0]);
         Queue<PathPoint> result = new ConcurrentLinkedQueue<>();
@@ -135,7 +156,7 @@ public class AStarPathFinder {
 
     private PathPoint[] loadNeighbors(PathPoint point) {
         // TODO the priority of the straight paths should be higher than the priority of the diagonal paths
-        PathPoint[] neighbors = new PathPoint[14];
+        PathPoint[] neighbors = new PathPoint[18];
 
         neighbors[0] = new PathPoint(point.getX() + 1, point.getY() + 0, point.getZ() + 0, point);
         neighbors[1] = new PathPoint(point.getX() + 0, point.getY() + 1, point.getZ() + 0, point);
@@ -144,14 +165,19 @@ public class AStarPathFinder {
         neighbors[4] = new PathPoint(point.getX() + 0, point.getY() + -1, point.getZ() + 0, point);
         neighbors[5] = new PathPoint(point.getX() + 0, point.getY() + 0, point.getZ() + -1, point);
 
-        neighbors[6] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + 1, point);
-        neighbors[7] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + -1, point);
-        neighbors[8] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + -1, point);
-        neighbors[9] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + 1, point);
-        neighbors[10] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + 1, point);
-        neighbors[11] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + -1, point);
-        neighbors[12] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + -1, point);
-        neighbors[13] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + 1, point);
+        neighbors[6] = new PathPoint(point.getX() + 1, point.getY() + 0, point.getZ() + -1, point);
+        neighbors[7] = new PathPoint(point.getX() + -1, point.getY() + 0, point.getZ() + 1, point);
+        neighbors[8] = new PathPoint(point.getX() + -1, point.getY() + 0, point.getZ() + -1, point);
+        neighbors[9] = new PathPoint(point.getX() + 1, point.getY() + 0, point.getZ() + 1, point);
+
+        neighbors[10] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + 1, point);
+        neighbors[11] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + -1, point);
+        neighbors[12] = new PathPoint(point.getX() + 1, point.getY() + -1, point.getZ() + -1, point);
+        neighbors[13] = new PathPoint(point.getX() + -1, point.getY() + -1, point.getZ() + 1, point);
+        neighbors[14] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + 1, point);
+        neighbors[15] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + -1, point);
+        neighbors[16] = new PathPoint(point.getX() + 1, point.getY() + 1, point.getZ() + -1, point);
+        neighbors[17] = new PathPoint(point.getX() + -1, point.getY() + 1, point.getZ() + 1, point);
 
         return neighbors;
     }

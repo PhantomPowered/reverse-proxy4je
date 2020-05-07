@@ -34,6 +34,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -43,6 +44,7 @@ import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
@@ -103,6 +105,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private final EntityRewrite entityRewrite = new EntityRewrite_1_8();
 
     private ConnectedProxyClient client;
+    private PlayerAbilities abilities = new DefaultPlayerAbilities(this);
 
     private boolean reScheduleOnFailure;
 
@@ -131,6 +134,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public @Nullable Player getPlayer() {
         return this.client == null ? null : this.client.getRedirector();
+    }
+
+    @Override
+    public PlayerAbilities getAbilities() {
+        return this.abilities;
     }
 
     @Override

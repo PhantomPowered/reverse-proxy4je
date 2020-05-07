@@ -32,7 +32,6 @@ import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
-import com.github.derrop.proxy.api.entity.EntityPlayer;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;

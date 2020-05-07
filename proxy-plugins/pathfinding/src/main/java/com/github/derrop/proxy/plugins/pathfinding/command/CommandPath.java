@@ -9,6 +9,7 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
+import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
 import com.github.derrop.proxy.plugins.pathfinding.provider.PathProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,7 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
 
     private static final double BPS = 5D; // blocks per second by the player
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(3);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(6);
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
 
     private ServiceRegistry registry;
@@ -61,9 +62,33 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
         this.executorService.execute(() -> {
             sender.sendMessage("Searching for the path, this may take a while...");
 
+            PathFindInteraction interaction = new PathFindInteraction();
+
+            this.executorService.execute(() -> {
+                int index = 0;
+                while (!Thread.interrupted()) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                    if (interaction.isCompleted()) {
+                        break;
+                    }
+
+                    if (++index >= 24) {
+                        interaction.cancel();
+                        player.sendMessage("§cThe action has been cancelled because it took longer than 2 minutes");
+                        break;
+                    }
+                }
+            });
+
+            boolean canFly = player.getConnectedClient().getAbilities().isAllowedFlying();
+
             BlockPos start = player.getLocation().toBlockPos();
             Path path = this.registry.getProviderUnchecked(PathProvider.class)
-                    .findShortestPath(player.getConnectedClient().getBlockAccess(), start.down(), pos);
+                    .findShortestPath(interaction, canFly, player.getConnectedClient().getBlockAccess(), start.down(), pos);
 
             if (path.isSuccess()) {
                 double distance = Math.sqrt(start.distanceSq(pos));

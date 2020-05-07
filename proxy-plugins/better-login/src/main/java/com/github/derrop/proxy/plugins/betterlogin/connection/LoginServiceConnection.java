@@ -7,6 +7,7 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
@@ -51,6 +52,8 @@ public class LoginServiceConnection implements ServiceConnection {
 
     private LoginBlockAccess blockAccess;
 
+    private final PlayerAbilities abilities = new LoginPlayerAbilities();
+
     private long connectionTimestamp = System.currentTimeMillis();
 
     public LoginServiceConnection(Proxy proxy, Player player) {
@@ -70,6 +73,11 @@ public class LoginServiceConnection implements ServiceConnection {
     @Override
     public @Nullable Player getPlayer() {
         return this.connected ? this.player : null;
+    }
+
+    @Override
+    public PlayerAbilities getAbilities() {
+        return this.abilities;
     }
 
     @Override

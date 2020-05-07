@@ -26,6 +26,7 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.location.Location;
@@ -51,6 +52,8 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
 
     @Nullable
     Player getPlayer();
+
+    PlayerAbilities getAbilities();
 
     @NotNull
     MCCredentials getCredentials();
