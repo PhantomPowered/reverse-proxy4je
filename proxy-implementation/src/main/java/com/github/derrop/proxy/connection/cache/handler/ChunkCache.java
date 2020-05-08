@@ -72,9 +72,10 @@ public class ChunkCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
         Packet packet = newPacket.getDeserializedPacket();
 
+        this.dimension = packetCache.getTargetProxyClient().getDimension();
+
         if (packet instanceof PacketPlayServerRespawn) {
 
-            this.dimension = ((PacketPlayServerRespawn) packet).getDimension();
             this.chunks.clear();
 
         } else if (packet instanceof PacketPlayServerMapChunk) {
@@ -209,7 +210,7 @@ public class ChunkCache implements PacketCacheHandler {
             if (chunk.getLastChunkData() == null) {
                 continue;
             }
-            PacketPlayServerMapChunk data = new PacketPlayServerMapChunk(chunk.getX(), chunk.getZ(), chunk.getLastChunkData().isFullChunk(), chunk.getBytes(this.dimension));
+            PacketPlayServerMapChunk data = new PacketPlayServerMapChunk(chunk.getX(), chunk.getZ(), true, chunk.getBytes(this.dimension));
             sender.sendPacket(data);
         }
     }

@@ -129,6 +129,11 @@ public class ServerPacketHandler {
         client.setDimension(respawn.getDimension());
     }
 
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.LOGIN, directions = ProtocolDirection.TO_CLIENT)
+    public void handle(ConnectedProxyClient client, PacketPlayServerLogin login) {
+        client.setDimension(login.getDimension());
+    }
+
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.TITLE, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerTitle title) {
         ServiceConnection connection = client.getConnection();

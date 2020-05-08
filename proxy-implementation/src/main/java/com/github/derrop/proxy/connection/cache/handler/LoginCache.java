@@ -86,7 +86,7 @@ public class LoginCache implements PacketCacheHandler {
                 PacketPlayServerLogin login = new PacketPlayServerLogin(
                         this.lastLogin.getEntityId(),
                         (short) 0,
-                        this.lastLogin.getDimension(),
+                        targetProxyClient.getDimension(),
                         this.lastLogin.getDifficulty(),
                         (short) 255,
                         this.lastLogin.getLevelType(),
@@ -119,13 +119,6 @@ public class LoginCache implements PacketCacheHandler {
                 this.lastLogin.getGameMode(),
                 this.lastLogin.getLevelType()
         ));
-        if (con instanceof Player) {
-            ServiceConnection connection = ((Player) con).getConnectedClient();
-            if (connection instanceof BasicServiceConnection) {
-                ((BasicServiceConnection) connection).getClient().setDimension(this.lastLogin.getDimension());
-                // TODO The dimension can be changed after the login
-            }
-        }
 
     }
 

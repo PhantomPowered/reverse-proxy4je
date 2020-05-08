@@ -44,6 +44,7 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
+import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
@@ -327,9 +328,10 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
     }
 
     public void free() {
-        if (this.redirector != null) {
-            this.packetCache.handleFree(this.redirector);
-            this.redirector.removeOutgoingPacketListener(this.redirectorListenerKey);
+        Player redirector = this.redirector;
+        if (redirector != null) {
+            this.packetCache.handleFree(redirector);
+            redirector.removeOutgoingPacketListener(this.redirectorListenerKey);
         }
         this.redirector = null;
     }

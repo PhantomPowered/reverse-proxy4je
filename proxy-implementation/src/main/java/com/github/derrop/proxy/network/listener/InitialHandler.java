@@ -41,7 +41,7 @@ import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.LoginResult;
-import com.github.derrop.proxy.connection.handler.ClientPacketListener;
+import com.github.derrop.proxy.connection.handler.ClientChannelListener;
 import com.github.derrop.proxy.connection.player.DefaultOfflinePlayer;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.network.NetworkUtils;
@@ -256,7 +256,7 @@ public class InitialHandler {
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
-                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientPacketListener(player));
+                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientChannelListener(player));
 
                 ServiceConnection client = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
 

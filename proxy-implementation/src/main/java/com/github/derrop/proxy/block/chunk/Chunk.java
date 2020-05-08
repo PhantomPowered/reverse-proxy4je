@@ -43,7 +43,7 @@ public class Chunk {
         this.lastChunkData = chunkData;
     }
 
-    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk, int dimension) { // TODO this doesn't work in the nether, but hasSky works perfectly
+    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk, int dimension) { // TODO doesn't work in the end
         boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
 
         int i = 0;
@@ -54,10 +54,10 @@ public class Chunk {
                     this.storageArrays[j] = new ExtendedBlockStorage(j << 4);
                 }
 
-                char[] achar = this.storageArrays[j].getData();
+                char[] storage = this.storageArrays[j].getData();
 
-                for (int k = 0; k < achar.length; ++k) {
-                    achar[k] = (char) ((data[i + 1] & 255) << 8 | data[i] & 255);
+                for (int k = 0; k < storage.length; ++k) {
+                    storage[k] = (char) ((data[i + 1] & 255) << 8 | data[i] & 255);
                     i += 2;
                 }
             } else if (fullChunk && this.storageArrays[j] != null) {
@@ -65,17 +65,17 @@ public class Chunk {
             }
         }
 
-        for (int j = 0; j < this.storageArrays.length; j++) {
-            if (this.storageArrays[j] != null) {
-                i += 2048; // skip block light data
+        for (int j = 0; j < this.storageArrays.length; ++j) {
+            if ((chunkSize & 1 << j) != 0 && this.storageArrays[j] != null) {
+                i += ExtendedBlockStorage.MAX_LIGHT_LEVEL.length; // skip block light data
                 if (hasSky) {
-                    i += 2048; // skip sky light data
+                    i += ExtendedBlockStorage.MAX_LIGHT_LEVEL.length; // skip sky light data
                 }
             }
         }
 
         if (fullChunk) {
-            System.arraycopy(data, i, this.biomeArray, 0, 256);
+            System.arraycopy(data, i, this.biomeArray, 0, this.biomeArray.length);
         }
 
     }
@@ -86,7 +86,7 @@ public class Chunk {
         }
 
         int maxLength = 65535;
-        boolean fullChunk = this.lastChunkData.isFullChunk();
+        boolean fullChunk = true;//this.lastChunkData.isFullChunk();
         boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
 
         ExtendedBlockStorage[] storages = this.storageArrays;
@@ -96,7 +96,8 @@ public class Chunk {
         for (int i = 0; i < storages.length; ++i) {
             ExtendedBlockStorage storage = storages[i];
 
-            if (storage != null && (!fullChunk || /*!storage.isEmpty()*/ true) && (maxLength & 1 << i) != 0) {
+            if (storage != null && (maxLength & 1 << i) != 0) {
+            //if (storage != null && (!fullChunk || /*!storage.isEmpty()*/ true) && (maxLength & 1 << i) != 0) {
                 extracted.dataLength |= 1 << i;
                 list.add(storage);
             }

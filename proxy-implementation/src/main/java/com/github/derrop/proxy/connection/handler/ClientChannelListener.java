@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ClientPacketListener implements ChannelListener {
+public class ClientChannelListener implements ChannelListener {
 
     private final DefaultPlayer player;
 
-    public ClientPacketListener(DefaultPlayer player) {
+    public ClientChannelListener(DefaultPlayer player) {
         this.player = player;
     }
 
