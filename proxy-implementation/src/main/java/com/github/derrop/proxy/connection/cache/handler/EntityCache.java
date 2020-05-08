@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -42,16 +43,20 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntity;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
+import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerCamera;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class EntityCache implements PacketCacheHandler {
     // TODO Remove all entities on Bungee ServerSwitch
 
     private final Map<Integer, CachedEntity> entities = new ConcurrentHashMap<>();
+
+    private int cameraTargetId = -1;
 
     private PacketCache packetCache;
 
@@ -64,7 +69,8 @@ public class EntityCache implements PacketCacheHandler {
                 ProtocolIds.ToClient.Play.ENTITY_EQUIPMENT,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY_LIVING,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY,
-                ProtocolIds.ToClient.Play.ENTITY_METADATA
+                ProtocolIds.ToClient.Play.ENTITY_METADATA,
+                ProtocolIds.ToClient.Play.CAMERA
         };
     }
 
@@ -132,6 +138,11 @@ public class EntityCache implements PacketCacheHandler {
                 }
             }
 
+        } else if (packet instanceof PacketPlayServerCamera) {
+            System.out.println(packet);
+
+            this.cameraTargetId = ((PacketPlayServerCamera) packet).getEntityId();
+
         }
     }
 
@@ -144,6 +155,18 @@ public class EntityCache implements PacketCacheHandler {
         for (CachedEntity entity : this.entities.values()) {
             entity.spawn(con);
         }
+
+        if (this.shouldSendCameraPacket(targetProxyClient)) {
+            Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+                if (this.shouldSendCameraPacket(targetProxyClient)) {
+                    con.sendPacket(new PacketPlayServerCamera(this.cameraTargetId));
+                }
+            }, 500, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private boolean shouldSendCameraPacket(ConnectedProxyClient targetProxyClient) {
+        return this.cameraTargetId != -1 && this.cameraTargetId != targetProxyClient.getEntityId();
     }
 
     @Override
