@@ -37,9 +37,9 @@ public class PacketPlayServerEntityEffect implements Packet, EntityPacket {
     private byte effectId;
     private byte amplifier;
     private int duration;
-    private byte hideParticles;
+    private boolean hideParticles;
 
-    public PacketPlayServerEntityEffect(int entityId, byte effectId, byte amplifier, int duration, byte hideParticles) {
+    public PacketPlayServerEntityEffect(int entityId, byte effectId, byte amplifier, int duration, boolean hideParticles) {
         this.entityId = entityId;
         this.effectId = effectId;
         this.amplifier = amplifier;
@@ -61,7 +61,7 @@ public class PacketPlayServerEntityEffect implements Packet, EntityPacket {
         this.effectId = protoBuf.readByte();
         this.amplifier = protoBuf.readByte();
         this.duration = protoBuf.readVarInt();
-        this.hideParticles = protoBuf.readByte();
+        this.hideParticles = protoBuf.readByte() != 0;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class PacketPlayServerEntityEffect implements Packet, EntityPacket {
         protoBuf.writeByte(this.effectId);
         protoBuf.writeByte(this.amplifier);
         protoBuf.writeVarInt(this.duration);
-        protoBuf.writeByte(this.hideParticles);
+        protoBuf.writeByte(this.hideParticles ? 1 : 0);
     }
 
     public int getEntityId() {
@@ -89,7 +89,7 @@ public class PacketPlayServerEntityEffect implements Packet, EntityPacket {
         return this.duration;
     }
 
-    public byte getHideParticles() {
+    public boolean isHidingParticles() {
         return this.hideParticles;
     }
 
@@ -98,6 +98,6 @@ public class PacketPlayServerEntityEffect implements Packet, EntityPacket {
     }
 
     public String toString() {
-        return "PacketPlayServerEntityEffect(entityId=" + this.getEntityId() + ", effectId=" + this.getEffectId() + ", amplifier=" + this.getAmplifier() + ", duration=" + this.getDuration() + ", hideParticles=" + this.getHideParticles() + ")";
+        return "PacketPlayServerEntityEffect(entityId=" + this.getEntityId() + ", effectId=" + this.getEffectId() + ", amplifier=" + this.getAmplifier() + ", duration=" + this.getDuration() + ", hideParticles=" + this.isHidingParticles() + ")";
     }
 }

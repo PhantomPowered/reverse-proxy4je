@@ -62,7 +62,7 @@ public class CachedPlayer extends CachedEntityWithMetadata implements EntityPlay
                     500, TimeUnit.MILLISECONDS
             );
 
-            super.sendMetadataAndEquipment(sender);
+            super.sendEntityData(sender);
         } else {
             super.spawn(sender);
         }

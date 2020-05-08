@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityEffectCache implements PacketCacheHandler {
 
-    private Map<Integer, Map<Integer, TimedEntityEffect>> effects = new ConcurrentHashMap<>();
+    private Map<Integer, Map<Byte, TimedEntityEffect>> effects = new ConcurrentHashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -51,8 +51,8 @@ public class EntityEffectCache implements PacketCacheHandler {
         if (newPacket.getDeserializedPacket() instanceof PacketPlayServerRemoveEntityEffect) {
             PacketPlayServerRemoveEntityEffect effect = (PacketPlayServerRemoveEntityEffect) newPacket.getDeserializedPacket();
             if (this.effects.containsKey(effect.getEntityId())) {
-                Map<Integer, TimedEntityEffect> effects = this.effects.get(effect.getEntityId());
-                effects.remove(effect.getEffectId());
+                Map<Byte, TimedEntityEffect> effects = this.effects.get(effect.getEntityId());
+                effects.remove((byte) effect.getEffectId());
                 if (effects.isEmpty()) {
                     this.effects.remove(effect.getEntityId());
                 }
@@ -64,19 +64,19 @@ public class EntityEffectCache implements PacketCacheHandler {
                 this.effects.put(effect.getEntityId(), new ConcurrentHashMap<>());
             }
 
-            this.effects.get(effect.getEntityId()).put((int) effect.getEffectId(), effect);
+            this.effects.get(effect.getEntityId()).put(effect.getEffectId(), effect);
         }
     }
 
     @Override
     public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
-        for (Map<Integer, TimedEntityEffect> effects : this.effects.values()) {
+        for (Map<Byte, TimedEntityEffect> effects : this.effects.values()) {
             for (TimedEntityEffect effect : effects.values()) {
                 PacketPlayServerEntityEffect effectPacket = effect.toEntityEffect();
                 if (effectPacket != null) {
                     con.sendPacket(effectPacket);
                 } else {
-                    effects.remove((int) effect.getEffectId());
+                    effects.remove(effect.getEffectId());
                     if (effects.isEmpty()) {
                         this.effects.remove(effect.getEntityId());
                     }
@@ -84,4 +84,35 @@ public class EntityEffectCache implements PacketCacheHandler {
             }
         }
     }
+
+    public Map<Byte, TimedEntityEffect> getEffects(int entityId) {
+        Map<Byte, TimedEntityEffect> effects = this.effects.get(entityId);
+        if (effects == null) {
+            effects = new ConcurrentHashMap<>();
+            this.effects.put(entityId, effects);
+            return effects;
+        }
+
+        for (TimedEntityEffect effect : effects.values()) {
+            if (!effect.isValid()) {
+                effects.remove(effect.getEffectId());
+            }
+        }
+
+        return effects;
+    }
+
+    public boolean removeEffect(int entityId, byte effectId) {
+        Map<Byte, TimedEntityEffect> effects = this.effects.get(entityId);
+        if (effects != null) {
+            if (effects.remove(effectId) != null) {
+                if (effects.isEmpty()) {
+                    this.effects.remove(entityId);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

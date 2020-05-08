@@ -34,12 +34,15 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.entity.CachedEntity;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntity;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
@@ -63,14 +66,16 @@ public class EntityCache implements PacketCacheHandler {
     @Override
     public int[] getPacketIDs() {
         return new int[]{
-                ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN,
-                ProtocolIds.ToClient.Play.ENTITY_DESTROY,
                 ProtocolIds.ToClient.Play.ENTITY_TELEPORT,
+                ProtocolIds.ToClient.Play.CAMERA,
+                ProtocolIds.ToClient.Play.ENTITY_METADATA,
                 ProtocolIds.ToClient.Play.ENTITY_EQUIPMENT,
+
+                ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY_LIVING,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY,
-                ProtocolIds.ToClient.Play.ENTITY_METADATA,
-                ProtocolIds.ToClient.Play.CAMERA
+
+                ProtocolIds.ToClient.Play.ENTITY_DESTROY
         };
     }
 
@@ -139,7 +144,6 @@ public class EntityCache implements PacketCacheHandler {
             }
 
         } else if (packet instanceof PacketPlayServerCamera) {
-            System.out.println(packet);
 
             this.cameraTargetId = ((PacketPlayServerCamera) packet).getEntityId();
 

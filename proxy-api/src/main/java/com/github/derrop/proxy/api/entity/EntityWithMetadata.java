@@ -3,7 +3,7 @@ package com.github.derrop.proxy.api.entity;
 import org.jetbrains.annotations.Nullable;
 
 // TODO Move to EntityLiving, EntityArmorStand, EntityMob, ...
-public interface EntityWithMetadata extends Entity {
+public interface EntityWithMetadata extends SpawnedEntity {
 
     boolean isSilent();
 

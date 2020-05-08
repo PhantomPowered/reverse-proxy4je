@@ -1,7 +1,8 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
-import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.EntityEffect;
+import com.github.derrop.proxy.api.entity.SpawnedEntity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
 import com.github.derrop.proxy.api.location.Location;
@@ -10,17 +11,20 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
+import com.github.derrop.proxy.connection.cache.handler.EntityEffectCache;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class CachedEntity implements Entity {
+public class CachedEntity implements SpawnedEntity {
 
     protected final ServiceRegistry registry;
     protected final ConnectedProxyClient client;
@@ -40,7 +44,7 @@ public class CachedEntity implements Entity {
         this.client = client;
         this.entityId = spawnPacket.getEntityId();
         this.spawnPacket = spawnPacket;
-        this.equipment = new HashMap<>();
+        this.equipment = new ConcurrentHashMap<>();
     }
 
     public static CachedEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
@@ -135,12 +139,45 @@ public class CachedEntity implements Entity {
 
     public void spawn(PacketSender sender) {
         sender.sendPacket(this.spawnPacket);
-        this.sendMetadataAndEquipment(sender);
+        this.sendEntityData(sender);
     }
 
-    protected void sendMetadataAndEquipment(PacketSender sender) {
+    protected void sendEntityData(PacketSender sender) {
         sender.sendPacket(new PacketPlayServerEntityMetadata(this.entityId, this.objectList.getObjects()));
         this.equipment.forEach((slot, item) -> sender.sendPacket(new PacketPlayServerEntityEquipment(this.entityId, slot, item)));
     }
 
+    @Override
+    public EntityEffect createEffect(byte effectId, byte amplifier, int duration, boolean hideParticles) {
+        return TimedEntityEffect.create(this.entityId, effectId, amplifier, duration, hideParticles);
+    }
+
+    private EntityEffectCache getEffectCache() {
+        return (EntityEffectCache) this.client.getPacketCache().getHandler(handler -> handler instanceof EntityEffectCache);
+    }
+
+    @Override
+    public EntityEffect[] getActiveEffects() {
+        return this.getEffectCache().getEffects(this.entityId).values().toArray(new EntityEffect[0]);
+    }
+
+    @Override
+    public void addEffect(EntityEffect effect) {
+        TimedEntityEffect timed = (TimedEntityEffect) effect;
+        if (timed.getEntityId() != this.entityId) {
+            throw new IllegalArgumentException("Cannot give entity an effect which was created for another entity");
+        }
+
+        this.getEffectCache().getEffects(this.entityId).put(effect.getEffectId(), timed);
+        if (this.client.getRedirector() != null) {
+            this.client.getRedirector().sendPacket(timed.toEntityEffect());
+        }
+    }
+
+    @Override
+    public void removeEffect(byte effectId) {
+        if (this.getEffectCache().getEffects(this.entityId).remove(effectId) != null && this.client.getRedirector() != null) {
+            this.client.getRedirector().sendPacket(new PacketPlayServerRemoveEntityEffect(this.entityId, effectId));
+        }
+    }
 }

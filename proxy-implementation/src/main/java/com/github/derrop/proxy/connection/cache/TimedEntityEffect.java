@@ -24,56 +24,90 @@
  */
 package com.github.derrop.proxy.connection.cache;
 
+import com.github.derrop.proxy.api.entity.EntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 
-public class TimedEntityEffect {
+public class TimedEntityEffect implements EntityEffect {
 
-    private int entityId;
-    private byte effectId;
-    private byte amplifier;
-    private long timeout;
-    private byte hideParticles;
+    private final int entityId;
+    private final byte effectId;
+    private final byte amplifier;
+    private final int initialDurationTicks;
+    private final long timeout;
+    private final boolean hideParticles;
 
-    private TimedEntityEffect(int entityId, byte effectId, byte amplifier, long timeout, byte hideParticles) {
+    public TimedEntityEffect(int entityId, byte effectId, byte amplifier, int initialDurationTicks, long timeout, boolean hideParticles) {
         this.entityId = entityId;
         this.effectId = effectId;
         this.amplifier = amplifier;
+        this.initialDurationTicks = initialDurationTicks;
         this.timeout = timeout;
         this.hideParticles = hideParticles;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public byte getEffectId() {
-        return effectId;
+        return this.effectId;
     }
 
     public byte getAmplifier() {
-        return amplifier;
+        return this.amplifier;
     }
 
     public long getTimeout() {
-        return timeout;
+        return this.timeout;
     }
 
-    public byte getHideParticles() {
-        return hideParticles;
+    public boolean isInfinite() {
+        return this.timeout == -1;
+    }
+
+    public boolean isHidingParticles() {
+        return this.hideParticles;
+    }
+
+    public int getInitialDurationTicks() {
+        return this.initialDurationTicks;
+    }
+
+    public boolean isValid() {
+        return this.timeout == -1 || this.timeout >= System.currentTimeMillis();
+    }
+
+    @Override
+    public String toString() {
+        return "TimedEntityEffect{" +
+                "entityId=" + entityId +
+                ", effectId=" + effectId +
+                ", amplifier=" + amplifier +
+                ", initialDurationTicks=" + initialDurationTicks +
+                ", timeout=" + timeout +
+                ", hideParticles=" + hideParticles +
+                '}';
+    }
+
+    private static long getTimeout(int ticks) {
+        return ticks <= 0 || ticks >= 32767 ? -1 : ((ticks / 20) * 1000) + System.currentTimeMillis();
     }
 
     public static TimedEntityEffect fromEntityEffect(PacketPlayServerEntityEffect entityEffect) {
-        long durationMillis = entityEffect.getDuration() >= 32767 ? -1 : ((entityEffect.getDuration() / 20) * 1000) + System.currentTimeMillis();
+        return create(entityEffect.getEntityId(), entityEffect.getEffectId(), entityEffect.getAmplifier(), entityEffect.getDuration(), entityEffect.isHidingParticles());
+    }
 
+    public static TimedEntityEffect create(int entityId, byte effectId, byte amplifier, int duration, boolean hideParticles) {
         return new TimedEntityEffect(
-                entityEffect.getEntityId(), entityEffect.getEffectId(),
-                entityEffect.getAmplifier(), durationMillis,
-                entityEffect.getHideParticles()
+                entityId, effectId,
+                amplifier,
+                duration, getTimeout(duration),
+                hideParticles
         );
     }
 
     public PacketPlayServerEntityEffect toEntityEffect() {
-        if (System.currentTimeMillis() >= this.timeout) {
+        if (!this.isValid()) {
             return null;
         }
 
