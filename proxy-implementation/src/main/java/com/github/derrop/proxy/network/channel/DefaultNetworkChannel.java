@@ -180,7 +180,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
 
     @Override
     public boolean isClosed() {
-        return this.closed;
+        return this.closed && (this.channel == null || !this.channel.isOpen());
     }
 
     @Override

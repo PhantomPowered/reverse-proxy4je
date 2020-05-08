@@ -97,8 +97,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private boolean autoReconnect = true;
 
-    private int dimension;
-
     private int compression = -1;
 
     private String displayName;
@@ -330,7 +328,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public boolean isConnected() {
-        return this.connected;
+        return this.connected && this.channel.isConnected();
     }
 
     public void setConnected(boolean connected) {
@@ -417,7 +415,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public int getDimension() {
-        return this.dimension;
+        return this.connectedClient == null ? -1 : this.connectedClient.getDimension();
     }
 
     @Override

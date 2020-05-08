@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistr
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
+import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import io.netty.channel.ChannelHandlerContext;
@@ -79,8 +80,13 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
             this.channelListener.handleChannelInactive(this.networkChannel);
         }
 
-        if (this.networkChannel instanceof DefaultNetworkChannel) {
-            ((DefaultNetworkChannel) this.networkChannel).markClosed();
+        NetworkChannel networkChannel = this.networkChannel;
+        while (networkChannel instanceof WrappedNetworkChannel) {
+            networkChannel = ((WrappedNetworkChannel) networkChannel).getWrappedNetworkChannel();
+        }
+
+        if (networkChannel instanceof DefaultNetworkChannel) {
+            ((DefaultNetworkChannel) networkChannel).markClosed();
         }
     }
 

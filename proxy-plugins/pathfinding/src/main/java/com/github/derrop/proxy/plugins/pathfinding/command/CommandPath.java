@@ -76,6 +76,11 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
                         break;
                     }
 
+                    if (!player.isConnected()) {
+                        interaction.cancel();
+                        break;
+                    }
+
                     if (++index >= 24) {
                         interaction.cancel();
                         player.sendMessage("§cThe action has been cancelled because it took longer than 2 minutes");
@@ -97,13 +102,13 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
                 sender.sendMessage("§aSuccessfully found the path from " + start.toShortString() + " to " + pos.toShortString() + " (" + String.format("%.2f", distance) + " blocks airway)");
                 sender.sendMessage("§aBlocks to walk: " + path.getAllPoints().length + " §7(Calculated with a speed of " + BPS + " blocks per second)");
 
-                path.fill(player.getConnectedClient().getBlockAccess(), Material.EMERALD_BLOCK, true);
+                path.fill(player, player.getConnectedClient().getBlockAccess(), Material.EMERALD_BLOCK, true);
 
                 sender.sendMessage(String.format("§cThe emeralds will be replaced in §e%d §cseconds", time));
                 this.scheduledExecutorService.schedule(() -> {
                     if (player.getConnectedClient() != null) {
                         player.sendMessage("§aReplacing all " + path.getAllPoints().length + " blocks...");
-                        path.refill(player.getConnectedClient().getBlockAccess());
+                        path.refill(player);
                     }
                 }, time, TimeUnit.SECONDS);
 

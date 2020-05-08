@@ -26,6 +26,7 @@ package com.github.derrop.proxy.plugins.pathfinding;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 
@@ -89,7 +90,7 @@ public class Path {
         return this.points.poll();
     }
 
-    public void fill(BlockAccess access, Material material, boolean save) {
+    public void fill(Player player, BlockAccess access, Material material, boolean save) {
         save = save && this.oldBlocks == null;
 
         if (save) {
@@ -104,11 +105,11 @@ public class Path {
                 this.oldBlocks[i] = access.getBlockState(pos);
             }
 
-            access.setMaterial(pos, material);
+            player.sendBlockChange(pos, material);
         }
     }
 
-    public void refill(BlockAccess access) {
+    public void refill(Player player) {
         if (this.oldBlocks == null) {
             throw new IllegalStateException("No blocks for refilling provided, do this by using fill and provide true as the save argument");
         }
@@ -117,7 +118,7 @@ public class Path {
             PathPoint point = this.allPoints[i];
             BlockPos pos = this.getAbsoluteLocation(point).toBlockPos().down();
 
-            access.setBlockState(pos, this.oldBlocks[i]);
+            player.sendBlockChange(pos, this.oldBlocks[i]);
         }
 
         this.oldBlocks = null;

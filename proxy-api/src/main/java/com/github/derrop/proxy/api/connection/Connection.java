@@ -65,13 +65,5 @@ public interface Connection extends PacketSender, NetworkChannel {
      */
     void disconnect(@NotNull Component reason);
 
-    /**
-     * Gets whether this connection is currently open, ie: not disconnected, and
-     * able to send / receive data.
-     *
-     * @return current connection status
-     */
-    boolean isConnected();
-
     void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason);
 }
