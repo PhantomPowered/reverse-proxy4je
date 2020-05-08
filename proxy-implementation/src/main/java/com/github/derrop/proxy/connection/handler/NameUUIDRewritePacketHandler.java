@@ -24,12 +24,24 @@ public class NameUUIDRewritePacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, priority = EventPriority.SECOND)
     public void rewriteChatInput(DefaultPlayer player, PacketPlayClientChatMessage packet) {
-        this.acceptNames(player, (clientName, serverName) -> packet.setMessage(this.replaceNames(packet.getMessage(), clientName, serverName)));
+        this.acceptNames(player, (clientName, serverName) -> {
+            if (packet.getMessage().contains("SHOW-REAL-NAME")) {
+                packet.setMessage(packet.getMessage().replace("SHOW-REAL-NAME", ""));
+                return;
+            }
+            packet.setMessage(this.replaceNames(packet.getMessage(), clientName, serverName));
+        });
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING, priority = EventPriority.FIRST)
     public void rewriteChatOutput(ServiceConnection connection, PacketPlayServerChatMessage packet) {
-        this.acceptNames(connection, (clientName, serverName) -> packet.setMessage(this.replaceNames(packet.getMessage(), serverName, clientName)));
+        this.acceptNames(connection, (clientName, serverName) -> {
+            if (packet.getMessage().contains("SHOW-REAL-NAME")) {
+                packet.setMessage(packet.getMessage().replace("SHOW-REAL-NAME", ""));
+                return;
+            }
+            packet.setMessage(this.replaceNames(packet.getMessage(), serverName, clientName));
+        });
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING, priority = EventPriority.FIRST)
