@@ -97,17 +97,17 @@ public class AStarPathFinder {
                     frontier.add(next);
                     continue;
                 }
+            }
 
-                if (access.getMaterial(absolutePoint.up(jumpHeight + 1)).isSolid()) {
-                    continue;
-                }
+            if (access.getMaterial(absolutePoint.up(jumpHeight + 1)).isSolid()) {
+                continue;
+            }
 
-                if (access.getMaterial(absolutePoint.up(jumpHeight)).isSolid()) {
-                    PathPoint next = new PathPoint(point.getX(), point.getY() + jumpHeight, point.getZ(), point);
-                    this.loadNeighbors(next);
-                    frontier.add(next);
-                    continue;
-                }
+            if (access.getMaterial(absolutePoint.up(jumpHeight)).isSolid()) {
+                PathPoint next = new PathPoint(point.getX(), point.getY() + jumpHeight, point.getZ(), point);
+                this.loadNeighbors(next);
+                frontier.add(next);
+                continue;
             }
 
             if (this.isCompleted(point, endPoint)) {
