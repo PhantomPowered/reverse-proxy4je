@@ -79,10 +79,19 @@ public class AStarPathFinder {
                 continue;
             }
 
+            if (access.getMaterial(absolutePoint).isSolid()) {
+                continue;
+            }
+
+            PathPoint pointDown = new PathPoint(point.getX(), point.getY() - 1, point.getZ());
+            if (pointDown.equals(point.getPreviousPoint())) {
+                continue;
+            }
+
             if (!canFly) {
                 int solidDown = -1;
 
-                for (int i = 0; i < fallHeight; i++) {
+                for (int i = 1; i < fallHeight; i++) {
                     if (access.getMaterial(absolutePoint.down(i)).isSolid()) {
                         solidDown = i;
                         break;
