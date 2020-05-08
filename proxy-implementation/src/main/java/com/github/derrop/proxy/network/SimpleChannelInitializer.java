@@ -25,8 +25,8 @@
 package com.github.derrop.proxy.network;
 
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.network.handler.HandlerEndpoint;
-import com.github.derrop.proxy.network.length.LengthFrameDecoder;
+import com.github.derrop.proxy.network.pipeline.handler.HandlerEndpoint;
+import com.github.derrop.proxy.network.pipeline.length.LengthFrameDecoder;
 import com.github.derrop.proxy.network.listener.InitialListener;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;

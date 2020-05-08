@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.network.handler;
+package com.github.derrop.proxy.network.pipeline.handler;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
@@ -32,7 +32,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
-import com.github.derrop.proxy.network.minecraft.MinecraftDecoder;
+import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

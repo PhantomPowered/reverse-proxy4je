@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.network.compression;
+package com.github.derrop.proxy.network.pipeline.compression;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;

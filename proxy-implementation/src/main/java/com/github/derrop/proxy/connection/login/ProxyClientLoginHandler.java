@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.login;
 
-import com.github.derrop.proxy.network.encryption.ClientEncryptionUtils;
+import com.github.derrop.proxy.network.pipeline.encryption.ClientEncryptionUtils;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.event.EventPriority;
@@ -34,9 +34,9 @@ import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.handler.ServerChannelListener;
 import com.github.derrop.proxy.network.NetworkUtils;
-import com.github.derrop.proxy.network.cipher.PacketCipherDecoder;
-import com.github.derrop.proxy.network.cipher.PacketCipherEncoder;
-import com.github.derrop.proxy.network.handler.HandlerEndpoint;
+import com.github.derrop.proxy.network.pipeline.cipher.PacketCipherDecoder;
+import com.github.derrop.proxy.network.pipeline.cipher.PacketCipherEncoder;
+import com.github.derrop.proxy.network.pipeline.handler.HandlerEndpoint;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;

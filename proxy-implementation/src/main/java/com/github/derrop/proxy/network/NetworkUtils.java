@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network;
 
-import com.github.derrop.proxy.network.length.LengthFrameEncoder;
+import com.github.derrop.proxy.network.pipeline.length.LengthFrameEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.WriteBufferWaterMark;
 import io.netty.handler.codec.MessageToByteEncoder;

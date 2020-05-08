@@ -22,43 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.network.compression;
+package com.github.derrop.proxy.network.pipeline.cipher;
 
-import com.github.derrop.proxy.api.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import javax.crypto.SecretKey;
+import java.security.GeneralSecurityException;
 
-public final class PacketDeCompressor extends MessageToMessageDecoder<ByteBuf> {
+public final class PacketCipherEncoder extends MessageToByteEncoder<ByteBuf> {
 
-    private final PacketCompressionHandler packetCompressionHandler;
+    private final PacketCipherHandler packetCipherHandler;
 
-    public PacketDeCompressor(int threshold) {
-        this.packetCompressionHandler = new PacketCompressionHandler(threshold, false);
+    public PacketCipherEncoder(@NotNull SecretKey secretKey) throws GeneralSecurityException {
+        this.packetCipherHandler = new PacketCipherHandler(true, secretKey);
     }
 
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        int size = ByteBufUtils.readVarInt(byteBuf);
-        if (size == 0) {
-            list.add(byteBuf.slice().retain());
-            byteBuf.skipBytes(byteBuf.readableBytes());
-            return;
-        }
-
-        ByteBuf buf = channelHandlerContext.alloc().directBuffer();
-        packetCompressionHandler.process(byteBuf, buf);
-        if (buf.readableBytes() != size) {
-            return;
-        }
-
-        list.add(buf);
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, ByteBuf byteBuf2) throws Exception {
+        this.packetCipherHandler.cipher(byteBuf, byteBuf2);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) {
-        this.packetCompressionHandler.end();
+        this.packetCipherHandler.end();
     }
 }

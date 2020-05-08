@@ -22,31 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.network.cipher;
+package com.github.derrop.proxy.network.pipeline.length;
 
+import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.network.NetworkUtils;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.jetbrains.annotations.NotNull;
 
-import javax.crypto.SecretKey;
-import java.security.GeneralSecurityException;
-
-public final class PacketCipherEncoder extends MessageToByteEncoder<ByteBuf> {
-
-    private final PacketCipherHandler packetCipherHandler;
-
-    public PacketCipherEncoder(@NotNull SecretKey secretKey) throws GeneralSecurityException {
-        this.packetCipherHandler = new PacketCipherHandler(true, secretKey);
-    }
+@ChannelHandler.Sharable
+public class LengthFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, ByteBuf byteBuf2) throws Exception {
-        this.packetCipherHandler.cipher(byteBuf, byteBuf2);
-    }
+        int readable = byteBuf.readableBytes();
+        int length = NetworkUtils.varintSize(readable);
+        byteBuf2.ensureWritable(readable + length);
 
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) {
-        this.packetCipherHandler.end();
+        ByteBufUtils.writeVarInt(readable, byteBuf2);
+        byteBuf2.writeBytes(byteBuf);
     }
 }
