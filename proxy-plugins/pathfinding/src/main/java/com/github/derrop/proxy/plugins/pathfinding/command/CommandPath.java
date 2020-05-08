@@ -39,8 +39,8 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
             return CommandResult.BREAK;
         }
 
-        if (args.length != 3) {
-            sender.sendMessage("path <x> <y> <z>");
+        if (args.length != 3 && args.length != 4) {
+            sender.sendMessage("path <x> <y> <z> [true|false (allow flight)]");
             return CommandResult.BREAK;
         }
 
@@ -90,6 +90,10 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
             });
 
             boolean canFly = player.getConnectedClient().getAbilities().isAllowedFlying();
+
+            if (args.length == 4) {
+                canFly = Boolean.parseBoolean(args[3]);
+            }
 
             BlockPos start = player.getLocation().toBlockPos();
             Path path = this.registry.getProviderUnchecked(PathProvider.class)
