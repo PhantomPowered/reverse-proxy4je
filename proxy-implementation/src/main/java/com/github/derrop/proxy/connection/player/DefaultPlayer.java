@@ -45,6 +45,7 @@ import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -91,6 +92,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private boolean firstConnection = true;
     private int entityId;
 
+    private ServiceConnection connectingClient;
+
     private ServiceConnection connectedClient;
 
     private boolean connected = false;
@@ -113,6 +116,10 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         }
         super.getEffectivePermissions().clear();
         super.getEffectivePermissions().putAll(offlinePlayer.getEffectivePermissions());
+    }
+
+    public ServiceConnection getConnectingClient() {
+        return this.connectingClient;
     }
 
     @Override
@@ -223,8 +230,12 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
         this.connected = true;
 
+        this.connectingClient = connection;
+
         connection.syncPackets(this, this.connectedClient != null);
         this.connectedClient = connection;
+
+        this.connectingClient = null;
 
         //this.sendMessage("§7Your name: §e" + connection.getName());
     }
@@ -375,8 +386,9 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
-        if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
-            ((BasicServiceConnection) this.connectedClient).getEntityRewrite().updatePacketToClient(packet, this.connectedClient.getEntityId(), this.entityId);
+        ServiceConnection connection = this.connectingClient != null ? this.connectingClient : this.connectedClient;
+        if (connection instanceof BasicServiceConnection) {
+            ((BasicServiceConnection) connection).getEntityRewrite().updatePacketToClient(packet, connection.getEntityId(), this.entityId);
         }
         this.channel.write(packet);
     }

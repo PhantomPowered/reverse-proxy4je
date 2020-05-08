@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.block.chunk.Chunk;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -197,7 +198,7 @@ public class ChunkCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender sender) {
+    public void sendCached(PacketSender sender, ConnectedProxyClient targetProxyClient) {
         // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk. Now fixed?
 
         if (sender instanceof Player) {

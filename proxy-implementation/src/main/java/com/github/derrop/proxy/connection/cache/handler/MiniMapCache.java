@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -65,7 +66,7 @@ public class MiniMapCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         for (PacketPlayServerMap map : this.maps.values()) {
             con.sendPacket(map);
         }

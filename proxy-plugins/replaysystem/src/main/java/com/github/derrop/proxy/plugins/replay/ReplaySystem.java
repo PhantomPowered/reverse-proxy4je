@@ -276,7 +276,7 @@ public class ReplaySystem { // TODO
             }
         };
         for (PacketCacheHandler handler : proxyClient.getPacketCache().getHandlers()) {
-            handler.sendCached(receiver);
+            handler.sendCached(receiver, proxyClient);
         }
         receiver.sendPacket(new PacketPlayServerNamedEntitySpawn(proxyClient.getEntityId(), UUID.fromString("fdef0011-1c58-40c8-bfef-0bdcb1495938"),
                 connection.getLocation(),

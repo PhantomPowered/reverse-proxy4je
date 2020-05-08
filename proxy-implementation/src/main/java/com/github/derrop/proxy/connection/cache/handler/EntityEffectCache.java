@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -68,7 +69,7 @@ public class EntityEffectCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         for (Map<Integer, TimedEntityEffect> effects : this.effects.values()) {
             for (TimedEntityEffect effect : effects.values()) {
                 PacketPlayServerEntityEffect effectPacket = effect.toEntityEffect();

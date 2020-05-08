@@ -26,6 +26,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.api.util.ItemStack;
 import com.github.derrop.proxy.connection.cache.PacketCache;
@@ -88,7 +89,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
             ItemStack[] items = new ItemStack[count + 1];
             for (int slot = 0; slot < items.length; slot++) {

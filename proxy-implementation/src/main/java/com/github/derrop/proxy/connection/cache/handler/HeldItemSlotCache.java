@@ -26,6 +26,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -53,7 +54,7 @@ public class HeldItemSlotCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         con.sendPacket(new PacketPlayServerHeldItemSlot(this.slot));
     }
 }

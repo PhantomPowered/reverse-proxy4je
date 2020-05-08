@@ -122,13 +122,13 @@ public class PacketCache {
     }
 
     public ConnectedProxyClient getTargetProxyClient() {
-        return targetProxyClient;
+        return this.targetProxyClient;
     }
 
     public void send(Player connection, boolean switched) {
         for (PacketCacheHandler handler : this.handlers) {
             if (!switched || handler.sendOnSwitch()) {
-                handler.sendCached(connection);
+                handler.sendCached(connection, this.targetProxyClient);
             }
         }
     }

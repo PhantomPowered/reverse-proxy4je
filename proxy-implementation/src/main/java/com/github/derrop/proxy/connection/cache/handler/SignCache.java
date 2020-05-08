@@ -27,6 +27,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -56,7 +57,7 @@ public class SignCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         for (Map.Entry<BlockPos, PacketPlayServerUpdateSign> entry : this.signUpdates.entrySet()) {
             Material material = this.packetCache.getMaterialAt(entry.getKey());
 

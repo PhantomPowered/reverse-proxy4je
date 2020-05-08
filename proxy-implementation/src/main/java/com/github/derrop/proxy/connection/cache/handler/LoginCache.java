@@ -29,9 +29,11 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
@@ -46,7 +48,7 @@ public class LoginCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{1}; // login packet
+        return new int[]{ProtocolIds.ToClient.Play.LOGIN};
     }
 
     @Override
@@ -58,7 +60,7 @@ public class LoginCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         if (this.lastLogin == null) {
             Constants.EXECUTOR_SERVICE.execute(() -> {
                 int count = 0;
@@ -73,7 +75,7 @@ public class LoginCache implements PacketCacheHandler {
                 if (count >= 50) {
                     return;
                 }
-                this.sendCached(con);
+                this.sendCached(con, targetProxyClient);
             });
             return;
         }
@@ -96,20 +98,20 @@ public class LoginCache implements PacketCacheHandler {
             }
 
             PacketPlayServerEntityStatus entityStatus = new PacketPlayServerEntityStatus(
-                    player.getEntityId(),
+                    targetProxyClient.getEntityId(),
                     (byte) (this.lastLogin.isReducedDebugInfo() ? 22 : 23)
             );
             player.sendPacket(entityStatus);
         }
 
-        if (!(con instanceof Player) || this.lastLogin.getDimension() == ((Player) con).getDimension()) {
+        /*if (!(con instanceof Player) || this.lastLogin.getDimension() == ((Player) con).getDimension()) {
             con.sendPacket(new PacketPlayServerRespawn(
                     (this.lastLogin.getDimension() >= 0 ? -1 : 0),
                     this.lastLogin.getDifficulty(),
                     this.lastLogin.getGameMode(),
                     this.lastLogin.getLevelType()
             ));
-        }
+        }*/
 
         con.sendPacket(new PacketPlayServerRespawn(
                 this.lastLogin.getDimension(),
@@ -121,7 +123,7 @@ public class LoginCache implements PacketCacheHandler {
             ServiceConnection connection = ((Player) con).getConnectedClient();
             if (connection instanceof BasicServiceConnection) {
                 ((BasicServiceConnection) connection).getClient().setDimension(this.lastLogin.getDimension());
-                // TODO The dimension can be changed
+                // TODO The dimension can be changed after the login
             }
         }
 

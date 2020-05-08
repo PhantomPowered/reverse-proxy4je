@@ -77,6 +77,7 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
             return CommandResult.END;
         }
 
+        //((Player) commandSender).useClient(optionalClient.get()); TODO not working when two clients on the same proxy are connected in the same world
         ((Player) commandSender).useClientSafe(optionalClient.get());
         return CommandResult.END;
     }

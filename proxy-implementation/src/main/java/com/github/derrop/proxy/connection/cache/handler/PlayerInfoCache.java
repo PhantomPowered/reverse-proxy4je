@@ -32,6 +32,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoUpdateEvent;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -109,7 +110,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
     }
 
     @Override
-    public void sendCached(PacketSender con) {
+    public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         if (this.packetCache == null) {
             return;
         }

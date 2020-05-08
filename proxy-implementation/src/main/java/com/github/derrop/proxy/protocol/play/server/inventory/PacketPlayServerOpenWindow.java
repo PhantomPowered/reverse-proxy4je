@@ -4,11 +4,12 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerOpenWindow implements Packet {
+public class PacketPlayServerOpenWindow implements Packet, EntityPacket {
 
     private int windowId;
     private String inventoryType;
