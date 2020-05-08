@@ -79,6 +79,8 @@ public class Path {
             return null;
         }
 
+        this.started = true;
+
         if (this.points.isEmpty()) {
             if (!this.recursive) {
                 return null;
