@@ -45,6 +45,5 @@ public final class MinecraftEncoder extends MessageToByteEncoder<Packet> {
         ProtoBuf protoBuf = new DefaultProtoBuf(47, byteBuf);
         protoBuf.writeVarInt(packet.getId());
         packet.write(protoBuf, this.direction, protoBuf.getProtocolVersion());
-        System.out.println(packet);
     }
 }
