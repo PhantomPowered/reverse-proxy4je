@@ -58,8 +58,7 @@ public class AStarPathFinder {
         Collection<PathPoint> visitedPoints = new ArrayList<>();
         Queue<PathPoint> frontier = new ConcurrentLinkedQueue<>(Arrays.asList(this.loadNeighbors(startPoint)));
 
-        // TODO doesn't work without flying enabled
-        // TODO this goes through walls when placed diagonal
+        // TODO this goes through fences when placed diagonal
 
         while (!frontier.isEmpty()) {
             if (interaction.isCancelled()) {
