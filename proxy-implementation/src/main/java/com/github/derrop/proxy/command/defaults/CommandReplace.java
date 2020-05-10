@@ -68,7 +68,7 @@ public class CommandReplace extends NonTabCompleteableCommandCallback {
             sender.sendMessage("§7Replacing §e" + positions.size() + " §7" + source + " blocks with " + target + "...");
 
             for (BlockPos position : positions) {
-                blockAccess.setMaterial(position, target);
+                player.sendBlockChange(position, target);
             }
 
             sender.sendMessage("§aSuccessfully replaced all §e" + positions.size() + " §apositions");
