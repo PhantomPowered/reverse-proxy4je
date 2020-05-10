@@ -220,8 +220,5 @@ public class MCProxy extends Proxy {
     // todo we could put information like "CPS (autoclicker), PlayerESP (is this possible in the 1.8?)" into the action bar
     //  Or maybe an extra program (like a labymod addon) or a standalone program which can be opened on a second screen (or the mobile?) to display some information
     //  Or maybe just a website for that?
-    //  And add bac click limit disable
-
-    // TODO every lightning is cached, this should not be the case
 
 }
