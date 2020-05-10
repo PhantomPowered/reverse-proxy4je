@@ -58,6 +58,7 @@ public class AStarPathFinder {
         Collection<PathPoint> visitedPoints = new ArrayList<>();
         Queue<PathPoint> frontier = new ConcurrentLinkedQueue<>(Arrays.asList(this.loadNeighbors(startPoint)));
 
+        // TODO doesn't work without flying enabled
 
         while (!frontier.isEmpty()) {
             if (interaction.isCancelled()) {

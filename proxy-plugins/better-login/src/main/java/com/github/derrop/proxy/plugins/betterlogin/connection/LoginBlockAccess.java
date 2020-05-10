@@ -58,17 +58,17 @@ public class LoginBlockAccess implements BlockAccess {
     }
 
     @Override
-    public Collection<BlockPos> getPositions(int state) {
+    public @NotNull Collection<BlockPos> getPositions(int state) {
         return state == this.state ? this.filledBlocks : Collections.emptyList();
     }
 
     @Override
-    public Collection<BlockPos> getPositions(int[] states) {
+    public @NotNull Collection<BlockPos> getPositions(int[] states) {
         return Arrays.stream(states).anyMatch(value -> value == this.state) ? this.filledBlocks : Collections.emptyList();
     }
 
     @Override
-    public Collection<BlockPos> getPositions(Material material) {
+    public @NotNull Collection<BlockPos> getPositions(Material material) {
         return material == MATERIAL ? this.filledBlocks : Collections.emptyList();
     }
 

@@ -139,7 +139,7 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     @Override
-    public Collection<BlockPos> getPositions(int state) {
+    public @NotNull Collection<BlockPos> getPositions(int state) {
         Collection<BlockPos> result = new ArrayList<>();
 
         for (Chunk chunk : this.chunkCache.getChunks()) {
@@ -150,7 +150,7 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     @Override
-    public Collection<BlockPos> getPositions(int[] states) {
+    public @NotNull Collection<BlockPos> getPositions(int[] states) {
         Collection<BlockPos> result = new ArrayList<>();
 
         for (Chunk chunk : this.chunkCache.getChunks()) {
@@ -161,7 +161,7 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     @Override
-    public Collection<BlockPos> getPositions(Material material) {
+    public @NotNull Collection<BlockPos> getPositions(Material material) {
         int[] states = this.registry.getValidBlockStateIDs(material);
         if (states.length == 0) {
             return Collections.emptySet();

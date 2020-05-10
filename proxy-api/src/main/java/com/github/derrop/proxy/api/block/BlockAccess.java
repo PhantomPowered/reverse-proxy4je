@@ -41,10 +41,13 @@ public interface BlockAccess {
 
     void untrackBlockUpdates(UUID trackerId);
 
+    @NotNull
     Collection<BlockPos> getPositions(int state);
 
+    @NotNull
     Collection<BlockPos> getPositions(int[] states);
 
+    @NotNull
     Collection<BlockPos> getPositions(Material material);
 
     int getBlockState(@NotNull BlockPos pos);
