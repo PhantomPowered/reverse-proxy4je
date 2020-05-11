@@ -7,6 +7,9 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.location.BlockPos;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,14 +32,9 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
             return CommandResult.BREAK;
         }
 
-        if (args.length != 1) {
-            sender.sendMessage("find <material>");
-            return CommandResult.BREAK;
-        }
-
-        Material material = Material.matchMaterial(args[0]);
-        if (material == null) {
-            sender.sendMessage("That material doesn't exist");
+        if (args.length != 2) {
+            sender.sendMessage("find blocks <material>");
+            sender.sendMessage("find entities <player|all>");
             return CommandResult.BREAK;
         }
 
@@ -47,20 +45,58 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
             return CommandResult.BREAK;
         }
 
+        if (args[0].equalsIgnoreCase("blocks")) {
+            Material material = Material.matchMaterial(args[1]);
+            if (material == null) {
+                sender.sendMessage("That material doesn't exist");
+                return CommandResult.BREAK;
+            }
+
+            this.listBlocks(player, material);
+        } else if (args[0].equalsIgnoreCase("entities")) {
+
+            Collection<? extends Entity> entities;
+
+            if (args[1].equalsIgnoreCase("all")) {
+                entities = player.getConnectedClient().getWorldDataProvider().getEntitiesInWorld();
+            } else if (args[1].equalsIgnoreCase("player")) {
+                entities = player.getConnectedClient().getWorldDataProvider().getPlayersInWorld();
+            } else {
+                sender.sendMessage("Please provide 'player' or 'all' as the type");
+                return CommandResult.BREAK;
+            }
+
+            player.sendMessage("Entities in your world:");
+
+            for (Entity entity : entities) {
+                if (entity instanceof EntityPlayer) {
+                    PlayerInfo playerInfo = ((EntityPlayer) entity).getPlayerInfo();
+                    if (playerInfo != null) {
+                        player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString() + " (" + playerInfo.getUsername() + ")");
+                        continue;
+                    }
+                }
+                player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString());
+            }
+
+        }
+
+        return CommandResult.END;
+    }
+
+    private void listBlocks(Player player, Material material) {
         BlockAccess blockAccess = player.getConnectedClient().getBlockAccess();
 
-        sender.sendMessage("Waiting for free worker...");
-
-        this.executorService.execute(() -> {
-            sender.sendMessage("Searching for the materials, this may take a while...");
+        this.findWorker(player, () -> {
+            player.sendMessage("Searching for the materials, this may take a while...");
 
             Collection<BlockPos> positions = blockAccess.getPositions(material);
             if (positions.isEmpty()) {
-                sender.sendMessage("That material doesn't exist in the loaded chunks");
+                player.sendMessage("That material doesn't exist in the loaded chunks");
                 return;
             }
             if (positions.size() >= 500) {
-                sender.sendMessage("Too many positions found: §e" + positions.size());
+                player.sendMessage("Too many positions found: §e" + positions.size());
                 return;
             }
 
@@ -71,10 +107,14 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
                 builder.append(splitter).append(position.toShortString());
             }
 
-            sender.sendMessage("§aFound the following positions: §7" + builder.substring(splitter.length()));
-
+            player.sendMessage("§aFound the following positions: §7" + builder.substring(splitter.length()));
         });
-
-        return CommandResult.END;
     }
+
+    private void findWorker(Player player, Runnable runnable) {
+        player.sendMessage("Waiting for free worker...");
+
+        this.executorService.execute(runnable);
+    }
+
 }
