@@ -19,7 +19,7 @@ public enum EntityType {
     /**
      * A leash attached to a fencepost.
      */
-    LEASH_HITCH("LeashKnot", 8),
+    LEASH_HITCH("LeashKnot", 77),
     /**
      * A painting on a wall.
      */
@@ -47,15 +47,15 @@ public enum EntityType {
     /**
      * An ender eye signal.
      */
-    ENDER_SIGNAL("EyeOfEnderSignal", 15),
+    ENDER_SIGNAL("EyeOfEnderSignal", 72),
     /**
      * A flying experience bottle.
      */
-    THROWN_EXP_BOTTLE("ThrownExpBottle", 17),
+    THROWN_EXP_BOTTLE("ThrownExpBottle", 75),
     /**
      * An item frame on a wall.
      */
-    ITEM_FRAME("ItemFrame", 18),
+    ITEM_FRAME("ItemFrame", 71),
     /**
      * A flying wither skull projectile.
      */
@@ -67,9 +67,9 @@ public enum EntityType {
     /**
      * A block that is going to or is about to fall.
      */
-    FALLING_BLOCK("FallingSand", 21, false),
-    FIREWORK("FireworksRocketEntity", 22, false),
-    ARMOR_STAND("ArmorStand", 30, false),
+    FALLING_BLOCK("FallingSand", 70, false),
+    FIREWORK("FireworksRocketEntity", 76, false),
+    ARMOR_STAND("ArmorStand", 78, false),
     MINECART_COMMAND("MinecartCommandBlock", 40),
     /**
      * A placed boat.
@@ -114,11 +114,10 @@ public enum EntityType {
     RABBIT("Rabbit", 101),
     VILLAGER("Villager", 120),
     ENDER_CRYSTAL("EnderCrystal", 200),
-    // These don't have an entity ID in nms.EntityTypes.
     /**
      * A flying splash potion.
      */
-    SPLASH_POTION(null, -1, false),
+    SPLASH_POTION(null, 73, false),
     /**
      * A flying chicken egg.
      */
