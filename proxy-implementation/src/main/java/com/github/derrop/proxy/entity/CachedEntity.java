@@ -80,6 +80,11 @@ public class CachedEntity implements SpawnedEntity {
         return this.unsafe;
     }
 
+    @Override
+    public double getEyeHeight() {
+        return 1.8;
+    }
+
     @NotNull
     @Override
     public Location getLocation() {

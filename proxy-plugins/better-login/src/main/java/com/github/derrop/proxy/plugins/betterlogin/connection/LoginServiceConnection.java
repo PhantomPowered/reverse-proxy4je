@@ -123,6 +123,11 @@ public class LoginServiceConnection implements ServiceConnection {
     }
 
     @Override
+    public double getEyeHeight() {
+        return 1.8;
+    }
+
+    @Override
     public @NotNull Location getLocation() {
         return LoginPrepareListener.SPAWN.clone();
     }

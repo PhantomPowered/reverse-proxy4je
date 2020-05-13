@@ -27,6 +27,7 @@ package com.github.derrop.proxy.api.location;
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.api.util.Vec3i;
+import com.github.derrop.proxy.api.util.Vector;
 import com.google.common.collect.AbstractIterator;
 
 import java.util.Iterator;

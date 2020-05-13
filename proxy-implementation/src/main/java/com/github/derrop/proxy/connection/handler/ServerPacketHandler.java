@@ -21,6 +21,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
+import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
@@ -46,10 +47,9 @@ public class ServerPacketHandler {
         client.getConnection().updateLocation(teleport.getLocation());
     }
 
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SPAWN_POSITION, directions = ProtocolDirection.TO_CLIENT)
-    public void handleSpawnPosition(ConnectedProxyClient client, PacketPlayServerSpawnPosition spawnPosition) {
-        BlockPos pos = spawnPosition.getSpawnPosition();
-        Location location = new Location(pos.getX(), pos.getY(), pos.getZ(), 0, 0);
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.POSITION, directions = ProtocolDirection.TO_CLIENT)
+    public void handlePosition(ConnectedProxyClient client, PacketPlayServerPosition position) {
+        Location location = new Location(position.getX(), position.getY(), position.getZ(), position.getYaw(), position.getPitch());
         client.getConnection().updateLocation(location);
     }
 

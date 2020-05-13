@@ -29,20 +29,27 @@ import com.github.derrop.proxy.account.AccountReader;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
+import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.block.Particle;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
+import com.github.derrop.proxy.api.util.BlockIterator;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import com.github.derrop.proxy.api.util.Vector;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
@@ -56,6 +63,7 @@ import com.github.derrop.proxy.connection.handler.PingPacketHandler;
 import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.player.DefaultPlayerRepository;
+import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.network.SimpleChannelInitializer;
@@ -65,6 +73,8 @@ import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
 import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
+import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerWorldParticles;
+import com.github.derrop.proxy.protocol.play.server.world.effect.PacketPlayServerWorldSound;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
@@ -77,6 +87,7 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MCProxy extends Proxy {
 
@@ -110,6 +121,60 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.getProviderUnchecked(Configuration.class).load();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
+
+        //PlayerVelocityHandler.start(this.serviceRegistry);
+
+        /* TODO: bow aimbot
+        new Thread(() -> {
+            AtomicReference<Location> location = new AtomicReference<>();
+
+            while (!Thread.interrupted()) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+
+                this.serviceRegistry.getProvider(PlayerRepository.class).ifPresent(playerRepository -> {
+                    for (Player player : playerRepository.getOnlinePlayers()) {
+                        if (player.getConnectedClient() == null) {
+                            continue;
+                        }
+                        if (location.get() == null) {
+                            location.set(player.getLocation().add(new Vector(0, player.getEyeHeight(), 0)));
+                        }
+
+                        BlockAccess blockAccess = player.getConnectedClient().getBlockAccess();
+
+                        Location base = player.getLocation();
+                        Vector velocity = base.getDirection();
+                        Vector drag = new Vector(0.01, 0.01, 0.01); // https://minecraft.gamepedia.com/Entity#Motion_of_entities
+                        Vector downwardAccel = new Vector(0, -0.05, 0);
+                        BlockIterator itr = new BlockIterator(blockAccess, base.toVector(), base.getDirection(), 0, 3);
+                        int tick = 0;
+                        while (base.getY() > 0 && !intercepts(itr)) { //can do an extra check against velocity to ensure arrow isn't stationary
+                            velocity.add(drag).add(downwardAccel);
+                            base.add(velocity);
+                            itr = new BlockIterator(blockAccess, base.toVector(), base.getDirection(), 0, 3);
+                            tick++;
+
+                            //player.sendBlockChange(base.toBlockPos(), Material.DIAMOND_BLOCK);
+                            player.sendPacket(new PacketPlayServerWorldParticles(Particle.FLAME, (float) base.getX(), (float) base.getY(), (float) base.getZ(), 0, 0, 0, 1F, 1, false, new int[0]));
+                        }
+                    }
+                });
+            }
+        }).start();*/
+    }
+
+    public boolean intercepts(BlockIterator itr) {
+        while (itr.hasNext()) {
+            Material material = itr.getBlockAccess().getMaterial(itr.next());
+            if (material != Material.AIR && material != Material.WATER && material != Material.STATIONARY_WATER) { //can be more specific
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

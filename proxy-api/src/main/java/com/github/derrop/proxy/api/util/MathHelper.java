@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.api.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 import java.util.UUID;
 
@@ -425,6 +427,34 @@ public class MathHelper {
         p_181161_0_ = Double.longBitsToDouble(i);
         p_181161_0_ = p_181161_0_ * (1.5D - d0 * p_181161_0_ * p_181161_0_);
         return p_181161_0_;
+    }
+
+    public static double square(double in) {
+        return in * in;
+    }
+
+    public static boolean isFinite(double d) {
+        return Math.abs(d) <= Double.MAX_VALUE;
+    }
+
+    public static boolean isFinite(float f) {
+        return Math.abs(f) <= Float.MAX_VALUE;
+    }
+
+    public static void checkFinite(double d, @NotNull String message) {
+        if (!isFinite(d)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void checkFinite(float d, @NotNull String message) {
+        if (!isFinite(d)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static int round(double num) {
+        return floor_double(num + 0.5d);
     }
 
     public static int func_181758_c(float p_181758_0_, float p_181758_1_, float p_181758_2_) {

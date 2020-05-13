@@ -59,9 +59,9 @@ public class DefaultPathWalker implements PathWalker {
             Location location = path.getPath().getAbsoluteLocation(point);
             PathPoint nextPoint = path.getCurrentPoint();
             if (nextPoint != null) {
-                location.setDirection(path.getPath().getAbsoluteLocation(nextPoint));
+                location.setDirection(path.getPath().getAbsoluteLocation(nextPoint).toVector());
             } else {
-                location.setDirection(path.getConnection().getLocation());
+                location.setDirection(path.getConnection().getLocation().toVector());
             }
             path.getConnection().setLocation(location);
             System.out.println(point);

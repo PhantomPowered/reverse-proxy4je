@@ -435,6 +435,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         return this.connectedClient != null ? this.connectedClient.unsafe() : EMPTY_UNSAFE;
     }
 
+    @Override
+    public double getEyeHeight() {
+        return 1.8;
+    }
+
     private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {
         this.sendPacket(new PacketPlayServerChatMessage(message, (byte) position.ordinal()));
     }

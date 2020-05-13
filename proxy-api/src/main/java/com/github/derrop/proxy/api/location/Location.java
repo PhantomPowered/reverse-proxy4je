@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.api.location;
 
+import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class Location {
@@ -102,6 +104,10 @@ public class Location {
         return new BlockPos(this.x, this.y, this.z);
     }
 
+    public Vector toVector() {
+        return new Vector(this.getX(), this.getY(), this.getZ());
+    }
+
     @NotNull
     public Location substract(@NotNull Location location) {
         this.x -= location.x;
@@ -120,6 +126,24 @@ public class Location {
         return this;
     }
 
+    @NotNull
+    public Location substract(@NotNull Vector location) {
+        this.x -= location.getX();
+        this.y -= location.getY();
+        this.z -= location.getZ();
+
+        return this;
+    }
+
+    @NotNull
+    public Location add(@NotNull Vector location) {
+        this.x += location.getX();
+        this.y += location.getY();
+        this.z += location.getZ();
+
+        return this;
+    }
+
     public double distanceSquared(@NotNull Location other) {
         double d1 = x - other.x;
         double d2 = y - other.y;
@@ -128,7 +152,39 @@ public class Location {
         return (d1 * d1) + (d2 * d2) + (d3 * d3);
     }
 
-    public void setDirection(Location location) {
+    /**
+     * Gets a unit-vector pointing in the direction that this Location is
+     * facing.
+     *
+     * @return a vector pointing the direction of this location's {@link
+     *     #getPitch() pitch} and {@link #getYaw() yaw}
+     */
+    @NotNull
+    public Vector getDirection() {
+        Vector vector = new Vector();
+
+        double rotX = this.getYaw();
+        double rotY = this.getPitch();
+
+        vector.setY(-Math.sin(Math.toRadians(rotY)));
+
+        double xz = Math.cos(Math.toRadians(rotY));
+
+        vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
+        vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
+
+        return vector;
+    }
+
+    /**
+     * Sets the {@link #getYaw() yaw} and {@link #getPitch() pitch} to point
+     * in the direction of the vector.
+     *
+     * @param vector the direction vector
+     * @return the same location
+     */
+    @NotNull
+    public Location setDirection(@NotNull Vector vector) {
         /*
          * Sin = Opp / Hyp
          * Cos = Adj / Hyp
@@ -138,21 +194,23 @@ public class Location {
          * z = Adj
          */
         final double _2PI = 2 * Math.PI;
-        final double x = location.getX();
-        final double z = location.getZ();
+        final double x = vector.getX();
+        final double z = vector.getZ();
 
         if (x == 0 && z == 0) {
-            pitch = location.getY() > 0 ? -90 : 90;
-            return;
+            pitch = vector.getY() > 0 ? -90 : 90;
+            return this;
         }
 
         double theta = Math.atan2(-x, z);
         yaw = (float) Math.toDegrees((theta + _2PI) % _2PI);
 
-        double x2 = x * x;
-        double z2 = z * z;
+        double x2 = MathHelper.square(x);
+        double z2 = MathHelper.square(z);
         double xz = Math.sqrt(x2 + z2);
-        pitch = (float) Math.toDegrees(Math.atan(-location.getY() / xz));
+        pitch = (float) Math.toDegrees(Math.atan(-vector.getY() / xz));
+
+        return this;
     }
 
     public double distance(@NotNull Location other) {

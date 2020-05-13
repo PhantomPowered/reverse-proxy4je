@@ -109,7 +109,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private boolean reScheduleOnFailure;
 
-    private Location location;
+    private Location location = new Location(0, 0, 0, 0, 0);
 
     private final Unsafe unsafe = this::handleLocationUpdate;
 
@@ -178,6 +178,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public @NotNull Unsafe unsafe() {
         return this.unsafe;
+    }
+
+    @Override
+    public double getEyeHeight() {
+        return 1.8;
     }
 
     @Override

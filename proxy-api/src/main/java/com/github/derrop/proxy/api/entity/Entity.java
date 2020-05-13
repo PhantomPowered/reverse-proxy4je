@@ -43,6 +43,8 @@ public interface Entity {
     @NotNull
     Unsafe unsafe();
 
+    double getEyeHeight();
+
     interface Unsafe {
 
         void setLocationUnchecked(@NotNull Location locationUnchecked);

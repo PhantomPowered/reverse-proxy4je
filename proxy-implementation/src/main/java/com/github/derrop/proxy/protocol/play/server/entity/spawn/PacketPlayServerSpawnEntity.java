@@ -192,6 +192,6 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
     }
 
     public String toString() {
-        return "PacketPlayServerSpawnEntity(entityId=" + this.getEntityId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", speedX=" + this.getSpeedX() + ", speedY=" + this.getSpeedY() + ", speedZ=" + this.getSpeedZ() + ", pitch=" + this.getPitch() + ", yaw=" + this.getYaw() + ", type=" + this.getType() + ", field_149020_k=" + this.getTrackedEntityId() + ")";
+        return "PacketPlayServerSpawnEntity(entityId=" + this.getEntityId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", speedX=" + this.getSpeedX() + ", speedY=" + this.getSpeedY() + ", speedZ=" + this.getSpeedZ() + ", pitch=" + this.getPitch() + ", yaw=" + this.getYaw() + ", type=" + this.getType() + ", trackedEntityId=" + this.getTrackedEntityId() + ")";
     }
 }
