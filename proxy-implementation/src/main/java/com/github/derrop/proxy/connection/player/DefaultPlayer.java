@@ -36,6 +36,7 @@ import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
@@ -401,6 +402,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     @Override
     public @NotNull NetworkUnsafe networkUnsafe() {
         return this.packetSenderUnsafe;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.PLAYER;
     }
 
     @Override

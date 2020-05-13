@@ -2,6 +2,7 @@ package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.PlayerSkinConfiguration;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -30,7 +31,7 @@ public class CachedPlayer extends CachedEntityWithMetadata implements EntityPlay
     };
 
     public CachedPlayer(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket);
+        super(registry, client, spawnPacket, EntityType.PLAYER);
         this.uniqueId = ((PacketPlayServerNamedEntitySpawn) spawnPacket).getPlayerId();
         this.infoCache = (PlayerInfoCache) client.getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
     }

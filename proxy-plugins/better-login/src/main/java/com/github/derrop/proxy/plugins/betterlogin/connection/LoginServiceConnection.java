@@ -9,6 +9,7 @@ import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
@@ -125,6 +126,11 @@ public class LoginServiceConnection implements ServiceConnection {
     @Override
     public double getEyeHeight() {
         return 1.8;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.PLAYER;
     }
 
     @Override

@@ -39,6 +39,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
+import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;

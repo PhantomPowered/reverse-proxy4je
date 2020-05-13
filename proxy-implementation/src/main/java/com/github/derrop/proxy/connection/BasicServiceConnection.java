@@ -35,6 +35,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -183,6 +184,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public double getEyeHeight() {
         return 1.8;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.PLAYER;
     }
 
     @Override

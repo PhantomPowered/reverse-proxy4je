@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Entity {
 
+    EntityType getType();
+
     @NotNull
     Location getLocation();
 

@@ -2,24 +2,25 @@ package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerSpawnEntityExperienceOrb implements Packet, EntityPacket {
+public class PacketPlayServerSpawnEntityExperienceOrb implements Packet, EntityPacket, PositionedPacket {
 
     private int entityId;
-    private int posX;
-    private int posY;
-    private int posZ;
+    private int x;
+    private int y;
+    private int z;
     private int xpValue;
 
-    public PacketPlayServerSpawnEntityExperienceOrb(int entityId, int posX, int posY, int posZ, int xpValue) {
+    public PacketPlayServerSpawnEntityExperienceOrb(int entityId, int x, int y, int z, int xpValue) {
         this.entityId = entityId;
-        this.posX = posX;
-        this.posY = posY;
-        this.posZ = posZ;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.xpValue = xpValue;
     }
 
@@ -36,28 +37,52 @@ public class PacketPlayServerSpawnEntityExperienceOrb implements Packet, EntityP
         this.entityId = entityId;
     }
 
-    public int getPosX() {
-        return posX;
+    @Override
+    public int getX() {
+        return x;
     }
 
-    public void setPosX(int posX) {
-        this.posX = posX;
+    @Override
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public int getPosY() {
-        return posY;
+    @Override
+    public int getY() {
+        return y;
     }
 
-    public void setPosY(int posY) {
-        this.posY = posY;
+    @Override
+    public void setY(int y) {
+        this.y = y;
     }
 
-    public int getPosZ() {
-        return posZ;
+    @Override
+    public int getZ() {
+        return z;
     }
 
-    public void setPosZ(int posZ) {
-        this.posZ = posZ;
+    @Override
+    public byte getYaw() {
+        return 0;
+    }
+
+    @Override
+    public byte getPitch() {
+        return 0;
+    }
+
+    @Override
+    public void setZ(int z) {
+        this.z = z;
+    }
+
+    @Override
+    public void setYaw(byte yaw) {
+    }
+
+    @Override
+    public void setPitch(byte pitch) {
     }
 
     public int getXpValue() {
@@ -71,18 +96,18 @@ public class PacketPlayServerSpawnEntityExperienceOrb implements Packet, EntityP
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-        this.posX = protoBuf.readInt();
-        this.posY = protoBuf.readInt();
-        this.posZ = protoBuf.readInt();
+        this.x = protoBuf.readInt();
+        this.y = protoBuf.readInt();
+        this.z = protoBuf.readInt();
         this.xpValue = protoBuf.readShort();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-        protoBuf.writeInt(this.posX);
-        protoBuf.writeInt(this.posY);
-        protoBuf.writeInt(this.posZ);
+        protoBuf.writeInt(this.x);
+        protoBuf.writeInt(this.y);
+        protoBuf.writeInt(this.z);
         protoBuf.writeShort(this.xpValue);
     }
 

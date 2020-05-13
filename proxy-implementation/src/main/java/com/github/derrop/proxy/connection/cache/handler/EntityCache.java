@@ -26,6 +26,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -45,6 +46,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServ
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntity;
+import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntityExperienceOrb;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerCamera;
 
@@ -74,6 +76,7 @@ public class EntityCache implements PacketCacheHandler {
                 ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY_LIVING,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY,
+                ProtocolIds.ToClient.Play.SPAWN_ENTITY_EXPERIENCE_ORB,
 
                 ProtocolIds.ToClient.Play.ENTITY_DESTROY
         };
@@ -102,23 +105,29 @@ public class EntityCache implements PacketCacheHandler {
                 );
             }
 
+        } else if (packet instanceof PacketPlayServerSpawnEntityExperienceOrb) {
+
+            PacketPlayServerSpawnEntityExperienceOrb spawn = (PacketPlayServerSpawnEntityExperienceOrb) packet;
+
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.EXPERIENCE_ORB));
+
         } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
 
             PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) packet;
 
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn));
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.PLAYER));
 
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
 
             PacketPlayServerSpawnLivingEntity spawn = (PacketPlayServerSpawnLivingEntity) packet;
 
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn));
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.fromId(spawn.getType())));
 
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
 
             PacketPlayServerSpawnEntity spawn = (PacketPlayServerSpawnEntity) packet;
 
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn));
+            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, spawn.getType() == 2 ? EntityType.DROPPED_ITEM : EntityType.fromId(spawn.getType())));
 
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
 

@@ -2,6 +2,7 @@ package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.EntityEffect;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.SpawnedEntity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
@@ -19,6 +20,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServ
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -34,25 +36,28 @@ public class CachedEntity implements SpawnedEntity {
     private final Unsafe unsafe = this::setLocation;
 
     private final int entityId;
+    private final EntityType type;
 
     private final Map<Integer, ItemStack> equipment;
 
     protected final MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
 
-    protected CachedEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+    protected CachedEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
         this.registry = registry;
         this.client = client;
         this.entityId = spawnPacket.getEntityId();
         this.spawnPacket = spawnPacket;
+        this.type = type;
         this.equipment = new ConcurrentHashMap<>();
     }
 
-    public static CachedEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+    public static CachedEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
+        Preconditions.checkNotNull(type, "EntityType cannot be null");
         // TODO more entity types?
         if (spawnPacket instanceof PacketPlayServerNamedEntitySpawn) {
             return new CachedPlayer(registry, client, spawnPacket);
         }
-        return new CachedEntityWithMetadata(registry, client, spawnPacket);
+        return new CachedEntityWithMetadata(registry, client, spawnPacket, type);
     }
 
     public void updateMetadata(PacketPlayServerEntityMetadata metadata) {
@@ -83,6 +88,11 @@ public class CachedEntity implements SpawnedEntity {
     @Override
     public double getEyeHeight() {
         return 1.8;
+    }
+
+    @Override
+    public EntityType getType() {
+        return this.type;
     }
 
     @NotNull
