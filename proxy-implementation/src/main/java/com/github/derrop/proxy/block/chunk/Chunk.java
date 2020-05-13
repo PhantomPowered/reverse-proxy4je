@@ -143,6 +143,8 @@ public class Chunk {
 
             if (extendedblockstorage != null) {
                 return extendedblockstorage.get(x & 15, y & 15, z & 15);
+            } else {
+                return 0;
             }
         }
 

@@ -194,12 +194,14 @@ public class DefaultBlockAccess implements BlockAccess {
 
     @Override
     public boolean canSeeSky(@NotNull BlockPos pos) {
-        for (int i = 0; i < 255; i++) {
-            if (this.getBlockState(pos.up(i)) <= 0) {
-                return true;
+        BlockPos origin = new BlockPos(pos.getX(), 0, pos.getZ());
+        for (int i = pos.getY(); i < 256; i++) {
+            int state = this.getBlockState(origin.up(i));
+            if (state != 0) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

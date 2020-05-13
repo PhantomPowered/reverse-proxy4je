@@ -63,7 +63,7 @@ public interface BlockAccess {
 
     boolean isWaterBlock(@NotNull BlockPos pos);
 
-    boolean canSeeSky(@NotNull BlockPos pos); // TODO not tested
+    boolean canSeeSky(@NotNull BlockPos pos);
 
     default int getStrongPower(@NotNull BlockPos pos, @NotNull Facing direction) { // redstone (0 - 15)
         return 0;
