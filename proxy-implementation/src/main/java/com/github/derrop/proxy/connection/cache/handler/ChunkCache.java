@@ -200,8 +200,6 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void sendCached(PacketSender sender, ConnectedProxyClient targetProxyClient) {
-        // todo chunks are sometimes not displayed correctly (the client loads the chunks - you can walk on the blocks - but all blocks are invisible): until you break a block in that chunk. Now fixed?
-
         if (sender instanceof Player) {
             this.connectedPlayer = (Player) sender;
         }

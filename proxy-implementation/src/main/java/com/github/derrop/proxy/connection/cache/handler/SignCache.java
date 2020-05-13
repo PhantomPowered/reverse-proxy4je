@@ -69,5 +69,4 @@ public class SignCache implements PacketCacheHandler {
             con.sendPacket(entry.getValue());
         }
     }
-    // todo sometimes I get the "Unable to locate sign" message
 }

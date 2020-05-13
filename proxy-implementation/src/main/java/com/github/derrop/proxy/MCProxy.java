@@ -283,8 +283,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, CommandMap.class, commandMap, false, true);
     }
 
-    // todo we could put information like "CPS (autoclicker), PlayerESP (is this possible in the 1.8?)" into the action bar
-    //  Or maybe an extra program (like a labymod addon) or a standalone program which can be opened on a second screen (or the mobile?) to display some information
-    //  Or maybe just a website for that?
+    // todo we could put information like "CPS (autoclicker)" into the action bar
+    //  Or maybe an extra program (like a labymod addon), a website or a standalone program which can be opened on a second screen/mobile to display some information
 
 }
