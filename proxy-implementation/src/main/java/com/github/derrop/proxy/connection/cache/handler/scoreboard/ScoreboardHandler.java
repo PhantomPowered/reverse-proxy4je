@@ -25,9 +25,9 @@
 package com.github.derrop.proxy.connection.cache.handler.scoreboard;
 
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.scoreboard.minecraft.Score;
-import com.github.derrop.proxy.scoreboard.minecraft.ScoreObjective;
-import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.Score;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScoreObjective;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScorePlayerTeam;
 
 public interface ScoreboardHandler {
 

@@ -22,32 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard.minecraft.criteria;
+package com.github.derrop.proxy.connection.player.scoreboard.minecraft;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Collection;
 
-public class ScoreDummyCriteria implements IScoreObjectiveCriteria {
-    private final String dummyName;
+public abstract class Team {
 
-    public ScoreDummyCriteria(String name) {
-        this.dummyName = name;
-        IScoreObjectiveCriteria.INSTANCES.put(name, this);
+    /**
+     * Same as ==
+     */
+    public boolean isSameTeam(Team other) {
+        return other == null ? false : this == other;
     }
 
-    public String getName() {
-        return this.dummyName;
-    }
+    /**
+     * Retrieve the name by which this team is registered in the scoreboard
+     */
+    public abstract String getRegisteredName();
 
-    public int getScoreForPlayers(List<UUID> p_96635_1_) {
-        return 0;
-    }
+    public abstract String formatString(String input);
 
-    public boolean isReadOnly() {
-        return false;
-    }
+    public abstract boolean getSeeFriendlyInvisiblesEnabled();
 
-    public IScoreObjectiveCriteria.EnumRenderType getRenderType() {
-        return IScoreObjectiveCriteria.EnumRenderType.INTEGER;
-    }
+    public abstract boolean getAllowFriendlyFire();
+
+    public abstract EnumVisible getNameTagVisibility();
+
+    public abstract Collection<String> getMembershipCollection();
+
+    public abstract EnumVisible getDeathMessageVisibility();
 }

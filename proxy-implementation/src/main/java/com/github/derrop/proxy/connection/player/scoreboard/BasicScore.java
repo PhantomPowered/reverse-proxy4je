@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard;
+package com.github.derrop.proxy.connection.player.scoreboard;
 
 import com.github.derrop.proxy.api.scoreboard.Objective;
 import com.github.derrop.proxy.api.scoreboard.Score;

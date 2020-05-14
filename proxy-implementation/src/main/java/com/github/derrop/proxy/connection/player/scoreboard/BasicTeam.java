@@ -22,12 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard;
+package com.github.derrop.proxy.connection.player.scoreboard;
 
 import com.github.derrop.proxy.api.scoreboard.NameTagVisibility;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.scoreboard.Team;
-import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScorePlayerTeam;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
 
 import java.util.Collections;

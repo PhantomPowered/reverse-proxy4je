@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard.minecraft.criteria;
+package com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria;
 
 import com.google.common.collect.Maps;
 

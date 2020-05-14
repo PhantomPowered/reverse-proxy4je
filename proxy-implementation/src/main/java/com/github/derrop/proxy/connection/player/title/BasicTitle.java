@@ -22,38 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard.minecraft;
+package com.github.derrop.proxy.connection.player.title;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.network.Packet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public enum EnumVisible {
-    ALWAYS("always", 0),
-    NEVER("never", 1),
-    HIDE_FOR_OTHER_TEAMS("hideForOtherTeams", 2),
-    HIDE_FOR_OWN_TEAM("hideForOwnTeam", 3),
-    ;
+public final class BasicTitle extends ProxyProvidedTitle {
 
-    private static Map<String, EnumVisible> field_178828_g = new HashMap<>();
-    public final String field_178830_e;
-    public final int field_178827_f;
-
-    public static String[] func_178825_a() {
-        return field_178828_g.keySet().toArray(new String[field_178828_g.size()]);
+    @Override
+    public void send(@NotNull Player player) {
+        this.send(player, this.clear, this.reset, this.times, this.subtitle, this.title);
     }
 
-    public static EnumVisible func_178824_a(String p_178824_0_) {
-        return field_178828_g.get(p_178824_0_);
-    }
+    private void send(@NotNull Player player, @Nullable Packet... packets) {
+        for (Packet packet : packets) {
+            if (packet == null) {
+                return;
+            }
 
-    private EnumVisible(String p_i45550_3_, int p_i45550_4_) {
-        this.field_178830_e = p_i45550_3_;
-        this.field_178827_f = p_i45550_4_;
-    }
-
-    static {
-        for (EnumVisible team$enumvisible : values()) {
-            field_178828_g.put(team$enumvisible.field_178830_e, team$enumvisible);
+            player.sendPacket(packet);
         }
     }
 }

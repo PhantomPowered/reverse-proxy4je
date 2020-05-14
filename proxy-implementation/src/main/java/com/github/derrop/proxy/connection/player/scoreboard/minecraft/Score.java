@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard.minecraft;
+package com.github.derrop.proxy.connection.player.scoreboard.minecraft;
 
 import java.util.Comparator;
 import java.util.List;

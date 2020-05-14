@@ -22,14 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard;
+package com.github.derrop.proxy.connection.player.scoreboard;
 
 import com.github.derrop.proxy.api.scoreboard.DisplaySlot;
 import com.github.derrop.proxy.api.scoreboard.Objective;
 import com.github.derrop.proxy.api.scoreboard.Score;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
-import com.github.derrop.proxy.scoreboard.minecraft.ScoreObjective;
-import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScoreObjective;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,12 +54,12 @@ public class BasicObjective implements Objective {
                 this.scoreboard.getHandle().getObjectiveInDisplaySlot(this.handle.getDisplaySlot()) != this.handle) {
 
             if (this.handle != null && this.scoreboard.getHandle().getObjectiveInDisplaySlot(this.handle.getDisplaySlot()) != null) {
-                Collection<com.github.derrop.proxy.scoreboard.minecraft.Score> scores = this.scoreboard.getHandle().getSortedScores(this.handle);
+                Collection<com.github.derrop.proxy.connection.player.scoreboard.minecraft.Score> scores = this.scoreboard.getHandle().getSortedScores(this.handle);
 
                 this.handle = this.scoreboard.getHandle().getObjectiveInDisplaySlot(this.handle.getDisplaySlot());
                 this.name = this.handle.getName();
 
-                for (com.github.derrop.proxy.scoreboard.minecraft.Score score : scores) {
+                for (com.github.derrop.proxy.connection.player.scoreboard.minecraft.Score score : scores) {
                     this.scoreboard.getHandle().getValueFromObjective(score.getPlayerName(), this.handle).setScorePoints(score.getScorePoints());
                     this.scoreboard.getCache().sendScoreUpdate(score.getPlayerName(), this.name, score.getScorePoints());
                 }

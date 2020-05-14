@@ -28,7 +28,7 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerScoreboardObjective implements Packet {

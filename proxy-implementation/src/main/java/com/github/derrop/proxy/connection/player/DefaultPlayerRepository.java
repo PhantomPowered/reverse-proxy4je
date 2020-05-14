@@ -37,8 +37,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class
-DefaultPlayerRepository implements PlayerRepository {
+public class DefaultPlayerRepository implements PlayerRepository {
 
     private final ServiceRegistry registry;
     private final OfflinePlayerStorage storage;

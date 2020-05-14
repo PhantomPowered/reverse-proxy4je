@@ -36,8 +36,8 @@ import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerS
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardScore;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardTeam;
-import com.github.derrop.proxy.scoreboard.minecraft.*;
-import com.github.derrop.proxy.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.*;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 
 public class ScoreboardCache implements PacketCacheHandler {
 

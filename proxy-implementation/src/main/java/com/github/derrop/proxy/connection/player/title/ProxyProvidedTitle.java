@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.title;
+package com.github.derrop.proxy.connection.player.title;
 
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;

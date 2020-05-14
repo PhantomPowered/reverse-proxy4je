@@ -44,7 +44,6 @@ import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
-import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
@@ -57,7 +56,7 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePack
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.scoreboard.BasicScoreboard;
+import com.github.derrop.proxy.connection.player.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.util.NettyUtils;
 import com.mojang.authlib.UserAuthentication;

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.scoreboard;
+package com.github.derrop.proxy.connection.player.scoreboard;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.Event;
@@ -37,9 +37,9 @@ import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCac
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardHandler;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
-import com.github.derrop.proxy.scoreboard.minecraft.Score;
-import com.github.derrop.proxy.scoreboard.minecraft.ScoreObjective;
-import com.github.derrop.proxy.scoreboard.minecraft.ScorePlayerTeam;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.Score;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScoreObjective;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScorePlayerTeam;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +67,7 @@ public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
     }
 
     @NotNull
-    public com.github.derrop.proxy.scoreboard.minecraft.Scoreboard getHandle() {
+    public com.github.derrop.proxy.connection.player.scoreboard.minecraft.Scoreboard getHandle() {
         return this.cache.getScoreboard();
     }
 
