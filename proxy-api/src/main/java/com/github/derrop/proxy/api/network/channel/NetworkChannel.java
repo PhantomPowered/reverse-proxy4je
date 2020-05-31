@@ -47,7 +47,7 @@ public interface NetworkChannel extends AutoCloseable {
 
     void setProtocolState(@NotNull ProtocolState state);
 
-    @NotNull ProtocolState getProtocolState();
+    ProtocolState getProtocolState();
 
     @NotNull SocketAddress getAddress();
 

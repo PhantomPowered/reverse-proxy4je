@@ -56,7 +56,7 @@ public interface WrappedNetworkChannel extends NetworkChannel {
     }
 
     @Override
-    default @NotNull ProtocolState getProtocolState() {
+    default ProtocolState getProtocolState() {
         return this.getWrappedNetworkChannel().getProtocolState();
     }
 

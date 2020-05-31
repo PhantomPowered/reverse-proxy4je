@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.network.pipeline.handler;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
@@ -121,18 +122,23 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
             return;
         }
 
+        ProtocolState state = this.networkChannel.getProtocolState();
+        if (state == null) {
+            return;
+        }
+
         ProtocolDirection direction = ctx.channel().pipeline().get(MinecraftDecoder.class).getDirection();
         if (msg instanceof DecodedPacket) {
             DecodedPacket packet = (DecodedPacket) msg;
             if (packet.getPacket() != null) {
-                Packet result = this.getHandlers().handlePacketReceive(packet.getPacket(), direction, this.networkChannel.getProtocolState(), this.networkChannel);
+                Packet result = this.getHandlers().handlePacketReceive(packet.getPacket(), direction, state, this.networkChannel);
                 if (result == null) {
                     // ProceedCancelException - user stopped handling of packet (we should respect the decision)
                     return;
                 }
             }
 
-            this.getHandlers().handlePacketReceive(packet, direction, this.networkChannel.getProtocolState(), this.networkChannel);
+            this.getHandlers().handlePacketReceive(packet, direction, state, this.networkChannel);
         }
     }
 
