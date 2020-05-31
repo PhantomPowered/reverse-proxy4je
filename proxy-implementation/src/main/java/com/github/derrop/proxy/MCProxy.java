@@ -29,6 +29,7 @@ import com.github.derrop.proxy.account.AccountReader;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.command.CommandMap;
@@ -79,6 +80,9 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MCProxy extends Proxy {
 
@@ -90,6 +94,8 @@ public class MCProxy extends Proxy {
     private final AccountReader accountReader = new AccountReader();
 
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
+
+    private final Collection<Tickable> tickables = new CopyOnWriteArrayList<>();
 
     protected MCProxy() {
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
@@ -168,6 +174,14 @@ public class MCProxy extends Proxy {
         return false;
     }
 
+    private void startMainLoop() {
+        Constants.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
+            for (Tickable tickable : this.tickables) {
+                tickable.handleTick();
+            }
+        }, 50, 50, TimeUnit.MILLISECONDS);
+    }
+
     @Override
     public @NotNull ServiceRegistry getServiceRegistry() {
         return this.serviceRegistry;
@@ -192,6 +206,11 @@ public class MCProxy extends Proxy {
                 }
             }
         }
+    }
+
+    @Override
+    public void registerTickable(@NotNull Tickable tickable) {
+        this.tickables.add(tickable);
     }
 
     @Override
@@ -249,6 +268,10 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
 
         this.proxyServer.start(new InetSocketAddress(port));
+
+        this.registerTickable(this.serviceRegistry.getProviderUnchecked(ServiceConnector.class));
+
+        this.startMainLoop();
     }
 
     private void handleCommands() {

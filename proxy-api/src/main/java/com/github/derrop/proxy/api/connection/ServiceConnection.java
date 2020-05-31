@@ -123,4 +123,10 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
     @ApiStatus.Internal
     void updateLocation(@NotNull Location location);
 
+    Collection<Player> getViewers();
+
+    void startViewing(Player player);
+
+    void stopViewing(Player player);
+
 }

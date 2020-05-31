@@ -38,4 +38,6 @@ public abstract class Proxy {
 
     public abstract void shutdown();
 
+    public abstract void registerTickable(@NotNull Tickable tickable);
+
 }

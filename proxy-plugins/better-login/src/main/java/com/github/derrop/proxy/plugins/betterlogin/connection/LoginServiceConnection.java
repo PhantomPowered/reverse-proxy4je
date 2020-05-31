@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -359,6 +360,19 @@ public class LoginServiceConnection implements ServiceConnection {
 
     @Override
     public void updateLocation(@NotNull Location location) {
+    }
+
+    @Override
+    public Collection<Player> getViewers() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void startViewing(Player player) {
+    }
+
+    @Override
+    public void stopViewing(Player player) {
     }
 
     @Override

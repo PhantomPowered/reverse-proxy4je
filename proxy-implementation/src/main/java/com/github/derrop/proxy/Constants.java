@@ -38,7 +38,7 @@ public interface Constants {
 
     ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
-    ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(3);
+    ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(4);
 
     Random RANDOM = new Random();
 

@@ -6,6 +6,7 @@ package com.github.derrop.proxy.api.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO some type Ids are not correct
 public enum EntityType {
 
     /**

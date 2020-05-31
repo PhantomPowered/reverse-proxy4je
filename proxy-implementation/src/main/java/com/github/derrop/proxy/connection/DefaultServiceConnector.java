@@ -2,6 +2,7 @@ package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
@@ -99,4 +100,10 @@ public class DefaultServiceConnector implements ServiceConnector {
         proxyClient.close();
     }
 
+    @Override
+    public void handleTick() {
+        for (BasicServiceConnection onlineClient : this.onlineClients) {
+            onlineClient.getClient().handleTick();
+        }
+    }
 }

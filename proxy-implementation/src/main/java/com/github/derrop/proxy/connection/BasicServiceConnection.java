@@ -209,6 +209,24 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
+    public Collection<Player> getViewers() {
+        return Collections.unmodifiableCollection(this.client.getViewers());
+    }
+
+    @Override
+    public void startViewing(Player player) {
+        if (this.client.getViewers().contains(player)) {
+            return;
+        }
+        this.client.addViewer(player);
+    }
+
+    @Override
+    public void stopViewing(Player player) {
+        this.client.getViewers().remove(player);
+    }
+
+    @Override
     public boolean isOnGround() {
         return this.location != null && this.location.isOnGround();
     }

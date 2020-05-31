@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
@@ -52,12 +53,22 @@ import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftEncoder;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInLoginRequest;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientPlayerAbilities;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
+import com.github.derrop.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
+import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientHeldItemSlot;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPosition;
+import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.connection.player.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.api.task.DefaultTask;
+import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
+import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
+import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.util.NettyUtils;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -73,14 +84,16 @@ import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ConnectedProxyClient extends DefaultNetworkChannel {
+public class ConnectedProxyClient extends DefaultNetworkChannel implements Tickable {
 
     private final MCProxy proxy;
     private final BasicServiceConnection connection;
@@ -90,8 +103,9 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
     private UserAuthentication authentication;
     private MCCredentials credentials;
 
+    private final Collection<Player> viewers = new CopyOnWriteArrayList<>();
+    private final UUID redirectorListenerKey = UUID.randomUUID();
     private Player redirector;
-    private UUID redirectorListenerKey = UUID.randomUUID();
 
     private PacketCache packetCache;
     private Scoreboard scoreboard;
@@ -375,8 +389,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
             if (deserialized != null) {
                 // rewrite to allow modifications by the packet handlers
                 this.redirector.sendPacket(deserialized);
+                for (Player viewer : this.viewers) {
+                    viewer.sendPacket(deserialized);
+                }
             } else {
                 this.redirector.sendPacket(packet);
+                for (Player viewer : this.viewers) {
+                    viewer.sendPacket(packet);
+                }
             }
 
 
@@ -392,16 +412,59 @@ public class ConnectedProxyClient extends DefaultNetworkChannel {
 
     public void handlePacketRedirected(Packet packet) {
         if (this.redirector != null) {
-            this.proxy.getServiceRegistry().getProviderUnchecked(PacketHandlerRegistry.class).handlePacketReceive(packet, ProtocolDirection.TO_CLIENT, ProtocolState.REDIRECTING, this.connection);
+            this.proxy.getServiceRegistry().getProviderUnchecked(PacketHandlerRegistry.class)
+                    .handlePacketReceive(packet, ProtocolDirection.TO_CLIENT, ProtocolState.REDIRECTING, this.connection);
         }
     }
 
-    public void handleClientPacket(Packet packetWrapper) {
+    public void handleClientPacket(Packet packet) {
         if (this.clientPacketHandler != null) {
-            this.clientPacketHandler.accept(packetWrapper);
+            this.clientPacketHandler.accept(packet);
         }
 
-        this.packetCache.handleClientPacket(packetWrapper);
+        this.packetCache.handleClientPacket(packet);
+
+        if (!this.viewers.isEmpty()) {
+            Packet serverPacket = null;
+            if (packet instanceof PacketPlayClientHeldItemSlot) {
+                serverPacket = new PacketPlayServerHeldItemSlot(((PacketPlayClientHeldItemSlot) packet).getSlot());
+            } else if (packet instanceof PacketPlayClientPlayerAbilities) {
+                PacketPlayClientPlayerAbilities abilities = (PacketPlayClientPlayerAbilities) packet;
+                serverPacket = new PacketPlayServerPlayerAbilities(
+                        abilities.isInvulnerable(), abilities.isFlying(), abilities.isAllowFlying(), abilities.isCreativeMode(),
+                        abilities.getFlySpeed(), abilities.getWalkSpeed()
+                );
+            } else if (packet instanceof PacketPlayClientEntityAction) {
+                // TODO sneak, sprint, ...
+            }
+
+            if (serverPacket != null) {
+                for (Player viewer : this.viewers) {
+                    viewer.sendPacket(serverPacket);
+                }
+            }
+        }
+    }
+
+    public void addViewer(Player player) {
+        this.packetCache.send(player, false);
+        player.sendPacket(new PacketPlayServerEntityTeleport(this.entityId, this.connection.getLocation()));
+        this.viewers.add(player);
+    }
+
+    public Collection<Player> getViewers() {
+        return this.viewers;
+    }
+
+    @Override
+    public void handleTick() {
+        if (this.viewers.isEmpty()) {
+            return;
+        }
+        Packet packet = new PacketPlayServerEntityTeleport(this.entityId, this.connection.getLocation());
+        for (Player viewer : this.viewers) {
+            viewer.sendPacket(packet);
+        }
     }
 
     public void redirectPackets(Player con, boolean switched) {
