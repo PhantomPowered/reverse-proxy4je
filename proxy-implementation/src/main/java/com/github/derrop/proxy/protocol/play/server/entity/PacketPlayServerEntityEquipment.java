@@ -51,7 +51,6 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
         this.entityId = protoBuf.readVarInt();
         this.slot = protoBuf.readShort();
         this.item = protoBuf.readItemStack();
-        System.out.println(this.item);
     }
 
     @Override
