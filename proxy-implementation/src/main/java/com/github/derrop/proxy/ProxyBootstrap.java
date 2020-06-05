@@ -31,10 +31,6 @@ import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.command.console.ConsoleCommandSender;
-import com.github.derrop.proxy.logging.DefaultLogger;
-import com.github.derrop.proxy.logging.FileLoggerHandler;
-import com.github.derrop.proxy.logging.ILogger;
-import com.github.derrop.proxy.logging.JAnsiConsole;
 
 import java.io.Console;
 import java.io.IOException;

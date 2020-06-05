@@ -35,6 +35,12 @@
             <artifactId>text-serializer-plain</artifactId>
             <version>3.0.4</version>
         </dependency>
+        <dependency>
+            <groupId>dnsjava</groupId>
+            <artifactId>dnsjava</artifactId>
+            <version>3.1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 

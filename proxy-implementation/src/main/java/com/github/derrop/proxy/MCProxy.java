@@ -59,6 +59,7 @@ import com.github.derrop.proxy.connection.handler.PingPacketHandler;
 import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.player.DefaultPlayerRepository;
+import com.github.derrop.proxy.connection.player.title.BasicTitle;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.network.SimpleChannelInitializer;
@@ -71,7 +72,6 @@ import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
-import com.github.derrop.proxy.connection.player.title.BasicTitle;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 

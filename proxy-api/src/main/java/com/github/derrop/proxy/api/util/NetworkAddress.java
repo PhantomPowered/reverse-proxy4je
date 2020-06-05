@@ -26,9 +26,8 @@ package com.github.derrop.proxy.api.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.xbill.DNS.*;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Objects;
 
 public class NetworkAddress {
@@ -67,32 +66,51 @@ public class NetworkAddress {
         }
 
         String rawHost = hostAndPort[0];
+        int port = -1;
 
-        String host;
+        String host = null;
         if (hostAndPort[0].split("\\.").length != 4) {
-            try {
-                host = InetAddress.getByName(hostAndPort[0]).getHostAddress();
-            } catch (final IOException ex) {
-                System.err.println("Unable to resolve host " + hostAndPort[0]);
-                return null;
+            SRVRecord record = lookupMinecraftSRVRecord(rawHost);
+            if (record != null) {
+                host = record.getTarget().toString(true);
+                port = record.getPort();
             }
-        } else {
-            host = hostAndPort[0];
         }
 
-        int port;
-        if (hostAndPort.length == 1) {
-            port = 25565;
-        } else {
-            try {
-                port = Integer.parseInt(hostAndPort[1]);
-            } catch (final NumberFormatException ex) {
-                System.err.println("Wrong port " + hostAndPort[1]);
-                return null;
+        if (host == null) {
+            host = rawHost;
+        }
+
+        if (port == -1) {
+            if (hostAndPort.length == 1) {
+                port = 25565;
+            } else {
+                try {
+                    port = Integer.parseInt(hostAndPort[1]);
+                } catch (final NumberFormatException ex) {
+                    System.err.println("Wrong port " + hostAndPort[1]);
+                    return null;
+                }
             }
         }
 
         return new NetworkAddress(rawHost, host, port);
+    }
+
+    public static SRVRecord lookupMinecraftSRVRecord(String host) {
+        try {
+            Record[] records = new Lookup("_minecraft._tcp." + host, Type.SRV).run();
+            if (records == null) {
+                return null;
+            }
+            for (Record record : records) {
+                return (SRVRecord) record;
+            }
+            return null;
+        } catch (TextParseException exception) {
+            exception.printStackTrace();
+            return null;
+        }
     }
 
     @Override
