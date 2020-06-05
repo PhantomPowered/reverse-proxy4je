@@ -14,9 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DefaultPathWalker implements PathWalker {
 
-    // TODO these two values should be adjusted a bit
-    private static final double TPS = 20; // ticks per second
-    private static final double BPS = 7; // blocks per second
+    public static final double TPS = 20; // ticks per second
+    public static final double BPT = 0.215; // blocks per tick
 
     private Map<UUID, WalkablePath> runningPaths = new ConcurrentHashMap<>();
 
@@ -59,12 +58,16 @@ public class DefaultPathWalker implements PathWalker {
             Location location = path.getPath().getAbsoluteLocation(point);
             PathPoint nextPoint = path.getCurrentPoint();
             if (nextPoint != null) {
-                location.setDirection(path.getPath().getAbsoluteLocation(nextPoint).toVector());
+                location.setDirection(path.getPath().getAbsoluteLocation(nextPoint).substract(location).toVector());
             } else {
                 location.setDirection(path.getConnection().getLocation().toVector());
             }
-            path.getConnection().setLocation(location);
-            System.out.println(point);
+            /*if (path.getConnection().getLocation().distanceSquared(location) > 25) { TODO
+                runningPaths.remove(entry.getKey());
+                System.err.println("FAILED");
+                continue;
+            }*/
+            path.getConnection().unsafe().setLocationUnchecked(location);
         }
     }
 
@@ -93,15 +96,15 @@ public class DefaultPathWalker implements PathWalker {
 
     private Queue<PathPoint> smoothWay0(PathPoint previousPoint, PathPoint currentPoint) {
         // TODO you can fall off corners easily
-        double pointCount = BPS / TPS;
+        double pointCount = BPT;
 
-        double deltaX = (currentPoint.getX() - previousPoint.getX());
-        double deltaY = (currentPoint.getY() - previousPoint.getY());
-        double deltaZ = (currentPoint.getZ() - previousPoint.getZ());
+        double deltaX = Math.abs(currentPoint.getX() - previousPoint.getX());
+        double deltaY = Math.abs(currentPoint.getY() - previousPoint.getY());
+        double deltaZ = Math.abs(currentPoint.getZ() - previousPoint.getZ());
 
-        double stepX = pointCount / deltaX;
-        double stepY = pointCount / deltaY;
-        double stepZ = pointCount / deltaZ;
+        double stepX = pointCount;// / deltaX;
+        double stepY = pointCount;// / deltaY;
+        double stepZ = pointCount;// / deltaZ;
 
         Queue<PathPoint> result = new LinkedBlockingQueue<>();
 

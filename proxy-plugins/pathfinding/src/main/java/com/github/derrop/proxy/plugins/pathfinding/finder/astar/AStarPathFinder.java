@@ -29,7 +29,10 @@ import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AStarPathFinder {
@@ -61,7 +64,7 @@ public class AStarPathFinder {
         // TODO this goes through fences when placed diagonal
 
         while (!frontier.isEmpty()) {
-            if (interaction.isCancelled()) {
+            if (interaction != null && interaction.isCancelled()) {
                 return EMPTY_QUEUE;
             }
 
@@ -72,7 +75,9 @@ public class AStarPathFinder {
             }
             visitedPoints.add(point);
 
-            interaction.setCurrentPoint(point);
+            if (interaction != null) {
+                interaction.setCurrentPoint(point);
+            }
 
             BlockPos absolutePoint = new BlockPos(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
 

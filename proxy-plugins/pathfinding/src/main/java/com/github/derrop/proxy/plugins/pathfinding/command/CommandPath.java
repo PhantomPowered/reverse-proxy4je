@@ -11,6 +11,8 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
 import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
 import com.github.derrop.proxy.plugins.pathfinding.provider.PathProvider;
+import com.github.derrop.proxy.plugins.pathfinding.walk.DefaultPathWalker;
+import com.github.derrop.proxy.plugins.pathfinding.walk.PathWalker;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;
@@ -19,8 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class CommandPath extends NonTabCompleteableCommandCallback {
-
-    private static final double BPS = 5D; // blocks per second by the player
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(6);
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
@@ -101,10 +101,11 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
 
             if (path.isSuccess()) {
                 double distance = Math.sqrt(start.distanceSq(pos));
-                long time = (long) ((double) path.getAllPoints().length / BPS) + 10;
+                double bps = (DefaultPathWalker.BPT * DefaultPathWalker.TPS);
+                long time = (long) ((double) path.getAllPoints().length / bps) + 10;
 
                 sender.sendMessage("§aSuccessfully found the path from " + start.toShortString() + " to " + pos.toShortString() + " (" + String.format("%.2f", distance) + " blocks airway)");
-                sender.sendMessage("§aBlocks to walk: " + path.getAllPoints().length + " §7(Calculated with a speed of " + BPS + " blocks per second)");
+                sender.sendMessage("§aBlocks to walk: " + path.getAllPoints().length + " §7(Calculated with a speed of " + bps + " blocks per second)");
 
                 path.fill(player, player.getConnectedClient().getBlockAccess(), Material.EMERALD_BLOCK, true);
 
@@ -115,6 +116,9 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
                         path.refill(player);
                     }
                 }, time, TimeUnit.SECONDS);
+
+                PathWalker walker = this.registry.getProviderUnchecked(PathWalker.class);
+                walker.walkPath(player.getConnectedClient(), path, () -> player.sendMessage("Finish"));
 
             } else {
                 sender.sendMessage("§cThere is no way to reach " + pos.toShortString() + " from " + start.toShortString());
