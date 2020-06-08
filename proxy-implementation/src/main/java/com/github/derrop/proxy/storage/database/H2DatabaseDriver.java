@@ -77,6 +77,19 @@ public class H2DatabaseDriver implements DatabaseDriver {
     }
 
     @Override
+    public long count(@NotNull String table) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM " + table);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
     public void insert(@NotNull DatabaseObject object) {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO " + object.getTable() + " (`key`, `value`) VALUES (?, ?)")) {
             statement.setString(1, object.getKey());

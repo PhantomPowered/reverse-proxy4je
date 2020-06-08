@@ -61,6 +61,14 @@ public interface DatabaseDriver {
     void deleteTable(@NotNull String table);
 
     /**
+     * Counts the entries in a specified table.
+     *
+     * @param table the name of the table
+     * @return the amount of entries in this table or -1 if an error occurred
+     */
+    long count(@NotNull String table);
+
+    /**
      * Inserts a database object into the database
      *
      * @param object The object which should get inserted

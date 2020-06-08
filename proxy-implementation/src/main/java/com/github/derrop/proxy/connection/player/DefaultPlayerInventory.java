@@ -12,6 +12,7 @@ import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
+//TODO: https://github.com/Exceptionflug/protocolize/
 public class DefaultPlayerInventory implements PlayerInventory {
 
     private Player player;

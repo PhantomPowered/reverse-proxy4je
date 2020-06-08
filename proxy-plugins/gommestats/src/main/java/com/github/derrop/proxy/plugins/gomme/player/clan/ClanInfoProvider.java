@@ -22,45 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.player;
+package com.github.derrop.proxy.plugins.gomme.player.clan;
 
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
-import org.jetbrains.annotations.NotNull;
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 
-import java.util.Map;
+public class ClanInfoProvider extends DatabaseProvidedStorage<ClanInfo> {
 
-public class PlayerStatistics implements Comparable<PlayerStatistics> {
-
-    private GommeGameMode gameMode;
-    private Map<String, String> stats;
-    private int rank;
-    private boolean privateStats;
-
-    public PlayerStatistics(GommeGameMode gameMode, Map<String, String> stats, int rank, boolean privateStats) {
-        this.gameMode = gameMode;
-        this.stats = stats;
-        this.rank = rank;
-        this.privateStats = privateStats;
+    public ClanInfoProvider(ServiceRegistry registry) {
+        super(registry, "gomme_clan_info", ClanInfo.class);
     }
 
-    public GommeGameMode getGameMode() {
-        return this.gameMode;
+    public ClanInfo getClan(String name) {
+        return super.get(name);
     }
 
-    public Map<String, String> getStats() {
-        return this.stats;
+    public ClanInfo getClanByShortcut(String shortcut) {
+        return super.getAll().stream().filter(clanInfo -> clanInfo.getShortcut().equals(shortcut)).findFirst().orElse(null);
     }
 
-    public int getRank() {
-        return this.rank;
+    public void updateClan(ClanInfo info) {
+        super.insertOrUpdate(info.getName(), info);
     }
 
-    public boolean isPrivateStats() {
-        return this.privateStats;
-    }
-
-    @Override
-    public int compareTo(@NotNull PlayerStatistics o) {
-        return Integer.compare(this.rank, o.rank);
-    }
 }

@@ -24,48 +24,51 @@
  */
 package com.github.derrop.proxy.plugins.gomme.player;
 
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.player.clan.ClanInfo;
 
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.UUID;
+import java.util.stream.Stream;
 
-// TODO database
-public class PlayerDataProvider {
+public class PlayerDataProvider extends DatabaseProvidedStorage<PlayerData> {
+
+    public PlayerDataProvider(ServiceRegistry registry) {
+        super(registry, "gomme_player_data", PlayerData.class);
+    }
 
     public PlayerData getData(UUID uniqueId) {
-        return null;
+        return super.get(uniqueId.toString());
     }
 
     public void updateStatistics(PlayerData data) {
-
+        super.insertOrUpdate(data.getPlayerInfo().getUniqueId().toString(), data);
     }
 
     public long countPlayerData() {
-        return -1;
+        return super.size();
     }
 
     public long countPlayerData(GommeGameMode gameMode) {
-        return -1;
+        return super.getAll().stream().filter(playerData -> playerData.getStatistics().containsKey(gameMode)).count();
     }
 
     public PlayerData getBestPlayer(GommeGameMode gameMode) {
-        return null;
+        return this.sortedPlayerDataStream(gameMode).min(Collections.reverseOrder()).orElse(null);
     }
 
     public PlayerData getWorstPlayer(GommeGameMode gameMode) {
-        return null;
+        return this.sortedPlayerDataStream(gameMode).findFirst().orElse(null);
     }
 
-    public ClanInfo getClan(String name) {
-        return null;
-    }
-
-    public ClanInfo getClanByShortcut(String shortcut) {
-        return null;
-    }
-
-    public void updateClan(ClanInfo info) {
-
+    public Stream<PlayerData> sortedPlayerDataStream(GommeGameMode gameMode) {
+        return super.getAll().stream()
+                .filter(playerData -> playerData.getStatistics().containsKey(gameMode))
+                .sorted(Comparator.comparing(value -> value.getStatistics().get(gameMode)));
     }
 
 }
