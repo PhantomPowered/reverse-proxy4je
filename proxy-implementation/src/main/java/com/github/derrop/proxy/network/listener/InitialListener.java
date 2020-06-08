@@ -34,7 +34,6 @@ public class InitialListener implements ChannelListener {
 
     @Override
     public void handleChannelActive(@NotNull NetworkChannel channel) {
-        System.out.println("InitialHandler connected -> " + channel.getAddress());
         channel.setProperty(InitialHandler.INIT_STATE, InitialHandler.State.HANDSHAKE);
     }
 
