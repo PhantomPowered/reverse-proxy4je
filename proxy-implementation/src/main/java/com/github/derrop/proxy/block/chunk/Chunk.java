@@ -125,7 +125,7 @@ public class Chunk {
             }
         }
 
-        if (fullChunk) {
+        if (fullChunk) { // todo: why is this always a full chunk?
             copyArray(this.biomeArray, extracted.data, j);
         }
 
