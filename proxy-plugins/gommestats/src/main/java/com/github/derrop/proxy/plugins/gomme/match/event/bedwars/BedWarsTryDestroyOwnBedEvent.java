@@ -22,25 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.bedwars;
 
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class PlayerDiedEvent extends MatchEvent {
-
-    private final PlayerInfo playerInfo;
-
-    public PlayerDiedEvent(PlayerInfo playerInfo) {
-        super(Type.PLAYER_DIED);
-        this.playerInfo = playerInfo;
-    }
-
+public class BedWarsTryDestroyOwnBedEvent extends MatchEvent {
     @Override
     public String toPlainText() {
-        return "Player " + this.playerInfo.getUsername() + " died";
-    }
-
-    public PlayerInfo getPlayerInfo() {
-        return playerInfo;
+        return "Tried to destroy own bed";
     }
 }

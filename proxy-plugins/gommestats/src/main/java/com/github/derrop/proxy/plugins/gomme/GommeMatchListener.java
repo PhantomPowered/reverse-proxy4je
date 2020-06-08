@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.plugins.gomme;
 
+import com.github.derrop.proxy.api.chat.ChatColor;
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
@@ -32,6 +34,8 @@ import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
+import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
@@ -96,7 +100,7 @@ public class GommeMatchListener {
 
     @Listener
     public void handleChat(ChatEvent event) {
-        if (event.getDirection() != ProtocolDirection.TO_CLIENT) {
+        if (event.getDirection() != ProtocolDirection.TO_CLIENT || event.getType() != ChatMessageType.CHAT) {
             return;
         }
 
@@ -105,14 +109,11 @@ public class GommeMatchListener {
             return;
         }
 
-        String msg = LegacyComponentSerializer.legacy().serialize(event.getMessage());
-        if (msg.matches("\\[Cores] Team (.*) hat Cores gewonnen")) { // todo this can be done better
-            System.out.println("MatchEnd on " + match.getGameMode() + ": " +
-                    Arrays.stream(((ServiceConnection) event.getConnection()).getWorldDataProvider().getOnlinePlayers()).map(playerInfo -> playerInfo.getUniqueId() + "#" + playerInfo.getUsername()).collect(Collectors.joining(", ")));
-            this.matchManager.endMatch(match.getMatchId());
-        }
+        String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
 
-        // TODO this message could be the one to start a round, a core could have been destroyed (better do that with the scoreboard?)
+        // TODO Language should be dynamic
+        MessageRegistry.createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(matchEvent -> System.out.println(matchEvent.toPlainText()));
+
     }
 
 }

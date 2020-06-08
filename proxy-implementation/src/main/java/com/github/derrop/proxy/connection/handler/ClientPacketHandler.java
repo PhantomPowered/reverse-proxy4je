@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.connection.handler;
 
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
@@ -166,7 +167,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, LegacyComponentSerializer.legacy().deserialize(chat.getMessage()));
+        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, ChatMessageType.CHAT, LegacyComponentSerializer.legacy().deserialize(chat.getMessage()));
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }

@@ -22,30 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.match;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class MatchEvent {
+public class MapSelectedEvent extends MatchEvent {
 
-    private final long timestamp = System.currentTimeMillis();
-    private final Map<String, String> properties;
+    private final String map;
+    private final String builder;
 
-    public MatchEvent(Map<String, String> properties) {
-        this.properties = properties;
+    public MapSelectedEvent(String map, String builder) {
+        this.map = map;
+        this.builder = builder;
     }
 
-    public MatchEvent() {
-        this(new HashMap<>());
-    }
-
+    @Override
     public String toPlainText() {
-        return "No description for event " + this.getClass().getSimpleName() + " available";
+        return "Selected map: " + map + "; by: " + this.builder;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public String getMap() {
+        return this.map;
     }
-
 }

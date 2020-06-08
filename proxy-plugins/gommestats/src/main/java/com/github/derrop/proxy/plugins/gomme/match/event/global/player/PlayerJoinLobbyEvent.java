@@ -22,31 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class MatchChatEvent extends MatchEvent {
+public class PlayerJoinLobbyEvent extends MatchEvent {
 
-    private final PlayerInfo sender;
-    private final String content;
+    private final String name;
 
-    public MatchChatEvent(Type type, PlayerInfo sender, String content) {
-        super(type);
-        this.sender = sender;
-        this.content = content;
+    public PlayerJoinLobbyEvent(String name) {
+        this.name = name;
     }
 
     @Override
     public String toPlainText() {
-        return "Message by " + this.sender.getUsername() + ": " + this.content;
+        return "Player " + this.name + " joined in the lobby phase";
     }
 
-    public PlayerInfo getSender() {
-        return this.sender;
-    }
-
-    public String getContent() {
-        return this.content;
+    public String getName() {
+        return this.name;
     }
 }

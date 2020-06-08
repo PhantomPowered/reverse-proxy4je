@@ -22,30 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.bedwars;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class MatchEvent {
+public class BedDestroyedEvent extends MatchEvent {
 
-    private final long timestamp = System.currentTimeMillis();
-    private final Map<String, String> properties;
+    private final String destroyer;
+    private final String team;
 
-    public MatchEvent(Map<String, String> properties) {
-        this.properties = properties;
+    public BedDestroyedEvent(String destroyer, String team) {
+        this.destroyer = destroyer;
+        this.team = team;
     }
 
-    public MatchEvent() {
-        this(new HashMap<>());
-    }
-
+    @Override
     public String toPlainText() {
-        return "No description for event " + this.getClass().getSimpleName() + " available";
+        return "The bed of the team " + this.team + " was destroyed by " + this.destroyer;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public String getDestroyer() {
+        return this.destroyer;
     }
 
+    public String getTeam() {
+        return this.team;
+    }
 }

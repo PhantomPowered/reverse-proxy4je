@@ -22,30 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class MatchEvent {
+public class PlayerChatEvent extends MatchEvent {
 
-    private final long timestamp = System.currentTimeMillis();
-    private final Map<String, String> properties;
+    private final String sender;
+    private final String content;
+    private final boolean global;
 
-    public MatchEvent(Map<String, String> properties) {
-        this.properties = properties;
+    public PlayerChatEvent(String sender, String content, boolean global) {
+        this.sender = sender;
+        this.content = content;
+        this.global = global;
     }
 
-    public MatchEvent() {
-        this(new HashMap<>());
-    }
-
+    @Override
     public String toPlainText() {
-        return "No description for event " + this.getClass().getSimpleName() + " available";
+        return "Chat: " + (this.global ? "[@all]" : "") + this.sender + ": " + this.content;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public String getSender() {
+        return this.sender;
     }
 
+    public boolean isGlobal() {
+        return this.global;
+    }
+
+    public String getContent() {
+        return this.content;
+    }
 }

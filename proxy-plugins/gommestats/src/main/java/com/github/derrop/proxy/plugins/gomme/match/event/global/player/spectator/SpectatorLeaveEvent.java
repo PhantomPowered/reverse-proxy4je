@@ -22,14 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player.spectator;
+
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
 public class SpectatorLeaveEvent extends MatchEvent {
 
     private final String name;
 
     public SpectatorLeaveEvent(String name) {
-        super(Type.SPECTATOR_LEFT);
         this.name = name;
     }
 

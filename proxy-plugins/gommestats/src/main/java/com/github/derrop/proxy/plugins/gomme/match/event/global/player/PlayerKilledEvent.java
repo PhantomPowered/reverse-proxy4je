@@ -22,30 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class MatchEvent {
+public class PlayerKilledEvent extends MatchEvent {
 
-    private final long timestamp = System.currentTimeMillis();
-    private final Map<String, String> properties;
+    private final String player;
+    private final String killer;
 
-    public MatchEvent(Map<String, String> properties) {
-        this.properties = properties;
+    public PlayerKilledEvent(String player, String killer) {
+        this.player = player;
+        this.killer = killer;
     }
 
-    public MatchEvent() {
-        this(new HashMap<>());
-    }
-
+    @Override
     public String toPlainText() {
-        return "No description for event " + this.getClass().getSimpleName() + " available";
+        return "Player " + this.player + " was killed by " + this.killer;
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public String getPlayer() {
+        return this.player;
     }
 
+    public String getKiller() {
+        return this.killer;
+    }
 }

@@ -31,8 +31,8 @@ import com.github.derrop.proxy.api.events.connection.service.scoreboard.Scoreboa
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
-import com.github.derrop.proxy.plugins.gomme.match.event.SpectatorJoinEvent;
-import com.github.derrop.proxy.plugins.gomme.match.event.SpectatorLeaveEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.player.spectator.SpectatorJoinEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.player.spectator.SpectatorLeaveEvent;
 import com.github.derrop.proxy.plugins.gomme.parse.MatchParser;
 
 import java.util.Arrays;

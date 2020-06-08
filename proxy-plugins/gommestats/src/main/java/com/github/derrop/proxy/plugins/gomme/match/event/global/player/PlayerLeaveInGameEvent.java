@@ -22,30 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class MatchEvent {
+public class PlayerLeaveInGameEvent extends MatchEvent {
 
-    private final long timestamp = System.currentTimeMillis();
-    private final Map<String, String> properties;
+    private final String name;
+    private final String team;
+    private final int teamRemainingPlayers;
 
-    public MatchEvent(Map<String, String> properties) {
-        this.properties = properties;
+    public PlayerLeaveInGameEvent(String name, String team, int teamRemainingPlayers) {
+        this.name = name;
+        this.team = team;
+        this.teamRemainingPlayers = teamRemainingPlayers;
     }
 
-    public MatchEvent() {
-        this(new HashMap<>());
-    }
-
+    @Override
     public String toPlainText() {
-        return "No description for event " + this.getClass().getSimpleName() + " available";
+        return "Player " + this.name + " left in the in game phase (previous team: " + team + "; remaining players: " + teamRemainingPlayers + ")";
     }
 
-    public long getTimestamp() {
-        return this.timestamp;
+    public String getName() {
+        return this.name;
     }
 
+    public String getTeam() {
+        return this.team;
+    }
+
+    public int getTeamRemainingPlayers() {
+        return this.teamRemainingPlayers;
+    }
 }

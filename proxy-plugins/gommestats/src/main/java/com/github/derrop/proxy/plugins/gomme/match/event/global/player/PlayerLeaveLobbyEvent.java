@@ -22,31 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class PlayerKilledEvent extends MatchEvent {
+public class PlayerLeaveLobbyEvent extends MatchEvent {
 
-    private final PlayerInfo playerInfo;
-    private final PlayerInfo killerInfo;
+    private final String name;
 
-    public PlayerKilledEvent(Type type, PlayerInfo playerInfo, PlayerInfo killerInfo) {
-        super(type);
-        this.playerInfo = playerInfo;
-        this.killerInfo = killerInfo;
+    public PlayerLeaveLobbyEvent(String name) {
+        this.name = name;
     }
 
     @Override
     public String toPlainText() {
-        return "Player " + this.playerInfo.getUsername() + " was killed by " + this.killerInfo.getUsername();
+        return "Player " + this.name + " left in the lobby phase";
     }
 
-    public PlayerInfo getPlayerInfo() {
-        return playerInfo;
-    }
-
-    public PlayerInfo getKillerInfo() {
-        return killerInfo;
+    public String getName() {
+        return this.name;
     }
 }

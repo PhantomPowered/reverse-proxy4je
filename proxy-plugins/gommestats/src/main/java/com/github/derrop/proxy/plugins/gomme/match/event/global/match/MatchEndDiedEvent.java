@@ -22,23 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.match;
 
-public class SpectatorJoinEvent extends MatchEvent {
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-    private final String name;
+public class MatchEndDiedEvent extends MatchEvent {
 
-    public SpectatorJoinEvent(String name) {
-        super(Type.SPECTATOR_JOINED);
-        this.name = name;
+    public MatchEndDiedEvent() {
     }
 
     @Override
     public String toPlainText() {
-        return "Spectator " + this.name + " joined";
+        return "The match has ended because the recorder has died";
     }
 
-    public String getName() {
-        return this.name;
-    }
 }

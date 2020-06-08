@@ -22,38 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.match;
 
-import com.github.derrop.proxy.plugins.gomme.match.MatchTeam;
-import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class CoreDestroyedEvent extends MatchEvent {
+public class TeamOutEvent extends MatchEvent {
 
-    private final PlayerData destroyer;
-    private final MatchTeam coreOwner;
-    private final String core;
+    private final String team;
 
-    public CoreDestroyedEvent(Type type, PlayerData destroyer, MatchTeam coreOwner, String core) {
-        super(type);
-        this.destroyer = destroyer;
-        this.coreOwner = coreOwner;
-        this.core = core;
+    public TeamOutEvent(String team) {
+        this.team = team;
     }
 
     @Override
     public String toPlainText() {
-        return "The core of the team " + this.coreOwner.getName() + " was destroyed by " + this.destroyer.getPlayerInfo().getUsername();
+        return "The team " + this.team + " is out";
     }
 
-    public PlayerData getDestroyer() {
-        return this.destroyer;
-    }
-
-    public MatchTeam getCoreOwner() {
-        return this.coreOwner;
-    }
-
-    public String getCore() {
-        return this.core;
+    public String getTeam() {
+        return this.team;
     }
 }

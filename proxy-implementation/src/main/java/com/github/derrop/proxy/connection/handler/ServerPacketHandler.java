@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.connection.handler;
 
+import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -102,7 +103,7 @@ public class ServerPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerChatMessage chat) throws Exception {
-        ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, GsonComponentSerializer.INSTANCE.deserialize(chat.getMessage()));
+        ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], GsonComponentSerializer.INSTANCE.deserialize(chat.getMessage()));
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
