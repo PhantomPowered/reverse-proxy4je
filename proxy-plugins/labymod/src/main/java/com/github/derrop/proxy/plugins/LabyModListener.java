@@ -45,6 +45,10 @@ public final class LabyModListener {
 
         ByteBuf byteBuf = Unpooled.wrappedBuffer(event.getData());
         String messageKey = ByteBufUtils.readString(byteBuf);
+        if (messageKey.equals("PERMISSIONS")) {
+            event.cancel(true);
+            return;
+        }
         if (!messageKey.equals("INFO")) {
             return;
         }
