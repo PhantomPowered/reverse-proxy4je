@@ -139,11 +139,12 @@ public class CachedEntity implements SpawnedEntity {
                     .callEvent(new EquipmentSlotChangeEvent(this.client.getConnection(), this, slot, item))
                     .isCancelled();
 
-            if (!cancelled) {
-                this.equipment.put(slotId, item);
-                return true;
+            if (cancelled) {
+                return false;
             }
 
+            this.equipment.put(slotId, item);
+            return true;
         }
         return false;
     }

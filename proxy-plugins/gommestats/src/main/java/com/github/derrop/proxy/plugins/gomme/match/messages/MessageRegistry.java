@@ -88,8 +88,8 @@ public class MessageRegistry {
                 map -> new PlayerChatEvent(map.get("player"), map.get("message"), true),
                 GommeGameMode.BED_WARS
         );
-        registerRegExMessage(Language.GERMAN, MessageType.PLAYER_GLOBAL_CHAT_MESSAGE, "(?:\\S+ )?(\\S+): (.*)",
-                (input, matcher) -> ImmutableMap.of("player", matcher.group(1), "message", matcher.group(2)),
+        registerRegExMessage(Language.GERMAN, MessageType.PLAYER_GLOBAL_CHAT_MESSAGE, "^(?!\\[BedWars\\])((?:\\S+ )?(\\S+): (.*))",
+                (input, matcher) -> ImmutableMap.of("player", matcher.group(2), "message", matcher.group(3)),
                 map -> new PlayerChatEvent(map.get("player"), map.get("message"), false),
                 GommeGameMode.BED_WARS
         );

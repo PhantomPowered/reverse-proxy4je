@@ -125,6 +125,7 @@ public class EntityCache implements PacketCacheHandler {
             PacketPlayServerEntityEquipment equipment = (PacketPlayServerEntityEquipment) packet;
             if (this.entities.containsKey(equipment.getEntityId())) {
                 if (!this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem())) {
+                    // TODO send the packet to the old slot back
                     throw CancelProceedException.INSTANCE;
                 }
             }
