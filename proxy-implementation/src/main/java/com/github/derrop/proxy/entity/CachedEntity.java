@@ -52,11 +52,11 @@ public class CachedEntity implements SpawnedEntity {
     }
 
     public static CachedEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
-        //Preconditions.checkNotNull(type, "EntityType cannot be null"); TODO
-        // TODO more entity types?
+        Preconditions.checkNotNull(type, "EntityType cannot be null");
         if (spawnPacket instanceof PacketPlayServerNamedEntitySpawn) {
             return new CachedPlayer(registry, client, spawnPacket);
         }
+
         return new CachedEntityWithMetadata(registry, client, spawnPacket, type);
     }
 

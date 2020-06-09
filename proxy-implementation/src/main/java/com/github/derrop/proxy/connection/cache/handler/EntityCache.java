@@ -94,9 +94,7 @@ public class EntityCache implements PacketCacheHandler {
         Packet packet = newPacket.getDeserializedPacket();
 
         if (packet instanceof PacketPlayServerEntityTeleport) {
-
             PacketPlayServerEntityTeleport teleport = (PacketPlayServerEntityTeleport) packet;
-
             if (this.entities.containsKey(teleport.getEntityId())) {
                 this.entities.get(teleport.getEntityId()).updateLocation(
                         teleport.getX(), teleport.getY(), teleport.getZ(),
@@ -104,58 +102,37 @@ public class EntityCache implements PacketCacheHandler {
                         teleport.isOnGround()
                 );
             }
-
         } else if (packet instanceof PacketPlayServerSpawnEntityExperienceOrb) {
-
             PacketPlayServerSpawnEntityExperienceOrb spawn = (PacketPlayServerSpawnEntityExperienceOrb) packet;
-
             this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.EXPERIENCE_ORB));
-
         } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
-
             PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) packet;
-
             this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.PLAYER));
-
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
-
             PacketPlayServerSpawnLivingEntity spawn = (PacketPlayServerSpawnLivingEntity) packet;
-
             this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.fromId(spawn.getType())));
-
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
-
             PacketPlayServerSpawnEntity spawn = (PacketPlayServerSpawnEntity) packet;
-
             this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, spawn.getType() == 2 ? EntityType.ITEM : EntityType.fromId(spawn.getType())));
-
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
-
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
             if (this.entities.containsKey(metadata.getEntityId())) {
                 this.entities.get(metadata.getEntityId()).updateMetadata(metadata);
             }
-
         } else if (packet instanceof PacketPlayServerEntityDestroy) {
-
             PacketPlayServerEntityDestroy destroyEntities = (PacketPlayServerEntityDestroy) packet;
             for (int entityId : destroyEntities.getEntityIds()) {
                 this.entities.remove(entityId);
             }
-
         } else if (packet instanceof PacketPlayServerEntityEquipment) {
-
             PacketPlayServerEntityEquipment equipment = (PacketPlayServerEntityEquipment) packet;
             if (this.entities.containsKey(equipment.getEntityId())) {
                 if (!this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem())) {
                     throw CancelProceedException.INSTANCE;
                 }
             }
-
         } else if (packet instanceof PacketPlayServerCamera) {
-
             this.cameraTargetId = ((PacketPlayServerCamera) packet).getEntityId();
-
         }
     }
 

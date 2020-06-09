@@ -38,6 +38,7 @@ import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.haproxy.HAProxyMessage;
+import io.netty.util.ReferenceCountUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,11 +115,16 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HAProxyMessage) {
             HAProxyMessage proxy = (HAProxyMessage) msg;
-            InetSocketAddress newAddress = new InetSocketAddress(proxy.sourceAddress(), proxy.sourcePort());
+            try {
+                InetSocketAddress newAddress = new InetSocketAddress(proxy.sourceAddress(), proxy.sourcePort());
 
-            if (this.networkChannel instanceof DefaultNetworkChannel) {
-                ((DefaultNetworkChannel) this.networkChannel).setAddress(newAddress);
+                if (this.networkChannel instanceof DefaultNetworkChannel) {
+                    ((DefaultNetworkChannel) this.networkChannel).setAddress(newAddress);
+                }
+            } finally {
+                ReferenceCountUtil.release(proxy);
             }
+
             return;
         }
 
@@ -130,15 +136,19 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
         ProtocolDirection direction = ctx.channel().pipeline().get(MinecraftDecoder.class).getDirection();
         if (msg instanceof DecodedPacket) {
             DecodedPacket packet = (DecodedPacket) msg;
-            if (packet.getPacket() != null) {
-                Packet result = this.getHandlers().handlePacketReceive(packet.getPacket(), direction, state, this.networkChannel);
-                if (result == null) {
-                    // ProceedCancelException - user stopped handling of packet (we should respect the decision)
-                    return;
+            try {
+                if (packet.getPacket() != null) {
+                    Packet result = this.getHandlers().handlePacketReceive(packet.getPacket(), direction, state, this.networkChannel);
+                    if (result == null) {
+                        // ProceedCancelException - user stopped handling of packet (we should respect the decision)
+                        return;
+                    }
                 }
-            }
 
-            this.getHandlers().handlePacketReceive(packet, direction, state, this.networkChannel);
+                this.getHandlers().handlePacketReceive(packet, direction, state, this.networkChannel);
+            } finally {
+                ReferenceCountUtil.release(packet.getProtoBuf());
+            }
         }
     }
 
@@ -146,5 +156,4 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
     private PacketHandlerRegistry getHandlers() {
         return this.registry.getProviderUnchecked(PacketHandlerRegistry.class);
     }
-
 }

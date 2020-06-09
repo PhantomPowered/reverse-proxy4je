@@ -44,7 +44,6 @@ import io.netty.util.concurrent.MultithreadEventExecutorGroup;
 
 import java.util.concurrent.ThreadFactory;
 
-
 public final class NettyUtils {
 
     static {

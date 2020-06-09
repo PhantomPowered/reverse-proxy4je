@@ -27,15 +27,16 @@ package com.github.derrop.proxy.connection.player;
 import com.github.derrop.proxy.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
@@ -46,7 +47,6 @@ import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -65,9 +65,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
 
-public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
+public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel, Tickable {
 
-    private static final Unsafe EMPTY_UNSAFE = location -> { };
+    private static final Unsafe EMPTY_UNSAFE = location -> {
+    };
 
     public DefaultPlayer(MCProxy proxy, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
         super(offlinePlayer.getUniqueId(), loginResult.getName(), System.currentTimeMillis(), version, offlinePlayer.getEffectivePermissions());
@@ -102,6 +103,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private boolean autoReconnect = true;
 
     private int compression = -1;
+
+    private int positionUpdateTicks = 0;
 
     private String displayName;
 
@@ -468,6 +471,10 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
             ((BasicServiceConnection) this.connectedClient).getClient().free();
         }
+    }
+
+    @Override
+    public void handleTick() {
     }
 
     private class PacketSenderUnsafe implements PacketSender.NetworkUnsafe {

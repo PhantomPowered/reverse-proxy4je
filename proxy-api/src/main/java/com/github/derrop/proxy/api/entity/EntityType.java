@@ -120,6 +120,6 @@ public enum EntityType {
             return null;
         }
 
-        return ID_MAP.get((short) id);
+        return ID_MAP.getOrDefault((short) id, EntityType.UNKNOWN);
     }
 }
