@@ -24,16 +24,26 @@
  */
 package com.github.derrop.proxy.plugins.gomme;
 
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.events.connection.player.PlayerMoveEvent;
+import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
+import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
+import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.google.gson.JsonObject;
@@ -43,6 +53,7 @@ import io.netty.buffer.Unpooled;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -99,6 +110,53 @@ public class GommeMatchListener {
     }
 
     @Listener
+    public void handleMove(EntityMoveEvent event) {
+        if (!(event.getEntity() instanceof EntityPlayer)) {
+            return;
+        }
+
+        EntityPlayer player = (EntityPlayer) event.getEntity();
+
+        PlayerInfo playerInfo = player.getPlayerInfo();
+        if (playerInfo == null) {
+            return;
+        }
+
+        this.handleMove(event.getConnection(), playerInfo.getUsername(), event.getFrom(), event.getTo());
+    }
+
+    @Listener
+    public void handleMove(PlayerMoveEvent event) {
+        if (event.getConnection() instanceof Player) {
+            this.handleMove(((Player) event.getConnection()).getConnectedClient(), event.getPlayer().getName(), event.getFrom(), event.getTo());
+        }
+    }
+
+    private void handleMove(ServiceConnection connection, String playerName, Location from, Location to) {
+        MatchInfo match = this.matchManager.getMatch(connection);
+        if (match == null || match.getGameMode() != GommeGameMode.CORES) {
+            return;
+        }
+
+        Collection<BlockPos> cores = connection.getBlockAccess().getPositions(Material.BEACON);
+
+        if (cores.isEmpty()) {
+            return;
+        }
+
+        for (BlockPos core : cores) {
+            boolean toNearby = core.distanceSq(to.toBlockPos()) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
+            boolean fromNearby = core.distanceSq(from.toBlockPos()) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
+
+            if (fromNearby && !toNearby) {
+                match.callEvent(new CoreLeaveEvent(playerName, core));
+            } else if (toNearby && !fromNearby) {
+                match.callEvent(new CoreJoinEvent(playerName, core));
+            }
+        }
+    }
+
+    @Listener
     public void handleChat(ChatEvent event) {
         if (event.getDirection() != ProtocolDirection.TO_CLIENT || event.getType() != ChatMessageType.CHAT) {
             return;
@@ -112,7 +170,7 @@ public class GommeMatchListener {
         String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
 
         // TODO Language should be dynamic
-        MessageRegistry.createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(matchEvent -> System.out.println(matchEvent.toPlainText()));
+        MessageRegistry.createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(match::callEvent);
 
     }
 

@@ -5,11 +5,12 @@ import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.service.TitleReceiveEvent;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -22,12 +23,11 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
-import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerSpawnPosition;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;
+import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -41,11 +41,18 @@ public class ServerPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_TELEPORT, directions = ProtocolDirection.TO_CLIENT)
     public void handleEntityTeleport(ConnectedProxyClient client, PacketPlayServerEntityTeleport teleport) {
+        Location location = teleport.getLocation();
+
         if (teleport.getEntityId() != client.getEntityId()) {
+            Entity entity = client.getConnection().getWorldDataProvider().getEntityInWorld(teleport.getEntityId());
+            if (entity == null) {
+                return;
+            }
+            client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new EntityMoveEvent(client.getConnection(), entity, entity.getLocation(), location));
             return;
         }
 
-        client.getConnection().updateLocation(teleport.getLocation());
+        client.getConnection().updateLocation(location);
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.POSITION, directions = ProtocolDirection.TO_CLIENT)
