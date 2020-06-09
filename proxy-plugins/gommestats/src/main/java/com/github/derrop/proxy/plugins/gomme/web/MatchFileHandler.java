@@ -1,12 +1,12 @@
 package com.github.derrop.proxy.plugins.gomme.web;
 
-import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
 import com.github.derrop.proxy.plugins.gomme.match.MatchTeam;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ public class MatchFileHandler extends WebFileHandler {
             //return null;
         }
         if (matchInfo.getTeams().isEmpty()) {
-            matchInfo.getTeams().add(new MatchTeam("Rot", ChatColor.RED, Arrays.asList(UUID.fromString("94a1c44a-82a1-3dba-bd06-1c16fcbe9582"))));
+            matchInfo.getTeams().add(new MatchTeam(MessageType.TEAM_RED, Arrays.asList(UUID.fromString("94a1c44a-82a1-3dba-bd06-1c16fcbe9582"))));
         }
 
 
@@ -79,8 +79,7 @@ public class MatchFileHandler extends WebFileHandler {
                     .filter(Objects::nonNull)
                     .map(playerInfo -> {
                         String htmlPlayer = super.loadFile("web/matches/matchPlayer.html")
-                                .replace("${player.name}", playerInfo.getUsername())
-                                .replace("${player.color}", team.getColor().name().toLowerCase());
+                                .replace("${player.name}", playerInfo.getUsername());
 
                         //if (playerInfo.isUsingBAC()) { // TODO implement BAC detection
                         htmlPlayer = htmlPlayer.replace("${player.bac}", super.loadFile("web/matches/bacUser.html"));
@@ -95,8 +94,7 @@ public class MatchFileHandler extends WebFileHandler {
             }
 
             String htmlTeam = super.loadFile("web/matches/matchTeam.html")
-                    .replace("${team.name}", team.getName())
-                    .replace("${team.color}", team.getColor().name().toLowerCase())
+                    .replace("${team.name}", team.getType().name())
                     .replace("${players.first}", players[0])
                     .replace("${players.others}", String.join("\n", Arrays.copyOfRange(players, 1, players.length)));
 

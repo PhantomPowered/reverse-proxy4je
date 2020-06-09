@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.velocity;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;

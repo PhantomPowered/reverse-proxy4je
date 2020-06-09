@@ -25,13 +25,14 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.bedwars;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 public class BedDestroyEvent extends MatchEvent {
 
     private final String destroyer;
-    private final String team;
+    private final MessageType team;
 
-    public BedDestroyEvent(String destroyer, String team) {
+    public BedDestroyEvent(String destroyer, MessageType team) {
         this.destroyer = destroyer;
         this.team = team;
     }
@@ -45,7 +46,7 @@ public class BedDestroyEvent extends MatchEvent {
         return this.destroyer;
     }
 
-    public String getTeam() {
+    public MessageType getTeam() {
         return this.team;
     }
 }

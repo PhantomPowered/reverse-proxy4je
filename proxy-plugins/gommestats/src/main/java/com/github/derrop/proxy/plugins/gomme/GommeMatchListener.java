@@ -37,6 +37,7 @@ import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerMoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
+import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
@@ -66,6 +67,17 @@ public class GommeMatchListener {
 
     public GommeMatchListener(MatchManager matchManager) {
         this.matchManager = matchManager;
+    }
+
+    @Listener
+    public void handlePlayerAdd(PlayerInfoAddEvent event) {
+        MatchInfo matchInfo = this.matchManager.getMatch(event.getConnection());
+        if (matchInfo == null) {
+            return;
+        }
+
+        matchInfo.getPlayers().removeIf(playerInfo -> playerInfo.getUniqueId().equals(event.getPlayerInfo().getUniqueId()));
+        matchInfo.getPlayers().add(event.getPlayerInfo());
     }
 
     @Listener

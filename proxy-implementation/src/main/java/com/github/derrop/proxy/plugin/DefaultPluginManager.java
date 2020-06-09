@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugin;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginManager;

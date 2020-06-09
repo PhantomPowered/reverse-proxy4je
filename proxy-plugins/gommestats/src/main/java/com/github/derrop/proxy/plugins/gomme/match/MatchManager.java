@@ -98,19 +98,14 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         if (matchInfo.isRunning()) {
             return;
         }
-        PlayerInfo[] players = matchInfo.getInvoker().getWorldDataProvider().getOnlinePlayers();
-        PlayerData[] statistics = new PlayerData[players.length];
-        for (int i = 0; i < players.length; i++) {
-            statistics[i] = this.core.getPlayerDataProvider().getData(players[i].getUniqueId());
-        }
-        matchInfo.start(players, statistics);
+        matchInfo.start();
     }
 
     public void endMatch(MatchInfo matchInfo) {
         if (matchInfo.hasEnded()) {
             return;
         }
-        matchInfo.end(matchInfo.getInvoker().getWorldDataProvider().getOnlinePlayers());
+        matchInfo.end();
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {

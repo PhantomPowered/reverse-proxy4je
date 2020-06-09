@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.entity.EntityPlayer;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.PlayerInfo;

@@ -25,12 +25,13 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.global.match;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 public class TeamOutEvent extends MatchEvent {
 
-    private final String team;
+    private final MessageType team;
 
-    public TeamOutEvent(String team) {
+    public TeamOutEvent(MessageType team) {
         this.team = team;
     }
 
@@ -39,7 +40,7 @@ public class TeamOutEvent extends MatchEvent {
         return "The team " + this.team + " is out";
     }
 
-    public String getTeam() {
+    public MessageType getTeam() {
         return this.team;
     }
 }

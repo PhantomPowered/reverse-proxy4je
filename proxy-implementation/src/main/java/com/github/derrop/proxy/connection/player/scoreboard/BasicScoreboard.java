@@ -128,6 +128,12 @@ public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
     }
 
     @Override
+    public @Nullable Team getTeamByEntry(@NotNull String entry) {
+        ScorePlayerTeam handle = this.getHandle().getPlayersTeam(entry);
+        return handle != null ? new BasicTeam(this, handle.getRegisteredName(), handle) : null;
+    }
+
+    @Override
     public @NotNull Team registerNewTeam(@NotNull String name) {
         if (this.getHandle().getTeam(name) != null) {
             throw new IllegalArgumentException("A team with the name \"" + name + "\" already exists");

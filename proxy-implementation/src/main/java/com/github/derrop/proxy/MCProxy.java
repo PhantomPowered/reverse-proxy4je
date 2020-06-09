@@ -28,6 +28,7 @@ import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.account.AccountReader;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;

@@ -24,16 +24,21 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
+import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class MatchInfo {
 
@@ -41,43 +46,64 @@ public class MatchInfo {
     private final GommeGameMode gameMode;
     private final String matchId;
     private transient boolean running;
-    private long beginTimestamp;
-    private long endTimestamp;
-    private PlayerInfo[] playersOnBegin;
-    private PlayerInfo[] playersOnEnd;
+    private long beginTimestamp = -1;
+    private long endTimestamp = -1;
+    private final Collection<PlayerInfo> players = new ArrayList<>();
 
-    private PlayerData[] statisticsOnBegin;
+    private final Collection<MatchTeam> teams = new ArrayList<>();
+    private final Collection<MatchEvent> events = new ArrayList<>();
 
-    private Collection<MatchTeam> teams = new ArrayList<>();
-    private Collection<MatchEvent> events = new ArrayList<>();
-
-    private transient Map<String, Object> properties = new ConcurrentHashMap<>();
+    private final transient Map<String, Object> properties = new ConcurrentHashMap<>();
 
     public MatchInfo(ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
         this.invoker = invoker;
         this.gameMode = gameMode;
         this.matchId = matchId;
+
+        this.players.addAll(Arrays.asList(invoker.getWorldDataProvider().getOnlinePlayers()));
     }
 
-    public void start(PlayerInfo[] currentPlayers, PlayerData[] statistics) {
+    public void start() {
         this.running = true;
         this.beginTimestamp = System.currentTimeMillis();
-        this.playersOnBegin = currentPlayers;
-        this.statisticsOnBegin = statistics;
+        Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+            for (PlayerInfo player : this.players) {
+                Team scoreTeam = this.invoker.getScoreboard().getTeamByEntry(player.getDisplayName() != null ? player.getDisplayName() : player.getUsername());
+                if (scoreTeam == null) {
+                    continue;
+                }
+
+                String prefix = ChatColor.stripColor(scoreTeam.getPrefix()).split(" ")[0];
+                // TODO language should be dynamic
+                MessageType type = MessageRegistry.getTeam(Language.GERMAN, this.gameMode, prefix);
+                if (type == null) {
+                    continue;
+                }
+
+                MatchTeam team = this.teams.stream()
+                        .filter(matchTeam -> matchTeam.getType().equals(type))
+                        .findFirst().orElseGet(() -> {
+                            MatchTeam matchTeam = new MatchTeam(type, new HashSet<>());
+                            this.teams.add(matchTeam);
+                            return matchTeam;
+                        });
+
+                team.getPlayers().add(player.getUniqueId());
+            }
+        }, 200, TimeUnit.MILLISECONDS);
     }
 
-    public void end(PlayerInfo[] currentPlayers) {
+    public void end() {
         this.running = false;
         this.endTimestamp = System.currentTimeMillis();
-        this.playersOnEnd = currentPlayers;
     }
 
     public boolean hasBegin() {
-        return this.playersOnBegin != null;
+        return this.beginTimestamp > 0;
     }
 
     public boolean hasEnded() {
-        return this.playersOnEnd != null;
+        return this.endTimestamp > 0;
     }
 
     public void callEvent(MatchEvent event) {
@@ -108,16 +134,8 @@ public class MatchInfo {
         return endTimestamp;
     }
 
-    public PlayerInfo[] getPlayersOnBegin() {
-        return playersOnBegin;
-    }
-
-    public PlayerInfo[] getPlayersOnEnd() {
-        return playersOnEnd;
-    }
-
-    public PlayerData[] getStatisticsOnBegin() {
-        return statisticsOnBegin;
+    public Collection<PlayerInfo> getPlayers() {
+        return this.players;
     }
 
     public Collection<MatchEvent> getEvents() {

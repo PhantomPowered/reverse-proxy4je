@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy;
+package com.github.derrop.proxy.api;
 
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;

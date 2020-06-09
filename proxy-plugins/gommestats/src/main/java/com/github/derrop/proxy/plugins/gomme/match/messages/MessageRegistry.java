@@ -69,18 +69,18 @@ public class MessageRegistry {
                 "\\[BedWars] (.*) hat das Spiel verlassen. Team (.*) hat noch (\\d+) Spieler",
                 (input, matcher) ->
                         ImmutableMap.of("player", matcher.group(1), "team", matcher.group(2), "remaining", matcher.group(3)),
-                map -> new PlayerLeaveInGameEvent(map.get("player"), map.get("team"), Integer.parseInt(map.get("remaining"))),
+                map -> new PlayerLeaveInGameEvent(map.get("player"), getTeam(Language.GERMAN, GommeGameMode.BED_WARS, map.get("team")), Integer.parseInt(map.get("remaining"))),
                 GommeGameMode.BED_WARS
         );
         registerRegExMessage(Language.GERMAN, MessageType.BED_DESTROYED,
                 "\\[BedWars] Das Bett von Team (.*) wurde von (.*) zerstört!",
                 (input, matcher) -> ImmutableMap.of("team", matcher.group(1), "destroyer", matcher.group(2)),
-                map -> new BedDestroyEvent(map.get("destroyer"), map.get("team")),
+                map -> new BedDestroyEvent(map.get("destroyer"), getTeam(Language.GERMAN, GommeGameMode.BED_WARS, map.get("team"))),
                 GommeGameMode.BED_WARS
         );
         registerRegExMessage(Language.GERMAN, MessageType.TEAM_OUT, "\\[BedWars] Team (.*) wurde vernichtet!",
                 (input, matcher) -> ImmutableMap.of("team", matcher.group(1)),
-                map -> new TeamOutEvent(map.get("team")),
+                map -> new TeamOutEvent(getTeam(Language.GERMAN, GommeGameMode.BED_WARS, map.get("team"))),
                 GommeGameMode.BED_WARS
         );
         registerRegExMessage(Language.GERMAN, MessageType.PLAYER_TEAM_CHAT_MESSAGE, "\\[@all\\] (?:\\S+ )?(\\S+): (.*)",
@@ -94,7 +94,23 @@ public class MessageRegistry {
                 GommeGameMode.BED_WARS
         );
 
-        // TODO team names should be parsed by the language into an enum
+
+        registerMessage(Language.GERMAN, MessageType.TEAM_BLACK, "Schwarz", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_BLUE, "Blau", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_TURQUOISE, "Türkis", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_DIAMOND, "Diamant", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_DARK_BLUE, "D-Blau", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_DARK_GRAY, "D-Grau", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_DARK_GREEN, "D-Grün", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_DARK_RED, "D-Rot", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_GRAY, "Grau", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_GREEN, "Grün", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_ORANGE, "Orange", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_PINK, "Pink", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_PURPLE, "Violett", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_RED, "Rot", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_WHITE, "Weiß", map -> null, GommeGameMode.values());
+        registerMessage(Language.GERMAN, MessageType.TEAM_YELLOW, "Gelb", map -> null, GommeGameMode.values());
     }
 
     private static void registerMessage(Language language, MessageType type, String message, Function<Map<String, String>, MatchEvent> matchEventMapper,GommeGameMode... gameModes) {
@@ -141,6 +157,16 @@ public class MessageRegistry {
 
     public static Optional<MatchEvent> createMatchEvent(Language language, GommeGameMode gameMode, String message) {
         return getMessage(language, gameMode, message).map(registeredMessage -> registeredMessage.createMatchEvent(message));
+    }
+
+    public static MessageType getTeam(Language language, GommeGameMode gameMode, String name) {
+        Map<MessageType, RegisteredMessage> messages = MESSAGES.get(language).get(gameMode);
+        for (Map.Entry<MessageType, RegisteredMessage> entry : messages.entrySet()) {
+            if (!entry.getValue().hasVariables() && entry.getValue().getMessageTester().test(name)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
 }
