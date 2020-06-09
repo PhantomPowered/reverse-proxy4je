@@ -85,9 +85,10 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         this.openMatches.put(matchInfo.getMatchId(), matchInfo);
     }
 
-    public void deleteMatch(ServiceConnection invoker) {
+    public void deleteMatch(ServiceConnection invoker, MatchEvent event) {
         for (MatchInfo value : this.openMatches.values()) {
             if (value.getInvoker().equals(invoker)) {
+                value.callEvent(event);
                 this.openMatches.remove(value.getMatchId());
                 this.writeToDatabase(value);
             }

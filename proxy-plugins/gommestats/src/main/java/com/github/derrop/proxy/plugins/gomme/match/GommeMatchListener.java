@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme;
+package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatColor;
@@ -36,18 +36,19 @@ import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerMoveEvent;
+import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.plugins.gomme.GommeConstants;
+import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
-import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchBeginEvent;
-import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndDiedEvent;
-import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndFinishedEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.match.*;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.google.gson.JsonObject;
@@ -81,6 +82,11 @@ public class GommeMatchListener {
     }
 
     @Listener
+    public void handleDisconnect(ServiceDisconnectEvent event) {
+        this.matchManager.deleteMatch(event.getConnection(), new MatchEndDisconnectedEvent());
+    }
+
+    @Listener
     public void handlePluginMessage(PluginMessageEvent event) {
         if (event.getDirection() != ProtocolDirection.TO_CLIENT || !event.getTag().equals("GoMod")) {
             return;
@@ -97,7 +103,7 @@ public class GommeMatchListener {
             String serverType = data.get("cloud_type").getAsString().toUpperCase();
             String matchId = data.get("id").getAsString();
 
-            this.matchManager.deleteMatch((ServiceConnection) event.getConnection());
+            this.matchManager.deleteMatch((ServiceConnection) event.getConnection(), new MatchEndLeftEvent());
 
             if (this.matchManager.getMatch(matchId) != null) {
                 return;
