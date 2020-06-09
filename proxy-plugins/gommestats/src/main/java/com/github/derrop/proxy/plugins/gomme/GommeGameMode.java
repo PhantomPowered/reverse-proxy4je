@@ -43,7 +43,8 @@ public enum GommeGameMode {
     MASTER_BUILDERS("MasterBuilders", "MASTERBUILDERS", "iron_pickaxe"),
     //SURVIVAL_GAMES("SurvivalGames", "", "iron_sword"),
     //QUICK_SURVIVAL_GAMES("Quick SurvivalGames", "", "iron_sword"),
-    BED_WARS("BedWars", "BW", "bed");
+    BED_WARS("BedWars", "BW", "bed"),
+    TRAINING("Training", "Training", "armor_stand");
 
     private final String displayName;
     private final String gommeInternalName;
