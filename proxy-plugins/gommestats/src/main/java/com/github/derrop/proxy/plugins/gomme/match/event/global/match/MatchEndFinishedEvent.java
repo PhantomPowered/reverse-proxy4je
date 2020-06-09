@@ -28,12 +28,19 @@ import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
 public class MatchEndFinishedEvent extends MatchEvent {
 
-    public MatchEndFinishedEvent() {
+    private final String winner;
+
+    public MatchEndFinishedEvent(String winner) {
+        this.winner = winner;
+    }
+
+    public String getWinner() {
+        return this.winner;
     }
 
     @Override
     public String toPlainText() {
-        return "The match has ended";
+        return "The team " + this.winner + " has won the game";
     }
 
 }

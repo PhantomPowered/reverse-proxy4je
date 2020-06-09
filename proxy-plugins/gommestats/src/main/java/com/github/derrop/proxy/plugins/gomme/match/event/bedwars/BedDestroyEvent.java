@@ -26,12 +26,12 @@ package com.github.derrop.proxy.plugins.gomme.match.event.bedwars;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
-public class BedDestroyedEvent extends MatchEvent {
+public class BedDestroyEvent extends MatchEvent {
 
     private final String destroyer;
     private final String team;
 
-    public BedDestroyedEvent(String destroyer, String team) {
+    public BedDestroyEvent(String destroyer, String team) {
         this.destroyer = destroyer;
         this.team = team;
     }

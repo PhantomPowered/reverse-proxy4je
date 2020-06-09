@@ -2,7 +2,7 @@ package com.github.derrop.proxy.plugins.gomme.match.messages;
 
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.*;
-import com.github.derrop.proxy.plugins.gomme.match.event.bedwars.BedDestroyedEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.bedwars.BedDestroyEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.bedwars.BedWarsTryDestroyOwnBedEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.*;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.player.*;
@@ -30,9 +30,13 @@ public class MessageRegistry {
         }
 
 
-        registerMessage(Language.GERMAN, MessageType.GAME_BEGIN, "\\[BedWars] Das Spiel beginnt!", map -> new MatchBeginEvent(), GommeGameMode.BED_WARS);
-        registerMessage(Language.GERMAN, MessageType.GAME_END_FINISHED, "\\[BedWars] ", map -> new MatchEndFinishedEvent(), GommeGameMode.BED_WARS); // TODO
-        registerMessage(Language.GERMAN, MessageType.GAME_END_DIED, "\\[BedWars] Du bist nun Zuschauer!", map -> new MatchEndDiedEvent(), GommeGameMode.BED_WARS);
+        registerMessage(Language.GERMAN, MessageType.GAME_BEGIN, "[BedWars] Das Spiel beginnt!", map -> new MatchBeginEvent(), GommeGameMode.BED_WARS);
+        registerMessage(Language.GERMAN, MessageType.GAME_END_DIED, "[BedWars] Du bist nun Zuschauer!", map -> new MatchEndDiedEvent(), GommeGameMode.BED_WARS);
+        registerRegExMessage(Language.GERMAN, MessageType.GAME_END_FINISHED, "\\[BedWars] Team (.*) hat gewonnen!",
+                (input, matcher) -> ImmutableMap.of("winner", matcher.group(1)),
+                map -> new MatchEndFinishedEvent(map.get("winner")),
+                GommeGameMode.BED_WARS
+        );
         registerRegExMessage(Language.GERMAN, MessageType.MAP_SELECTED, "\\[BedWars] Map: (.*) von: (.*)",
                 (input, matcher) -> ImmutableMap.of("map", matcher.group(1), "builder", matcher.group(2)),
                 map -> new MapSelectedEvent(map.get("map"), map.get("builder")),
@@ -48,7 +52,7 @@ public class MessageRegistry {
                 map -> new PlayerLeaveLobbyEvent(map.get("player")),
                 GommeGameMode.BED_WARS
         );
-        registerMessage(Language.GERMAN, MessageType.CANNOT_DESTROY_OWN_BED, "\\[BedWars] Du kannst dein eigenes Bett nicht zerstören!", map -> new BedWarsTryDestroyOwnBedEvent(), GommeGameMode.BED_WARS);
+        registerMessage(Language.GERMAN, MessageType.CANNOT_DESTROY_OWN_BED, "[BedWars] Du kannst dein eigenes Bett nicht zerstören!", map -> new BedWarsTryDestroyOwnBedEvent(), GommeGameMode.BED_WARS);
         registerRegExMessage(Language.GERMAN, MessageType.PLAYER_DIED,
                 "\\[BedWars] (.*) ist gestorben",
                 (input, matcher) -> ImmutableMap.of("player", matcher.group(1)),
@@ -71,7 +75,7 @@ public class MessageRegistry {
         registerRegExMessage(Language.GERMAN, MessageType.BED_DESTROYED,
                 "\\[BedWars] Das Bett von Team (.*) wurde von (.*) zerstört!",
                 (input, matcher) -> ImmutableMap.of("team", matcher.group(1), "destroyer", matcher.group(2)),
-                map -> new BedDestroyedEvent(map.get("destroyer"), map.get("team")),
+                map -> new BedDestroyEvent(map.get("destroyer"), map.get("team")),
                 GommeGameMode.BED_WARS
         );
         registerRegExMessage(Language.GERMAN, MessageType.TEAM_OUT, "\\[BedWars] Team (.*) wurde vernichtet!",

@@ -33,7 +33,7 @@ import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 
 public class GommeStatsCore {
 
-    private final MatchManager matchManager = new MatchManager(this);
+    private final MatchManager matchManager;
     private final PlayerDataProvider playerDataProvider;
     private final ClanInfoProvider clanInfoProvider;
 
@@ -44,6 +44,7 @@ public class GommeStatsCore {
 
     public GommeStatsCore(ServiceRegistry registry) {
         this.registry = registry;
+        this.matchManager = new MatchManager(this);
         this.playerDataProvider = new PlayerDataProvider(this.registry);
         this.clanInfoProvider = new ClanInfoProvider(this.registry);
     }

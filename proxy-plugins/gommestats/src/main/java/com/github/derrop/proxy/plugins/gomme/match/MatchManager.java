@@ -25,23 +25,32 @@
 package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class MatchManager {
+public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
     private final GommeStatsCore core;
+    private final Gson gson;
 
     public MatchManager(GommeStatsCore core) {
+        super(core.getRegistry(), "gomme_matches", JsonObject.class);
         this.core = core;
+        this.gson = new GsonBuilder().setPrettyPrinting() /* TODO remove */.registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
     }
 
     private final Map<String, MatchInfo> openMatches = new ConcurrentHashMap<>();
@@ -80,9 +89,7 @@ public class MatchManager {
         for (MatchInfo value : this.openMatches.values()) {
             if (value.getInvoker().equals(invoker)) {
                 this.openMatches.remove(value.getMatchId());
-                if (value.hasEnded()) {
-                    this.writeToDatabase(value);
-                }
+                this.writeToDatabase(value);
             }
         }
     }
@@ -104,23 +111,29 @@ public class MatchManager {
             return;
         }
         matchInfo.end(matchInfo.getInvoker().getWorldDataProvider().getOnlinePlayers());
-        this.writeToDatabase(matchInfo);
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        // TODO
+        for (MatchEvent event : matchInfo.getEvents()) {
+            System.out.println(new SimpleDateFormat("hh:mm:ss").format(event.getTimestamp()) + ": " + event.toPlainText());
+        }
+        System.out.println(this.gson.toJson(matchInfo));
+        super.insert(matchInfo.getMatchId(), this.gson.toJsonTree(matchInfo).getAsJsonObject());
     }
 
     public long countMatches() {
-        return -1;
+        return super.size();
     }
 
     public long countMatches(GommeGameMode gameMode) {
-        return -1;
+        return super.getAll().stream()
+                .map(jsonObject -> this.gson.fromJson(jsonObject, MatchInfo.class))
+                .filter(matchInfo -> matchInfo.getGameMode() == gameMode)
+                .count();
     }
 
     public Collection<MatchInfo> getPastMatches() {
-        return null;
+        return super.getAll().stream().map(jsonObject -> this.gson.fromJson(jsonObject, MatchInfo.class)).collect(Collectors.toList());
     }
 
 }
