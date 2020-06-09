@@ -24,13 +24,30 @@
  */
 package com.github.derrop.proxy.plugins.gomme;
 
+/**
+ * Commented lines cannot be detected easily because Gomme doesn't send them on the 'GoMod' channel.
+ */
 public enum GommeGameMode {
+    //LOBBY("Lobby", "LOBBY", "compass"), Lobby is not a GameMode
+    //CITY_BUILD("CityBuild", "", "workbench"), 1.13.2+ only
     CORES("Cores", "CORES", "beacon"),
+    JUMP_LEAGUE("JumpLeague", "JL", "diamond_boots"),
+    TTT("TTT", "TTT", "stick"),
+    SPEED_UHC("SpeedUHC", "SPEEDUHC", "golden_apple"),
+    SKY_WARS("SkyWars", "SKYWARS", "grass_block"),
+    //ENDER_GAMES("EnderGames", "", "eye_of_ender"),
+    GUN_GAME("GunGame", "GUNGAME", "wooden_axe"),
+    FFA_HARDCODE("FFF HardCore", "HARDCORE", "diamond_chestplate"),
+    COOKIES("Cookies", "COOKIES", "cookie"),
+    //GAME_1v1("Game 1vs1", "", "golden_helmet"),
+    MASTER_BUILDERS("MasterBuilders", "MASTERBUILDERS", "iron_pickaxe"),
+    //SURVIVAL_GAMES("SurvivalGames", "", "iron_sword"),
+    //QUICK_SURVIVAL_GAMES("Quick SurvivalGames", "", "iron_sword"),
     BED_WARS("BedWars", "BW", "bed");
 
-    private String displayName;
-    private String gommeInternalName;
-    private String icon;
+    private final String displayName;
+    private final String gommeInternalName;
+    private final String icon;
 
     GommeGameMode(String displayName, String gommeInternalName, String icon) {
         this.displayName = displayName;
