@@ -73,8 +73,8 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
                     PlayerInfo playerInfo = ((EntityPlayer) entity).getPlayerInfo();
                     if (playerInfo != null) {
                         player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString() + " (" + playerInfo.getUsername() + ")");
-                        continue;
                     }
+                    continue;
                 }
                 player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString());
             }
