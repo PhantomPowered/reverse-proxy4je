@@ -30,6 +30,8 @@ import org.jline.reader.LineReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -44,6 +46,10 @@ public class ProxyLogger extends Logger implements AutoCloseable {
         super.setLevel(Level.ALL);
 
         try {
+            if (!Files.exists(Paths.get("logs"))) {
+                Files.createDirectory(Paths.get("logs"));
+            }
+
             FileHandler fileHandler = new FileHandler("logs/proxy.log", 1 << 24, 8, true);
             fileHandler.setFormatter(new LogFormatter());
             fileHandler.setLevel(Level.ALL);
