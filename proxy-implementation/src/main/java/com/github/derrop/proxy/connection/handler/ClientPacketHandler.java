@@ -17,7 +17,7 @@ import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;

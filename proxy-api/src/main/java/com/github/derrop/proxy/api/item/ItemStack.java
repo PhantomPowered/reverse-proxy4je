@@ -22,18 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.api.item;
 
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.google.errorprone.annotations.concurrent.LazyInit;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemStack {
 
     public static final ItemStack NONE = new ItemStack(0, 0, 0, null);
 
-    private int itemId;
-    private int amount;
-    private int meta;
-    private NBTTagCompound nbt;
+    private final int itemId;
+    private final int amount;
+    private final int meta;
+    private final NBTTagCompound nbt;
+
+    @LazyInit
+    private @Nullable ItemMeta itemMeta;
 
     public ItemStack(int itemId, int amount, int meta, NBTTagCompound nbt) {
         this.itemId = itemId;
@@ -54,8 +59,22 @@ public class ItemStack {
         return meta;
     }
 
+    @Nullable
     public NBTTagCompound getNbt() {
         return nbt;
+    }
+
+    public boolean hasItemMeta() {
+        return this.itemMeta != null || this.nbt != null;
+    }
+
+    @Nullable
+    public ItemMeta getItemMeta() {
+        if (this.itemMeta == null && this.nbt != null) {
+            this.itemMeta = new ItemMeta(this.nbt);
+        }
+
+        return itemMeta;
     }
 
     @Override

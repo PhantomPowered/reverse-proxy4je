@@ -3,7 +3,7 @@ package com.github.derrop.proxy.api.events.connection.player;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerBlockPlaceEvent extends PlayerEvent implements Cancelable {

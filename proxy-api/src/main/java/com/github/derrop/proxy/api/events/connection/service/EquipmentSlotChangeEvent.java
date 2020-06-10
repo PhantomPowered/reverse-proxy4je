@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class EquipmentSlotChangeEvent extends ServiceConnectionEvent implements Cancelable {

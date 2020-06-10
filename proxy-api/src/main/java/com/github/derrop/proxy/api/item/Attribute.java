@@ -22,38 +22,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.connection;
+package com.github.derrop.proxy.api.item;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.network.ServerConnectionChannelInitializer;
-import com.github.derrop.proxy.util.NettyUtils;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+public enum Attribute {
 
-import java.net.SocketAddress;
-
-public class ProxyServer {
-
-    private final MCProxy proxy;
-
-    public ProxyServer(MCProxy proxy) {
-        this.proxy = proxy;
-    }
-
-    private final EventLoopGroup bossGroup = NettyUtils.newEventLoopGroup();
-    private final EventLoopGroup workerGroup = NettyUtils.newEventLoopGroup();
-
-    public void start(SocketAddress address) {
-        new ServerBootstrap()
-                .channel(NettyUtils.getServerSocketChannelClass())
-                .option(ChannelOption.SO_REUSEADDR, true)
-                .childHandler(new ServerConnectionChannelInitializer(this.proxy))
-                .group(this.bossGroup, this.workerGroup)
-                .bind(address)
-                .syncUninterruptibly();
-
-        System.out.println("Running proxy on " + address);
-    }
-
+    GENERIC_MAX_HEALTH,
+    GENERIC_FOLLOW_RANGE,
+    GENERIC_KNOCKBACK_RESISTANCE,
+    GENERIC_MOVEMENT_SPEED,
+    GENERIC_FLYING_SPEED,
+    GENERIC_ATTACK_DAMAGE,
+    GENERIC_ATTACK_SPEED,
+    GENERIC_ARMOR,
+    GENERIC_ARMOR_TOUGHNESS,
+    GENERIC_LUCK,
+    HORSE_JUMP_STRENGTH,
+    ZOMBIE_SPAWN_REINFORCEMENTS;
 }

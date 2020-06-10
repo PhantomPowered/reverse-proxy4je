@@ -35,7 +35,7 @@ import java.util.Set;
 
 public class NBTTagCompound extends NBTBase {
 
-    private Map<String, NBTBase> tagMap = Maps.newHashMap();
+    public final Map<String, NBTBase> tagMap = Maps.newConcurrentMap();
 
     /**
      * Write the actual data contents of the tag, implemented in NBT extension classes
@@ -197,9 +197,6 @@ public class NBTTagCompound extends NBTBase {
         if (i == type) {
             return true;
         } else if (type != 99) {
-            if (i > 0) {
-            }
-
             return false;
         } else {
             return i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 6;

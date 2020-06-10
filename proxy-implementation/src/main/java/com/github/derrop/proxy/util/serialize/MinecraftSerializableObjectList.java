@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.util.serialize;
 
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.util.Rotations;
 
 import java.util.*;

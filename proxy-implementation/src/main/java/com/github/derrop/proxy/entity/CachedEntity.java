@@ -10,7 +10,7 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.connection.cache.handler.EntityEffectCache;

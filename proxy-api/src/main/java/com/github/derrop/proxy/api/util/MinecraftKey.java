@@ -22,38 +22,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.connection;
+package com.github.derrop.proxy.api.util;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.network.ServerConnectionChannelInitializer;
-import com.github.derrop.proxy.util.NettyUtils;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import com.google.common.base.Preconditions;
 
-import java.net.SocketAddress;
+public class MinecraftKey {
 
-public class ProxyServer {
-
-    private final MCProxy proxy;
-
-    public ProxyServer(MCProxy proxy) {
-        this.proxy = proxy;
+    public static MinecraftKey forValue(String value) {
+        return new MinecraftKey("minecraft", value);
     }
 
-    private final EventLoopGroup bossGroup = NettyUtils.newEventLoopGroup();
-    private final EventLoopGroup workerGroup = NettyUtils.newEventLoopGroup();
+    private final String key;
+    private final String value;
 
-    public void start(SocketAddress address) {
-        new ServerBootstrap()
-                .channel(NettyUtils.getServerSocketChannelClass())
-                .option(ChannelOption.SO_REUSEADDR, true)
-                .childHandler(new ServerConnectionChannelInitializer(this.proxy))
-                .group(this.bossGroup, this.workerGroup)
-                .bind(address)
-                .syncUninterruptibly();
+    public MinecraftKey(String fullName) {
+        String[] split = fullName.split(":");
+        Preconditions.checkArgument(split.length == 2);
 
-        System.out.println("Running proxy on " + address);
+        this.key = split[0];
+        this.value = split[1];
     }
 
+    public MinecraftKey(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return key + ":" + value;
+    }
 }
