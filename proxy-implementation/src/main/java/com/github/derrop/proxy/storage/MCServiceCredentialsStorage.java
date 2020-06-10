@@ -22,26 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.account;
+package com.github.derrop.proxy.storage;
 
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.MCServiceCredentials;
-import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiConsumer;
+import java.util.Collection;
 
-public class AccountReader {
+public class MCServiceCredentialsStorage extends DatabaseProvidedStorage<MCServiceCredentials> {
 
-    public void readAccounts(ServiceRegistry registry, BiConsumer<MCServiceCredentials, NetworkAddress> consumer) {
-        MCServiceCredentialsStorage storage = registry.getProviderUnchecked(MCServiceCredentialsStorage.class);
-        for (MCServiceCredentials credentials : storage.getAll()) {
-            NetworkAddress parse = NetworkAddress.parse(credentials.getDefaultServer());
-            if (parse == null) {
-                continue;
-            }
+    public MCServiceCredentialsStorage(ServiceRegistry registry) {
+        super(registry, "credentials", MCServiceCredentials.class);
+    }
 
-            consumer.accept(credentials, parse);
-        }
+    @Override
+    public @NotNull Collection<MCServiceCredentials> getAll() {
+        return super.getAll();
+    }
+
+    @Override
+    public MCServiceCredentials get(String key) {
+        return super.get(key);
+    }
+
+    @Override
+    public void delete(String key) {
+        super.delete(key);
+    }
+
+    @Override
+    public void update(String key, MCServiceCredentials value) {
+        super.update(key, value);
+    }
+
+    @Override
+    public void insert(String key, MCServiceCredentials value) {
+        super.insert(key, value);
     }
 }

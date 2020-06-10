@@ -43,7 +43,7 @@ import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -74,11 +74,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private static final Set<NetworkAddress> BANNED_ADDRESSES = new HashSet<>();
 
-    public BasicServiceConnection(MCProxy proxy, MCCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
+    public BasicServiceConnection(MCProxy proxy, MCServiceCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
         this(proxy, credentials, networkAddress, true);
     }
 
-    public BasicServiceConnection(MCProxy proxy, MCCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
+    public BasicServiceConnection(MCProxy proxy, MCServiceCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
         this.proxy = proxy;
         this.credentials = credentials;
         this.networkAddress = networkAddress;
@@ -96,7 +96,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final MCProxy proxy;
 
-    private final MCCredentials credentials;
+    private final MCServiceCredentials credentials;
     private final UserAuthentication authentication;
 
     private final NetworkAddress networkAddress;
@@ -143,7 +143,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public @NotNull MCCredentials getCredentials() {
+    public @NotNull MCServiceCredentials getCredentials() {
         return this.credentials;
     }
 
