@@ -26,6 +26,9 @@ package com.github.derrop.proxy.command.console;
 
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.logging.ProxyLogLevels;
+import com.github.derrop.proxy.logging.ProxyLogger;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -36,9 +39,16 @@ public class ConsoleCommandSender implements CommandSender {
 
     private static final UUID CONSOLE_UUID = UUID.randomUUID();
 
+    public ConsoleCommandSender(ServiceRegistry registry) {
+        this.registry = registry;
+    }
+
+    private final ServiceRegistry registry;
+
     @Override
     public void sendMessage(@NotNull String message) {
-        System.out.println(ChatColor.stripColor(message));
+        ProxyLogger logger = this.registry.getProviderUnchecked(ProxyLogger.class);
+        logger.logp(ProxyLogLevels.COMMAND, "", "", ChatColor.stripColor(message));
     }
 
     @Override

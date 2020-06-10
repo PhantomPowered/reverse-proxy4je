@@ -23,14 +23,47 @@
  * SOFTWARE.
  */
 package com.github.derrop.proxy.logging;
-/*
- * Created by Mc_Ruben on 08.02.2019
- */
 
-public interface LogHandler {
+import org.jline.reader.LineReader;
+import org.jline.utils.InfoCmp;
 
-    void handleLine(String line, String formattedLine);
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
-    void close();
+public class LogHandler extends Handler {
 
+    public LogHandler(LineReader lineReader) {
+        this.lineReader = lineReader;
+    }
+
+    private final LineReader lineReader;
+
+    @Override
+    public void publish(LogRecord record) {
+        if (super.isLoggable(record)) {
+            this.lineReader.getTerminal().puts(InfoCmp.Capability.carriage_return);
+            this.lineReader.getTerminal().puts(InfoCmp.Capability.clr_eol);
+            this.lineReader.getTerminal().writer().print("\r" + super.getFormatter().format(record) + "\r");
+            this.lineReader.getTerminal().writer().flush();
+
+            this.redisplay();
+        }
+    }
+
+    @Override
+    public void flush() {
+    }
+
+    @Override
+    public void close() throws SecurityException {
+    }
+
+    private void redisplay() {
+        if (!this.lineReader.isReading()) {
+            return;
+        }
+
+        this.lineReader.callWidget(LineReader.REDRAW_LINE);
+        this.lineReader.callWidget(LineReader.REDISPLAY);
+    }
 }

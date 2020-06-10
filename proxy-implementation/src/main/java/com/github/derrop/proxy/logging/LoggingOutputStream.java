@@ -23,24 +23,35 @@
  * SOFTWARE.
  */
 package com.github.derrop.proxy.logging;
-/*
- * Created by Mc_Ruben on 08.02.2019
- */
 
-import lombok.Getter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-@Getter
-public enum LoggingLevel {
+public class LoggingOutputStream extends ByteArrayOutputStream {
 
-    INFORMATION(null),
-    ERROR(ConsoleColor.RED),
-    WARNING(ConsoleColor.YELLOW),
-    DEBUG(ConsoleColor.CYAN);
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    LoggingLevel(ConsoleColor color) {
-        this.color = color;
+    public LoggingOutputStream(Logger parent, Level level) {
+        this.parent = parent;
+        this.level = level;
     }
 
-    private ConsoleColor color;
+    private final Logger parent;
+    private final Level level;
 
+    @Override
+    public void flush() throws IOException {
+        synchronized (this) {
+            super.flush();
+            String content = this.toString(StandardCharsets.UTF_8.name());
+            super.reset();
+
+            if (!content.isEmpty() && !content.equals(LINE_SEPARATOR) && !content.startsWith("SLF4J: ")) {
+                this.parent.logp(this.level, "", "", content);
+            }
+        }
+    }
 }

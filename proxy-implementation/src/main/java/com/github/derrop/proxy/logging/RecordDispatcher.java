@@ -23,45 +23,38 @@
  * SOFTWARE.
  */
 package com.github.derrop.proxy.logging;
-/*
- * Created by Mc_Ruben on 17.02.2019
- */
 
-import jline.console.completer.Completer;
-import lombok.Getter;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.LogRecord;
 
-import java.util.*;
+public class RecordDispatcher extends Thread {
 
-public class JAnsiCompleter implements Completer {
+    private final BlockingQueue<LogRecord> queue = new LinkedBlockingQueue<>();
+    private final ProxyLogger logger;
 
-    @Getter
-    private Map<String, TabCompletableWrapper> completers = new HashMap<>();
+    public RecordDispatcher(ProxyLogger logger) {
+        super.setDaemon(true);
+        this.logger = logger;
+    }
 
     @Override
-    public int complete(String buffer, int cursor, List<CharSequence> candidates) {
-        Collection<String> suggestions = new ArrayList<>();
-
-        String[] args = buffer.split(" ");
-
-        for (TabCompletableWrapper value : this.completers.values()) {
-            Collection<String> a = value.tabComplete(buffer, args);
-            if (a != null && !a.isEmpty()) {
-                suggestions.addAll(a);
+    public void run() {
+        while (!super.isInterrupted()) {
+            try {
+                this.logger.doLog(this.queue.take());
+            } catch (InterruptedException ignored) {
             }
         }
 
-        String testString = buffer.endsWith(" ") ? "" : args[args.length - 1].toLowerCase().trim();
-
-        if (!suggestions.isEmpty()) {
-            for (String suggestion : suggestions) {
-                if (testString.isEmpty() || suggestion.toLowerCase().startsWith(testString)) {
-                    candidates.add(suggestion);
-                }
-            }
+        for (LogRecord logRecord : this.queue) {
+            this.logger.doLog(logRecord);
         }
+    }
 
-        int lastSpace = buffer.lastIndexOf(' ');
-
-        return (lastSpace == -1) ? cursor - buffer.length() : cursor - (buffer.length() - lastSpace - 1);
+    void queue(LogRecord record) {
+        if (!super.isInterrupted()) {
+            this.queue.add(record);
+        }
     }
 }

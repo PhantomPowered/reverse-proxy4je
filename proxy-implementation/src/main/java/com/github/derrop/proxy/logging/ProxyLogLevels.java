@@ -23,24 +23,14 @@
  * SOFTWARE.
  */
 package com.github.derrop.proxy.logging;
-/*
- * Created by Mc_Ruben on 17.03.2019
- */
 
-import lombok.*;
+import java.util.logging.Level;
 
-import java.util.Collection;
+public class ProxyLogLevels extends Level {
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class TabCompletableWrapper {
+    public static final Level COMMAND = new ProxyLogLevels("COMMAND", 750);
 
-    private boolean enabled;
-    private ITabCompletable tabCompletable;
-
-    public Collection<String> tabComplete(String commandLine, String[] args) {
-        return this.enabled ? this.tabCompletable.tabComplete(commandLine, args) : null;
+    private ProxyLogLevels(String name, int value) {
+        super(name, value, "sun.util.logging.resources.logging");
     }
-
 }
