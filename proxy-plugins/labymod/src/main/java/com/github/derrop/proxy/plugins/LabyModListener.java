@@ -55,6 +55,9 @@ public final class LabyModListener {
 
         JsonObject content = JsonParser.parseString(ByteBufUtils.readString(byteBuf)).getAsJsonObject();
         content.add("addons", new JsonArray());
+        if (content.has("mods") && !content.get("mods").isJsonNull()) {
+            content.add("mods", new JsonArray());
+        }
 
         ByteBuf buf = Unpooled.buffer();
         ByteBufUtils.writeString("INFO", buf);
