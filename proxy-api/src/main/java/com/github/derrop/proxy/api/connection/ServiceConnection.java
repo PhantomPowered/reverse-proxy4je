@@ -26,9 +26,11 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
@@ -43,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ServiceConnection extends Connection, AutoCloseable, Entity {
@@ -128,5 +131,13 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
     void startViewing(Player player);
 
     void stopViewing(Player player);
+
+    boolean isSneaking();
+
+    boolean isSprinting();
+
+    BlockPos getTargetBlock(Set<Material> transparent, int range);
+
+    BlockPos getTargetBlock(int range);
 
 }

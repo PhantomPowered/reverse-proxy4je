@@ -23,6 +23,8 @@ import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.*;
+import com.github.derrop.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
+import com.github.derrop.proxy.protocol.play.client.entity.PacketPlayClientUseEntity;
 import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientClickWindow;
 import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientCloseWindow;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
@@ -33,6 +35,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteR
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
+import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
@@ -53,6 +56,75 @@ public class ClientPacketHandler {
 
             // rewrite to allow modifications by the packet handlers
             player.getConnectedClient().networkUnsafe().sendPacket(packet.getPacket() != null ? packet.getPacket() : packet);
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ENTITY_ACTION, directions = ProtocolDirection.TO_SERVER)
+    public void handleAction(DefaultPlayer player, PacketPlayClientEntityAction packet) {
+        if (player.getConnectedClient() == null || !(player.getConnectedClient() instanceof BasicServiceConnection)) {
+            return;
+        }
+        BasicServiceConnection connection = (BasicServiceConnection) player.getConnectedClient();
+
+        switch (packet.getAction()) {
+            case START_SNEAKING:
+                connection.setSneaking(true);
+                break;
+
+            case STOP_SNEAKING:
+                connection.setSneaking(false);
+                break;
+
+            case START_SPRINTING:
+                connection.setSprinting(true);
+                break;
+
+            case STOP_SPRINTING:
+                connection.setSprinting(false);
+                break;
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ARM_ANIMATION, directions = ProtocolDirection.TO_SERVER)
+    public void handleLeftClick(DefaultPlayer player, PacketPlayClientArmAnimation packet) {
+        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.LEFT_CLICK);
+        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        if (event.isCancelled()) {
+            throw CancelProceedException.INSTANCE;
+        }
+
+        if (event.getType() != PlayerInteractEvent.Type.LEFT_CLICK) {
+            if (player.getConnectedClient() != null) {
+                //player.getConnectedClient().sendPacket(new PacketPlayClientUseEntity()); TODO what should we send when we rightclick into the air?
+            }
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.USE_ENTITY, directions = ProtocolDirection.TO_SERVER)
+    public void handleUseEntity(DefaultPlayer player, PacketPlayClientUseEntity packet) {
+        PlayerInteractEvent.Type type = packet.getAction() == PacketPlayClientUseEntity.Action.ATTACK ? PlayerInteractEvent.Type.LEFT_CLICK : PlayerInteractEvent.Type.RIGHT_CLICK;
+        PlayerInteractEvent event = new PlayerInteractEvent(player, type);
+        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        if (event.isCancelled()) {
+            throw CancelProceedException.INSTANCE;
+        }
+
+        if (event.getType() != type) {
+            packet.setAction(type == PlayerInteractEvent.Type.LEFT_CLICK ? PacketPlayClientUseEntity.Action.ATTACK : PacketPlayClientUseEntity.Action.INTERACT);
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
+    public void handleBlockPlace(DefaultPlayer player, PacketPlayClientBlockPlace packet) {
+        if (player.getConnectedClient() == null) {
+            return;
+        }
+
+        PlayerBlockPlaceEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new PlayerBlockPlaceEvent(player, packet.getPos(), packet.getStack()));
+        if (event.isCancelled()) {
+            // player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos()))); TODO should we send this?
+            throw CancelProceedException.INSTANCE;
         }
     }
 
@@ -128,20 +200,6 @@ public class ClientPacketHandler {
                 .callEvent(new PlayerBlockBreakEvent(player, packet.getPos(), PlayerBlockBreakEvent.Action.values()[packet.getAction().ordinal()]));
         if (event.isCancelled()) {
             player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos())));
-            throw CancelProceedException.INSTANCE;
-        }
-    }
-
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
-    public void handleBlockPlace(DefaultPlayer player, PacketPlayClientBlockPlace packet) {
-        if (player.getConnectedClient() == null) {
-            return;
-        }
-
-        PlayerBlockPlaceEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new PlayerBlockPlaceEvent(player, packet.getPos(), packet.getStack()));
-        if (event.isCancelled()) {
-            // player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos()))); TODO should we send this?
             throw CancelProceedException.INSTANCE;
         }
     }
