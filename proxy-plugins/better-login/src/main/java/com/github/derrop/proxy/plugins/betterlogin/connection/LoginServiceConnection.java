@@ -2,6 +2,7 @@ package com.github.derrop.proxy.plugins.betterlogin.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -10,6 +11,7 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
@@ -37,10 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class LoginServiceConnection implements ServiceConnection {
@@ -373,6 +372,26 @@ public class LoginServiceConnection implements ServiceConnection {
 
     @Override
     public void stopViewing(Player player) {
+    }
+
+    @Override
+    public boolean isSneaking() {
+        return false;
+    }
+
+    @Override
+    public boolean isSprinting() {
+        return false;
+    }
+
+    @Override
+    public BlockPos getTargetBlock(Set<Material> transparent, int range) {
+        return null;
+    }
+
+    @Override
+    public BlockPos getTargetBlock(int range) {
+        return null;
     }
 
     @Override

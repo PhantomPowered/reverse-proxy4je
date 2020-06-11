@@ -29,6 +29,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
@@ -36,6 +37,7 @@ import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -43,6 +45,7 @@ import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
+import com.github.derrop.proxy.api.util.BlockIterator;
 import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
@@ -109,6 +112,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private PlayerAbilities abilities = new DefaultPlayerAbilities(this);
 
     private boolean reScheduleOnFailure;
+
+    private boolean sneaking, sprinting;
 
     private Location location = new Location(0, 0, 0, 0, 0);
 
@@ -224,6 +229,43 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public void stopViewing(Player player) {
         this.client.getViewers().remove(player);
+    }
+
+    @Override
+    public boolean isSneaking() {
+        return this.sneaking;
+    }
+
+    public void setSneaking(boolean sneaking) {
+        this.sneaking = sneaking;
+    }
+
+    @Override
+    public boolean isSprinting() {
+        return this.sprinting;
+    }
+
+    public void setSprinting(boolean sprinting) {
+        this.sprinting = sprinting;
+    }
+
+    @Override
+    public BlockPos getTargetBlock(int range) {
+        return this.getTargetBlock(EnumSet.of(Material.AIR), range);
+    }
+
+    @Override
+    public BlockPos getTargetBlock(Set<Material> transparent, int range) {
+        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this, range);
+        BlockPos pos = null;
+        while (iterator.hasNext()) {
+            pos = iterator.next();
+            Material material = this.getBlockAccess().getMaterial(pos);
+            if (!transparent.contains(material)) {
+                break;
+            }
+        }
+        return pos;
     }
 
     @Override
