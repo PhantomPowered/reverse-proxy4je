@@ -13,6 +13,8 @@ import com.github.derrop.proxy.plugins.pwarner.storage.WarnedEquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
 
@@ -32,8 +34,41 @@ public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
 
         Player player = (Player) sender;
 
+        if (args.length == 2 && args[0].equalsIgnoreCase("list")) {
 
-        if (args.length == 3 && args[0].equalsIgnoreCase("equip")) {
+            PlayerWarningData data = this.database.getData(player.getUniqueId());
+            if (data == null) {
+                sender.sendMessage("No data found");
+                return CommandResult.BREAK;
+            }
+
+            switch (args[1].toLowerCase()) {
+                case "equip": {
+                    if (data.getEquipmentSlots().isEmpty()) {
+                        sender.sendMessage("No warnings on equipment slot updates defined");
+                        return CommandResult.BREAK;
+                    }
+
+                    for (Map.Entry<Integer, Collection<WarnedEquipmentSlot>> entry : data.getEquipmentSlots().entrySet()) {
+                        if (entry.getValue().isEmpty()) {
+                            continue;
+                        }
+
+                        EquipmentSlot slot = EquipmentSlot.getById(entry.getKey());
+                        if (slot == null) {
+                            continue;
+                        }
+
+                        sender.sendMessage("Warnings for the slot §e" + slot.getFormattedName());
+                        for (WarnedEquipmentSlot warn : entry.getValue()) {
+                            sender.sendMessage(" - §e" + warn.getMaterial());
+                        }
+                    }
+                }
+                break;
+            }
+
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("equip")) {
             EquipmentSlot slot;
             try {
                 slot = EquipmentSlot.valueOf(args[1].toUpperCase());
@@ -56,8 +91,11 @@ public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
             }
 
             this.database.update(data);
+
+            return CommandResult.SUCCESS;
         } else {
             sender.sendMessage("playerwarns equip <" + Arrays.toString(EquipmentSlot.values()) + "> <Material>");
+            sender.sendMessage("playerwarns list equip");
         }
 
         return CommandResult.END;

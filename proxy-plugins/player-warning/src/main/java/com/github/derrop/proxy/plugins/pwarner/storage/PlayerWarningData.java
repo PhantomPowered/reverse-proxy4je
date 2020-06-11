@@ -17,6 +17,10 @@ public class PlayerWarningData {
         this.targetPlayerId = targetPlayerId;
     }
 
+    public Map<Integer, Collection<WarnedEquipmentSlot>> getEquipmentSlots() {
+        return this.equipmentSlots;
+    }
+
     public boolean shouldWarnEquipmentSlot(int slotId, Material material) {
         return this.equipmentSlots.containsKey(slotId) && this.equipmentSlots.get(slotId).stream().anyMatch(slot -> slot.getMaterial() == material);
     }
