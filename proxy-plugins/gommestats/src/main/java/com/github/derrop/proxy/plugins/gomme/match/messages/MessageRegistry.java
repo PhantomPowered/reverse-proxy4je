@@ -35,7 +35,7 @@ public class MessageRegistry {
         registerMessage(Language.GERMAN, MessageType.GAME_END_DIED, "[BedWars] Du bist nun Zuschauer!", MatchEndDiedEvent::new, GommeGameMode.BED_WARS);
         registerRegExMessage(Language.GERMAN, MessageType.GAME_END_FINISHED, "\\[BedWars] Team (.*) hat gewonnen!",
                 (input, matcher) -> ImmutableMap.of("winner", matcher.group(1)),
-                map -> new MatchEndFinishedEvent(map.get("winner")),
+                map -> new MatchEndFinishedEvent(getTeam(Language.GERMAN, GommeGameMode.BED_WARS, map.get("winner"))),
                 GommeGameMode.BED_WARS
         );
         registerRegExMessage(Language.GERMAN, MessageType.MAP_SELECTED, "\\[BedWars] Map: (.*) von: (.*)",
