@@ -43,6 +43,8 @@ public final class ProxyBootstrap {
         ProxyConsole proxyConsole = new ProxyConsole();
         ProxyLogger proxyLogger = new ProxyLogger(proxyConsole.getLineReader());
 
+        sendWelcomeScreen();
+
         long start = System.currentTimeMillis();
         MCProxy proxy = new MCProxy();
         proxy.getServiceRegistry().setProvider(null, ProxyLogger.class, proxyLogger, true);
@@ -61,5 +63,21 @@ public final class ProxyBootstrap {
                 System.out.println(ex.getMessage());
             }
         }
+    }
+
+    private static void sendWelcomeScreen() {
+        System.out.println("\n" +
+                "   ____        _ _            __  __  _____ _____                     \n" +
+                "  / __ \\      | (_)          |  \\/  |/ ____|  __ \\                    \n" +
+                " | |  | |_ __ | |_ _ __   ___| \\  / | |    | |__) | __ _____  ___   _ \n" +
+                " | |  | | '_ \\| | | '_ \\ / _ \\ |\\/| | |    |  ___/ '__/ _ \\ \\/ / | | |\n" +
+                " | |__| | | | | | | | | |  __/ |  | | |____| |   | | | (_) >  <| |_| |\n" +
+                "  \\____/|_| |_|_|_|_| |_|\\___|_|  |_|\\_____|_|   |_|  \\___/_/\\_\\\\__, |\n" +
+                "                                                                 __/ |\n" +
+                "                                                                |___/ \n");
+        System.out.println("Booting up online mc proxy version " + ProxyBootstrap.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
+        System.out.println("Running on runtime " + System.getProperty("java.runtime.name") + " in vm " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.info"));
+        System.out.println("Java Version: " + System.getProperty("java.runtime.version") + " (vm: " + System.getProperty("java.vm.version") + ")" + " system: " + System.getProperty("os.name") + " (arch: " + System.getProperty("os.arch") + ")");
+        System.out.println();
     }
 }
