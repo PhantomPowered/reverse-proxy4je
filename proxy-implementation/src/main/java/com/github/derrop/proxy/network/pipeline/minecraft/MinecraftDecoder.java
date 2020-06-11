@@ -29,6 +29,7 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.logging.ProxyLogger;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import io.netty.buffer.ByteBuf;
@@ -37,11 +38,13 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     private final ServiceRegistry registry;
     private final ProtocolDirection direction;
+    private final Logger logger;
 
     private ProtocolState protocolState;
 
@@ -49,6 +52,7 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
         this.registry = registry;
         this.direction = direction;
         this.protocolState = protocolState;
+        this.logger = registry.getProviderUnchecked(ProxyLogger.class);
     }
 
     @Override
@@ -56,12 +60,15 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
         ByteBuf copy = byteBuf.copy();
 
         DefaultProtoBuf protoBuf = new DefaultProtoBuf(47, byteBuf);
-        Packet packet = this.registry.getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, protoBuf.readVarInt());
+        int packetId = protoBuf.readVarInt();
+        Packet packet = this.registry.getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, packetId);
         if (packet == null) {
+            this.logger.finer("Received unhandled packet (id: " + packetId + ")");
             list.add(new DecodedPacket(new DefaultProtoBuf(47, copy), null));
             return;
         }
 
+        this.logger.finer("Receiving packet (class: " + packet.getClass().getName() + "; id: " + packetId + ") length: " + protoBuf.readableBytes());
         packet.read(protoBuf, this.direction, protoBuf.getProtocolVersion());
         list.add(new DecodedPacket(new DefaultProtoBuf(47, copy), packet));
     }

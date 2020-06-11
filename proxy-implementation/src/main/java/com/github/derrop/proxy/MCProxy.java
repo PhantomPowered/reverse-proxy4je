@@ -248,7 +248,7 @@ public class MCProxy extends Proxy {
         System.out.println("Connecting to database...");
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
         this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
-        this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
+        this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));
         this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
@@ -298,6 +298,7 @@ public class MCProxy extends Proxy {
         commandMap.registerCommand(null, new CommandPermissions(this.serviceRegistry), "perms");
         commandMap.registerCommand(null, new CommandFind(), "find");
         commandMap.registerCommand(null, new CommandReplace(), "replace");
+        commandMap.registerCommand(null, new CommandDebug(serviceRegistry), "debug");
 
         commandMap.registerCommand(null, new CommandAdf(), "adf");
 

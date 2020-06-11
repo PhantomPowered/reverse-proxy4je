@@ -29,6 +29,8 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.ListenerContainer;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.logging.ProxyLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,11 +41,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public final class DefaultEventManager implements EventManager {
 
+    private final Logger logger;
     private final List<ListenerContainer> registeredListeners = new CopyOnWriteArrayList<>();
+
+    public DefaultEventManager(ServiceRegistry registry) {
+        this.logger = registry.getProviderUnchecked(ProxyLogger.class);
+    }
 
     @Override
     public void callEvent(@NotNull Class<? extends Event> event) {
@@ -61,6 +69,7 @@ public final class DefaultEventManager implements EventManager {
         for (ListenerContainer registeredListener : this.registeredListeners) {
             if (registeredListener.getTargetEventClass().equals(event.getClass())) {
                 try {
+                    this.logger.fine("Posting event " + event.getClass().getName() + " to listener " + registeredListener.getListenerInstance().getClass().getName());
                     registeredListener.call(event);
                 } catch (final InvocationTargetException | IllegalAccessException ex) {
                     ex.printStackTrace();

@@ -50,7 +50,7 @@ public class LoggingOutputStream extends ByteArrayOutputStream {
             super.reset();
 
             if (!content.isEmpty() && !content.equals(LINE_SEPARATOR) && !content.startsWith("SLF4J: ")) {
-                this.parent.logp(this.level, "", "", content);
+                this.parent.log(this.level, content);
             }
         }
     }

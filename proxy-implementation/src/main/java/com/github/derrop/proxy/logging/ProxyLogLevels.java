@@ -28,7 +28,7 @@ import java.util.logging.Level;
 
 public class ProxyLogLevels extends Level {
 
-    public static final Level COMMAND = new ProxyLogLevels("COMMAND", 750);
+    public static final Level COMMAND = new ProxyLogLevels("COMMAND", Level.INFO.intValue() + 50);
 
     private ProxyLogLevels(String name, int value) {
         super(name, value, "sun.util.logging.resources.logging");
