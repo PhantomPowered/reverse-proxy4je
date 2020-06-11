@@ -46,7 +46,6 @@ import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.BlockIterator;
-import com.github.derrop.proxy.api.util.MCCredentials;
 import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
@@ -113,6 +112,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private PlayerAbilities abilities = new DefaultPlayerAbilities(this);
 
     private boolean reScheduleOnFailure;
+
+    private boolean sneaking, sprinting;
 
     private Location location = new Location(0, 0, 0, 0, 0);
 
