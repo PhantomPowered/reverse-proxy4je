@@ -107,7 +107,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
 
-        System.out.println("Registering packet handlers");
+        System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
@@ -257,7 +257,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins();
 
-        System.out.println("Loading commands");
+        System.out.println("Loading commands...");
         this.handleCommands();
 
         this.serviceRegistry.getProviderUnchecked(EventManager.class).registerListener(null, new ProxyBrandChangeListener());
