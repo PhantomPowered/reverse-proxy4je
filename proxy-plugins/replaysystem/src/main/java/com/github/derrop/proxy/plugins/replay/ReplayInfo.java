@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.replay;
 
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 
 import java.io.DataInputStream;
@@ -37,11 +37,11 @@ public class ReplayInfo {
     private NetworkAddress serverAddress;
     private UUID creatorId;
     private String creatorName;
-    private MCCredentials recorder;
+    private MCServiceCredentials recorder;
     private long timestamp;
     private int ownEntityId;
 
-    public ReplayInfo(NetworkAddress serverAddress, UUID creatorId, String creatorName, MCCredentials recorder, long timestamp, int ownEntityId) {
+    public ReplayInfo(NetworkAddress serverAddress, UUID creatorId, String creatorName, MCServiceCredentials recorder, long timestamp, int ownEntityId) {
         this.serverAddress = serverAddress;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
@@ -69,7 +69,7 @@ public class ReplayInfo {
         return creatorName;
     }
 
-    public MCCredentials getRecorder() {
+    public MCServiceCredentials getRecorder() {
         return recorder;
     }
 
@@ -95,6 +95,8 @@ public class ReplayInfo {
         } else {
             outputStream.writeUTF(this.recorder.getEmail());
             outputStream.writeUTF(this.recorder.getPassword());
+            outputStream.writeUTF(this.recorder.getDefaultServer());
+            outputStream.writeBoolean(this.recorder.isExportable());
         }
 
         outputStream.writeLong(this.timestamp);
@@ -110,9 +112,9 @@ public class ReplayInfo {
 
         boolean offline = inputStream.readBoolean();
         if (offline) {
-            this.recorder = new MCCredentials(inputStream.readUTF());
+            this.recorder = new MCServiceCredentials(inputStream.readUTF());
         } else {
-            this.recorder = new MCCredentials(inputStream.readUTF(), inputStream.readUTF());
+            this.recorder = new MCServiceCredentials(inputStream.readUTF(), inputStream.readUTF(), inputStream.readUTF(), inputStream.readBoolean());
         }
 
         this.timestamp = inputStream.readLong();

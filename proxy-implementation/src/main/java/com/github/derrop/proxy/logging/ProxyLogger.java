@@ -32,18 +32,15 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class ProxyLogger extends Logger implements AutoCloseable {
 
     private final RecordDispatcher recordDispatcher = new RecordDispatcher(this);
 
     public ProxyLogger(@NotNull LineReader lineReader) {
-        super("ProxyLogger", null);
-        super.setLevel(Level.ALL);
+        super("com.github.derrop.proxy", null);
+        super.setLevel(Level.INFO);
 
         try {
             if (!Files.exists(Paths.get("logs"))) {

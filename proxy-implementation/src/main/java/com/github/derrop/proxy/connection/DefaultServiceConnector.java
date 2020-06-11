@@ -5,7 +5,7 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -55,7 +55,7 @@ public class DefaultServiceConnector implements ServiceConnector {
     }
 
     @Override
-    public @NotNull ServiceConnection createConnection(MCCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
+    public @NotNull ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
         return new BasicServiceConnection(this.proxy, credentials, serverAddress);
     }
 

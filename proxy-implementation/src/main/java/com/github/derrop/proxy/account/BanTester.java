@@ -26,7 +26,7 @@ package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.ChatColor;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
@@ -93,7 +93,7 @@ public class BanTester {
         }
     }
 
-    public boolean isBanned(MCCredentials credentials, NetworkAddress address) throws AuthenticationException {
+    public boolean isBanned(MCServiceCredentials credentials, NetworkAddress address) throws AuthenticationException {
         System.out.println("Testing if the account " + credentials.getEmail() + " is banned on " + address + "...");
 
         ConnectedProxyClient proxyClient = new ConnectedProxyClient(null, null);

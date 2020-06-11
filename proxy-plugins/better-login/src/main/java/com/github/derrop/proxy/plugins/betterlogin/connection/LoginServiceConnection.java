@@ -18,7 +18,7 @@ import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
@@ -82,8 +82,8 @@ public class LoginServiceConnection implements ServiceConnection {
     }
 
     @Override
-    public @NotNull MCCredentials getCredentials() {
-        return Objects.requireNonNull(MCCredentials.parse(player.getName()));
+    public @NotNull MCServiceCredentials getCredentials() {
+        return new MCServiceCredentials(player.getName());
     }
 
     @Override

@@ -22,15 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.logging;
+package com.github.derrop.proxy.storage;
 
-import java.util.logging.Level;
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import org.jetbrains.annotations.NotNull;
 
-public class ProxyLogLevels extends Level {
+import java.util.Collection;
 
-    public static final Level COMMAND = new ProxyLogLevels("COMMAND", Level.INFO.intValue() + 50);
+public class MCServiceCredentialsStorage extends DatabaseProvidedStorage<MCServiceCredentials> {
 
-    private ProxyLogLevels(String name, int value) {
-        super(name, value, "sun.util.logging.resources.logging");
+    public MCServiceCredentialsStorage(ServiceRegistry registry) {
+        super(registry, "credentials", MCServiceCredentials.class);
+    }
+
+    @Override
+    public @NotNull Collection<MCServiceCredentials> getAll() {
+        return super.getAll();
+    }
+
+    @Override
+    public MCServiceCredentials get(String key) {
+        return super.get(key);
+    }
+
+    @Override
+    public void delete(String key) {
+        super.delete(key);
+    }
+
+    @Override
+    public void update(String key, MCServiceCredentials value) {
+        super.update(key, value);
+    }
+
+    @Override
+    public void insert(String key, MCServiceCredentials value) {
+        super.insert(key, value);
     }
 }

@@ -114,7 +114,7 @@ public class LoginCache implements PacketCacheHandler {
         con.sendPacket(new PacketPlayServerRespawn(
                 this.lastLogin.getDimension(),
                 this.lastLogin.getDifficulty(),
-                this.lastLogin.getGameMode(),
+                this.lastLogin.getGameMode(), // todo: for the game mode to work we need to cache the game mode update packets too
                 this.lastLogin.getLevelType()
         ));
 

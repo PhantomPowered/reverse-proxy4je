@@ -40,7 +40,7 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
@@ -57,10 +57,6 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientPlayerAbilit
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
 import com.github.derrop.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
 import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientHeldItemSlot;
-import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientLook;
-import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
-import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPosition;
-import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPositionLook;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
@@ -68,7 +64,6 @@ import com.github.derrop.proxy.connection.player.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
-import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.util.NettyUtils;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -101,7 +96,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
     private NetworkAddress address;
     private final MinecraftSessionService sessionService;
     private UserAuthentication authentication;
-    private MCCredentials credentials;
+    private MCServiceCredentials credentials;
 
     private final Collection<Player> viewers = new CopyOnWriteArrayList<>();
     private final UUID redirectorListenerKey = UUID.randomUUID();
@@ -141,7 +136,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
     }
 
-    public boolean performMojangLogin(MCCredentials credentials) throws AuthenticationException {
+    public boolean performMojangLogin(MCServiceCredentials credentials) throws AuthenticationException {
         if (credentials.isOffline()) {
             this.credentials = credentials;
             return true;
@@ -154,7 +149,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         return true;
     }
 
-    public void setAuthentication(UserAuthentication authentication, MCCredentials credentials) {
+    public void setAuthentication(UserAuthentication authentication, MCServiceCredentials credentials) {
         this.authentication = authentication;
         this.credentials = credentials;
     }
@@ -304,7 +299,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         return sessionService;
     }
 
-    public MCCredentials getCredentials() {
+    public MCServiceCredentials getCredentials() {
         return credentials;
     }
 

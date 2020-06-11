@@ -26,21 +26,26 @@ package com.github.derrop.proxy.api.util;
 
 import lombok.EqualsAndHashCode;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @EqualsAndHashCode
-public class MCCredentials {
+public class MCServiceCredentials {
 
     private String username;
     private String email;
-    private String password;
+    private byte[] password;
+    private String defaultServer;
+    private boolean exportable;
 
-    public MCCredentials(String email, String password) {
+    public MCServiceCredentials(String email, String password, String defaultServer, boolean exportable) {
         this.email = email;
-        this.password = password;
+        this.password = Base64.getEncoder().encode(password.getBytes(StandardCharsets.UTF_8));
+        this.defaultServer = defaultServer;
+        this.exportable = exportable;
     }
 
-    public MCCredentials(String username) {
+    public MCServiceCredentials(String username) {
         this.username = username;
     }
 
@@ -53,7 +58,27 @@ public class MCCredentials {
     }
 
     public String getPassword() {
-        return password;
+        return new String(Base64.getDecoder().decode(this.password), StandardCharsets.UTF_8);
+    }
+
+    public String getDefaultServer() {
+        return defaultServer;
+    }
+
+    public boolean isExportable() {
+        return exportable;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = Base64.getEncoder().encode(password.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public void setDefaultServer(String defaultServer) {
+        this.defaultServer = defaultServer;
     }
 
     public boolean isOffline() {
@@ -64,22 +89,4 @@ public class MCCredentials {
     public String toString() {
         return this.isOffline() ? "Offline:" + this.username : "Online:" + this.email;
     }
-
-    public static MCCredentials parse(String line) {
-        String[] split = line.split(":");
-        if (split.length == 1) { // Only the Name -> OfflineMode
-            return new MCCredentials(split[0]);
-        }
-        if (split.length == 3) { // Name:E-Mail:Password
-            split = Arrays.copyOfRange(split, 1, split.length);
-        }
-        if (split.length != 2) { // E-Mail:Password
-            return null;
-        }
-        if (!split[0].contains("@")) {
-            return null;
-        }
-        return new MCCredentials(split[0], split[1]);
-    }
-
 }
