@@ -32,6 +32,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
 
+    // TODO placing a block is being detected as a left click
+
     private boolean cancel;
     private Type type;
 
