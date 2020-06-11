@@ -29,6 +29,7 @@ import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 public class MatchEndDisconnectedEvent extends MatchEvent {
 
     public MatchEndDisconnectedEvent() {
+        highlight();
     }
 
     @Override

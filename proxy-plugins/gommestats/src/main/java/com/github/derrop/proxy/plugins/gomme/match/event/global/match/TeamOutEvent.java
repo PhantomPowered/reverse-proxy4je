@@ -33,6 +33,7 @@ public class TeamOutEvent extends MatchEvent {
 
     public TeamOutEvent(MessageType team) {
         this.team = team;
+        highlight();
     }
 
     @Override

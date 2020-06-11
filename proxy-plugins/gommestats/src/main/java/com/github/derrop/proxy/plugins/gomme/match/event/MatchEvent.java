@@ -24,20 +24,17 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match.event;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MatchEvent {
 
     private final long timestamp = System.currentTimeMillis();
-    private final Map<String, String> properties;
+    private boolean highlighted;
 
-    public MatchEvent(Map<String, String> properties) {
-        this.properties = properties;
+    public void highlight() {
+        this.highlighted = true;
     }
 
-    public MatchEvent() {
-        this(new HashMap<>());
+    public boolean isHighlighted() {
+        return this.highlighted;
     }
 
     public String toPlainText() {

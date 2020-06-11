@@ -11,6 +11,10 @@ import com.github.derrop.proxy.api.item.ItemMeta;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningData;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningDatabase;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.TranslatableComponent;
+import net.kyori.text.format.TextColor;
 
 public class WarnListener {
 

@@ -27,6 +27,7 @@ package com.github.derrop.proxy.plugins.gomme.match;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.PlayerId;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
@@ -34,15 +35,22 @@ import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
-import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class MatchInfo {
 
+    private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
+
     private final transient ServiceConnection invoker;
+    private final PlayerId recorderId;
     private final GommeGameMode gameMode;
     private final String matchId;
     private transient boolean running;
@@ -57,6 +65,7 @@ public class MatchInfo {
 
     public MatchInfo(ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
         this.invoker = invoker;
+        this.recorderId = new PlayerId(invoker.getUniqueId(), invoker.getName());
         this.gameMode = gameMode;
         this.matchId = matchId;
 
@@ -111,27 +120,31 @@ public class MatchInfo {
     }
 
     public ServiceConnection getInvoker() {
-        return invoker;
+        return this.invoker;
     }
 
     public GommeGameMode getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public String getMatchId() {
-        return matchId;
+        return this.matchId;
     }
 
     public boolean isRunning() {
-        return running;
+        return this.running;
     }
 
     public long getBeginTimestamp() {
-        return beginTimestamp;
+        return this.beginTimestamp;
     }
 
     public long getEndTimestamp() {
-        return endTimestamp;
+        return this.endTimestamp;
+    }
+
+    public long getLengthInMillis() {
+        return this.beginTimestamp != -1 && this.endTimestamp != -1 ? this.endTimestamp - this.beginTimestamp : -1;
     }
 
     public Collection<PlayerInfo> getPlayers() {
@@ -139,11 +152,11 @@ public class MatchInfo {
     }
 
     public Collection<MatchEvent> getEvents() {
-        return events;
+        return this.events;
     }
 
     public Collection<MatchTeam> getTeams() {
-        return teams;
+        return this.teams;
     }
 
     public Map<String, Object> getProperties() {
@@ -156,6 +169,64 @@ public class MatchInfo {
 
     public <T> void setProperty(String key, T value) {
         this.properties.put(key, value);
+    }
+
+    public String toReadableText() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("=========================== General Information ===========================\n");
+        builder.append("GameMode: ").append(this.gameMode.getDisplayName()).append('\n');
+        builder.append("Recorded by: ").append(this.recorderId.getUniqueId()).append('#').append(this.recorderId.getName()).append('\n');
+        builder.append("MatchId: ").append(this.matchId).append('\n');
+        builder.append("Begin: ").append(this.beginTimestamp == -1 ? "Not recorded" : FORMAT.format(this.beginTimestamp)).append('\n');
+        builder.append("End: ").append(this.endTimestamp == -1 ? "Not recorded" : FORMAT.format(this.endTimestamp)).append('\n');
+        long length = this.getLengthInMillis();
+        builder.append("Length: ").append(length == -1 ? "Not recorded" : (length / 1000 / 60) + " minutes").append('\n');
+        builder.append("=========================== General Information ===========================\n");
+
+        builder.append("\n\n");
+
+        builder.append("=========================== Players ===========================\n");
+        for (PlayerInfo player : this.players) {
+            MatchTeam team = this.teams.stream().filter(filter -> filter.getPlayers().contains(player.getUniqueId())).findFirst().orElse(null);
+            boolean hasDisplayName = player.getDisplayName() != null;
+            builder.append("- ").append(player.getUniqueId()).append('#').append(player.getUsername()).append(" (Display: ");
+            if (hasDisplayName) {
+                builder.append('\'').append(player.getDisplayName()).append('\'');
+            } else {
+                builder.append("none");
+            }
+            builder.append(") Team: ").append(team == null ? "no team" : team.getType());
+            builder.append('\n');
+        }
+        builder.append("=========================== Players ===========================\n");
+
+        builder.append("\n\n");
+
+        builder.append("=========================== Events ===========================\n");
+        for (MatchEvent event : this.events) {
+            builder.append(FORMAT.format(event.getTimestamp())).append(": ");
+
+            if (event.isHighlighted()) {
+                builder.append("========================================= ");
+            }
+
+            builder.append(event.toPlainText());
+
+            if (event.isHighlighted()) {
+                builder.append(" =========================================");
+            }
+
+            builder.append('\n');
+        }
+        builder.append("=========================== Events ===========================\n");
+
+        builder.append("\n\n");
+
+        builder.append("=========================== JSON ===========================\n");
+        builder.append(GSON.toJson(this)).append('\n');
+        builder.append("=========================== JSON ===========================\n");
+
+        return builder.toString();
     }
 
 }

@@ -33,6 +33,7 @@ public class MatchEndFinishedEvent extends MatchEvent {
 
     public MatchEndFinishedEvent(MessageType winner) {
         this.winner = winner;
+        highlight();
     }
 
     public MessageType getWinner() {
@@ -41,7 +42,7 @@ public class MatchEndFinishedEvent extends MatchEvent {
 
     @Override
     public String toPlainText() {
-        return "The team " + this.winner + " has won the game";
+        return "The match has ended because " + this.winner + " has won the game";
     }
 
 }

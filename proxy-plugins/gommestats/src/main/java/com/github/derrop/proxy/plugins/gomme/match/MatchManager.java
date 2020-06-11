@@ -25,17 +25,14 @@
 package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.util.PasteServerUtils;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -44,13 +41,13 @@ import java.util.stream.Collectors;
 
 public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
+    private static final String PASTE_URL = "https://just-paste.it/";
+
     private final GommeStatsCore core;
-    private final Gson gson;
 
     public MatchManager(GommeStatsCore core) {
         super(core.getRegistry(), "gomme_matches", JsonObject.class);
         this.core = core;
-        this.gson = new GsonBuilder().setPrettyPrinting() /* TODO remove */.registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
     }
 
     private final Map<String, MatchInfo> openMatches = new ConcurrentHashMap<>();
@@ -110,11 +107,22 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        for (MatchEvent event : matchInfo.getEvents()) {
-            System.out.println(new SimpleDateFormat("hh:mm:ss").format(event.getTimestamp()) + ": " + event.toPlainText());
+        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
+
+        if (key != null) {
+            String url = PASTE_URL + key;
+
+            System.out.println("The MatchLog of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " has been uploaded to " + url);
+
+            Player player = matchInfo.getInvoker().getPlayer();
+            if (player != null) {
+                player.sendMessage("MatchLog: " + url);
+            }
+        } else {
+            System.err.println("An error occurred while trying to upload the match log of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " to " + PASTE_URL);
         }
-        System.out.println(this.gson.toJson(matchInfo));
-        super.insert(matchInfo.getMatchId(), this.gson.toJsonTree(matchInfo).getAsJsonObject());
+
+        super.insert(matchInfo.getMatchId(), MatchInfo.GSON.toJsonTree(matchInfo).getAsJsonObject());
     }
 
     public long countMatches() {
@@ -123,13 +131,13 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
     public long countMatches(GommeGameMode gameMode) {
         return super.getAll().stream()
-                .map(jsonObject -> this.gson.fromJson(jsonObject, MatchInfo.class))
+                .map(jsonObject -> MatchInfo.GSON.fromJson(jsonObject, MatchInfo.class))
                 .filter(matchInfo -> matchInfo.getGameMode() == gameMode)
                 .count();
     }
 
     public Collection<MatchInfo> getPastMatches() {
-        return super.getAll().stream().map(jsonObject -> this.gson.fromJson(jsonObject, MatchInfo.class)).collect(Collectors.toList());
+        return super.getAll().stream().map(jsonObject -> MatchInfo.GSON.fromJson(jsonObject, MatchInfo.class)).collect(Collectors.toList());
     }
 
 }
