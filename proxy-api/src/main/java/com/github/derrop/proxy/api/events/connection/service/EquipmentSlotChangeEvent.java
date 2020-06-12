@@ -34,6 +34,10 @@ public class EquipmentSlotChangeEvent extends ServiceConnectionEvent implements 
         return this.item;
     }
 
+    public void setItem(ItemStack item) {
+        this.item = item;
+    }
+
     @Override
     public void cancel(boolean cancel) {
         this.cancel = cancel;

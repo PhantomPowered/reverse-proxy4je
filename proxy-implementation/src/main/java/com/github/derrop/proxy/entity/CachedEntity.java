@@ -6,11 +6,11 @@ import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.SpawnedEntity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.connection.cache.handler.EntityEffectCache;
@@ -132,21 +132,21 @@ public class CachedEntity implements SpawnedEntity {
         this.onGround = onGround;
     }
 
-    public boolean setEquipmentSlot(int slotId, ItemStack item) {
+    public ItemStack setEquipmentSlot(int slotId, ItemStack item) {
         EquipmentSlot slot = EquipmentSlot.getById(slotId);
         if (slot != null) {
-            boolean cancelled = this.registry.getProviderUnchecked(EventManager.class)
-                    .callEvent(new EquipmentSlotChangeEvent(this.client.getConnection(), this, slot, item))
-                    .isCancelled();
+            EquipmentSlotChangeEvent event = this.registry.getProviderUnchecked(EventManager.class)
+                    .callEvent(new EquipmentSlotChangeEvent(this.client.getConnection(), this, slot, item));
 
-            if (cancelled) {
-                return false;
+            if (event.isCancelled()) {
+                return null;
             }
 
             this.equipment.put(slotId, item);
-            return true;
+            return event.getItem();
         }
-        return false;
+
+        return null;
     }
 
     public boolean isPlayer() {

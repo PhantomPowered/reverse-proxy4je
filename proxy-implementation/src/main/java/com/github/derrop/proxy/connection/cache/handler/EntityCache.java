@@ -27,6 +27,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -124,10 +125,13 @@ public class EntityCache implements PacketCacheHandler {
         } else if (packet instanceof PacketPlayServerEntityEquipment) {
             PacketPlayServerEntityEquipment equipment = (PacketPlayServerEntityEquipment) packet;
             if (this.entities.containsKey(equipment.getEntityId())) {
-                if (!this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem())) {
+                ItemStack stack = this.entities.get(equipment.getEntityId()).setEquipmentSlot(equipment.getSlot(), equipment.getItem());
+                if (stack == null) {
                     // TODO send the packet to the old slot back
                     throw CancelProceedException.INSTANCE;
                 }
+
+                equipment.setItem(stack);
             }
         } else if (packet instanceof PacketPlayServerCamera) {
             this.cameraTargetId = ((PacketPlayServerCamera) packet).getEntityId();
