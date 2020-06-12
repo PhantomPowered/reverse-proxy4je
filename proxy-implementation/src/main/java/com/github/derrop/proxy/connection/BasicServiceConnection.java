@@ -454,6 +454,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason) {
+        this.reconnect();
     }
 
     @Override

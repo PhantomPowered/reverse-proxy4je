@@ -34,6 +34,10 @@ public enum EquipmentSlot {
         return formattedName;
     }
 
+    public String getSlotNameNms() {
+        return slotNameNms;
+    }
+
     public int getSlotId() {
         return super.ordinal();
     }

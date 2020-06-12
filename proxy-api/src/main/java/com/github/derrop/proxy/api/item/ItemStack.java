@@ -26,6 +26,7 @@ package com.github.derrop.proxy.api.item;
 
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import com.google.errorprone.annotations.concurrent.LazyInit;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemStack {
@@ -61,7 +62,7 @@ public class ItemStack {
 
     @Nullable
     public NBTTagCompound getNbt() {
-        return nbt;
+        return this.getItemMeta() == null ? this.nbt : this.getItemMeta().write();
     }
 
     public boolean hasItemMeta() {
@@ -75,6 +76,10 @@ public class ItemStack {
         }
 
         return itemMeta;
+    }
+
+    public void setItemMeta(@NotNull ItemMeta itemMeta) {
+        this.itemMeta = itemMeta;
     }
 
     @Override

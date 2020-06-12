@@ -27,6 +27,7 @@ package com.github.derrop.proxy.api.item;
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import com.github.derrop.proxy.api.util.nbt.NBTTagList;
+import com.github.derrop.proxy.api.util.nbt.NBTTagString;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Enums;
 import com.google.common.collect.LinkedHashMultimap;
@@ -41,9 +42,9 @@ import java.util.*;
 
 public class ItemMeta {
 
-    private final Map<Enchantment, Integer> enchantments = Maps.newHashMap();
-    private final Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
-    private final List<TranslatableComponent> lore = Lists.newArrayList();
+    private Map<Enchantment, Integer> enchantments = Maps.newHashMap();
+    private Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
+    private List<TranslatableComponent> lore = Lists.newArrayList();
 
     private TranslatableComponent displayName;
     private TranslatableComponent locName;
@@ -215,6 +216,12 @@ public class ItemMeta {
         }
     }
 
+    public void removeItemFlags(@NonNls ItemFlag... itemFlags) {
+        for (ItemFlag itemFlag : itemFlags) {
+            this.hideFlag &= ~this.getBitModifier(itemFlag);
+        }
+    }
+
     public boolean hasItemFlag(@NotNull ItemFlag flag) {
         int bitModifier = this.getBitModifier(flag);
         return (this.hideFlag & bitModifier) == bitModifier;
@@ -224,44 +231,80 @@ public class ItemMeta {
         return enchantments;
     }
 
+    public void setEnchantments(Map<Enchantment, Integer> enchantments) {
+        this.enchantments = enchantments;
+    }
+
     public Multimap<Attribute, AttributeModifier> getModifiers() {
         return modifiers;
+    }
+
+    public void setModifiers(Multimap<Attribute, AttributeModifier> modifiers) {
+        this.modifiers = modifiers;
     }
 
     public List<TranslatableComponent> getLore() {
         return lore;
     }
 
+    public void setLore(List<TranslatableComponent> lore) {
+        this.lore = lore;
+    }
+
     public TranslatableComponent getDisplayName() {
         return displayName;
+    }
+
+    public void setDisplayName(TranslatableComponent displayName) {
+        this.displayName = displayName;
     }
 
     public TranslatableComponent getLocName() {
         return locName;
     }
 
-    public int getHideFlag() {
-        return hideFlag;
+    public void setLocName(TranslatableComponent locName) {
+        this.locName = locName;
     }
 
     public int getRepairCost() {
         return repairCost;
     }
 
+    public void setRepairCost(int repairCost) {
+        this.repairCost = repairCost;
+    }
+
     public boolean isUnbreakable() {
         return unbreakable;
+    }
+
+    public void setUnbreakable(boolean unbreakable) {
+        this.unbreakable = unbreakable;
     }
 
     public int getDamage() {
         return damage;
     }
 
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public int getCustomModelData() {
         return customModelData;
     }
 
+    public void setCustomModelData(int customModelData) {
+        this.customModelData = customModelData;
+    }
+
     public NBTTagCompound getBlockData() {
         return blockData;
+    }
+
+    public void setBlockData(NBTTagCompound blockData) {
+        this.blockData = blockData;
     }
 
     private byte getBitModifier(ItemFlag hideFlag) {
@@ -275,6 +318,82 @@ public class ItemMeta {
         }
 
         return s;
+    }
+
+    public NBTTagCompound write() {
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        if (this.displayName != null || this.locName != null || !this.lore.isEmpty()) {
+            nbtTagCompound.setTag(ItemMetaKeys.DISPLAY, new NBTTagCompound());
+            if (this.displayName != null) {
+                nbtTagCompound.getCompoundTag(ItemMetaKeys.DISPLAY).setString(ItemMetaKeys.NAME, this.displayName.key());
+            }
+
+            if (this.locName != null) {
+                nbtTagCompound.getCompoundTag(ItemMetaKeys.DISPLAY).setString(ItemMetaKeys.LOC_NAME, this.locName.key());
+            }
+
+            if (!this.lore.isEmpty()) {
+                nbtTagCompound.setTag(ItemMetaKeys.LORE, new NBTTagList());
+                for (int i = 0; i < this.lore.size(); i++) {
+                    nbtTagCompound.getTagList(ItemMetaKeys.LORE, NbtTagNumbers.TAG_STRING).set(i, new NBTTagString(this.lore.get(i).key()));
+                }
+            }
+        }
+
+        if (this.customModelData != 0) {
+            nbtTagCompound.setInteger(ItemMetaKeys.CUSTOM_MODEL_DATA, this.customModelData);
+        }
+
+        if (this.blockData != null) {
+            nbtTagCompound.setTag(ItemMetaKeys.BLOCK_DATA, this.blockData);
+        }
+
+        nbtTagCompound.setBoolean(ItemMetaKeys.UNBREAKABLE, this.unbreakable);
+
+        if (this.repairCost > 0) {
+            nbtTagCompound.setInteger(ItemMetaKeys.REPAIR, this.repairCost);
+        }
+
+        if (this.hideFlag != 0) {
+            nbtTagCompound.setInteger(ItemMetaKeys.HIDE_FLAGS, this.hideFlag);
+        }
+
+        if (this.damage > 0) {
+            nbtTagCompound.setInteger(ItemMetaKeys.DAMAGE, this.damage);
+        }
+
+        if (!this.enchantments.isEmpty()) {
+            nbtTagCompound.setTag(ItemMetaKeys.ENCHANTMENTS, new NBTTagList());
+            for (Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : this.enchantments.entrySet()) {
+                NBTTagCompound compound = new NBTTagCompound();
+
+                compound.setShort(ItemMetaKeys.ENCHANTMENT_ID, enchantmentIntegerEntry.getKey().getId());
+                compound.setShort(ItemMetaKeys.ENCHANTMENT_LEVEL, enchantmentIntegerEntry.getValue().shortValue());
+
+                nbtTagCompound.getTagList(ItemMetaKeys.ENCHANTMENTS, NbtTagNumbers.TAG_COMPOUND).appendTag(compound);
+            }
+        }
+
+        if (!this.modifiers.isEmpty()) {
+            nbtTagCompound.setTag(ItemMetaKeys.ATTRIBUTES, new NBTTagList());
+            for (Map.Entry<Attribute, AttributeModifier> entry : this.modifiers.entries()) {
+                NBTTagCompound compound = new NBTTagCompound();
+
+                compound.setLong(ItemMetaKeys.ATTRIBUTES_UUID_HIGH, entry.getValue().getUniqueId().getMostSignificantBits());
+                compound.setLong(ItemMetaKeys.ATTRIBUTES_UUID_LOW, entry.getValue().getUniqueId().getLeastSignificantBits());
+                compound.setInteger(ItemMetaKeys.ATTRIBUTES_TYPE, entry.getValue().getOperation().ordinal());
+                compound.setString(ItemMetaKeys.ATTRIBUTES_NAME, entry.getValue().getName());
+                compound.setDouble(ItemMetaKeys.ATTRIBUTES_VALUE, entry.getValue().getAmount());
+
+                if (entry.getValue().getSlot() != null) {
+                    compound.setString(ItemMetaKeys.ATTRIBUTES_SLOT, entry.getValue().getSlot().getSlotNameNms());
+                }
+
+                compound.setString(ItemMetaKeys.ATTRIBUTES_IDENTIFIER, entry.getKey().name().replaceFirst("_", ".").toLowerCase());
+            }
+        }
+
+        return nbtTagCompound;
     }
 
     public interface ItemMetaKeys {
