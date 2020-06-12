@@ -46,6 +46,8 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.connection.AppendedActionBar;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
@@ -64,6 +66,9 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 
 public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel, Tickable {
 
@@ -114,6 +119,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
 
+    private Collection<AppendedActionBar> actionBars = new CopyOnWriteArrayList<>();
+
     public void applyPermissions(OfflinePlayer offlinePlayer) {
         if (offlinePlayer == this) {
             return;
@@ -124,6 +131,10 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     public ServiceConnection getConnectingClient() {
         return this.connectingClient;
+    }
+
+    public Collection<AppendedActionBar> getActionBars() {
+        return this.actionBars;
     }
 
     @Override
@@ -181,6 +192,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
                 }
             }
         });
+    }
+
+    @Override
+    public void appendActionBar(@NotNull Side side, @NotNull Supplier<String> message) {
+        this.actionBars.add(new AppendedActionBar(side, message));
     }
 
     @Override

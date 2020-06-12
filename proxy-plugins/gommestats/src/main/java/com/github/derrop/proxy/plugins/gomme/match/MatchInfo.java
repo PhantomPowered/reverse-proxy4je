@@ -76,6 +76,7 @@ public class MatchInfo {
         this.running = true;
         this.beginTimestamp = System.currentTimeMillis();
         Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+            // TODO this shouldn't be done in this method but in the scoreboard update method
             for (PlayerInfo player : this.players) {
                 Team scoreTeam = this.invoker.getScoreboard().getTeamByEntry(player.getDisplayName() != null ? player.getDisplayName() : player.getUsername());
                 if (scoreTeam == null) {
