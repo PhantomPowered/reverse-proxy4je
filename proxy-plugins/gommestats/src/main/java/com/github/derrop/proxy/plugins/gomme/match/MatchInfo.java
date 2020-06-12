@@ -136,6 +136,10 @@ public class MatchInfo {
         return this.running;
     }
 
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
     public long getBeginTimestamp() {
         return this.beginTimestamp;
     }
