@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.PlayerId;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
@@ -125,6 +126,9 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
     private long lastAlivePacket = -1;
 
     private CompletableFuture<Boolean> connectionHandler;
+
+    private long lastDisconnectionTimestamp = System.currentTimeMillis();
+    private PlayerId lastConnectedPlayer;
 
     public ConnectedProxyClient(MCProxy proxy, BasicServiceConnection connection) {
         this.proxy = proxy;
@@ -243,6 +247,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         this.clientPacketHandler = clientPacketHandler;
     }
 
+    public long getLastDisconnectionTimestamp() {
+        return this.lastDisconnectionTimestamp;
+    }
+
+    public PlayerId getLastConnectedPlayer() {
+        return this.lastConnectedPlayer;
+    }
+
     public Consumer<Packet> getClientPacketHandler() {
         return clientPacketHandler;
     }
@@ -340,6 +352,10 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         if (redirector != null) {
             this.packetCache.handleFree(redirector);
             redirector.removeOutgoingPacketListener(this.redirectorListenerKey);
+
+            this.lastDisconnectionTimestamp = System.currentTimeMillis();
+            this.lastConnectedPlayer = new PlayerId(redirector.getUniqueId(), redirector.getName());
+
         }
         this.redirector = null;
     }

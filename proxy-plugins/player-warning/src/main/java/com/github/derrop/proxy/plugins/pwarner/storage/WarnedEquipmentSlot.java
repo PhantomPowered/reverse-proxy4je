@@ -7,6 +7,7 @@ public class WarnedEquipmentSlot {
 
     private EquipmentSlot slot;
     private Material material;
+    // TODO add color
 
     public WarnedEquipmentSlot(EquipmentSlot slot, Material material) {
         this.slot = slot;

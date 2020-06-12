@@ -11,6 +11,7 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.PlayerId;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
@@ -74,6 +75,16 @@ public class LoginServiceConnection implements ServiceConnection {
     @Override
     public @Nullable Player getPlayer() {
         return this.connected ? this.player : null;
+    }
+
+    @Override
+    public long getLastDisconnectionTimestamp() {
+        return -1;
+    }
+
+    @Override
+    public PlayerId getLastConnectedPlayer() {
+        return null;
     }
 
     @Override

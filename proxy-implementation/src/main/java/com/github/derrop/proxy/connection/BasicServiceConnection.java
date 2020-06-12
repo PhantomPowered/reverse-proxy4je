@@ -37,6 +37,7 @@ import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.PlayerId;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
@@ -140,6 +141,16 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public @Nullable Player getPlayer() {
         return this.client == null ? null : this.client.getRedirector();
+    }
+
+    @Override
+    public long getLastDisconnectionTimestamp() {
+        return this.client.getLastDisconnectionTimestamp();
+    }
+
+    @Override
+    public PlayerId getLastConnectedPlayer() {
+        return this.client.getLastConnectedPlayer();
     }
 
     @Override
