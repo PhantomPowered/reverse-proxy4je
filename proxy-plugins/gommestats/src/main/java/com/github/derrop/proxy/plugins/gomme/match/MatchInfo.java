@@ -32,6 +32,8 @@ import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchBeginEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndFinishedEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
@@ -49,7 +51,9 @@ public class MatchInfo {
     private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
 
+    private final transient MatchManager matchManager;
     private final transient ServiceConnection invoker;
+
     private final PlayerId recorderId;
     private final GommeGameMode gameMode;
     private final String matchId;
@@ -63,7 +67,8 @@ public class MatchInfo {
 
     private final transient Map<String, Object> properties = new ConcurrentHashMap<>();
 
-    public MatchInfo(ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
+    public MatchInfo(MatchManager matchManager, ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
+        this.matchManager = matchManager;
         this.invoker = invoker;
         this.recorderId = new PlayerId(invoker.getUniqueId(), invoker.getName());
         this.gameMode = gameMode;
@@ -72,7 +77,7 @@ public class MatchInfo {
         this.players.addAll(Arrays.asList(invoker.getWorldDataProvider().getOnlinePlayers()));
     }
 
-    public void start() {
+    protected void start() {
         this.running = true;
         this.beginTimestamp = System.currentTimeMillis();
         Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
@@ -103,7 +108,7 @@ public class MatchInfo {
         }, 200, TimeUnit.MILLISECONDS);
     }
 
-    public void end() { // TODO this should only be called when the recorder finally leaves the match/a winner has been found, not when he dies
+    protected void end() {
         this.running = false;
         this.endTimestamp = System.currentTimeMillis();
     }
@@ -117,6 +122,12 @@ public class MatchInfo {
     }
 
     public void callEvent(MatchEvent event) {
+        if (event instanceof MatchBeginEvent) {
+            this.matchManager.startMatch(this);
+        } else if (event instanceof MatchEndFinishedEvent) {
+            this.matchManager.endMatch(this);
+        }
+
         this.events.add(event);
     }
 

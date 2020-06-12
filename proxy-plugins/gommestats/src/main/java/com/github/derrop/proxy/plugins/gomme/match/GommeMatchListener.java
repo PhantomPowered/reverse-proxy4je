@@ -115,6 +115,7 @@ public class GommeMatchListener {
             }
 
             this.matchManager.createMatch(new MatchInfo(
+                    this.matchManager,
                     (ServiceConnection) event.getConnection(),
                     gameMode,
                     matchId
@@ -191,15 +192,7 @@ public class GommeMatchListener {
         String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
 
         // TODO Language should be dynamic
-        MessageRegistry.createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(matchEvent -> {
-            if (matchEvent instanceof MatchBeginEvent) {
-                this.matchManager.startMatch(match);
-            } else if (matchEvent instanceof MatchEndFinishedEvent || matchEvent instanceof MatchEndDiedEvent) {
-                this.matchManager.endMatch(match);
-            }
-
-            match.callEvent(matchEvent);
-        });
+        MessageRegistry.createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(match::callEvent);
 
     }
 
