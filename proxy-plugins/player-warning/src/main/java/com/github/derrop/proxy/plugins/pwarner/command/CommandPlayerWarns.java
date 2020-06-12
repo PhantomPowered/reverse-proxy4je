@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.plugins.pwarner.command;
 
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -61,14 +62,14 @@ public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
 
                         sender.sendMessage("Warnings for the slot §e" + slot.getFormattedName());
                         for (WarnedEquipmentSlot warn : entry.getValue()) {
-                            sender.sendMessage(" - §e" + warn.getMaterial());
+                            sender.sendMessage(" - §e" + (warn.getColor() == null ? ChatColor.YELLOW : warn.getColor()) + warn.getMaterial());
                         }
                     }
                 }
                 break;
             }
 
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("equip")) {
+        } else if ((args.length == 3 || args.length == 4) && args[0].equalsIgnoreCase("equip")) {
             EquipmentSlot slot;
             try {
                 slot = EquipmentSlot.valueOf(args[1].toUpperCase());
@@ -83,18 +84,24 @@ public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
+            ChatColor color = args.length == 4 ? ChatColor.getByChar(args[3].charAt(args[3].length() - 1)) : null;
+
             PlayerWarningData data = this.database.getOrCreate(player.getUniqueId());
-            if (data.addEquipmentSlot(new WarnedEquipmentSlot(slot, material))) {
-                sender.sendMessage("You will be always warned when a player has §e" + material + " §7in their §e" + slot.getFormattedName());
+            if (data.addEquipmentSlot(new WarnedEquipmentSlot(slot, material, color))) {
+                sender.sendMessage("You will be always warned when a player has §e"
+                        + (color != null ? color : "") + material
+                        + " §7in their §e" + slot.getFormattedName());
             } else {
-                sender.sendMessage("You will no more be warned when a player has §e" + material + " §7in their §e" + slot.getFormattedName());
+                sender.sendMessage("You will no more be warned when a player has §e"
+                        + (color != null ? color : "") + material
+                        + " §7in their §e" + slot.getFormattedName());
             }
 
             this.database.update(data);
 
             return CommandResult.SUCCESS;
         } else {
-            sender.sendMessage("playerwarns equip <" + Arrays.toString(EquipmentSlot.values()) + "> <Material>");
+            sender.sendMessage("playerwarns equip <" + Arrays.toString(EquipmentSlot.values()) + "> <Material> [Color]");
             sender.sendMessage("playerwarns list equip");
         }
 

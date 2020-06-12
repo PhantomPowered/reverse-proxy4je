@@ -1,17 +1,19 @@
 package com.github.derrop.proxy.plugins.pwarner.storage;
 
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 
 public class WarnedEquipmentSlot {
 
     private EquipmentSlot slot;
     private Material material;
-    // TODO add color
+    private ChatColor color;
 
-    public WarnedEquipmentSlot(EquipmentSlot slot, Material material) {
+    public WarnedEquipmentSlot(EquipmentSlot slot, Material material, ChatColor color) {
         this.slot = slot;
         this.material = material;
+        this.color = color;
     }
 
     public EquipmentSlot getSlot() {
@@ -28,6 +30,14 @@ public class WarnedEquipmentSlot {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    public ChatColor getColor() {
+        return this.color;
+    }
+
+    public void setColor(ChatColor color) {
+        this.color = color;
     }
 
     @Override

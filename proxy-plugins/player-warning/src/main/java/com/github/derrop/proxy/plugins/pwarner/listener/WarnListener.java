@@ -11,10 +11,7 @@ import com.github.derrop.proxy.api.item.ItemMeta;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningData;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningDatabase;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
-import net.kyori.text.TranslatableComponent;
-import net.kyori.text.format.TextColor;
+import com.github.derrop.proxy.plugins.pwarner.storage.WarnedEquipmentSlot;
 
 public class WarnListener {
 
@@ -51,13 +48,15 @@ public class WarnListener {
         ItemMeta itemMeta = event.getItem().getItemMeta();
         String itemName = material + (itemMeta != null && itemMeta.getDisplayName() != null ? (" " + itemMeta.getDisplayName().key()) : "");
 
-        if (data.shouldWarnEquipmentSlot(event.getSlot().getSlotId(), material)) {
+        WarnedEquipmentSlot slot = data.getEquipmentSlotData(event.getSlot().getSlotId(), material);
+        if (slot != null) {
             Team team = event.getConnection().getScoreboard().getTeamByEntry(name);
 
-            String color = team == null ? "" : ChatColor.getLastColors(team.getPrefix());
-            String fullName = color + name;
+            String playerColor = team == null ? "" : ChatColor.getLastColors(team.getPrefix());
+            ChatColor itemColor = slot.getColor() == null ? ChatColor.YELLOW : slot.getColor();
+            String fullName = playerColor + name;
 
-            player.sendMessage(String.format("§7%s §7has §6%dx §e%s", fullName, amount, itemName));
+            player.sendMessage(String.format("§7%s §7has %dx %s%s", fullName, amount,itemColor, itemName));
         }
     }
 
