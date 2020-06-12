@@ -86,6 +86,34 @@ public class PacketPlayServerLogin implements Packet {
         this.entityId = entityId;
     }
 
+    public void setGameMode(short gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+
+    public void setDifficulty(short difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public short getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(short maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public void setLevelType(String levelType) {
+        this.levelType = levelType;
+    }
+
+    public void setReducedDebugInfo(boolean reducedDebugInfo) {
+        this.reducedDebugInfo = reducedDebugInfo;
+    }
+
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readInt();

@@ -1272,7 +1272,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
     @Override
     public boolean release() {
-        return this.wrapped.release();
+        return true;
+        //return this.wrapped.release();
     }
 
     @Override

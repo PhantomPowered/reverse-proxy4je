@@ -119,7 +119,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
 
-    private Collection<AppendedActionBar> actionBars = new CopyOnWriteArrayList<>();
+    private final Collection<AppendedActionBar> actionBars = new CopyOnWriteArrayList<>();
 
     public void applyPermissions(OfflinePlayer offlinePlayer) {
         if (offlinePlayer == this) {

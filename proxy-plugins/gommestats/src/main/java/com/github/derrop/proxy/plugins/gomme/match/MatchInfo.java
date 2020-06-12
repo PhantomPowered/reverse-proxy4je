@@ -103,7 +103,7 @@ public class MatchInfo {
         }, 200, TimeUnit.MILLISECONDS);
     }
 
-    public void end() {
+    public void end() { // TODO this should only be called when the recorder finally leaves the match/a winner has been found, not when he dies
         this.running = false;
         this.endTimestamp = System.currentTimeMillis();
     }
