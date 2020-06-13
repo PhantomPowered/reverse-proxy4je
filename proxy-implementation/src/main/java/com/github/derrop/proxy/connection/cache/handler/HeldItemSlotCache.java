@@ -45,12 +45,16 @@ public class HeldItemSlotCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        this.slot = ((PacketPlayServerHeldItemSlot) newPacket.getDeserializedPacket()).getSlot();
+        if (newPacket.getDeserializedPacket() instanceof PacketPlayServerHeldItemSlot) {
+            this.slot = ((PacketPlayServerHeldItemSlot) newPacket.getDeserializedPacket()).getSlot();
+        }
     }
 
     @Override
     public void cacheClientPacket(PacketCache packetCache, Packet newPacket) {
-        this.slot = ((PacketPlayClientHeldItemSlot) newPacket).getSlot();
+        if (newPacket instanceof PacketPlayClientHeldItemSlot) {
+            this.slot = ((PacketPlayClientHeldItemSlot) newPacket).getSlot();
+        }
     }
 
     @Override

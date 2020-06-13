@@ -149,7 +149,6 @@ public class PacketCache {
                 new SimplePacketCache(ProtocolIds.ToClient.Play.ABILITIES),
                 new SimplePacketCache(ProtocolIds.ToClient.Play.UPDATE_TIME),
                 new SimplePacketCache(ProtocolIds.ToClient.Play.UPDATE_HEALTH),
-                new MappedPacketCache<>(ProtocolIds.ToClient.Play.GAME_STATE_CHANGE, PacketPlayServerGameStateChange::getState, gameStateChange -> false),
                 new SimplePacketCache(ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER),
                 new ListPacketCache(ProtocolIds.ToClient.Play.CHAT, 30),
                 new HeldItemSlotCache(),
