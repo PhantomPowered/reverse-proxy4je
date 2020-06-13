@@ -342,9 +342,11 @@ public class ItemMeta {
             }
 
             if (!this.lore.isEmpty()) {
-                nbtTagCompound.setTag(ItemMetaKeys.LORE, new NBTTagList());
-                for (int i = 0; i < this.lore.size(); i++) {
-                    nbtTagCompound.getTagList(ItemMetaKeys.LORE, NbtTagNumbers.TAG_STRING).set(i, new NBTTagString(this.lore.get(i).key()));
+                nbtTagCompound.getCompoundTag(ItemMetaKeys.DISPLAY).setTag(ItemMetaKeys.LORE, new NBTTagList());
+                for (TranslatableComponent translatableComponent : this.lore) {
+                    nbtTagCompound.getCompoundTag(ItemMetaKeys.DISPLAY)
+                            .getTagList(ItemMetaKeys.LORE, NbtTagNumbers.TAG_STRING)
+                            .appendTag(new NBTTagString(translatableComponent.key()));
                 }
             }
         }

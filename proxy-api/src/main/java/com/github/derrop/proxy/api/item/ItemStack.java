@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemStack {
 
+    // todo: none -> air
     public static final ItemStack NONE = new ItemStack(0, 0, 0, null);
 
     private int itemId;
