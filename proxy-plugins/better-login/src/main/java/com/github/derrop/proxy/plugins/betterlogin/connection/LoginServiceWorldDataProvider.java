@@ -58,6 +58,11 @@ public class LoginServiceWorldDataProvider implements ServiceWorldDataProvider {
     }
 
     @Override
+    public PlayerInfo getOnlinePlayer(@NotNull String name) {
+        return null;
+    }
+
+    @Override
     public @NotNull Collection<EntityPlayer> getPlayersInWorld() {
         return Collections.emptyList();
     }

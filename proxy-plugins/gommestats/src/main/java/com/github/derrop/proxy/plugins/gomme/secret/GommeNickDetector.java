@@ -24,7 +24,9 @@
  */
 package com.github.derrop.proxy.plugins.gomme.secret;
 
+import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoUpdateEvent;
@@ -38,10 +40,7 @@ import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,22 +52,29 @@ public class GommeNickDetector extends MatchParser {
 
     private long lastNickedJoin;
     private GommeNickProfile lastProfile;
-    private Map<String, GommeNickProfile> nickProfiles = new ConcurrentHashMap<>();
+    private Map<String, GommeNickProfile> nickProfiles = new ConcurrentHashMap<>(); // TODO should be ServiceConnection specific
 
     public GommeNickDetector(GommeStatsCore core) {
         super(core);
     }
 
     public Map<String, GommeNickProfile> getNickProfiles() {
+        for (Map.Entry<String, GommeNickProfile> entry : this.nickProfiles.entrySet()) {
+            if (entry.getValue().getNickName() == null) {
+                this.nickProfiles.remove(entry.getKey());
+            }
+        }
         return this.nickProfiles; // TODO display on website, LabyMod, ...?
     }
 
     @Listener
     public void handleScoreboardTeamUpdate(ScoreboardTeamUpdateEvent event) {
-        if (event.getTeam().getProperties().containsKey("GommeNicked")) {
-            this.nickProfiles.values().stream()
-                    .filter(profile -> profile.getRealTeam() != null && profile.getRealTeam().getName().equals(event.getTeam().getName()))
-                    .forEach(profile -> profile.setRealTeam(event.getTeam()));
+        Team team = event.getTeam();
+
+        if (team.getName().startsWith("ZZZ")) { // spectator teams start with ZZZ
+            return;
+        }
+        if (team.getName().startsWith("npc")) { // NPCs
             return;
         }
 
@@ -79,48 +85,59 @@ public class GommeNickDetector extends MatchParser {
 
         String name = entries.iterator().next();
 
-        if (name.trim().isEmpty() || name.indexOf((char) 167) != -1 || (this.nickProfiles.containsKey(name) && this.nickProfiles.get(name).getNickName() != null)) {
+        if (name.trim().isEmpty() || name.indexOf((char) 167) != -1) {
+            return;
+        }
+
+        Optional<GommeNickProfile> optionalProfile = this.nickProfiles.values().stream()
+                .filter(profile -> profile.getRealTeam().getName().equals(team.getName()))
+                .findFirst();
+        if (optionalProfile.isPresent()) {
+            optionalProfile.get().setRealTeam(team);
+            return;
+        }
+
+        if (this.nickProfiles.containsKey(name) && this.nickProfiles.get(name).getNickName() != null) {
             return;
         }
 
         if (this.lastNickedJoin >= System.currentTimeMillis() - 3 && this.lastProfile != null) {
             GommeNickProfile profile = this.lastProfile;
+
+            if (profile.getRealName().equals(name)) {
+                return;
+            }
+
+            if (!team.getPrefix().contains("§6")) { // nicks are always premium members
+                return;
+            }
+
             this.lastProfile = null;
 
-            System.out.println("Nickname for " + profile.getRealName() + " detected: " + name);
+            System.out.println("Nick detected: " + ChatColor.stripColor(profile.getFullRealName()) + "; nicked as: " + name);
 
             if (event.getConnection().getPlayer() != null) {
-                event.getConnection().getPlayer().sendMessage("§eGomme-Nick §8| §cNick §7detected: §e" + profile.getRealTeam().getPrefix() + profile.getRealName() + profile.getRealTeam().getSuffix() + " §7(probably the nick name is §e" + name + "§7)");
+                event.getConnection().getPlayer().sendMessage("§eGomme-Nick §8| §cNick §7detected: §e" + profile.getFullRealName() + " §7(probably the nick name is §e" + name + "§7)");
             }
 
             profile.setNickName(name);
 
-            Arrays.stream(event.getConnection().getWorldDataProvider().getOnlinePlayers())
-                    .filter(playerInfo -> playerInfo.getUsername().equals(name))
-                    .findFirst()
-                    .ifPresent(playerInfo -> {
-                        this.sendTag(event.getConnection().getPlayer(), playerInfo.getUniqueId(), profile.getRealTeam(), profile.getRealName());
-                        profile.setNickInfo(playerInfo);
-                    });
+            PlayerInfo playerInfo = event.getConnection().getWorldDataProvider().getOnlinePlayer(name);
+            if (playerInfo != null) {
+                this.sendTag(event.getConnection().getPlayer(), playerInfo.getUniqueId(), profile.getRealTeam(), profile.getRealName());
+                profile.setNickInfo(playerInfo);
+            }
 
             return;
         }
 
-        if (event.getTeam().getName().startsWith("ZZZ")) { // spectator teams start with ZZZ
-            return;
-        }
-        if (event.getTeam().getName().startsWith("npc")) { // NPCs
+        if (event.getConnection().getWorldDataProvider().getOnlinePlayer(name) != null) {
             return;
         }
 
-        boolean present = Arrays.stream(event.getConnection().getWorldDataProvider().getOnlinePlayers())
-                .anyMatch(playerInfo -> playerInfo.getUsername().equals(name));
-        if (present) {
+        if (team.getPrefix().contains("§a") || team.getPrefix().contains("§6")) { // players or premium members don't have nick permissions
             return;
         }
-
-        System.out.println("Nick detected: " + name);
-        event.getTeam().getProperties().put("GommeNicked", true);
 
         this.lastNickedJoin = System.currentTimeMillis();
         GommeNickProfile profile = new GommeNickProfile(event.getConnection(), name, event.getTeam());
@@ -131,35 +148,23 @@ public class GommeNickDetector extends MatchParser {
     @Listener
     public void handlePlayerInfoRemove(PlayerInfoRemoveEvent event) {
         this.executorService.schedule(() -> {
-            if (event.getConnection().getWorldDataProvider().getOnlinePlayer(event.getPlayerInfo().getUniqueId()) != null) { // maybe the server just went ingame?
+            if (event.getConnection().getWorldDataProvider().getOnlinePlayer(event.getPlayerInfo().getUniqueId()) != null) { // maybe the server just went ingame? In BedWars players get randomly removed out of the player list and added again
                 return;
             }
             for (GommeNickProfile profile : this.nickProfiles.values()) {
                 if (profile.getNickName() != null && profile.getNickName().equals(event.getPlayerInfo().getUsername())) {
                     if (event.getConnection().getPlayer() != null) {
-                        event.getConnection().getPlayer().sendMessage("§eGomme-Nick §8| §aUnNick/Disconnect §7detected: §e" + profile.getRealTeam().getPrefix() + profile.getRealName() + profile.getRealTeam().getSuffix() + " §7(probably the nick name is §e" + profile.getNickName() + "§7)");
+                        event.getConnection().getPlayer().sendMessage("§eGomme-Nick §8| §aUnNick/Disconnect §7detected: §e" + profile.getFullRealName() + " §7(probably the nick name is §e" + profile.getNickName() + "§7)");
                     }
 
-                    System.out.println("UnNick/Disconnect detected: " + profile.getRealName() + " (Nick was: " + profile.getNickName() + ")");
+                    System.out.println("UnNick/Disconnect detected: " + ChatColor.stripColor(profile.getFullRealName()) + " (Nick was: " + profile.getNickName() + ")");
                     if (event.getConnection().getPlayer() != null && profile.getNickInfo() != null) {
                         this.setSubtitle(event.getConnection().getPlayer(), profile.getNickInfo().getUniqueId(), null);
                     }
                     this.nickProfiles.values().remove(profile);
                 }
             }
-        }, 50, TimeUnit.MILLISECONDS);
-    }
-
-    @Listener
-    public void handlePlayerInfoUpdate(PlayerInfoUpdateEvent event) {
-        this.nickProfiles.values().stream()
-                .filter(profile -> profile.getNickName() != null && profile.getNickName().equals(event.getPlayerInfo().getUsername()))
-                .forEach(profile -> {
-                    if (profile.getNickInfo() == null) {
-                        this.sendTag(event.getConnection().getPlayer(), event.getPlayerInfo().getUniqueId(), profile.getRealTeam(), profile.getRealName());
-                    }
-                    profile.setNickInfo(event.getPlayerInfo());
-                });
+        }, 250, TimeUnit.MILLISECONDS);
     }
 
     private void sendTag(Player player, UUID uniqueId, Team realTeam, String realName) {

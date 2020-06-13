@@ -58,6 +58,10 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
         return (EntityCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof EntityCache);
     }
 
+    private PlayerInfoCache getPlayerInfoCache() {
+        return (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+    }
+
     @Override
     public long getWorldTime() {
         PacketPlayServerTimeUpdate update = this.getLastTimeUpdate();
@@ -105,7 +109,7 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
     @Override
     public PlayerInfo[] getOnlinePlayers() {
-        PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+        PlayerInfoCache cache = this.getPlayerInfoCache();
 
         return cache.getItems().stream()
                 .map(cache::toPlayerInfo)
@@ -114,10 +118,21 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
     @Override
     public PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId) {
-        PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+        PlayerInfoCache cache = this.getPlayerInfoCache();
 
         return cache.getItems().stream()
                 .filter(item -> item.getUniqueId().equals(uniqueId))
+                .findFirst()
+                .map(cache::toPlayerInfo)
+                .orElse(null);
+    }
+
+    @Override
+    public PlayerInfo getOnlinePlayer(@NotNull String name) {
+        PlayerInfoCache cache = this.getPlayerInfoCache();
+
+        return cache.getItems().stream()
+                .filter(item -> item.getUsername().equals(name))
                 .findFirst()
                 .map(cache::toPlayerInfo)
                 .orElse(null);
