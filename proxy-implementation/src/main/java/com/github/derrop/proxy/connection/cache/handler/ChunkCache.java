@@ -81,7 +81,7 @@ public class ChunkCache implements PacketCacheHandler {
 
             PacketPlayServerMapChunk chunkData = (PacketPlayServerMapChunk) packet;
 
-            Chunk chunk = this.load(chunkData);
+            Chunk chunk = this.load(packetCache, chunkData);
             if (chunk != null) {
                 chunkData.setExtracted(chunk.getBytes(this.dimension));
             }
@@ -93,7 +93,7 @@ public class ChunkCache implements PacketCacheHandler {
             for (int i = 0; i < chunkBulk.getX().length; i++) {
                 PacketPlayServerMapChunk chunkData = new PacketPlayServerMapChunk(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
 
-                Chunk chunk = this.load(chunkData);
+                Chunk chunk = this.load(packetCache, chunkData);
                 if (chunk != null) {
                     chunkBulk.getExtracted()[i] = chunk.getBytes(this.dimension);
                 }
@@ -128,7 +128,7 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
-    private Chunk load(PacketPlayServerMapChunk chunkData) {
+    private Chunk load(PacketCache cache, PacketPlayServerMapChunk chunkData) {
         if (chunkData.getExtracted().dataLength == 0) {
             this.unload(chunkData.getX(), chunkData.getZ());
             return null;
@@ -139,7 +139,7 @@ public class ChunkCache implements PacketCacheHandler {
         this.chunks.add(chunk);
 
         if (this.blockAccess != null) {
-            this.blockAccess.handleChunkLoad(this.connectedPlayer.getConnectedClient(), chunk);
+            this.blockAccess.handleChunkLoad(cache.getTargetProxyClient().getConnection(), chunk);
         }
 
         return chunk;
