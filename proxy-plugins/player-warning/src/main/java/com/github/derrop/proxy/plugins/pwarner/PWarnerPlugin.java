@@ -19,6 +19,8 @@ import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningDatabase;
 )
 public class PWarnerPlugin {
 
+    // TODO disable the invisibility effect
+
     @Inject(state = PluginState.ENABLED)
     public void enable(PluginContainer container, ServiceRegistry registry) {
         PlayerWarningDatabase database = new PlayerWarningDatabase(registry);

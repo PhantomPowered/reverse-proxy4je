@@ -151,7 +151,7 @@ public class GommeSpectatorDetector extends MatchParser {
             return null;
         }
         MatchInfo matchInfo = super.getMatchInfo(connection);
-        if (!matchInfo.isRunning()) {
+        if (matchInfo == null || !matchInfo.isRunning()) {
             return null;
         }
         return matchInfo;
