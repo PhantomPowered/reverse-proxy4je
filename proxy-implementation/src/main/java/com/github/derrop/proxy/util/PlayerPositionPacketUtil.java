@@ -41,11 +41,9 @@ public class PlayerPositionPacketUtil {
     public static float getServerRotation(byte in) {
         return (((float) in * 360F) / 256F);
     }
-    
+
     public static int floor(double d0) {
         int i = (int) d0;
-
         return d0 < (double) i ? i - 1 : i;
     }
-
 }

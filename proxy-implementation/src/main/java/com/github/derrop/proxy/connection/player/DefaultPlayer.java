@@ -37,7 +37,7 @@ import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
@@ -70,7 +70,7 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
-public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel, Tickable {
+public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
 
     private static final Unsafe EMPTY_UNSAFE = location -> {
     };
@@ -424,8 +424,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public EntityType getType() {
-        return EntityType.PLAYER;
+    public int getType() {
+        return LivingEntityType.PLAYER.getTypeId();
     }
 
     @Override
@@ -461,6 +461,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
+    public @NotNull Callable getCallable() {
+        return this;
+    }
+
+    @Override
     public double getEyeHeight() {
         return 1.8;
     }
@@ -491,6 +496,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     @Override
     public void handleTick() {
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
+
     }
 
     private class PacketSenderUnsafe implements PacketSender.NetworkUnsafe {

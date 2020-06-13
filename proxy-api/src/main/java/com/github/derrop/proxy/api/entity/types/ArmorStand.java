@@ -22,9 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity;
+package com.github.derrop.proxy.api.entity.types;
 
-import com.github.derrop.proxy.api.connection.Connection;
+import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.util.EulerAngle;
+import org.jetbrains.annotations.NotNull;
 
-public interface ServiceConnectionBridge extends Connection {
+public interface ArmorStand {
+
+    @NotNull
+    ItemStack getItem(@NotNull EquipmentSlot slot);
+
+    @NotNull
+    EulerAngle getBodyPosition(@NotNull BodyPosition position);
+
+    boolean hasBasePlate();
+
+    boolean hasGravity();
+
+    boolean isVisible();
+
+    boolean hasArms();
+
+    boolean isSmall();
+
+    boolean isMarker();
+
+    enum BodyPosition {
+
+        ARM_RIGHT,
+        ARM_LEFT,
+        LEG_RIGHT,
+        LEG_LEFT,
+        HEAD,
+        BODY
+    }
 }

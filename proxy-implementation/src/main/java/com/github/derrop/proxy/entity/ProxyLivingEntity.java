@@ -1,15 +1,15 @@
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.EntityWithMetadata;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class CachedEntityWithMetadata extends CachedEntity implements EntityWithMetadata {
+public class ProxyLivingEntity extends ProxyEntity implements EntityWithMetadata {
 
-    protected CachedEntityWithMetadata(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyLivingEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
+        super(registry, client, spawnPacket, type.getTypeId());
     }
 
     @Override

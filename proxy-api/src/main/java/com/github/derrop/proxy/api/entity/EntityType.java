@@ -1,5 +1,26 @@
 /*
- * This class has been taken from the Bukkit API
+ * MIT License
+ *
+ * Copyright (c) derrop and derklaro
+ * Copyright (c) contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.github.derrop.proxy.api.entity;
 
@@ -8,95 +29,60 @@ import java.util.Map;
 
 public enum EntityType {
 
-    ITEM("Item", 1),
-    EXPERIENCE_ORB("XPOrb", 2),
-    EGG("ThrownEgg", 7),
-    LEASH_KNOT("LeashKnot", 8),
-    PAINTING("Painting", 9),
-    ARROW("Arrow", 10),
-    SNOW_BALL("Snowball", 11),
-    FIRE_BALL("Fireball", 12),
-    SMALL_FIRE_BALL("SmallFireball", 13),
-    ENDER_PEARL("ThrownEnderpearl", 14),
-    ENDER_EYE("EyeOfEnderSignal", 15),
-    POTION("ThrownPotion", 16),
-    EXP_BOTTLE("ThrownExpBottle", 17),
-    ITEM_FRAME("ItemFrame", 18),
-    WITHER_SKULL("WitherSkull", 19),
-    PRIMED_TNT("PrimedTnt", 20),
-    FALLING_SAND("FallingSand", 21),
-    FIRE_WORK_ROCKET("FireworksRocketEntity", 22),
-    ARMOR_STAND("ArmorStand", 30),
-    BOAT("Boat", 41),
+    BOAT("Boat", 1),
+    ITEM("Item", 2),
 
-    EMPTY_MINE_CART("MinecartRideable", 42),
-    CHEST_MINE_CART("MinecartChest", 43),
-    FURNANCE_MINE_CART("MinecartFurnace", 44),
-    TNT_MINE_CART("MinecartTNT", 45),
-    HOPPER_MINE_CART("MinecartHopper", 46),
-    MOB_SPAWNER_MINE_CART("MinecartSpawner", 47),
-    COMMAND_BLOCK_MINE_CART("MinecartCommandBlock", 48),
+    EMPTY_MINE_CART("MinecartRideable", 10, 0),
+    CHEST_MINE_CART("MinecartChest", 10, 1),
+    FURNANCE_MINE_CART("MinecartFurnace", 10, 2),
+    TNT_MINE_CART("MinecartTNT", 10, 3),
+    HOPPER_MINE_CART("MinecartHopper", 10, 5),
+    MOB_SPAWNER_MINE_CART("MinecartSpawner", 10, 4),
+    COMMAND_BLOCK_MINE_CART("MinecartCommandBlock", 10, 6),
 
-    MOB("Mob", 48),
-    MONSTER("Monster", 49),
-    CREEPER("Creeper", 50),
-    SKELETON("Skeleton", 51),
-    SPIDER("Spider", 52),
-    GIANT("Giant", 53),
-    ZOMBIE("Zombie", 54),
-    SLIME("Slime", 55),
-    GHAST("Ghast", 56),
-    PIG_ZOMBIE("PigZombie", 57),
-    ENDER_MAN("Enderman", 58),
-    CAVE_SPIDER("CaveSpider", 59),
-    SILVER_FISH("Silverfish", 60),
-    BLAZE("Balze", 61),
-    LAVA_SLIME("LavaSlime", 62),
-    ENDER_DRAGON("EnderDragon", 63),
-    WITHER("WitherBoss", 64),
-    BAT("Bat", 65),
-    WITCH("Witch", 66),
-    ENDER_MITE("Endermite", 67),
-    GUARDIAN("Guardian", 68),
-    PIG("Pig", 90),
-    SHEEP("Sheep", 91),
-    COW("Cow", 92),
-    CHICKEN("Chicken", 93),
-    SQUID("Squid", 94),
-    WOLF("Wolf", 95),
-    MUSHROOM_COW("MushroomCow", 96),
-    SNOW_MAN("SnowMan", 97),
-    OZELOT("Ozelot", 98),
-    VILLAGER_GOLEM("VillagerGolem", 99),
-    HORSE("EntityHorse", 100),
-    RABBIT("Rabbit", 101),
-    VILLAGER("Villager", 120),
-    ENDER_CRYSTAL("EnderCrystal", 200),
-    PLAYER(null, -1),
+    TNT_PRIMED("TntPrimed", 50),
+    ENDER_CRYSTAL("EnderCrystal", 51),
+    ARROW("Arrow", 60),
+    SNOWBALL("Snowball", 61),
+    EGG("Egg", 62),
+    FIRE_BALL("FireBall", 63),
+    SMALL_FIRE_BALL("SmallFireBall", 64),
+    ENDER_PEARL("EnderPearl", 65),
+    WITHER_SKULL("WitherSkull", 66),
+    FALLING_BLOCK("FallingBlock", 70),
+    ITEM_FRAME("ItemFrame", 71),
+    ENDER_SIGNAL("EnderSignal", 72),
+    POTION("Potion", 73),
+    THROWN_EXP_BOTTLE("ThrownExpBottle", 75),
+    FIREWORK("Firework", 76),
+    LEASH("Leash", 77),
+    ARMOR_STAND("ArmorStand", 78),
+    FISHING_HOOK("FishingHook", 90),
 
-    UNKNOWN(null, -1);
+    UNKNOWN("Unknown", -1);
 
     private final String name;
     private final short typeId;
+    private final short subId;
 
     private static final Map<String, EntityType> NAME_MAP = new HashMap<>();
-    private static final Map<Short, EntityType> ID_MAP = new HashMap<>();
 
     static {
         for (EntityType type : values()) {
             if (type.name != null) {
                 NAME_MAP.put(type.name.toLowerCase(), type);
             }
-
-            if (type.typeId > 0) {
-                ID_MAP.put(type.typeId, type);
-            }
         }
     }
 
     EntityType(String name, int typeId) {
+        this(name, typeId, -1);
+    }
+
+    EntityType(String name, int typeId, int subId) {
         this.name = name;
         this.typeId = (short) typeId;
+        this.subId = (short) subId;
     }
 
     public String getName() {
@@ -105,6 +91,10 @@ public enum EntityType {
 
     public short getTypeId() {
         return typeId;
+    }
+
+    public short getSubId() {
+        return subId;
     }
 
     public static EntityType fromName(String name) {
@@ -116,10 +106,24 @@ public enum EntityType {
     }
 
     public static EntityType fromId(int id) {
-        if (id > Short.MAX_VALUE) {
+        return fromId(id, -1);
+    }
+
+    public static EntityType fromId(int id, int subId) { // subId = -1 -> any sub id is ok
+        if (id > Short.MAX_VALUE || subId > Short.MAX_VALUE) {
             return null;
         }
 
-        return ID_MAP.getOrDefault((short) id, EntityType.UNKNOWN);
+        for (EntityType value : values()) {
+            if (subId == -1 && value.getTypeId() == id) {
+                return value;
+            }
+
+            if (subId != -1 && value.getSubId() != -1 && value.getSubId() == subId && value.getTypeId() == id) {
+                return value;
+            }
+        }
+
+        return UNKNOWN;
     }
 }

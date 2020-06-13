@@ -2,7 +2,7 @@ package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.entity.EntityPlayer;
-import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.PlayerSkinConfiguration;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -19,19 +19,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class CachedPlayer extends CachedEntityWithMetadata implements EntityPlayer {
+public class ProxyPlayer extends ProxyLivingEntity implements EntityPlayer {
 
     private final UUID uniqueId;
     private final PlayerInfoCache infoCache;
     private final PlayerSkinConfiguration skinConfiguration = new DefaultPlayerSkinConfiguration() {
         @Override
         protected MinecraftSerializableObjectList getObjectList() {
-            return CachedPlayer.super.objectList;
+            return ProxyPlayer.super.objectList;
         }
     };
 
-    public CachedPlayer(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.PLAYER);
+    public ProxyPlayer(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.PLAYER);
         this.uniqueId = ((PacketPlayServerNamedEntitySpawn) spawnPacket).getPlayerId();
         this.infoCache = (PlayerInfoCache) client.getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
     }

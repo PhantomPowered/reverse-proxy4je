@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.util;
 
+import com.github.derrop.proxy.api.util.EulerAngle;
 import com.github.derrop.proxy.api.util.nbt.NBTTagFloat;
 import com.github.derrop.proxy.api.util.nbt.NBTTagList;
 
@@ -71,6 +72,10 @@ public class Rotations {
             Rotations rotations = (Rotations) p_equals_1_;
             return this.x == rotations.x && this.y == rotations.y && this.z == rotations.z;
         }
+    }
+
+    public EulerAngle asEuler() {
+        return new EulerAngle(this.x, this.y, this.z);
     }
 
     /**

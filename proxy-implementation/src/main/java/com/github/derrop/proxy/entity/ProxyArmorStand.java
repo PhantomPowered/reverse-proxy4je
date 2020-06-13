@@ -1,0 +1,112 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) derrop and derklaro
+ * Copyright (c) contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.github.derrop.proxy.entity;
+
+import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.ArmorStand;
+import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.util.EulerAngle;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.util.serialize.SerializableObject;
+import org.jetbrains.annotations.NotNull;
+
+public class ProxyArmorStand extends ProxyLivingEntity implements ArmorStand {
+
+    protected ProxyArmorStand(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.ARMOR_STAND);
+    }
+
+    @Override
+    public @NotNull ItemStack getItem(@NotNull EquipmentSlot slot) {
+        return this.equipment.getOrDefault(slot.getSlotId(), ItemStack.NONE);
+    }
+
+    @Override
+    public @NotNull EulerAngle getBodyPosition(@NotNull BodyPosition position) {
+        switch (position) {
+            case HEAD:
+                return this.dataWatcher.getRotations(11).asEuler();
+            case BODY:
+                return this.dataWatcher.getRotations(12).asEuler();
+            case ARM_LEFT:
+                return this.dataWatcher.getRotations(13).asEuler();
+            case ARM_RIGHT:
+                return this.dataWatcher.getRotations(14).asEuler();
+            case LEG_LEFT:
+                return this.dataWatcher.getRotations(15).asEuler();
+            case LEG_RIGHT:
+                return this.dataWatcher.getRotations(16).asEuler();
+        }
+
+        throw new RuntimeException("Magic happened");
+    }
+
+    @Override
+    public boolean hasBasePlate() {
+        return (this.dataWatcher.getByte(10) & 8) != 0;
+    }
+
+    @Override
+    public boolean hasGravity() {
+        return (this.dataWatcher.getByte(10) & 2) != 0;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return (this.dataWatcher.getByte(0) & 32) != 0;
+    }
+
+    @Override
+    public boolean hasArms() {
+        return (this.dataWatcher.getByte(10) & 4) != 0;
+    }
+
+    @Override
+    public boolean isSmall() {
+        return (this.dataWatcher.getByte(10) & 1) != 0;
+    }
+
+    @Override
+    public boolean isMarker() {
+        return (this.dataWatcher.getByte(10) & 16) != 0;
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
+        if (packet instanceof PacketPlayServerEntityMetadata) {
+            PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
+            for (SerializableObject object : metadata.getObjects()) {
+                if (object.getValue().isPresent()) {
+                    this.dataWatcher.set(object.getId(), object.getValue().get());
+                }
+            }
+        }
+    }
+}

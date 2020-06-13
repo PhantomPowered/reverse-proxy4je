@@ -1,13 +1,12 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
-import com.github.derrop.proxy.api.entity.EntityEffect;
-import com.github.derrop.proxy.api.entity.EntityType;
-import com.github.derrop.proxy.api.entity.SpawnedEntity;
+import com.github.derrop.proxy.api.entity.*;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -18,6 +17,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
+import com.github.derrop.proxy.util.DataWatcher;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
 import com.google.common.base.Preconditions;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CachedEntity implements SpawnedEntity {
+public class ProxyEntity implements SpawnedEntity, Entity.Callable {
 
     protected final ServiceRegistry registry;
     protected final ConnectedProxyClient client;
@@ -36,13 +36,14 @@ public class CachedEntity implements SpawnedEntity {
     private final Unsafe unsafe = this::setLocation;
 
     private final int entityId;
-    private final EntityType type;
+    private final int type;
 
-    private final Map<Integer, ItemStack> equipment;
+    protected final Map<Integer, ItemStack> equipment;
+    protected final DataWatcher dataWatcher = new DataWatcher();
 
     protected final MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
 
-    protected CachedEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
+    protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
         this.registry = registry;
         this.client = client;
         this.entityId = spawnPacket.getEntityId();
@@ -51,13 +52,22 @@ public class CachedEntity implements SpawnedEntity {
         this.equipment = new ConcurrentHashMap<>();
     }
 
-    public static CachedEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
+    public static ProxyEntity createEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         Preconditions.checkNotNull(type, "EntityType cannot be null");
         if (spawnPacket instanceof PacketPlayServerNamedEntitySpawn) {
-            return new CachedPlayer(registry, client, spawnPacket);
+            return new ProxyPlayer(registry, client, spawnPacket);
         }
 
-        return new CachedEntityWithMetadata(registry, client, spawnPacket, type);
+        return new ProxyLivingEntity(registry, client, spawnPacket, type);
+    }
+
+    public static ProxyEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
+        Preconditions.checkNotNull(type, "EntityType cannot be null");
+        if (type == EntityType.ARMOR_STAND) {
+            return new ProxyArmorStand(registry, client, spawnPacket);
+        }
+
+        return new ProxyEntity(registry, client, spawnPacket, type.getTypeId());
     }
 
     public void updateMetadata(PacketPlayServerEntityMetadata metadata) {
@@ -86,12 +96,17 @@ public class CachedEntity implements SpawnedEntity {
     }
 
     @Override
+    public @NotNull Callable getCallable() {
+        return this;
+    }
+
+    @Override
     public double getEyeHeight() {
         return 1.8;
     }
 
     @Override
-    public EntityType getType() {
+    public int getType() {
         return this.type;
     }
 
@@ -195,5 +210,9 @@ public class CachedEntity implements SpawnedEntity {
         if (this.getEffectCache().getEffects(this.entityId).remove(effectId) != null && this.client.getRedirector() != null) {
             this.client.getRedirector().sendPacket(new PacketPlayServerRemoveEntityEffect(this.entityId, effectId));
         }
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
     }
 }

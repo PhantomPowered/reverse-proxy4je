@@ -27,6 +27,7 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -36,7 +37,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
-import com.github.derrop.proxy.entity.CachedEntity;
+import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
@@ -58,7 +59,7 @@ public class EntityCache implements PacketCacheHandler {
     // TODO Remove all entities on Bungee ServerSwitch
     // TODO entities are not properly removed
 
-    private final Map<Integer, CachedEntity> entities = new ConcurrentHashMap<>();
+    private final Map<Integer, ProxyEntity> entities = new ConcurrentHashMap<>();
 
     private int cameraTargetId = -1;
 
@@ -81,7 +82,7 @@ public class EntityCache implements PacketCacheHandler {
         };
     }
 
-    public Map<Integer, CachedEntity> getEntities() {
+    public Map<Integer, ProxyEntity> getEntities() {
         return this.entities;
     }
 
@@ -103,16 +104,16 @@ public class EntityCache implements PacketCacheHandler {
             }
         } else if (packet instanceof PacketPlayServerSpawnEntityExperienceOrb) {
             PacketPlayServerSpawnEntityExperienceOrb spawn = (PacketPlayServerSpawnEntityExperienceOrb) packet;
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.EXPERIENCE_ORB));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.EXPERIENCE_ORB));
         } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
             PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) packet;
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.PLAYER));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.PLAYER));
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
             PacketPlayServerSpawnLivingEntity spawn = (PacketPlayServerSpawnLivingEntity) packet;
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.fromId(spawn.getType())));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.fromId(spawn.getType())));
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
             PacketPlayServerSpawnEntity spawn = (PacketPlayServerSpawnEntity) packet;
-            this.entities.put(spawn.getEntityId(), CachedEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, spawn.getType() == 2 ? EntityType.ITEM : EntityType.fromId(spawn.getType())));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.fromId(spawn.getType(), spawn.getExtraData())));
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
             if (this.entities.containsKey(metadata.getEntityId())) {
@@ -145,7 +146,7 @@ public class EntityCache implements PacketCacheHandler {
             return;
         }
 
-        for (CachedEntity entity : this.entities.values()) {
+        for (ProxyEntity entity : this.entities.values()) {
             entity.spawn(con);
         }
 

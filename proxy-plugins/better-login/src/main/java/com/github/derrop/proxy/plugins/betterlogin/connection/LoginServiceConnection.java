@@ -10,7 +10,8 @@ import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
-import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.PlayerId;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
@@ -43,7 +44,7 @@ import java.net.SocketAddress;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class LoginServiceConnection implements ServiceConnection {
+public class LoginServiceConnection implements ServiceConnection, Entity.Callable {
 
     private static final ServiceWorldDataProvider WORLD_DATA_PROVIDER = new LoginServiceWorldDataProvider();
 
@@ -135,13 +136,18 @@ public class LoginServiceConnection implements ServiceConnection {
     }
 
     @Override
+    public @NotNull Callable getCallable() {
+        return this;
+    }
+
+    @Override
     public double getEyeHeight() {
         return 1.8;
     }
 
     @Override
-    public EntityType getType() {
-        return EntityType.PLAYER;
+    public int getType() {
+        return LivingEntityType.PLAYER.getTypeId();
     }
 
     @Override
@@ -416,5 +422,9 @@ public class LoginServiceConnection implements ServiceConnection {
     @Override
     public @NotNull NetworkUnsafe networkUnsafe() {
         return packet -> {};
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
     }
 }

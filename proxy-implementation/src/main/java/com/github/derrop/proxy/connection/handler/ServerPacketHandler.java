@@ -21,6 +21,7 @@ import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
@@ -91,6 +92,20 @@ public class ServerPacketHandler {
         client.getConnection().updateLocation(location);
     }
 
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_METADATA, directions = ProtocolDirection.TO_CLIENT)
+    public void handleEntityMeta(ConnectedProxyClient client, PacketPlayServerEntityMetadata meta) {
+        if (client.getEntityId() == meta.getEntityId()) {
+            return;
+        }
+
+        Entity entity = client.getConnection().getWorldDataProvider().getEntityInWorld(client.getEntityId());
+        if (entity == null) {
+            return;
+        }
+
+        entity.getCallable().handleEntityPacket(meta);
+    }
+
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.POSITION, directions = ProtocolDirection.TO_CLIENT)
     public void handlePosition(ConnectedProxyClient client, PacketPlayServerPosition position) {
         Location location = new Location(position.getX(), position.getY(), position.getZ(), position.getYaw(), position.getPitch());
@@ -103,7 +118,6 @@ public class ServerPacketHandler {
         client.setLastAlivePacket(System.currentTimeMillis());
         throw CancelProceedException.INSTANCE;
     }
-
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.LOGIN, directions = ProtocolDirection.TO_CLIENT)
     public void handleLogin(ConnectedProxyClient client, PacketPlayServerLogin login) {
