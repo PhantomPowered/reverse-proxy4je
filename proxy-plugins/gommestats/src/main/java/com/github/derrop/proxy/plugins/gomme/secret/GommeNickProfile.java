@@ -50,6 +50,10 @@ public class GommeNickProfile {
         this.nickInfo = nickInfo;
     }
 
+    public String getFullRealName() {
+        return this.getRealTeam().getPrefix() + this.getRealName() + this.getRealTeam().getSuffix();
+    }
+
     @Override
     public String toString() {
         return "GommeNickProfile{" +

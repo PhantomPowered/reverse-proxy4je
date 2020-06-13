@@ -28,6 +28,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.util.PasteServerUtils;
+import com.github.derrop.proxy.api.util.Side;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
@@ -86,6 +87,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         for (MatchInfo value : this.openMatches.values()) {
             if (value.getInvoker().equals(invoker)) {
                 value.callEvent(event);
+                value.setRunning(false);
                 this.openMatches.remove(value.getMatchId());
                 this.writeToDatabase(value);
             }
@@ -97,6 +99,24 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
             return;
         }
         matchInfo.start();
+
+        Player player = matchInfo.getInvoker().getPlayer();
+        if (player != null) {
+            player.appendActionBar(Side.RIGHT, () -> {
+                if (!matchInfo.isRunning()) {
+                    return null;
+                }
+
+                long millis = System.currentTimeMillis() - matchInfo.getBeginTimestamp();
+                long seconds = (millis / 1000) % 60;
+                long minutes = (millis / (1000 * 60)) % 60;
+
+                String minutesString = minutes < 10 ? "0" + minutes : String.valueOf(minutes);
+                String secondsString = seconds < 10 ? "0" + seconds : String.valueOf(seconds);
+
+                return " §7┃ Elapsed time: §e" + minutesString + ":" + secondsString;
+            });
+        }
     }
 
     public void endMatch(MatchInfo matchInfo) {

@@ -96,16 +96,16 @@ public class PacketPlayServerPlayerAbilities implements Packet {
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         byte b = 0;
         if (this.invulnerable) {
-            b |= 1;
+            b = (byte) (b | 1);
         }
         if (this.flying) {
-            b |= 2;
+            b = (byte) (b | 2);
         }
         if (this.allowFlying) {
-            b |= 4;
+            b = (byte) (b | 4);
         }
         if (this.creativeMode) {
-            b = 8;
+            b = (byte) (b | 8);
         }
 
         protoBuf.writeByte(b);

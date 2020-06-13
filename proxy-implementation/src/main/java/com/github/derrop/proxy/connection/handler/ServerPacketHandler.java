@@ -1,10 +1,7 @@
 package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.connection.Connection;
-import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
@@ -14,6 +11,8 @@ import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEv
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.connection.AppendedActionBar;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
@@ -30,13 +29,50 @@ import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitl
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 public class ServerPacketHandler {
 
     @PacketHandler(directions = ProtocolDirection.TO_CLIENT)
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
         client.redirectPacket(packet.getProtoBuf().clone(), packet.getPacket());
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING)
+    public void modifyActionBarRedirect(ConnectedProxyClient client, PacketPlayServerChatMessage packet) {
+        this.modifyActionBar(client, packet);
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.PLAY)
+    public void modifyActionBarPlay(ConnectedProxyClient client, PacketPlayServerChatMessage packet) {
+        this.modifyActionBar(client, packet);
+    }
+
+    private void modifyActionBar(ConnectedProxyClient client, PacketPlayServerChatMessage packet) {
+        if (client.getRedirector() == null) {
+            return;
+        }
+        DefaultPlayer player = (DefaultPlayer) client.getRedirector();
+        if (packet.getPosition() != ChatMessageType.ACTION_BAR.ordinal()) {
+            return;
+        }
+
+        Component component = GsonComponentSerializer.INSTANCE.deserialize(packet.getMessage());
+        String original = LegacyComponentSerializer.legacy().serialize(component);
+
+        for (AppendedActionBar actionBar : player.getActionBars()) {
+            String message = actionBar.getMessage().get();
+            if (message == null) {
+                player.getActionBars().remove(actionBar);
+                continue;
+            }
+            Side side = actionBar.getSide();
+            original = side == Side.LEFT ? message + original : original + message;
+        }
+
+        packet.setMessage(GsonComponentSerializer.INSTANCE.serialize(TextComponent.of(original)));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_TELEPORT, directions = ProtocolDirection.TO_CLIENT)

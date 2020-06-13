@@ -29,10 +29,7 @@ import com.github.derrop.proxy.api.connection.player.GameMode;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.EntityPlayer;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
-import com.github.derrop.proxy.connection.cache.handler.EntityCache;
-import com.github.derrop.proxy.connection.cache.handler.GameStateCache;
-import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
-import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
+import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
 import org.jetbrains.annotations.NotNull;
@@ -59,6 +56,10 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
     private EntityCache getEntityCache() {
         return (EntityCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof EntityCache);
+    }
+
+    private PlayerInfoCache getPlayerInfoCache() {
+        return (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
     }
 
     @Override
@@ -95,12 +96,20 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
     @Override
     public @NotNull GameMode getOwnGameMode() {
-        return this.getGameStateCache().getGameMode();
+        GameMode gameMode = this.getGameStateCache().getGameMode();
+        if (gameMode == null) {
+            LoginCache cache = (LoginCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof LoginCache);
+            gameMode = GameMode.getById(cache.getLastLogin().getGameMode());
+        }
+        if (gameMode == null) {
+            gameMode = GameMode.NOT_SET;
+        }
+        return gameMode;
     }
 
     @Override
     public PlayerInfo[] getOnlinePlayers() {
-        PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+        PlayerInfoCache cache = this.getPlayerInfoCache();
 
         return cache.getItems().stream()
                 .map(cache::toPlayerInfo)
@@ -109,10 +118,21 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
     @Override
     public PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId) {
-        PlayerInfoCache cache = (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+        PlayerInfoCache cache = this.getPlayerInfoCache();
 
         return cache.getItems().stream()
                 .filter(item -> item.getUniqueId().equals(uniqueId))
+                .findFirst()
+                .map(cache::toPlayerInfo)
+                .orElse(null);
+    }
+
+    @Override
+    public PlayerInfo getOnlinePlayer(@NotNull String name) {
+        PlayerInfoCache cache = this.getPlayerInfoCache();
+
+        return cache.getItems().stream()
+                .filter(item -> item.getUsername().equals(name))
                 .findFirst()
                 .map(cache::toPlayerInfo)
                 .orElse(null);

@@ -33,9 +33,13 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.util.Side;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 /**
  * Represents a player who's connection is being connected to somewhere else,
@@ -103,6 +107,13 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
     void sendMessage(ChatMessageType position, Component message);
 
     void sendActionBar(int units, Component... message);
+
+    /**
+     * Appends the given message to the action bar sent by the server
+     * @param side the side where the message should be appended
+     * @param message the message to be appended, when the supplier returns null, it won't be appended anymore
+     */
+    void appendActionBar(@NotNull Side side, @NotNull Supplier<String> message);
 
     /**
      * Send a plugin message to this player.

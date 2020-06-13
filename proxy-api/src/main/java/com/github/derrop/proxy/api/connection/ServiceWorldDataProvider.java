@@ -55,6 +55,8 @@ public interface ServiceWorldDataProvider {
 
     PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId);
 
+    PlayerInfo getOnlinePlayer(@NotNull String name);
+
     @NotNull
     Collection<EntityPlayer> getPlayersInWorld();
 
