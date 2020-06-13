@@ -218,7 +218,7 @@ public class MatchInfo {
 
         builder.append("\n\n");
 
-        builder.append("=========================== Events ===========================\n");
+        builder.append("=========================== Events (").append(this.events.size()).append(") ===========================\n");
         for (MatchEvent event : this.events) {
             builder.append(FORMAT.format(event.getTimestamp())).append(": ");
 
@@ -234,7 +234,7 @@ public class MatchInfo {
 
             builder.append('\n');
         }
-        builder.append("=========================== Events ===========================\n");
+        builder.append("=========================== Events (").append(this.events.size()).append(") ===========================\n");
 
         builder.append("\n\n");
 
