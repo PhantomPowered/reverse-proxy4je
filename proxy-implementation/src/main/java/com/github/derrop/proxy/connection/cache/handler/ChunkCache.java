@@ -130,7 +130,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     private Chunk load(PacketCache cache, PacketPlayServerMapChunk chunkData) {
         if (chunkData.getExtracted().dataLength == 0) {
-            this.unload(chunkData.getX(), chunkData.getZ());
+            this.unload(cache, chunkData.getX(), chunkData.getZ());
             return null;
         }
 
@@ -145,11 +145,11 @@ public class ChunkCache implements PacketCacheHandler {
         return chunk;
     }
 
-    private void unload(int x, int z) {
+    private void unload(PacketCache cache, int x, int z) {
         for (Chunk chunk : this.chunks) {
             if (chunk.getX() == x && chunk.getZ() == z) {
                 if (this.blockAccess != null) {
-                    this.blockAccess.handleChunkUnload(this.connectedPlayer.getConnectedClient(), chunk);
+                    this.blockAccess.handleChunkUnload(cache.getTargetProxyClient().getConnection(), chunk);
                 }
                 this.chunks.remove(chunk);
             }
