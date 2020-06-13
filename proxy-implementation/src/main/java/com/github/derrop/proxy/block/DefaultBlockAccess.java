@@ -29,6 +29,11 @@ import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.player.chunk.ChunkLoadEvent;
+import com.github.derrop.proxy.api.events.connection.player.chunk.ChunkUnloadEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.cache.handler.ChunkCache;
@@ -61,10 +66,13 @@ public class DefaultBlockAccess implements BlockAccess {
         }
     }
 
-    public void handleChunkLoad(Chunk chunk) {
+    public void handleChunkLoad(ServiceConnection serviceConnection, Chunk chunk) {
         if (this.blockTrackers.isEmpty()) {
             return;
         }
+
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ChunkLoadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
 
         this.forEachStates(chunk, (x, y, z, oldState, state) -> {
             for (BlockConsumer consumer : this.blockTrackers.values()) {
@@ -73,10 +81,13 @@ public class DefaultBlockAccess implements BlockAccess {
         });
     }
 
-    public void handleChunkUnload(Chunk chunk) {
+    public void handleChunkUnload(ServiceConnection serviceConnection, Chunk chunk) {
         if (this.blockTrackers.isEmpty()) {
             return;
         }
+
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ChunkUnloadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
 
         this.forEachStates(chunk, (x, y, z, oldState, state) -> {
             for (BlockConsumer consumer : this.blockTrackers.values()) {

@@ -21,6 +21,7 @@
         <module>gommestats</module>
         <module>better-login</module>
         <module>player-warning</module>
+        <module>jumpmaster</module>
     </modules>
 
 </project>

@@ -140,7 +140,7 @@ public class ChunkCache implements PacketCacheHandler {
         this.chunks.add(chunk);
 
         if (this.blockAccess != null) {
-            this.blockAccess.handleChunkLoad(chunk);
+            this.blockAccess.handleChunkLoad(this.connectedPlayer.getConnectedClient(), chunk);
         }
 
         return chunk;
@@ -150,7 +150,7 @@ public class ChunkCache implements PacketCacheHandler {
         for (Chunk chunk : this.chunks) {
             if (chunk.getX() == x && chunk.getZ() == z) {
                 if (this.blockAccess != null) {
-                    this.blockAccess.handleChunkUnload(chunk);
+                    this.blockAccess.handleChunkUnload(this.connectedPlayer.getConnectedClient(), chunk);
                 }
                 this.chunks.remove(chunk);
             }
