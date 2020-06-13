@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.util.PasteServerUtils;
@@ -37,12 +38,15 @@ import com.google.gson.JsonObject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
     private static final String PASTE_URL = "https://just-paste.it/";
+    private static final String PROPERTY_KEY = "GommePlugin-CurrentMatch";
 
     private final GommeStatsCore core;
 
@@ -51,47 +55,44 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         this.core = core;
     }
 
-    private final Map<String, MatchInfo> openMatches = new ConcurrentHashMap<>();
-
     public GommeStatsCore getCore() {
         return this.core;
     }
 
+    public Stream<MatchInfo> getOpenMatches() {
+        return this.core.getRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients()
+                .stream()
+                .map(connection -> (MatchInfo) connection.getProperty(PROPERTY_KEY))
+                .filter(Objects::nonNull);
+    }
+
     public Collection<MatchInfo> getRunningMatches() {
-        return this.openMatches.values().stream().filter(MatchInfo::isRunning).collect(Collectors.toList());
+        return this.getOpenMatches().filter(MatchInfo::isRunning).collect(Collectors.toList());
     }
 
     public Collection<MatchInfo> getRunningMatches(GommeGameMode gameMode) {
         return this.getRunningMatches().stream().filter(matchInfo -> matchInfo.getGameMode() == gameMode).collect(Collectors.toList());
     }
 
-    public MatchInfo getMatch(String matchId) {
-        return this.openMatches.get(matchId);
-    }
-
     public MatchInfo getMatch(ServiceConnection connection) {
-        for (MatchInfo value : this.openMatches.values()) {
-            if (value.getInvoker().equals(connection) || Arrays.stream(value.getInvoker().getWorldDataProvider().getOnlinePlayers())
-                    .anyMatch(playerInfo -> playerInfo.getUniqueId().equals(connection.getUniqueId()))) {
-                return value;
-            }
-        }
-        return null;
+        return connection.getProperty(PROPERTY_KEY);
     }
 
     public void createMatch(MatchInfo matchInfo) {
-        this.openMatches.put(matchInfo.getMatchId(), matchInfo);
+        matchInfo.getInvoker().setProperty(PROPERTY_KEY, matchInfo);
     }
 
     public void deleteMatch(ServiceConnection invoker, MatchEvent event) {
-        for (MatchInfo value : this.openMatches.values()) {
-            if (value.getInvoker().equals(invoker)) {
-                value.callEvent(event);
-                value.setRunning(false);
-                this.openMatches.remove(value.getMatchId());
-                this.writeToDatabase(value);
-            }
+        MatchInfo matchInfo = invoker.getProperty(PROPERTY_KEY);
+        if (matchInfo == null) {
+            return;
         }
+
+        matchInfo.callEvent(event);
+        matchInfo.setRunning(false);
+
+        invoker.removeProperty(PROPERTY_KEY);
+        this.writeToDatabase(matchInfo);
     }
 
     public void startMatch(MatchInfo matchInfo) {

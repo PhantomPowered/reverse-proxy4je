@@ -316,6 +316,10 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
+    public void removeProperty(String key) {
+    }
+
+    @Override
     public void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer) {
     }
 

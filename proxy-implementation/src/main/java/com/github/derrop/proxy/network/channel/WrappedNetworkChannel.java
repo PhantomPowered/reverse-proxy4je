@@ -111,6 +111,11 @@ public interface WrappedNetworkChannel extends NetworkChannel {
     }
 
     @Override
+    default void removeProperty(String key) {
+        this.getWrappedNetworkChannel().removeProperty(key);
+    }
+
+    @Override
     default void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer) {
         this.getWrappedNetworkChannel().addOutgoingPacketListener(key, consumer);
     }

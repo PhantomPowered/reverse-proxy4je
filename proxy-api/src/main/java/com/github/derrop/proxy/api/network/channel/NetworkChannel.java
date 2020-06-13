@@ -74,6 +74,8 @@ public interface NetworkChannel extends AutoCloseable {
 
     <T> void setProperty(String key, T value);
 
+    void removeProperty(String key);
+
     void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer);
 
     void removeOutgoingPacketListener(UUID key);

@@ -92,6 +92,7 @@ public class GommeMatchListener {
             return;
         }
 
+        ServiceConnection connection = (ServiceConnection) event.getConnection();
         ByteBuf buf = Unpooled.wrappedBuffer(event.getData());
 
         JsonObject jsonObject = JsonParser.parseString(ByteBufUtils.readString(buf)).getAsJsonObject();
@@ -105,7 +106,7 @@ public class GommeMatchListener {
 
             this.matchManager.deleteMatch((ServiceConnection) event.getConnection(), new MatchEndLeftEvent());
 
-            if (this.matchManager.getMatch(matchId) != null) {
+            if (this.matchManager.getMatch(connection) != null) {
                 return;
             }
 

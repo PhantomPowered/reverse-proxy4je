@@ -210,6 +210,11 @@ public class DefaultNetworkChannel implements NetworkChannel {
     }
 
     @Override
+    public void removeProperty(String key) {
+        this.properties.remove(key);
+    }
+
+    @Override
     public void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer) {
         this.outgoingPacketListeners.put(key, consumer);
     }
