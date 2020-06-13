@@ -28,7 +28,6 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -62,11 +61,9 @@ public class ScoreboardCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        Packet packet = newPacket.getDeserializedPacket();
-
-        if (packet instanceof PacketPlayServerScoreboardObjective) {
-            PacketPlayServerScoreboardObjective objective = (PacketPlayServerScoreboardObjective) packet;
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        if (newPacket instanceof PacketPlayServerScoreboardObjective) {
+            PacketPlayServerScoreboardObjective objective = (PacketPlayServerScoreboardObjective) newPacket;
 
             if (objective.getAction() == 0) {
                 ScoreObjective scoreobjective = scoreboard.addScoreObjective(objective.getName(), IScoreObjectiveCriteria.DUMMY);
@@ -93,8 +90,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                     }
                 }
             }
-        } else if (packet instanceof PacketPlayServerScoreboardScore) {
-            PacketPlayServerScoreboardScore scorePacket = (PacketPlayServerScoreboardScore) packet;
+        } else if (newPacket instanceof PacketPlayServerScoreboardScore) {
+            PacketPlayServerScoreboardScore scorePacket = (PacketPlayServerScoreboardScore) newPacket;
 
             ScoreObjective scoreobjective = scoreboard.getObjective(scorePacket.getObjectiveName());
 
@@ -116,8 +113,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                     this.handler.handleScoreRemoved(scorePacket.getItemName(), scoreobjective);
                 }
             }
-        } else if (packet instanceof PacketPlayServerScoreboardDisplay) {
-            PacketPlayServerScoreboardDisplay display = (PacketPlayServerScoreboardDisplay) packet;
+        } else if (newPacket instanceof PacketPlayServerScoreboardDisplay) {
+            PacketPlayServerScoreboardDisplay display = (PacketPlayServerScoreboardDisplay) newPacket;
 
             if (display.getName().isEmpty()) {
                 scoreboard.setObjectiveInDisplaySlot(display.getPosition(), null);
@@ -125,8 +122,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                 ScoreObjective scoreobjective = scoreboard.getObjective(display.getName());
                 scoreboard.setObjectiveInDisplaySlot(display.getPosition(), scoreobjective);
             }
-        } else if (packet instanceof PacketPlayServerScoreboardTeam) {
-            PacketPlayServerScoreboardTeam team = (PacketPlayServerScoreboardTeam) packet;
+        } else if (newPacket instanceof PacketPlayServerScoreboardTeam) {
+            PacketPlayServerScoreboardTeam team = (PacketPlayServerScoreboardTeam) newPacket;
 
             ScorePlayerTeam scoreplayerteam;
 
@@ -187,7 +184,7 @@ public class ScoreboardCache implements PacketCacheHandler {
         }
 
         if (this.handler != null) {
-            this.handler.handleScoreboardPacket(packet);
+            this.handler.handleScoreboardPacket(newPacket);
         }
     }
 

@@ -33,7 +33,7 @@ public interface PacketCacheHandler {
 
     int[] getPacketIDs();
 
-    void cachePacket(PacketCache packetCache, CachedPacket newPacket);
+    void cachePacket(PacketCache packetCache, Packet newPacket);
 
     default void cacheClientPacket(PacketCache packetCache, Packet newPacket) {
     }
