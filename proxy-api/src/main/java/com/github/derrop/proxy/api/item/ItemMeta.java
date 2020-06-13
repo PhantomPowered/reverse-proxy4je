@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.api.item;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.util.nbt.NBTBase;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import com.github.derrop.proxy.api.util.nbt.NBTTagList;
 import com.github.derrop.proxy.api.util.nbt.NBTTagString;
@@ -41,6 +42,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ItemMeta {
+
+    private final Map<String, NBTBase> unhandled = Maps.newHashMap();
 
     private Map<Enchantment, Integer> enchantments = Maps.newHashMap();
     private Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
@@ -170,6 +173,12 @@ public class ItemMeta {
 
         if (source.hasKey(ItemMetaKeys.DAMAGE)) {
             this.damage = source.getInteger(ItemMetaKeys.DAMAGE);
+        }
+
+        for (Map.Entry<String, NBTBase> stringNBTBaseEntry : source.getEntrySet()) {
+            if (!HANDLED.contains(stringNBTBaseEntry.getKey())) {
+                this.unhandled.put(stringNBTBaseEntry.getKey(), stringNBTBaseEntry.getValue());
+            }
         }
     }
 
@@ -393,8 +402,24 @@ public class ItemMeta {
             }
         }
 
+        for (Map.Entry<String, NBTBase> stringNBTBaseEntry : this.unhandled.entrySet()) {
+            nbtTagCompound.setTag(stringNBTBaseEntry.getKey(), stringNBTBaseEntry.getValue());
+        }
+
         return nbtTagCompound;
     }
+
+    protected static final Collection<String> HANDLED = new ArrayList<>(Arrays.asList(
+            ItemMetaKeys.DISPLAY,
+            ItemMetaKeys.BLOCK_DATA,
+            ItemMetaKeys.CUSTOM_MODEL_DATA,
+            ItemMetaKeys.ENCHANTMENTS,
+            ItemMetaKeys.ATTRIBUTES,
+            ItemMetaKeys.REPAIR,
+            ItemMetaKeys.HIDE_FLAGS,
+            ItemMetaKeys.UNBREAKABLE,
+            ItemMetaKeys.DAMAGE
+    ));
 
     public interface ItemMetaKeys {
 

@@ -33,7 +33,7 @@ public class ItemStack {
 
     public static final ItemStack NONE = new ItemStack(0, 0, 0, null);
 
-    private final int itemId;
+    private int itemId;
     private final int amount;
     private final int meta;
     private final NBTTagCompound nbt;
@@ -80,6 +80,10 @@ public class ItemStack {
 
     public void setItemMeta(@NotNull ItemMeta itemMeta) {
         this.itemMeta = itemMeta;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     @Override

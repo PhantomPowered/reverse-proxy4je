@@ -74,6 +74,10 @@ public class NBTTagCompound extends NBTBase {
         return this.tagMap.keySet();
     }
 
+    public Set<Map.Entry<String, NBTBase>> getEntrySet() {
+        return this.tagMap.entrySet();
+    }
+
     /**
      * Gets the type byte for the tag.
      */
