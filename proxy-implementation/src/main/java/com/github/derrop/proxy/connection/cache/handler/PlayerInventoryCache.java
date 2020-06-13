@@ -25,9 +25,9 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -56,9 +56,9 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        if (newPacket.getDeserializedPacket() instanceof PacketPlayServerWindowItems) {
-            PacketPlayServerWindowItems items = (PacketPlayServerWindowItems) newPacket.getDeserializedPacket();
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        if (newPacket instanceof PacketPlayServerWindowItems) {
+            PacketPlayServerWindowItems items = (PacketPlayServerWindowItems) newPacket;
 
             if (items.getWindowId() != WINDOW_ID) {
                 return;
@@ -72,8 +72,8 @@ public class PlayerInventoryCache implements PacketCacheHandler {
                     this.itemsBySlot.remove(slot);
                 }
             }
-        } else if (newPacket.getDeserializedPacket() instanceof PacketPlayServerSetSlot) {
-            PacketPlayServerSetSlot setSlot = (PacketPlayServerSetSlot) newPacket.getDeserializedPacket();
+        } else if (newPacket instanceof PacketPlayServerSetSlot) {
+            PacketPlayServerSetSlot setSlot = (PacketPlayServerSetSlot) newPacket;
             ItemStack item = setSlot.getItem();
 
             if (setSlot.getWindowId() != WINDOW_ID) {

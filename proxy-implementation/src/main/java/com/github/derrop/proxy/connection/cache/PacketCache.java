@@ -87,8 +87,7 @@ public class PacketCache {
         for (PacketCacheHandler handler : this.handlers) {
             for (int packetId : handler.getPacketIDs()) {
                 if (packetId == receivedPacketId) {
-                    handler.cachePacket(this, new CachedPacket(packetId, deserialized, packet));
-                    break;
+                    handler.cachePacket(this, deserialized);
                 }
             }
         }

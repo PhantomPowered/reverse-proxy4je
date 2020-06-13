@@ -33,7 +33,6 @@ import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.entity.CachedEntity;
@@ -86,11 +85,11 @@ public class EntityCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
         this.packetCache = packetCache;
         ServiceRegistry registry = packetCache.getTargetProxyClient().getProxy().getServiceRegistry();
 
-        Packet packet = newPacket.getDeserializedPacket();
+        Packet packet = newPacket;
 
         if (packet instanceof PacketPlayServerEntityTeleport) {
             PacketPlayServerEntityTeleport teleport = (PacketPlayServerEntityTeleport) packet;

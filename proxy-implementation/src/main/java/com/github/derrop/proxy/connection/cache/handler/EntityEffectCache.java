@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
@@ -47,9 +47,9 @@ public class EntityEffectCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        if (newPacket.getDeserializedPacket() instanceof PacketPlayServerRemoveEntityEffect) {
-            PacketPlayServerRemoveEntityEffect effect = (PacketPlayServerRemoveEntityEffect) newPacket.getDeserializedPacket();
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        if (newPacket instanceof PacketPlayServerRemoveEntityEffect) {
+            PacketPlayServerRemoveEntityEffect effect = (PacketPlayServerRemoveEntityEffect) newPacket;
             if (this.effects.containsKey(effect.getEntityId())) {
                 Map<Byte, TimedEntityEffect> effects = this.effects.get(effect.getEntityId());
                 effects.remove((byte) effect.getEffectId());
@@ -57,8 +57,8 @@ public class EntityEffectCache implements PacketCacheHandler {
                     this.effects.remove(effect.getEntityId());
                 }
             }
-        } else if (newPacket.getDeserializedPacket() instanceof PacketPlayServerEntityEffect) {
-            TimedEntityEffect effect = TimedEntityEffect.fromEntityEffect((PacketPlayServerEntityEffect) newPacket.getDeserializedPacket());
+        } else if (newPacket instanceof PacketPlayServerEntityEffect) {
+            TimedEntityEffect effect = TimedEntityEffect.fromEntityEffect((PacketPlayServerEntityEffect) newPacket);
 
             if (!this.effects.containsKey(effect.getEntityId())) {
                 this.effects.put(effect.getEntityId(), new ConcurrentHashMap<>());

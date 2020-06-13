@@ -27,7 +27,6 @@ package com.github.derrop.proxy.connection.cache.handler;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 
@@ -57,8 +56,8 @@ public class SimplePacketCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        this.lastPacket = newPacket.getDeserializedPacket();
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        this.lastPacket = newPacket;
     }
 
     @Override

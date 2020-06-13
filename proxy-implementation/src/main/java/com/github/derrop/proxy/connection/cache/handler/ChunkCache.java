@@ -31,7 +31,6 @@ import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -69,8 +68,8 @@ public class ChunkCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        Packet packet = newPacket.getDeserializedPacket();
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        Packet packet = newPacket;
 
         this.dimension = packetCache.getTargetProxyClient().getDimension();
 

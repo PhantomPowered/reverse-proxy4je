@@ -48,7 +48,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
+public class BasicScoreboard implements Scoreboard {
 
     private final ServiceConnection connection;
     private final ScoreboardCache cache;
@@ -59,11 +59,15 @@ public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
         this.connection = connection;
         this.cache = cache;
 
-        cache.setHandler(this);
+        cache.setHandler(new BasicScoreboardHandler(this.connection, this));
     }
 
     public void removeObjective(BasicObjective objective) {
         this.registeredObjectives.remove(objective);
+    }
+
+    public Collection<BasicObjective> getRegisteredObjectives() {
+        return this.registeredObjectives;
     }
 
     @NotNull
@@ -141,72 +145,4 @@ public class BasicScoreboard implements Scoreboard, ScoreboardHandler {
         return new BasicTeam(this, name, null);
     }
 
-    private void callEvent(Event event) {
-        this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
-    }
-
-    @Override
-    public void handleObjectiveCreated(ScoreObjective objective) {
-        this.callEvent(new ScoreboardObjectiveRegisterEvent(this.connection, new BasicObjective(this, objective.getName(), objective)));
-    }
-
-    @Override
-    public void handleObjectiveUpdated(ScoreObjective objective) {
-        this.callEvent(new ScoreboardObjectiveUpdateEvent(this.connection, new BasicObjective(this, objective.getName(), objective)));
-    }
-
-    @Override
-    public void handleObjectiveUnregistered(ScoreObjective objective) {
-        this.callEvent(new ScoreboardObjectiveUnregisterEvent(this.connection, new BasicObjective(this, objective.getName(), objective)));
-    }
-
-    @Override
-    public void handleScoreUpdated(Score score) {
-        this.callEvent(new ScoreboardScoreSetEvent(this.connection, new BasicScore(
-                this, new BasicObjective(this, score.getObjective().getName(), score.getObjective()),
-                score.getPlayerName(), score.getScorePoints()
-        )));
-    }
-
-    @Override
-    public void handleScoreRemoved(String scoreName, ScoreObjective objective) {
-        this.callEvent(new ScoreboardScoreSetEvent(this.connection, new BasicScore(
-                this, objective == null ? null : new BasicObjective(this, objective.getName(), objective),
-                scoreName, -1
-        )));
-    }
-
-    @Override
-    public void handleTeamRegistered(ScorePlayerTeam team) {
-        this.callEvent(new ScoreboardTeamRegisterEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team)));
-    }
-
-    @Override
-    public void handleTeamUpdated(ScorePlayerTeam team) {
-        this.callEvent(new ScoreboardTeamUpdateEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team)));
-    }
-
-    @Override
-    public void handleTeamEntryAdded(ScorePlayerTeam team, String entry) {
-        this.callEvent(new ScoreboardTeamEntryAddEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team), entry));
-    }
-
-    @Override
-    public void handleTeamEntryRemoved(ScorePlayerTeam team, String entry) {
-        this.callEvent(new ScoreboardTeamEntryRemoveEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team), entry));
-    }
-
-    @Override
-    public void handleTeamUnregistered(ScorePlayerTeam team) {
-        this.callEvent(new ScoreboardTeamUnregisterEvent(this.connection, new BasicTeam(this, team.getRegisteredName(), team)));
-    }
-
-    @Override
-    public void handleScoreboardPacket(Packet packet) {
-        if (packet instanceof PacketPlayServerScoreboardObjective || packet instanceof PacketPlayServerScoreboardDisplay) {
-            for (BasicObjective objective : this.registeredObjectives) {
-                objective.ensureRegistered();
-            }
-        }
-    }
 }
