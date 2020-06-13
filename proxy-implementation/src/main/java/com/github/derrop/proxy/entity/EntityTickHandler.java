@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.service.ServiceRegistry;

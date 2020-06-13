@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -42,8 +42,8 @@ public class WorldBorderCache implements PacketCacheHandler {
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        PacketPlayServerWorldBorder border = (PacketPlayServerWorldBorder) newPacket.getDeserializedPacket();
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        PacketPlayServerWorldBorder border = (PacketPlayServerWorldBorder) newPacket;
 
         if (border.getAction() == PacketPlayServerWorldBorder.Action.INITIALIZE) {
             this.worldBorder = border;

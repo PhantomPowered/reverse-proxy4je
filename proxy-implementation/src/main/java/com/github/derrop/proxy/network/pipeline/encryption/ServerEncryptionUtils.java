@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network.pipeline.encryption;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import org.jetbrains.annotations.NotNull;

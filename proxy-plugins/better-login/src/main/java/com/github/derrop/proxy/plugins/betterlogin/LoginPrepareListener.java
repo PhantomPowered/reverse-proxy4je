@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import com.github.derrop.proxy.plugins.betterlogin.connection.LoginServiceConnection;
 

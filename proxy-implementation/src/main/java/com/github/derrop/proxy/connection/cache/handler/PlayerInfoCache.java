@@ -32,8 +32,8 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoUpdateEvent;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -63,11 +63,11 @@ public class PlayerInfoCache implements PacketCacheHandler {
     private PacketCache packetCache;
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
         this.packetCache = packetCache;
         ServiceConnection connection = packetCache.getTargetProxyClient().getConnection();
 
-        PacketPlayServerPlayerInfo playerListItem = (PacketPlayServerPlayerInfo) newPacket.getDeserializedPacket();
+        PacketPlayServerPlayerInfo playerListItem = (PacketPlayServerPlayerInfo) newPacket;
 
         if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER) {
             for (PacketPlayServerPlayerInfo.Item item : this.items) {

@@ -78,6 +78,7 @@ public class JsonConfiguration implements Configuration {
         }
 
         this.motd = Utils.GSON.fromJson(this.jsonObject.get("motd"), ServerPing.class);
+        // TODO load server-icon.png
     }
 
     @Override

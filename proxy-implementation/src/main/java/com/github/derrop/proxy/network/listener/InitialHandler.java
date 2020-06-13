@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network.listener;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;

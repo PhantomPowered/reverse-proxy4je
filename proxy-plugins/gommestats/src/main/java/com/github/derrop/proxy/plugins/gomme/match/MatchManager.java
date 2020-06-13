@@ -25,10 +25,14 @@
 package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
+import com.github.derrop.proxy.api.util.PasteServerUtils;
+import com.github.derrop.proxy.api.util.Side;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
-import com.github.derrop.proxy.plugins.gomme.player.PlayerData;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.google.gson.JsonObject;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,11 +40,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class MatchManager {
+public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
+
+    private static final String PASTE_URL = "https://just-paste.it/";
 
     private final GommeStatsCore core;
 
     public MatchManager(GommeStatsCore core) {
+        super(core.getRegistry(), "gomme_matches", JsonObject.class);
         this.core = core;
     }
 
@@ -76,51 +83,81 @@ public class MatchManager {
         this.openMatches.put(matchInfo.getMatchId(), matchInfo);
     }
 
-    public void deleteMatch(ServiceConnection invoker) {
+    public void deleteMatch(ServiceConnection invoker, MatchEvent event) {
         for (MatchInfo value : this.openMatches.values()) {
             if (value.getInvoker().equals(invoker)) {
+                value.callEvent(event);
+                value.setRunning(false);
                 this.openMatches.remove(value.getMatchId());
-                if (value.hasEnded()) {
-                    this.writeToDatabase(value);
+                this.writeToDatabase(value);
+            }
+        }
+    }
+
+    public void startMatch(MatchInfo matchInfo) {
+        if (matchInfo.isRunning()) {
+            return;
+        }
+        matchInfo.start();
+
+        Player player = matchInfo.getInvoker().getPlayer();
+        if (player != null) {
+            player.appendActionBar(Side.RIGHT, () -> {
+                if (!matchInfo.isRunning()) {
+                    return null;
                 }
-            }
+
+                long millis = System.currentTimeMillis() - matchInfo.getBeginTimestamp();
+                long seconds = (millis / 1000) % 60;
+                long minutes = (millis / (1000 * 60)) % 60;
+
+                String minutesString = minutes < 10 ? "0" + minutes : String.valueOf(minutes);
+                String secondsString = seconds < 10 ? "0" + seconds : String.valueOf(seconds);
+
+                return " §7┃ Elapsed time: §e" + minutesString + ":" + secondsString;
+            });
         }
     }
 
-    public void startMatch(String matchId) {
-        MatchInfo matchInfo = this.openMatches.get(matchId);
-        if (matchInfo != null) {
-            PlayerInfo[] players = matchInfo.getInvoker().getWorldDataProvider().getOnlinePlayers();
-            PlayerData[] statistics = new PlayerData[players.length];
-            for (int i = 0; i < players.length; i++) {
-                statistics[i] = this.core.getPlayerDataProvider().getData(players[i].getUniqueId());
-            }
-            matchInfo.start(players, statistics);
+    public void endMatch(MatchInfo matchInfo) {
+        if (matchInfo.hasEnded()) {
+            return;
         }
-    }
-
-    public void endMatch(String matchId) {
-        MatchInfo matchInfo = this.openMatches.remove(matchId);
-        if (matchInfo != null) {
-            matchInfo.end(matchInfo.getInvoker().getWorldDataProvider().getOnlinePlayers());
-            this.writeToDatabase(matchInfo);
-        }
+        matchInfo.end();
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        // TODO
+        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
+
+        if (key != null) {
+            String url = PASTE_URL + key;
+
+            System.out.println("The MatchLog of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " has been uploaded to " + url);
+
+            Player player = matchInfo.getInvoker().getPlayer();
+            if (player != null) {
+                player.sendMessage("MatchLog: " + url);
+            }
+        } else {
+            System.err.println("An error occurred while trying to upload the match log of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " to " + PASTE_URL);
+        }
+
+        super.insert(matchInfo.getMatchId(), MatchInfo.GSON.toJsonTree(matchInfo).getAsJsonObject());
     }
 
     public long countMatches() {
-        return -1;
+        return super.size();
     }
 
     public long countMatches(GommeGameMode gameMode) {
-        return -1;
+        return super.getAll().stream()
+                .map(jsonObject -> MatchInfo.GSON.fromJson(jsonObject, MatchInfo.class))
+                .filter(matchInfo -> matchInfo.getGameMode() == gameMode)
+                .count();
     }
 
     public Collection<MatchInfo> getPastMatches() {
-        return null;
+        return super.getAll().stream().map(jsonObject -> MatchInfo.GSON.fromJson(jsonObject, MatchInfo.class)).collect(Collectors.toList());
     }
 
 }

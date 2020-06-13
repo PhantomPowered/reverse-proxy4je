@@ -2,7 +2,7 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ServiceConnector extends Tickable {
 
     @NotNull
-    ServiceConnection createConnection(MCCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException;
+    ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException;
 
     @Nullable
     ServiceConnection findBestConnection(Player player);

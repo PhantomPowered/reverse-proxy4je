@@ -87,8 +87,7 @@ public class PacketCache {
         for (PacketCacheHandler handler : this.handlers) {
             for (int packetId : handler.getPacketIDs()) {
                 if (packetId == receivedPacketId) {
-                    handler.cachePacket(this, new CachedPacket(packetId, deserialized, packet));
-                    break;
+                    handler.cachePacket(this, deserialized);
                 }
             }
         }
@@ -149,7 +148,6 @@ public class PacketCache {
                 new SimplePacketCache(ProtocolIds.ToClient.Play.ABILITIES),
                 new SimplePacketCache(ProtocolIds.ToClient.Play.UPDATE_TIME),
                 new SimplePacketCache(ProtocolIds.ToClient.Play.UPDATE_HEALTH),
-                new MappedPacketCache<>(ProtocolIds.ToClient.Play.GAME_STATE_CHANGE, PacketPlayServerGameStateChange::getState, gameStateChange -> false),
                 new SimplePacketCache(ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER),
                 new ListPacketCache(ProtocolIds.ToClient.Play.CHAT, 30),
                 new HeldItemSlotCache(),

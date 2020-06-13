@@ -52,6 +52,9 @@ public interface Scoreboard {
     @Nullable
     Team getTeam(@NotNull String name);
 
+    @Nullable
+    Team getTeamByEntry(@NotNull String entry);
+
     @NotNull
     Team registerNewTeam(@NotNull String name);
 

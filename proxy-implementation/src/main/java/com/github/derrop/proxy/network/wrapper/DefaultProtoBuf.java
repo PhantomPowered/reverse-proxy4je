@@ -27,7 +27,7 @@ package com.github.derrop.proxy.network.wrapper;
 import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.network.exception.ComponentTooLargeException;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.util.nbt.CompressedStreamTools;
 import com.github.derrop.proxy.api.util.nbt.NBTSizeTracker;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;

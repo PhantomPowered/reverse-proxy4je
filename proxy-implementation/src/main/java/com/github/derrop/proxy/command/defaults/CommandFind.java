@@ -73,8 +73,8 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
                     PlayerInfo playerInfo = ((EntityPlayer) entity).getPlayerInfo();
                     if (playerInfo != null) {
                         player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString() + " (" + playerInfo.getUsername() + ")");
-                        continue;
                     }
+                    continue;
                 }
                 player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString());
             }
@@ -107,7 +107,7 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
                 builder.append(splitter).append(position.toShortString());
             }
 
-            player.sendMessage("§aFound the following positions: §7" + builder.substring(splitter.length()));
+            player.sendMessage("§aFound the following positions (§e" + positions.size() + "§a): §7" + builder.substring(splitter.length()));
         });
     }
 

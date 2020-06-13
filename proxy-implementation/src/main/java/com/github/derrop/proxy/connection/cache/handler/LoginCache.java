@@ -24,13 +24,11 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.Constants;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.connection.cache.CachedPacket;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -41,6 +39,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 public class LoginCache implements PacketCacheHandler {
 
     private PacketPlayServerLogin lastLogin;
+    private PacketPlayServerRespawn lastRespawn;
 
     public PacketPlayServerLogin getLastLogin() {
         return lastLogin;
@@ -48,15 +47,15 @@ public class LoginCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{ProtocolIds.ToClient.Play.LOGIN};
+        return new int[]{ProtocolIds.ToClient.Play.LOGIN, ProtocolIds.ToClient.Play.RESPAWN};
     }
 
     @Override
-    public void cachePacket(PacketCache packetCache, CachedPacket newPacket) {
-        if (!(newPacket.getDeserializedPacket() instanceof PacketPlayServerLogin)) {
+    public void cachePacket(PacketCache packetCache, Packet newPacket) {
+        if (!(newPacket instanceof PacketPlayServerLogin)) {
             return;
         }
-        this.lastLogin = (PacketPlayServerLogin) newPacket.getDeserializedPacket();
+        this.lastLogin = (PacketPlayServerLogin) newPacket;
     }
 
     @Override
@@ -85,11 +84,11 @@ public class LoginCache implements PacketCacheHandler {
             if (player.getConnectedClient() == null) {
                 PacketPlayServerLogin login = new PacketPlayServerLogin(
                         this.lastLogin.getEntityId(),
-                        (short) 0,
+                        (short) targetProxyClient.getConnection().getWorldDataProvider().getOwnGameMode().getId(),
                         targetProxyClient.getDimension(),
                         this.lastLogin.getDifficulty(),
-                        (short) 255,
-                        this.lastLogin.getLevelType(),
+                        this.lastRespawn != null ? this.lastRespawn.getDifficulty() : this.lastLogin.getDifficulty(),
+                        this.lastRespawn != null ? this.lastRespawn.getLevelType() : this.lastLogin.getLevelType(),
                         this.lastLogin.isReducedDebugInfo()
                 );
                 player.sendPacket(login);
@@ -114,10 +113,10 @@ public class LoginCache implements PacketCacheHandler {
         }*/
 
         con.sendPacket(new PacketPlayServerRespawn(
-                this.lastLogin.getDimension(),
-                this.lastLogin.getDifficulty(),
-                this.lastLogin.getGameMode(),
-                this.lastLogin.getLevelType()
+                targetProxyClient.getDimension(),
+                this.lastRespawn != null ? this.lastRespawn.getDifficulty() : this.lastLogin.getDifficulty(),
+                (short) targetProxyClient.getConnection().getWorldDataProvider().getOwnGameMode().getId(),
+                this.lastRespawn != null ? this.lastRespawn.getLevelType() : this.lastLogin.getLevelType()
         ));
 
     }

@@ -25,14 +25,15 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 public class PlayerLeaveInGameEvent extends MatchEvent {
 
     private final String name;
-    private final String team;
+    private final MessageType team;
     private final int teamRemainingPlayers;
 
-    public PlayerLeaveInGameEvent(String name, String team, int teamRemainingPlayers) {
+    public PlayerLeaveInGameEvent(String name, MessageType team, int teamRemainingPlayers) {
         this.name = name;
         this.team = team;
         this.teamRemainingPlayers = teamRemainingPlayers;
@@ -47,7 +48,7 @@ public class PlayerLeaveInGameEvent extends MatchEvent {
         return this.name;
     }
 
-    public String getTeam() {
+    public MessageType getTeam() {
         return this.team;
     }
 

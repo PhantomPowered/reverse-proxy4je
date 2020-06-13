@@ -31,51 +31,53 @@ import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.command.console.ConsoleCommandSender;
+import com.github.derrop.proxy.console.ProxyConsole;
+import com.github.derrop.proxy.logging.ProxyLogLevels;
+import com.github.derrop.proxy.logging.ProxyLogger;
 
-import java.io.Console;
 import java.io.IOException;
 
 public final class ProxyBootstrap {
 
     public static synchronized void main(String[] args) throws IOException {
-        /*ILogger logger = new DefaultLogger(new JAnsiConsole(
-                () -> String.format("&c%s&7@&fProxy &7> &e", System.getProperty("user.name"))
-        ));
-        logger.addHandler(new FileLoggerHandler("logs/proxy.log", 8_000_000));*/
+        ProxyConsole proxyConsole = new ProxyConsole();
+        ProxyLogger proxyLogger = new ProxyLogger(proxyConsole.getLineReader());
 
+        sendWelcomeScreen();
+
+        long start = System.currentTimeMillis();
         MCProxy proxy = new MCProxy();
-        proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort());
+        proxy.getServiceRegistry().setProvider(null, ProxyLogger.class, proxyLogger, true);
+        proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort(), start);
 
         CommandMap commandMap = proxy.getServiceRegistry().getProviderUnchecked(CommandMap.class);
-        /*while (!Thread.interrupted()) {
-            String line = logger.getConsole().readLine().join();
-            if (line == null || line.trim().isEmpty()) {
-                continue;
-            }
+        CommandSender sender = new ConsoleCommandSender(proxy.getServiceRegistry());
 
-            try {
-                if (commandMap.process(logger.getConsole().getConsoleCommandSender(), line) == CommandResult.NOT_FOUND) {
-                    logger.warn("Unable to find command by this name. Use \"help\" to get a list of all commands");
-                }
-            } catch (final CommandExecutionException | PermissionDeniedException ex) {
-                logger.warn(ex.getMessage());
-            }
-        }*/
-        CommandSender sender = new ConsoleCommandSender();
-        Console console = System.console();
-        if (console == null) {
-            System.err.println("Console not supported! No commands can be executed in the console");
-            return;
-        }
         String line;
-        while ((line = console.readLine()) != null) {
+        while (!((line = proxyConsole.readString()).isEmpty())) {
             try {
                 if (commandMap.process(sender, line) == CommandResult.NOT_FOUND) {
-                    System.out.println("Unable to find command by this name. Use \"help\" to get a list of all commands");
+                    proxyLogger.logp(ProxyLogLevels.COMMAND, "", "", "Unable to find command by this name. Use \"help\" to get a list of all commands");
                 }
             } catch (final CommandExecutionException | PermissionDeniedException ex) {
                 System.out.println(ex.getMessage());
             }
         }
+    }
+
+    private static void sendWelcomeScreen() {
+        System.out.println("\n" +
+                "   ____        _ _            __  __  _____ _____                     \n" +
+                "  / __ \\      | (_)          |  \\/  |/ ____|  __ \\                    \n" +
+                " | |  | |_ __ | |_ _ __   ___| \\  / | |    | |__) | __ _____  ___   _ \n" +
+                " | |  | | '_ \\| | | '_ \\ / _ \\ |\\/| | |    |  ___/ '__/ _ \\ \\/ / | | |\n" +
+                " | |__| | | | | | | | | |  __/ |  | | |____| |   | | | (_) >  <| |_| |\n" +
+                "  \\____/|_| |_|_|_|_| |_|\\___|_|  |_|\\_____|_|   |_|  \\___/_/\\_\\\\__, |\n" +
+                "                                                                 __/ |\n" +
+                "                                                                |___/ \n");
+        System.out.println("Booting up online mc proxy version " + ProxyBootstrap.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
+        System.out.println("Running on runtime " + System.getProperty("java.runtime.name") + " in vm " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.info"));
+        System.out.println("Java Version: " + System.getProperty("java.runtime.version") + " (vm: " + System.getProperty("java.vm.version") + ")" + " system: " + System.getProperty("os.name") + " (arch: " + System.getProperty("os.arch") + ")");
+        System.out.println();
     }
 }

@@ -24,18 +24,22 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
-import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.PlayerId;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -43,7 +47,8 @@ import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.BlockIterator;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -70,15 +75,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class BasicServiceConnection implements ServiceConnection, WrappedNetworkChannel {
+public class BasicServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
 
     private static final Set<NetworkAddress> BANNED_ADDRESSES = new HashSet<>();
 
-    public BasicServiceConnection(MCProxy proxy, MCCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
+    public BasicServiceConnection(MCProxy proxy, MCServiceCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
         this(proxy, credentials, networkAddress, true);
     }
 
-    public BasicServiceConnection(MCProxy proxy, MCCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
+    public BasicServiceConnection(MCProxy proxy, MCServiceCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
         this.proxy = proxy;
         this.credentials = credentials;
         this.networkAddress = networkAddress;
@@ -96,7 +101,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final MCProxy proxy;
 
-    private final MCCredentials credentials;
+    private final MCServiceCredentials credentials;
     private final UserAuthentication authentication;
 
     private final NetworkAddress networkAddress;
@@ -109,6 +114,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private PlayerAbilities abilities = new DefaultPlayerAbilities(this);
 
     private boolean reScheduleOnFailure;
+
+    private boolean sneaking, sprinting;
 
     private Location location = new Location(0, 0, 0, 0, 0);
 
@@ -138,12 +145,22 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
+    public long getLastDisconnectionTimestamp() {
+        return this.client.getLastDisconnectionTimestamp();
+    }
+
+    @Override
+    public PlayerId getLastConnectedPlayer() {
+        return this.client.getLastConnectedPlayer();
+    }
+
+    @Override
     public PlayerAbilities getAbilities() {
         return this.abilities;
     }
 
     @Override
-    public @NotNull MCCredentials getCredentials() {
+    public @NotNull MCServiceCredentials getCredentials() {
         return this.credentials;
     }
 
@@ -182,13 +199,18 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
+    public @NotNull Callable getCallable() {
+        return this;
+    }
+
+    @Override
     public double getEyeHeight() {
         return 1.8;
     }
 
     @Override
-    public EntityType getType() {
-        return EntityType.PLAYER;
+    public int getType() {
+        return LivingEntityType.PLAYER.getTypeId();
     }
 
     @Override
@@ -224,6 +246,43 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public void stopViewing(Player player) {
         this.client.getViewers().remove(player);
+    }
+
+    @Override
+    public boolean isSneaking() {
+        return this.sneaking;
+    }
+
+    public void setSneaking(boolean sneaking) {
+        this.sneaking = sneaking;
+    }
+
+    @Override
+    public boolean isSprinting() {
+        return this.sprinting;
+    }
+
+    public void setSprinting(boolean sprinting) {
+        this.sprinting = sprinting;
+    }
+
+    @Override
+    public BlockPos getTargetBlock(int range) {
+        return this.getTargetBlock(EnumSet.of(Material.AIR), range);
+    }
+
+    @Override
+    public BlockPos getTargetBlock(Set<Material> transparent, int range) {
+        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this, range);
+        BlockPos pos = null;
+        while (iterator.hasNext()) {
+            pos = iterator.next();
+            Material material = this.getBlockAccess().getMaterial(pos);
+            if (!transparent.contains(material)) {
+                break;
+            }
+        }
+        return pos;
     }
 
     @Override
@@ -401,6 +460,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason) {
+        this.reconnect();
     }
 
     @Override
@@ -471,5 +531,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public @NotNull NetworkUnsafe networkUnsafe() {
         return packet -> client.write(packet);
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
+
     }
 }

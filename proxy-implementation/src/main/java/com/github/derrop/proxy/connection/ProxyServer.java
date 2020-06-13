@@ -41,12 +41,10 @@ public class ProxyServer {
         this.proxy = proxy;
     }
 
-    private EventLoopGroup bossGroup, workerGroup;
+    private final EventLoopGroup bossGroup = NettyUtils.newEventLoopGroup();
+    private final EventLoopGroup workerGroup = NettyUtils.newEventLoopGroup();
 
     public void start(SocketAddress address) {
-        this.bossGroup = NettyUtils.newEventLoopGroup();
-        this.workerGroup = NettyUtils.newEventLoopGroup();
-
         new ServerBootstrap()
                 .channel(NettyUtils.getServerSocketChannelClass())
                 .option(ChannelOption.SO_REUSEADDR, true)

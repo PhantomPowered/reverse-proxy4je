@@ -26,15 +26,18 @@ package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.PlayerId;
+import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.util.MCCredentials;
+import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.UserAuthentication;
 import net.kyori.text.Component;
@@ -43,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ServiceConnection extends Connection, AutoCloseable, Entity {
@@ -53,10 +57,14 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
     @Nullable
     Player getPlayer();
 
+    long getLastDisconnectionTimestamp();
+
+    PlayerId getLastConnectedPlayer();
+
     PlayerAbilities getAbilities();
 
     @NotNull
-    MCCredentials getCredentials();
+    MCServiceCredentials getCredentials();
 
     @Nullable
     UserAuthentication getAuthentication();
@@ -128,5 +136,13 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
     void startViewing(Player player);
 
     void stopViewing(Player player);
+
+    boolean isSneaking();
+
+    boolean isSprinting();
+
+    BlockPos getTargetBlock(Set<Material> transparent, int range);
+
+    BlockPos getTargetBlock(int range);
 
 }

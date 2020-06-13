@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xbill.DNS.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Objects;
 
 public class NetworkAddress {
@@ -60,7 +62,7 @@ public class NetworkAddress {
 
     @Nullable
     public static NetworkAddress parse(@NotNull String input) {
-        String[] hostAndPort = input.split(":");
+        String[] hostAndPort = input.split("@");
         if (hostAndPort.length == 0) {
             return null;
         }
@@ -74,6 +76,11 @@ public class NetworkAddress {
             if (record != null) {
                 host = record.getTarget().toString(true);
                 port = record.getPort();
+            } else {
+                try {
+                    host = InetAddress.getByName(rawHost).getHostAddress();
+                } catch (UnknownHostException ignored) {
+                }
             }
         }
 
@@ -116,6 +123,10 @@ public class NetworkAddress {
     @Override
     public String toString() {
         return (this.rawHost != null ? this.rawHost + "#" + this.host : this.host) + ":" + this.port;
+    }
+
+    public String asString() {
+        return this.host + "@" + this.port;
     }
 
     @Override

@@ -24,19 +24,20 @@
  */
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Proxy;
+import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
-import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.location.BlockPos;
@@ -45,8 +46,9 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.connection.AppendedActionBar;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -64,10 +66,14 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 
-public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel {
+public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
 
-    private static final Unsafe EMPTY_UNSAFE = location -> { };
+    private static final Unsafe EMPTY_UNSAFE = location -> {
+    };
 
     public DefaultPlayer(MCProxy proxy, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
         super(offlinePlayer.getUniqueId(), loginResult.getName(), System.currentTimeMillis(), version, offlinePlayer.getEffectivePermissions());
@@ -103,6 +109,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     private int compression = -1;
 
+    private int positionUpdateTicks = 0;
+
     private String displayName;
 
     private String lastCommandCompleteRequest;
@@ -110,6 +118,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     private final PlayerInventory inventory = new DefaultPlayerInventory(this);
 
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
+
+    private final Collection<AppendedActionBar> actionBars = new CopyOnWriteArrayList<>();
 
     public void applyPermissions(OfflinePlayer offlinePlayer) {
         if (offlinePlayer == this) {
@@ -121,6 +131,10 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
 
     public ServiceConnection getConnectingClient() {
         return this.connectingClient;
+    }
+
+    public Collection<AppendedActionBar> getActionBars() {
+        return this.actionBars;
     }
 
     @Override
@@ -178,6 +192,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
                 }
             }
         });
+    }
+
+    @Override
+    public void appendActionBar(@NotNull Side side, @NotNull Supplier<String> message) {
+        this.actionBars.add(new AppendedActionBar(side, message));
     }
 
     @Override
@@ -405,8 +424,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public EntityType getType() {
-        return EntityType.PLAYER;
+    public int getType() {
+        return LivingEntityType.PLAYER.getTypeId();
     }
 
     @Override
@@ -442,6 +461,11 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
+    public @NotNull Callable getCallable() {
+        return this;
+    }
+
+    @Override
     public double getEyeHeight() {
         return 1.8;
     }
@@ -468,6 +492,15 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
             ((BasicServiceConnection) this.connectedClient).getClient().free();
         }
+    }
+
+    @Override
+    public void handleTick() {
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
+
     }
 
     private class PacketSenderUnsafe implements PacketSender.NetworkUnsafe {

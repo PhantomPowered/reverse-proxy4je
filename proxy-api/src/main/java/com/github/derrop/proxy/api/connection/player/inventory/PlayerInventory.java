@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.connection.player.inventory;
 
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.ItemStack;
+import com.github.derrop.proxy.api.item.ItemStack;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
 

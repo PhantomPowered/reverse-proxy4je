@@ -195,6 +195,10 @@ public class BlockPos extends Vec3i {
         return new BlockPos(this.getY() * vec.getZ() - this.getZ() * vec.getY(), this.getZ() * vec.getX() - this.getX() * vec.getZ(), this.getX() * vec.getY() - this.getY() * vec.getX());
     }
 
+    public Location toLocation() {
+        return new Location(this.getX(), this.getY(), this.getZ(), 0, 0);
+    }
+
     /**
      * Serialize this BlockPos into a long value
      */

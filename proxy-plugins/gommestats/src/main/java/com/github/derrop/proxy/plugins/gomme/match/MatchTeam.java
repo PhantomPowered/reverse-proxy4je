@@ -24,32 +24,26 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
-import com.github.derrop.proxy.api.chat.ChatColor;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 import java.util.Collection;
 import java.util.UUID;
 
 public class MatchTeam {
 
-    private String name;
-    private ChatColor color;
-    private Collection<UUID> players;
+    private final MessageType type;
+    private final Collection<UUID> players;
 
-    public MatchTeam(String name, ChatColor color, Collection<UUID> players) {
-        this.name = name;
-        this.color = color;
+    public MatchTeam(MessageType type, Collection<UUID> players) {
+        this.type = type;
         this.players = players;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public ChatColor getColor() {
-        return color;
+    public MessageType getType() {
+        return this.type;
     }
 
     public Collection<UUID> getPlayers() {
-        return players;
+        return this.players;
     }
 }

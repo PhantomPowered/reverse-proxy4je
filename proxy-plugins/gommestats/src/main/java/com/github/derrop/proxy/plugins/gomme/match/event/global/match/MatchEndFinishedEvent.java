@@ -25,15 +25,24 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.global.match;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 public class MatchEndFinishedEvent extends MatchEvent {
 
-    public MatchEndFinishedEvent() {
+    private final MessageType winner;
+
+    public MatchEndFinishedEvent(MessageType winner) {
+        this.winner = winner;
+        highlight();
+    }
+
+    public MessageType getWinner() {
+        return this.winner;
     }
 
     @Override
     public String toPlainText() {
-        return "The match has ended";
+        return "The match has ended because " + this.winner + " has won the game";
     }
 
 }

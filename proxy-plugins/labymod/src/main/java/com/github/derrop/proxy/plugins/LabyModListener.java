@@ -45,12 +45,19 @@ public final class LabyModListener {
 
         ByteBuf byteBuf = Unpooled.wrappedBuffer(event.getData());
         String messageKey = ByteBufUtils.readString(byteBuf);
+        if (messageKey.equals("PERMISSIONS")) {
+            event.cancel(true);
+            return;
+        }
         if (!messageKey.equals("INFO")) {
             return;
         }
 
         JsonObject content = JsonParser.parseString(ByteBufUtils.readString(byteBuf)).getAsJsonObject();
         content.add("addons", new JsonArray());
+        if (content.has("mods") && !content.get("mods").isJsonNull()) {
+            content.add("mods", new JsonArray());
+        }
 
         ByteBuf buf = Unpooled.buffer();
         ByteBufUtils.writeString("INFO", buf);

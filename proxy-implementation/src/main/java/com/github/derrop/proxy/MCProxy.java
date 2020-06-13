@@ -28,6 +28,7 @@ import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.account.AccountReader;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
@@ -70,6 +71,7 @@ import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
+import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import net.kyori.text.TextComponent;
@@ -77,16 +79,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MCProxy extends Proxy {
-
-    private static final Path ACCOUNT_PATH = Paths.get("accounts.txt");
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
 
@@ -98,6 +97,7 @@ public class MCProxy extends Proxy {
     private final Collection<Tickable> tickables = new CopyOnWriteArrayList<>();
 
     protected MCProxy() {
+        System.out.println("Registering default services...");
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
@@ -105,9 +105,9 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, Configuration.class, new JsonConfiguration(), true);
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
-
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
 
+        System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
@@ -115,8 +115,8 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ServerPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new NameUUIDRewritePacketHandler());
 
+        System.out.println("Loading configuration...");
         this.serviceRegistry.getProviderUnchecked(Configuration.class).load();
-
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
 
         //PlayerVelocityHandler.start(this.serviceRegistry);
@@ -222,7 +222,8 @@ public class MCProxy extends Proxy {
         return this.baseChannelInitializer;
     }
 
-    public void bootstrap(int port) throws IOException {
+    public void bootstrap(int port, long start) throws IOException {
+        System.out.println("Registering incoming packets...");
         PacketRegistrar.registerPackets(this.serviceRegistry.getProviderUnchecked(PacketRegistry.class));
 
         /*while (!Thread.interrupted()) {
@@ -241,37 +242,44 @@ public class MCProxy extends Proxy {
         }
 
         if (true) {
-            return;u
+            return;
         }*/
 
-        this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
-        this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(), false, true);
-        this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
-
+        System.out.println("Connecting to database...");
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
-
+        this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
+        this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));
         this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
 
+        System.out.println("Loading plugins...");
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).loadPlugins();
 
+        System.out.println("Loading commands...");
         this.handleCommands();
 
         this.serviceRegistry.getProviderUnchecked(EventManager.class).registerListener(null, new ProxyBrandChangeListener());
-        if (Files.notExists(ACCOUNT_PATH)) {
-            this.accountReader.writeDefaults(ACCOUNT_PATH);
-        }
 
-        this.accountReader.readAccounts(ACCOUNT_PATH, new AccountBiConsumer(this));
+        System.out.println("Reading accounts...");
+        this.accountReader.readAccounts(this.serviceRegistry, new AccountBiConsumer(this));
+
+        System.out.println("Starting entity tick...");
         EntityTickHandler.startTick(this.serviceRegistry);
 
+        System.out.println("Enabling plugins...");
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).enablePlugins();
 
+        System.out.println("Starting proxy listener on " + port + "...");
         this.proxyServer.start(new InetSocketAddress(port));
-
         this.registerTickable(this.serviceRegistry.getProviderUnchecked(ServiceConnector.class));
 
+        System.out.println("Starting main loop...");
         this.startMainLoop();
+
+        double bootTime = (System.currentTimeMillis() - start) / 1000d;
+        System.out.println(String.format("Done! (%ss)", new DecimalFormat("##.###").format(bootTime)));
     }
 
     private void handleCommands() {
@@ -287,9 +295,11 @@ public class MCProxy extends Proxy {
         commandMap.registerCommand(null, new CommandKick(this.serviceRegistry), "kick");
         commandMap.registerCommand(null, new CommandList(this.serviceRegistry), "list", "glist");
         commandMap.registerCommand(null, new CommandSwitch(this.serviceRegistry), "switch");
+        commandMap.registerCommand(null, new CommandStop(), "stop", "end", "shutdown", "bye");
         commandMap.registerCommand(null, new CommandPermissions(this.serviceRegistry), "perms");
         commandMap.registerCommand(null, new CommandFind(), "find");
         commandMap.registerCommand(null, new CommandReplace(), "replace");
+        commandMap.registerCommand(null, new CommandDebug(serviceRegistry), "debug");
 
         commandMap.registerCommand(null, new CommandAdf(), "adf");
 

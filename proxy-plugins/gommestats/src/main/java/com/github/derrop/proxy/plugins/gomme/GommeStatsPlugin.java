@@ -33,10 +33,7 @@ import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.command.CommandNicklist;
 import com.github.derrop.proxy.plugins.gomme.command.CommandSpectatorlist;
-import com.github.derrop.proxy.plugins.gomme.secret.GommeNickDetector;
-import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
-import com.github.derrop.proxy.plugins.gomme.web.MatchFileHandler;
-import io.javalin.Javalin;
+import com.github.derrop.proxy.plugins.gomme.match.GommeMatchListener;
 
 @Plugin(
         id = "com.github.derrop.plugins.gommestats",

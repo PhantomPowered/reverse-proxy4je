@@ -14,8 +14,25 @@ public enum MessageType {
     PLAYER_LEAVE_IN_GAME(),
     PLAYER_DIED(),
     PLAYER_KILLED(),
-    PLAYER_GLOBAL_CHAT_MESSAGE(), // TODO
-    PLAYER_TEAM_CHAT_MESSAGE(), // TODO
+    PLAYER_GLOBAL_CHAT_MESSAGE(),
+    PLAYER_TEAM_CHAT_MESSAGE(),
+
+    TEAM_BLACK(),
+    TEAM_BLUE(),
+    TEAM_TURQUOISE(),
+    TEAM_DIAMOND(),
+    TEAM_DARK_BLUE(),
+    TEAM_DARK_GRAY(),
+    TEAM_DARK_GREEN(),
+    TEAM_DARK_RED(),
+    TEAM_GRAY(),
+    TEAM_GREEN(),
+    TEAM_ORANGE(),
+    TEAM_PINK(),
+    TEAM_PURPLE(),
+    TEAM_RED(),
+    TEAM_WHITE(),
+    TEAM_YELLOW(),
 
 
     // Cores

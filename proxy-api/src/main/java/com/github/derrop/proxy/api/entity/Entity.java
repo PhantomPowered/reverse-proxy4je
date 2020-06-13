@@ -25,11 +25,12 @@
 package com.github.derrop.proxy.api.entity;
 
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.Packet;
 import org.jetbrains.annotations.NotNull;
 
 public interface Entity {
 
-    EntityType getType();
+    int getType();
 
     @NotNull
     Location getLocation();
@@ -45,6 +46,9 @@ public interface Entity {
     @NotNull
     Unsafe unsafe();
 
+    @NotNull
+    Callable getCallable();
+
     double getEyeHeight();
 
     interface Unsafe {
@@ -53,4 +57,8 @@ public interface Entity {
 
     }
 
+    interface Callable {
+
+        void handleEntityPacket(@NotNull Packet packet);
+    }
 }

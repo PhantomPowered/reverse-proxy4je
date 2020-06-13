@@ -22,6 +22,8 @@
         <module>better-login</module>
         <module>player-warning</module>
         <module>jumpmaster</module>
+        <module>ruler</module>
+        <module>automsg</module>
     </modules>
 
 </project>

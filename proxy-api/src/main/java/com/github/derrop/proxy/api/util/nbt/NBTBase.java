@@ -116,7 +116,7 @@ public abstract class NBTBase {
         return this.getId();
     }
 
-    protected String getString() {
+    public String getString() {
         return this.toString();
     }
 

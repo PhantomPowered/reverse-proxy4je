@@ -34,6 +34,7 @@ public class MapSelectedEvent extends MatchEvent {
     public MapSelectedEvent(String map, String builder) {
         this.map = map;
         this.builder = builder;
+        highlight();
     }
 
     @Override

@@ -35,8 +35,6 @@ import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistr
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.util.Identifiable;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,18 +46,25 @@ import java.util.stream.Collectors;
 
 public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
 
-    private final BiMap<Byte, Collection<PacketHandlerRegistryEntry>> entries = HashBiMap.create();
+    private final SortedMap<Byte, Collection<PacketHandlerRegistryEntry>> entries = new TreeMap<>(Byte::compare);
 
     @Override
     public <T extends Identifiable> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolDirection direction, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
-        SortedMap<Byte, Collection<PacketHandlerRegistryEntry>> sorted = new TreeMap<>(Byte::compare);
-        this.entries.forEach(sorted::put);
-
-        for (Map.Entry<Byte, Collection<PacketHandlerRegistryEntry>> entry : ImmutableBiMap.copyOf(sorted).entrySet()) {
+        for (Map.Entry<Byte, Collection<PacketHandlerRegistryEntry>> entry : ImmutableBiMap.copyOf(this.entries).entrySet()) {
             for (PacketHandlerRegistryEntry registryEntry : entry.getValue()) {
                 for (PacketHandlerRegistryEntry.RegisteredEntry entryEntry : registryEntry.getEntries()) {
                     if (!(packet instanceof DecodedPacket)) {
-                        if (entryEntry.getHandledPackets().length == 0 || Arrays.stream(entryEntry.getHandledPackets()).noneMatch(e -> e == packet.getId())) {
+                        if (entryEntry.getHandledPackets().length == 0) {
+                            continue;
+                        }
+                        boolean found = false;
+                        for (int packetId : entryEntry.getHandledPackets()) {
+                            if (packetId == packet.getId()) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
                             continue;
                         }
                     }
@@ -76,7 +81,14 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                         continue;
                     }
 
-                    if (entryEntry.getDirections().length != 0 && Arrays.stream(entryEntry.getDirections()).noneMatch(e -> e == direction)) {
+                    boolean found = false;
+                    for (ProtocolDirection e : entryEntry.getDirections()) {
+                        if (e == direction) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (entryEntry.getDirections().length != 0 && !found) {
                         continue;
                     }
 

@@ -17,8 +17,16 @@ public class PlayerWarningData {
         this.targetPlayerId = targetPlayerId;
     }
 
-    public boolean shouldWarnEquipmentSlot(int slotId, Material material) {
-        return this.equipmentSlots.containsKey(slotId) && this.equipmentSlots.get(slotId).stream().anyMatch(slot -> slot.getMaterial() == material);
+    public Map<Integer, Collection<WarnedEquipmentSlot>> getEquipmentSlots() {
+        return this.equipmentSlots;
+    }
+
+    public WarnedEquipmentSlot getEquipmentSlotData(int slotId, Material material) {
+        return this.equipmentSlots.containsKey(slotId) ?
+                this.equipmentSlots.get(slotId).stream()
+                        .filter(slot -> slot.getMaterial() == material)
+                        .findFirst().orElse(null) :
+                null;
     }
 
     private PlayerWarningData(UUID targetPlayerId, Map<Integer, Collection<WarnedEquipmentSlot>> equipmentSlots) {

@@ -25,6 +25,8 @@
 package com.github.derrop.proxy.api.chat;
 
 import lombok.Getter;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -102,27 +104,27 @@ public enum ChatColor {
     /**
      * Represents magical characters that change around randomly.
      */
-    MAGIC('k', "obfuscated"),
+    MAGIC('k', "obfuscated", true),
     /**
      * Makes the text bold.
      */
-    BOLD('l', "bold"),
+    BOLD('l', "bold", true),
     /**
      * Makes a line appear through the text.
      */
-    STRIKETHROUGH('m', "strikethrough"),
+    STRIKETHROUGH('m', "strikethrough", true),
     /**
      * Makes the text appear underlined.
      */
-    UNDERLINE('n', "underline"),
+    UNDERLINE('n', "underline", true),
     /**
      * Makes the text italic.
      */
-    ITALIC('o', "italic"),
+    ITALIC('o', "italic", true),
     /**
      * Resets all previous chat colors or formats.
      */
-    RESET('r', "reset");
+    RESET('r', "reset", true);
     /**
      * The special character which prefixes all chat colour codes. Use this if
      * you need to dynamically convert colour codes from your custom format.
@@ -148,6 +150,8 @@ public enum ChatColor {
     @Getter
     private final String name;
 
+    private final boolean isColor;
+
     static {
         for (ChatColor colour : values()) {
             BY_CHAR.put(colour.code, colour);
@@ -155,12 +159,18 @@ public enum ChatColor {
     }
 
     ChatColor(char code, String name) {
+        this(code, name, false);
+    }
+
+    ChatColor(char code, String name, boolean noColor) {
         this.code = code;
         this.name = name;
-        this.toString = new String(new char[]
-                {
-                        COLOR_CHAR, code
-                });
+        this.toString = new String(new char[]{COLOR_CHAR, code});
+        this.isColor = !noColor;
+    }
+
+    public boolean isColor() {
+        return this.isColor;
     }
 
     @Override
@@ -180,6 +190,40 @@ public enum ChatColor {
         }
 
         return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    }
+
+    /**
+     * Gets the ChatColors used at the end of the given input string.
+     *
+     * @param input Input string to retrieve the colors from.
+     * @return Any remaining ChatColors to pass onto the next line.
+     */
+    @NotNull
+    public static String getLastColors(@NotNull String input) {
+        Validate.notNull(input, "Cannot get last colors from null text");
+
+        StringBuilder result = new StringBuilder();
+        int length = input.length();
+
+        // Search backwards from the end as it is faster
+        for (int index = length - 1; index > -1; index--) {
+            char section = input.charAt(index);
+            if (section == COLOR_CHAR && index < length - 1) {
+                char c = input.charAt(index + 1);
+                ChatColor color = getByChar(c);
+
+                if (color != null) {
+                    result.insert(0, color.toString());
+
+                    // Once we find a color or reset we can stop searching
+                    if (color.isColor() || color.equals(RESET)) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result.toString();
     }
 
     public static ChatColor getLastColor(final String input) {

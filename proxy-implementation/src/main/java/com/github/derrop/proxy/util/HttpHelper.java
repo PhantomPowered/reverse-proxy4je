@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.util;
 
-import com.github.derrop.proxy.Constants;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.util.Callback;
 
 import java.io.ByteArrayOutputStream;

@@ -43,9 +43,9 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
     private byte pitch;
     private byte yaw;
     private int type;
-    private int trackedEntityId;
+    private int extraData;
 
-    public PacketPlayServerSpawnEntity(int entityId, int x, int y, int z, int speedX, int speedY, int speedZ, byte pitch, byte yaw, int type, int trackedEntityId) {
+    public PacketPlayServerSpawnEntity(int entityId, int x, int y, int z, int speedX, int speedY, int speedZ, byte pitch, byte yaw, int type, int extraData) {
         this.entityId = entityId;
         this.x = x;
         this.y = y;
@@ -56,7 +56,7 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
         this.pitch = pitch;
         this.yaw = yaw;
         this.type = type;
-        this.trackedEntityId = trackedEntityId;
+        this.extraData = extraData;
     }
 
     public PacketPlayServerSpawnEntity() {
@@ -107,8 +107,8 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
         return this.type;
     }
 
-    public int getTrackedEntityId() {
-        return this.trackedEntityId;
+    public int getExtraData() {
+        return this.extraData;
     }
 
     public void setEntityId(int entityId) {
@@ -151,8 +151,8 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
         this.type = type;
     }
 
-    public void setTrackedEntityId(int trackedEntityId) {
-        this.trackedEntityId = trackedEntityId;
+    public void setExtraData(int extraData) {
+        this.extraData = extraData;
     }
 
     @Override
@@ -164,9 +164,9 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
         this.z = protoBuf.readInt();
         this.pitch = protoBuf.readByte();
         this.yaw = protoBuf.readByte();
-        this.trackedEntityId = protoBuf.readInt();
+        this.extraData = protoBuf.readInt();
 
-        if (this.trackedEntityId > 0) {
+        if (this.extraData > 0) {
             this.speedX = protoBuf.readShort();
             this.speedY = protoBuf.readShort();
             this.speedZ = protoBuf.readShort();
@@ -182,9 +182,9 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
         protoBuf.writeInt(this.z);
         protoBuf.writeByte(this.pitch);
         protoBuf.writeByte(this.yaw);
-        protoBuf.writeInt(this.trackedEntityId);
+        protoBuf.writeInt(this.extraData);
 
-        if (this.trackedEntityId > 0) {
+        if (this.extraData > 0) {
             protoBuf.writeShort(this.speedX);
             protoBuf.writeShort(this.speedY);
             protoBuf.writeShort(this.speedZ);
@@ -192,6 +192,6 @@ public class PacketPlayServerSpawnEntity implements PositionedPacket, EntityPack
     }
 
     public String toString() {
-        return "PacketPlayServerSpawnEntity(entityId=" + this.getEntityId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", speedX=" + this.getSpeedX() + ", speedY=" + this.getSpeedY() + ", speedZ=" + this.getSpeedZ() + ", pitch=" + this.getPitch() + ", yaw=" + this.getYaw() + ", type=" + this.getType() + ", trackedEntityId=" + this.getTrackedEntityId() + ")";
+        return "PacketPlayServerSpawnEntity(entityId=" + this.getEntityId() + ", x=" + this.getX() + ", y=" + this.getY() + ", z=" + this.getZ() + ", speedX=" + this.getSpeedX() + ", speedY=" + this.getSpeedY() + ", speedZ=" + this.getSpeedZ() + ", pitch=" + this.getPitch() + ", yaw=" + this.getYaw() + ", type=" + this.getType() + ", trackedEntityId=" + this.getExtraData() + ")";
     }
 }

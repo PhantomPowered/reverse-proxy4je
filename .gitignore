@@ -13,7 +13,5 @@ replays/
 /plugins/
 
 config.json
-uuids.json
 permissions.json
-accounts.txt
 proxy_info.txt

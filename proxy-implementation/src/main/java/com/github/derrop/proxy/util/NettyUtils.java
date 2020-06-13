@@ -39,11 +39,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.ResourceLeakDetector;
-import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.MultithreadEventExecutorGroup;
+import io.netty.util.concurrent.FastThreadLocalThread;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ThreadFactory;
-
 
 public final class NettyUtils {
 
@@ -71,8 +70,9 @@ public final class NettyUtils {
         return Epoll.isAvailable() ? EpollServerSocketChannel.class : KQueue.isAvailable() ? KQueueServerSocketChannel.class : NioServerSocketChannel.class;
     }
 
+    @NotNull
     public static ThreadFactory threadFactory() {
-        return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true, Thread.MIN_PRIORITY);
+        return r -> new FastThreadLocalThread(r);
     }
 
 }
