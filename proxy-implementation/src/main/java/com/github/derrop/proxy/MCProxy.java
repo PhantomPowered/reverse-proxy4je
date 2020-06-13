@@ -295,6 +295,7 @@ public class MCProxy extends Proxy {
         commandMap.registerCommand(null, new CommandKick(this.serviceRegistry), "kick");
         commandMap.registerCommand(null, new CommandList(this.serviceRegistry), "list", "glist");
         commandMap.registerCommand(null, new CommandSwitch(this.serviceRegistry), "switch");
+        commandMap.registerCommand(null, new CommandStop(), "stop", "end", "shutdown", "bye");
         commandMap.registerCommand(null, new CommandPermissions(this.serviceRegistry), "perms");
         commandMap.registerCommand(null, new CommandFind(), "find");
         commandMap.registerCommand(null, new CommandReplace(), "replace");
