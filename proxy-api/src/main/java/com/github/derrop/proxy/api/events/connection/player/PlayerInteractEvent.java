@@ -26,13 +26,9 @@ package com.github.derrop.proxy.api.events.connection.player;
 
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
-import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
-
-    // TODO placing a block is being detected as a left click
 
     private boolean cancel;
     private Type type;

@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.connection.handler;
 
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
@@ -8,6 +9,7 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.player.GameMode;
 import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.EventPriority;
@@ -84,8 +86,13 @@ public class ClientPacketHandler {
         }
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ARM_ANIMATION, directions = ProtocolDirection.TO_SERVER)
-    public void handleLeftClick(DefaultPlayer player, PacketPlayClientArmAnimation packet) {
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_DIG, directions = ProtocolDirection.TO_SERVER)
+    public void handleLeftClick(DefaultPlayer player, PacketPlayClientPlayerDigging packet) {
+        if (packet.getAction() != PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK &&
+                packet.getAction() != PacketPlayClientPlayerDigging.Action.ABORT_DESTROY_BLOCK &&
+                packet.getAction() != PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK) {
+            return;
+        }
         PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.LEFT_CLICK);
         player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (event.isCancelled()) {
@@ -113,9 +120,37 @@ public class ClientPacketHandler {
         }
     }
 
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ARM_ANIMATION, directions = ProtocolDirection.TO_SERVER)
+    public void handleArmAnimation(DefaultPlayer player, PacketPlayClientArmAnimation packet) {
+        if (player.getConnectedClient() == null) {
+            return;
+        }
+        int distance = player.getConnectedClient().getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? Constants.CREATIVE_PLACE_DISTANCE : Constants.SURVIVAL_PLACE_DISTANCE;
+        Location targetedBlock = player.getConnectedClient().getTargetBlock(distance);
+        if (targetedBlock != null) {
+            // Left click block is sent in the Digging packet
+            return;
+        }
+
+        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.LEFT_CLICK);
+        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        if (event.isCancelled()) {
+            throw CancelProceedException.INSTANCE;
+        }
+
+        if (event.getType() != PlayerInteractEvent.Type.LEFT_CLICK) {
+            //player.getConnectedClient().sendPacket(new PacketPlayClientUseEntity()); TODO what should we send when we rightclick into the air?
+        }
+    }
+
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
     public void handleBlockPlace(DefaultPlayer player, PacketPlayClientBlockPlace packet) {
-        if (player.getConnectedClient() == null) {
+        if (packet.getPlacedBlockDirection() == 255) {
+            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.RIGHT_CLICK);
+            player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+            if (event.isCancelled()) {
+                throw CancelProceedException.INSTANCE;
+            }
             return;
         }
 
