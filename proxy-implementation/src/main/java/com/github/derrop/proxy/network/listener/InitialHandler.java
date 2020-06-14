@@ -27,10 +27,7 @@ package com.github.derrop.proxy.network.listener;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Constants;
-import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.connection.ProtocolState;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
@@ -77,6 +74,7 @@ import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
+import java.util.Optional;
 import java.util.UUID;
 
 public class InitialHandler {
@@ -240,6 +238,12 @@ public class InitialHandler {
     private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
         if (this.proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).getOnlinePlayer(uniqueId) != null) {
             disconnect(channel, "Already connected");
+            return;
+        }
+
+        Optional<Whitelist> whitelist = this.proxy.getServiceRegistry().getProvider(Whitelist.class);
+        if (whitelist.isPresent() && whitelist.get().isEnabled() && !whitelist.get().isWhitelisted(uniqueId)) {
+            disconnect(channel, "The whitelist is enabled and you're not whitelisted");
             return;
         }
 

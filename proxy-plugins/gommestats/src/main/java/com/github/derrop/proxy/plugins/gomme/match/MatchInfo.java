@@ -191,7 +191,7 @@ public class MatchInfo {
         StringBuilder builder = new StringBuilder();
         builder.append("=========================== General Information ===========================\n");
         builder.append("GameMode: ").append(this.gameMode.getDisplayName()).append('\n');
-        builder.append("Recorded by: ").append(this.recorderId.getUniqueId()).append('#').append(this.recorderId.getName()).append('\n');
+        builder.append("Recorded by: ").append(this.recorderId.toString()).append('\n');
         builder.append("MatchId: ").append(this.matchId).append('\n');
         builder.append("Begin: ").append(this.beginTimestamp == -1 ? "Not recorded" : FORMAT.format(this.beginTimestamp)).append('\n');
         builder.append("End: ").append(this.endTimestamp == -1 ? "Not recorded" : FORMAT.format(this.endTimestamp)).append('\n');

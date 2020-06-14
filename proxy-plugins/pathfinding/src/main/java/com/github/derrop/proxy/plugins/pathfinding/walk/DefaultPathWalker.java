@@ -67,7 +67,7 @@ public class DefaultPathWalker implements PathWalker {
                 System.err.println("FAILED");
                 continue;
             }*/
-            path.getConnection().unsafe().setLocationUnchecked(location);
+            path.getConnection().setLocation(location);
         }
     }
 
