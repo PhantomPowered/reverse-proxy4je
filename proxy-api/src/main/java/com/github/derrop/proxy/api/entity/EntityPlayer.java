@@ -5,15 +5,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public interface EntityPlayer extends EntityLiving {
+public interface EntityPlayer extends EntityHuman {
 
     @NotNull
     UUID getUniqueId();
 
     @Nullable
     PlayerInfo getPlayerInfo();
-
-    @NotNull
-    PlayerSkinConfiguration getSkinConfiguration();
-
 }

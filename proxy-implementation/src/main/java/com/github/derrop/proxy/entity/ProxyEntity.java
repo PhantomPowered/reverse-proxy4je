@@ -72,6 +72,10 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             return new ProxyPlayer(registry, client, spawnPacket);
         }
 
+        if (entityType == LivingEntityType.BAT) {
+            return new ProxyBat(registry, client, spawnPacket);
+        }
+
         return new ProxyLivingEntity(registry, client, spawnPacket, entityType);
     }
 
