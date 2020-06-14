@@ -52,6 +52,11 @@ public class ProxyPlayer extends ProxyLivingEntity implements EntityPlayer {
     }
 
     @Override
+    public int getScore() {
+        return this.objectList.getInt(18);
+    }
+
+    @Override
     public void spawn(PacketSender sender) {
         if (!this.infoCache.isCached(this.uniqueId) && super.packet != null) { // klaro - pail
             // NPCs might get removed out of the player list after they have been spawned, but the client doesn't spawn them without them being in the list
