@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.config;
 
 import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.ping.Favicon;
 import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.util.Utils;
 import com.google.gson.Gson;
@@ -34,6 +35,8 @@ import com.google.gson.JsonParser;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -44,6 +47,7 @@ import java.nio.file.StandardOpenOption;
 public class JsonConfiguration implements Configuration {
 
     private static final Path PATH = Paths.get("config.json");
+    private static final Path SERVER_ICON = Paths.get("server-icon.png");
 
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(Component.class, new LegacyGsonComponentSerializer())
@@ -78,7 +82,18 @@ public class JsonConfiguration implements Configuration {
         }
 
         this.motd = Utils.GSON.fromJson(this.jsonObject.get("motd"), ServerPing.class);
-        // TODO load server-icon.png
+        if (Files.exists(SERVER_ICON)) {
+            try (InputStream inputStream = Files.newInputStream(SERVER_ICON)) {
+                BufferedImage image = ImageIO.read(inputStream);
+                if (image.getHeight() != 64 || image.getWidth() != 64) {
+                    throw new IllegalArgumentException("ServerIcon doesn't have the size of 64x64");
+                }
+
+                this.motd.setFavicon(Favicon.create(image));
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     @Override
