@@ -2,7 +2,7 @@ package com.github.derrop.proxy.protocol.play.server.entity.spawn;
 
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket {
 
     private int entityId;
-    private BlockPos pos;
+    private Location location;
     private Facing facing;
     private String title;
 
-    public PacketPlayServerSpawnEntityPainting(int entityId, BlockPos pos, Facing facing, String title) {
+    public PacketPlayServerSpawnEntityPainting(int entityId, Location location, Facing facing, String title) {
         this.entityId = entityId;
-        this.pos = pos;
+        this.location = location;
         this.facing = facing;
         this.title = title;
     }
@@ -36,12 +36,12 @@ public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket
         this.entityId = entityId;
     }
 
-    public BlockPos getPos() {
-        return pos;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Facing getFacing() {
@@ -64,7 +64,7 @@ public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
         this.title = protoBuf.readString();
-        this.pos = protoBuf.readBlockPos();
+        this.location = protoBuf.readLocation();
         this.facing = Facing.getHorizontal(protoBuf.readUnsignedByte());
     }
 
@@ -72,7 +72,7 @@ public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
         protoBuf.writeString(this.title);
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.location);
         protoBuf.writeByte(this.facing.getHorizontalIndex());
     }
 

@@ -39,7 +39,6 @@ import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.util.player.PlayerId;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -267,14 +266,14 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public BlockPos getTargetBlock(int range) {
+    public Location getTargetBlock(int range) {
         return this.getTargetBlock(EnumSet.of(Material.AIR), range);
     }
 
     @Override
-    public BlockPos getTargetBlock(Set<Material> transparent, int range) {
+    public Location getTargetBlock(Set<Material> transparent, int range) {
         BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this, range);
-        BlockPos pos = null;
+        Location pos = null;
         while (iterator.hasNext()) {
             pos = iterator.next();
             Material material = this.getBlockAccess().getMaterial(pos);

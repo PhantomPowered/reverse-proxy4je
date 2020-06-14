@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.protocol.play.server.world.material;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerBlockChange implements Packet {
 
-    private BlockPos pos;
+    private Location pos;
     private int blockState;
 
-    public PacketPlayServerBlockChange(BlockPos pos, int blockState) {
+    public PacketPlayServerBlockChange(Location pos, int blockState) {
         this.pos = pos;
         this.blockState = blockState;
     }
@@ -49,7 +49,7 @@ public class PacketPlayServerBlockChange implements Packet {
         return ProtocolIds.ToClient.Play.BLOCK_CHANGE;
     }
 
-    public BlockPos getPos() {
+    public Location getPos() {
         return this.pos;
     }
 
@@ -59,13 +59,13 @@ public class PacketPlayServerBlockChange implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = protoBuf.readBlockPos();
+        this.pos = protoBuf.readLocation();
         this.blockState = protoBuf.readVarInt();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.pos);
         protoBuf.writeVarInt(this.blockState);
     }
 

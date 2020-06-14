@@ -1,8 +1,8 @@
 package com.github.derrop.proxy.util.serialize;
 
-import com.github.derrop.proxy.api.location.BlockPos;
-import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.util.Rotations;
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class SerializableObject {
         DATA_TYPES.put(Float.class, 3);
         DATA_TYPES.put(String.class, 4);
         DATA_TYPES.put(ItemStack.class, 5);
-        DATA_TYPES.put(BlockPos.class, 6);
+        DATA_TYPES.put(Location.class, 6);
         DATA_TYPES.put(Rotations.class, 7);
     }
 
@@ -103,10 +103,10 @@ public class SerializableObject {
                 break;
 
             case 6:
-                BlockPos pos = (BlockPos) this.value;
-                buffer.writeInt(pos.getX());
-                buffer.writeInt(pos.getY());
-                buffer.writeInt(pos.getZ());
+                Location loc = (Location) this.value;
+                buffer.writeInt(loc.getBlockX());
+                buffer.writeInt(loc.getBlockY());
+                buffer.writeInt(loc.getBlockZ());
                 break;
 
             case 7:
@@ -157,7 +157,7 @@ public class SerializableObject {
                 int x = buffer.readInt();
                 int y = buffer.readInt();
                 int z = buffer.readInt();
-                value = new BlockPos(x, y, z);
+                value = new Location(x, y, z);
                 break;
             }
 

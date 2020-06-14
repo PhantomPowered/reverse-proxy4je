@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.plugins.pathfinding.finder.astar;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
 
@@ -43,7 +43,7 @@ public class AStarPathFinder {
     private static final Queue<PathPoint> EMPTY_QUEUE = new ConcurrentLinkedQueue<>();
 
     // This can take pretty long with paths that aren't straight forward
-    public Queue<PathPoint> findPath(PathFindInteraction interaction, BlockAccess access, boolean canFly, BlockPos start, BlockPos end) {
+    public Queue<PathPoint> findPath(PathFindInteraction interaction, BlockAccess access, boolean canFly, Location start, Location end) {
         PathPoint startPoint = new PathPoint(0, 0, 0);
         PathPoint endPoint = new PathPoint(end.getX() - start.getX(), end.getY() - start.getY(), end.getZ() - start.getZ());
 
@@ -53,7 +53,7 @@ public class AStarPathFinder {
         int entityWidth = 1; // TODO do not ignore this, players are 1 block in width
 
 
-        double maxDistanceSquared = start.distanceSq(end) + 100000;
+        double maxDistanceSquared = start.distanceSquared(end) + 100000;
 
         this.loadNeighbors(startPoint);
 
@@ -79,9 +79,9 @@ public class AStarPathFinder {
                 interaction.setCurrentPoint(point);
             }
 
-            BlockPos absolutePoint = new BlockPos(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
+            Location absolutePoint = new Location(start.getX() + point.getX(), start.getY() + point.getY(), start.getZ() + point.getZ());
 
-            if (absolutePoint.distanceSq(end) > maxDistanceSquared) {
+            if (absolutePoint.distanceSquared(end) > maxDistanceSquared) {
                 continue;
             }
 

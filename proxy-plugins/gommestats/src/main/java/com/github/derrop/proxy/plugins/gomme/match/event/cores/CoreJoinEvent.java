@@ -1,15 +1,15 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.cores;
 
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
 // TODO add the same for BedWars with bed instead of beacon
 public class CoreJoinEvent extends MatchEvent {
 
     private final String player;
-    private final BlockPos core;
+    private final Location core;
 
-    public CoreJoinEvent(String player, BlockPos core) {
+    public CoreJoinEvent(String player, Location core) {
         this.player = player;
         this.core = core;
     }
@@ -18,7 +18,7 @@ public class CoreJoinEvent extends MatchEvent {
         return this.player;
     }
 
-    public BlockPos getCore() {
+    public Location getCore() {
         return this.core;
     }
 }

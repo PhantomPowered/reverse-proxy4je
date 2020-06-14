@@ -24,13 +24,28 @@
  */
 package com.github.derrop.proxy.api.location;
 
+import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.api.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class Location {
 
     public static final Location ZERO = new Location(0, 0, 0, 0, 0);
+    private static final int NUM_X_BITS = 1 + MathHelper.calculateLogBaseTwo(MathHelper.roundUpToPowerOfTwo(30000000));
+    private static final int NUM_Z_BITS = NUM_X_BITS;
+    private static final int NUM_Y_BITS = 64 - NUM_X_BITS - NUM_Z_BITS;
+    private static final int Y_SHIFT = NUM_Z_BITS;
+    private static final int X_SHIFT = Y_SHIFT + NUM_Y_BITS;
+    private static final long X_MASK = (1L << NUM_X_BITS) - 1L;
+    private static final long Y_MASK = (1L << NUM_Y_BITS) - 1L;
+    private static final long Z_MASK = (1L << NUM_Z_BITS) - 1L;
+
+    public Location(double x, double y, double z) {
+        this(x, y, z, 0, 0);
+    }
 
     public Location(double x, double y, double z, float yaw, float pitch) {
         this(x, y, z, yaw, pitch, false);
@@ -51,6 +66,18 @@ public class Location {
     private float yaw;
     private float pitch;
     private boolean onGround;
+
+    public int getBlockX() {
+        return MathHelper.floor_double(this.getX());
+    }
+
+    public int getBlockY() {
+        return MathHelper.floor_double(this.getY());
+    }
+
+    public int getBlockZ() {
+        return MathHelper.floor_double(this.getZ());
+    }
 
     public double getX() {
         return x;
@@ -100,34 +127,157 @@ public class Location {
         this.onGround = onGround;
     }
 
-    public BlockPos toBlockPos() {
-        return new BlockPos(this.x, this.y, this.z);
-    }
-
     public Vector toVector() {
         return new Vector(this.getX(), this.getY(), this.getZ());
     }
 
+    /**
+     * Serialize this Location into a long value. Uses the coordinates as ints, not as doubles
+     */
+    public long toLong() {
+        return ((long) this.getBlockX() & X_MASK) << X_SHIFT | ((long) this.getBlockY() & Y_MASK) << Y_SHIFT | ((long) this.getBlockZ() & Z_MASK);
+    }
+
+    /**
+     * Create a Location from a serialized long value (created by toLong). Uses the coordinates as ints, not as doubles
+     */
+    public static Location fromLong(long serialized) {
+        int x = (int) (serialized << 64 - X_SHIFT - NUM_X_BITS >> 64 - NUM_X_BITS);
+        int y = (int) (serialized << 64 - Y_SHIFT - NUM_Y_BITS >> 64 - NUM_Y_BITS);
+        int z = (int) (serialized << 64 - NUM_Z_BITS >> 64 - NUM_Z_BITS);
+        return new Location(x, y, z);
+    }
+
+    /**
+     * Offset this Location 1 block up
+     */
+    public Location up() {
+        return this.up(1);
+    }
+
+    /**
+     * Offset this Location n blocks up
+     */
+    public Location up(int n) {
+        return this.offset(Facing.UP, n);
+    }
+
+    /**
+     * Offset this Location 1 block down
+     */
+    public Location down() {
+        return this.down(1);
+    }
+
+    /**
+     * Offset this Location n blocks down
+     */
+    public Location down(int n) {
+        return this.offset(Facing.DOWN, n);
+    }
+
+    /**
+     * Offset this Location 1 block in northern direction
+     */
+    public Location north() {
+        return this.north(1);
+    }
+
+    /**
+     * Offset this Location n blocks in northern direction
+     */
+    public Location north(int n) {
+        return this.offset(Facing.NORTH, n);
+    }
+
+    /**
+     * Offset this Location 1 block in southern direction
+     */
+    public Location south() {
+        return this.south(1);
+    }
+
+    /**
+     * Offset this Location n blocks in southern direction
+     */
+    public Location south(int n) {
+        return this.offset(Facing.SOUTH, n);
+    }
+
+    /**
+     * Offset this Location 1 block in western direction
+     */
+    public Location west() {
+        return this.west(1);
+    }
+
+    /**
+     * Offset this Location n blocks in western direction
+     */
+    public Location west(int n) {
+        return this.offset(Facing.WEST, n);
+    }
+
+    /**
+     * Offset this Location 1 block in eastern direction
+     */
+    public Location east() {
+        return this.east(1);
+    }
+
+    /**
+     * Offset this Location n blocks in eastern direction
+     */
+    public Location east(int n) {
+        return this.offset(Facing.EAST, n);
+    }
+
+    /**
+     * Offset this Location 1 block in the given direction
+     */
+    public Location offset(Facing facing) {
+        return this.offset(facing, 1);
+    }
+
+    /**
+     * Offsets this Location n blocks in the given direction
+     */
+    public Location offset(Facing facing, int n) {
+        return n == 0 ? this : new Location(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
+    }
+
+    public boolean isInChunk(int x, int z) {
+        return this.getBlockX() >> 4 == x && this.getBlockZ() >> 4 == z;
+    }
+
     @NotNull
-    public Location substract(@NotNull Location location) {
-        this.x -= location.x;
-        this.y -= location.y;
-        this.z -= location.z;
+    public Location subtract(@NotNull Location location) {
+        return this.subtract(location.getX(), location.getY(), location.getZ());
+    }
+
+    public Location subtract(double x, double y, double z) {
+        this.x -= x;
+        this.y -= y;
+        this.z -= z;
 
         return this;
     }
 
     @NotNull
     public Location add(@NotNull Location location) {
-        this.x += location.x;
-        this.y += location.y;
-        this.z += location.z;
+        return this.add(location.getX(), location.getY(), location.getZ());
+    }
+
+    public Location add(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
 
         return this;
     }
 
     @NotNull
-    public Location substract(@NotNull Vector location) {
+    public Location subtract(@NotNull Vector location) {
         this.x -= location.getX();
         this.y -= location.getY();
         this.z -= location.getZ();
@@ -227,6 +377,28 @@ public class Location {
                 ", pitch=" + pitch +
                 ", onGround=" + onGround +
                 '}';
+    }
+
+    public String toShortString() {
+        return this.getBlockX() + ", " + this.getBlockY() + ", " + this.getBlockZ();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location location = (Location) o;
+        return Double.compare(location.x, x) == 0 &&
+                Double.compare(location.y, y) == 0 &&
+                Double.compare(location.z, z) == 0 &&
+                Float.compare(location.yaw, yaw) == 0 &&
+                Float.compare(location.pitch, pitch) == 0 &&
+                onGround == location.onGround;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z, yaw, pitch, onGround);
     }
 
     @NotNull

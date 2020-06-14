@@ -7,7 +7,7 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -59,7 +59,7 @@ public class CommandReplace extends NonTabCompleteableCommandCallback {
         this.executorService.execute(() -> {
             sender.sendMessage("Searching for the materials, this may take a while...");
 
-            Collection<BlockPos> positions = blockAccess.getPositions(source);
+            Collection<Location> positions = blockAccess.getPositions(source);
             if (positions.isEmpty()) {
                 sender.sendMessage("That material doesn't exist in the loaded chunks");
                 return;
@@ -67,7 +67,7 @@ public class CommandReplace extends NonTabCompleteableCommandCallback {
 
             sender.sendMessage("§7Replacing §e" + positions.size() + " §7" + source + " blocks with " + target + "...");
 
-            for (BlockPos position : positions) {
+            for (Location position : positions) {
                 player.sendBlockChange(position, target);
             }
 

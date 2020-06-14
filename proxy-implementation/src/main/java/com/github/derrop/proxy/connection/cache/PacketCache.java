@@ -28,7 +28,7 @@ import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
@@ -36,7 +36,6 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerGameStateChange;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
@@ -110,11 +109,11 @@ public class PacketCache {
         }
     }
 
-    public int getBlockStateAt(BlockPos pos) {
+    public int getBlockStateAt(Location pos) {
         return ((ChunkCache) this.getHandler(handler -> handler instanceof ChunkCache)).getBlockStateAt(pos);
     }
 
-    public Material getMaterialAt(BlockPos pos) {
+    public Material getMaterialAt(Location pos) {
         int state = this.getBlockStateAt(pos);
         return this.targetProxyClient.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getMaterial(state);
     }

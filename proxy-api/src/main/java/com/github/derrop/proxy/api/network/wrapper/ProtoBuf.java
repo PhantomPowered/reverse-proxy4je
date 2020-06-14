@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.api.network.wrapper;
 
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -78,9 +78,9 @@ public abstract class ProtoBuf extends ByteBuf implements Cloneable {
 
     public abstract void writeNBTTagCompound(NBTTagCompound nbt);
 
-    public abstract BlockPos readBlockPos();
+    public abstract Location readLocation();
 
-    public abstract void writeBlockPos(BlockPos pos);
+    public abstract void writeLocation(Location pos);
 
     @NotNull
     public abstract UUID readUniqueId();

@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.api.block;
 
 import com.github.derrop.proxy.api.util.MathHelper;
-import com.github.derrop.proxy.api.util.Vec3i;
+import com.github.derrop.proxy.api.util.Vector;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
@@ -36,12 +36,12 @@ import java.util.Random;
 
 public enum Facing {
 
-    DOWN(0, 1, -1, "down", Facing.AxisDirection.NEGATIVE, Facing.Axis.Y, new Vec3i(0, -1, 0)),
-    UP(1, 0, -1, "up", Facing.AxisDirection.POSITIVE, Facing.Axis.Y, new Vec3i(0, 1, 0)),
-    NORTH(2, 3, 2, "north", Facing.AxisDirection.NEGATIVE, Facing.Axis.Z, new Vec3i(0, 0, -1)),
-    SOUTH(3, 2, 0, "south", Facing.AxisDirection.POSITIVE, Facing.Axis.Z, new Vec3i(0, 0, 1)),
-    WEST(4, 5, 1, "west", Facing.AxisDirection.NEGATIVE, Facing.Axis.X, new Vec3i(-1, 0, 0)),
-    EAST(5, 4, 3, "east", Facing.AxisDirection.POSITIVE, Facing.Axis.X, new Vec3i(1, 0, 0)),
+    DOWN(0, 1, -1, "down", Facing.AxisDirection.NEGATIVE, Facing.Axis.Y, new Vector(0, -1, 0)),
+    UP(1, 0, -1, "up", Facing.AxisDirection.POSITIVE, Facing.Axis.Y, new Vector(0, 1, 0)),
+    NORTH(2, 3, 2, "north", Facing.AxisDirection.NEGATIVE, Facing.Axis.Z, new Vector(0, 0, -1)),
+    SOUTH(3, 2, 0, "south", Facing.AxisDirection.POSITIVE, Facing.Axis.Z, new Vector(0, 0, 1)),
+    WEST(4, 5, 1, "west", Facing.AxisDirection.NEGATIVE, Facing.Axis.X, new Vector(-1, 0, 0)),
+    EAST(5, 4, 3, "east", Facing.AxisDirection.POSITIVE, Facing.Axis.X, new Vector(1, 0, 0)),
     ;
 
     /**
@@ -65,7 +65,7 @@ public enum Facing {
     /**
      * Normalized Vector that points in the direction of this Facing
      */
-    private final Vec3i directionVec;
+    private final Vector directionVec;
 
     /**
      * All facings in D-U-N-S-W-E order
@@ -78,7 +78,7 @@ public enum Facing {
     private static final Facing[] HORIZONTALS = new Facing[4];
     private static final Map<String, Facing> NAME_LOOKUP = Maps.newHashMap();
 
-    Facing(int indexIn, int oppositeIn, int horizontalIndexIn, String nameIn, Facing.AxisDirection axisDirectionIn, Facing.Axis axisIn, Vec3i directionVecIn) {
+    Facing(int indexIn, int oppositeIn, int horizontalIndexIn, String nameIn, Facing.AxisDirection axisDirectionIn, Facing.Axis axisIn, Vector directionVecIn) {
         this.index = indexIn;
         this.horizontalIndex = horizontalIndexIn;
         this.opposite = oppositeIn;
@@ -340,7 +340,7 @@ public enum Facing {
     /**
      * Get a normalized Vector that points in the direction of this Facing.
      */
-    public Vec3i getDirectionVec() {
+    public Vector getDirectionVec() {
         return this.directionVec;
     }
 

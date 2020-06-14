@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.protocol.play.client;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -35,27 +35,27 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientUpdateSign implements Packet {
 
-    private BlockPos pos;
+    private Location location;
     private Component[] lines;
 
-    public PacketPlayClientUpdateSign(BlockPos pos, Component[] lines) {
-        this.pos = pos;
+    public PacketPlayClientUpdateSign(Location location, Component[] lines) {
+        this.location = location;
         this.lines = lines;
     }
 
     public PacketPlayClientUpdateSign() {
     }
 
-    public BlockPos getPos() {
-        return pos;
+    public Location getLocation() {
+        return this.location;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Component[] getLines() {
-        return lines;
+        return this.lines;
     }
 
     public void setLines(Component[] lines) {
@@ -64,7 +64,7 @@ public class PacketPlayClientUpdateSign implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = protoBuf.readBlockPos();
+        this.location = protoBuf.readLocation();
         this.lines = new Component[4];
 
         for (int i = 0; i < 4; i++) {
@@ -74,7 +74,7 @@ public class PacketPlayClientUpdateSign implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.location);
 
         for (int i = 0; i < 4; i++) {
             protoBuf.writeString(GsonComponentSerializer.INSTANCE.serialize(this.lines[i]));

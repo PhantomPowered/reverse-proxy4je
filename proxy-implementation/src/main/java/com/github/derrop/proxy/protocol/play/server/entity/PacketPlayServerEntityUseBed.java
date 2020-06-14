@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.protocol.play.server.entity;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public class PacketPlayServerEntityUseBed implements Packet, EntityPacket {
 
     private int entityId;
-    private BlockPos bedPos;
+    private Location bedLocation;
 
-    public PacketPlayServerEntityUseBed(int entityId, BlockPos bedPos) {
+    public PacketPlayServerEntityUseBed(int entityId, Location bedLocation) {
         this.entityId = entityId;
-        this.bedPos = bedPos;
+        this.bedLocation = bedLocation;
     }
 
     public PacketPlayServerEntityUseBed() {
@@ -28,24 +28,24 @@ public class PacketPlayServerEntityUseBed implements Packet, EntityPacket {
         this.entityId = entityId;
     }
 
-    public BlockPos getBedPos() {
-        return bedPos;
+    public Location getBedLocation() {
+        return bedLocation;
     }
 
-    public void setBedPos(BlockPos bedPos) {
-        this.bedPos = bedPos;
+    public void setBedLocation(Location bedLocation) {
+        this.bedLocation = bedLocation;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-        this.bedPos = protoBuf.readBlockPos();
+        this.bedLocation = protoBuf.readLocation();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-        protoBuf.writeBlockPos(this.bedPos);
+        protoBuf.writeLocation(this.bedLocation);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.protocol.play.server.world.effect;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 public class PacketPlayServerBlockBreakAnimation implements Packet {
 
     private int breakerId;
-    private BlockPos pos;
+    private Location location;
     private int progress;
 
-    public PacketPlayServerBlockBreakAnimation(int breakerId, BlockPos pos, int progress) {
+    public PacketPlayServerBlockBreakAnimation(int breakerId, Location location, int progress) {
         this.breakerId = breakerId;
-        this.pos = pos;
+        this.location = location;
         this.progress = progress;
     }
 
@@ -30,12 +30,12 @@ public class PacketPlayServerBlockBreakAnimation implements Packet {
         this.breakerId = breakerId;
     }
 
-    public BlockPos getPos() {
-        return pos;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public int getProgress() {
@@ -49,14 +49,14 @@ public class PacketPlayServerBlockBreakAnimation implements Packet {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.breakerId = protoBuf.readVarInt();
-        this.pos = protoBuf.readBlockPos();
+        this.location = protoBuf.readLocation();
         this.progress = protoBuf.readUnsignedByte();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.breakerId);
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.location);
         protoBuf.writeByte(this.progress);
     }
 

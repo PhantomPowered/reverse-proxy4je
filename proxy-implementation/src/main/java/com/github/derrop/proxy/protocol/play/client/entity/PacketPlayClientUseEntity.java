@@ -3,7 +3,7 @@ package com.github.derrop.proxy.protocol.play.client.entity;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.Vec3;
+import com.github.derrop.proxy.api.util.Vector;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
@@ -12,9 +12,9 @@ public class PacketPlayClientUseEntity implements Packet, EntityPacket {
 
     private int entityId;
     private Action action;
-    private Vec3 hitVector;
+    private Vector hitVector;
 
-    public PacketPlayClientUseEntity(int entityId, Action action, Vec3 hitVector) {
+    public PacketPlayClientUseEntity(int entityId, Action action, Vector hitVector) {
         this.entityId = entityId;
         this.action = action;
         this.hitVector = hitVector;
@@ -41,11 +41,11 @@ public class PacketPlayClientUseEntity implements Packet, EntityPacket {
         this.action = action;
     }
 
-    public Vec3 getHitVector() {
+    public Vector getHitVector() {
         return hitVector;
     }
 
-    public void setHitVector(Vec3 hitVector) {
+    public void setHitVector(Vector hitVector) {
         this.hitVector = hitVector;
     }
 
@@ -55,7 +55,7 @@ public class PacketPlayClientUseEntity implements Packet, EntityPacket {
         this.action = Action.values()[protoBuf.readVarInt()];
 
         if (this.action == Action.INTERACT_AT) {
-            this.hitVector = new Vec3(protoBuf.readFloat(), protoBuf.readFloat(), protoBuf.readFloat());
+            this.hitVector = new Vector(protoBuf.readFloat(), protoBuf.readFloat(), protoBuf.readFloat());
         }
     }
 
@@ -65,9 +65,9 @@ public class PacketPlayClientUseEntity implements Packet, EntityPacket {
         protoBuf.writeVarInt(this.action.ordinal());
 
         if (this.action == Action.INTERACT_AT) {
-            protoBuf.writeFloat((float) this.hitVector.xCoord);
-            protoBuf.writeFloat((float) this.hitVector.yCoord);
-            protoBuf.writeFloat((float) this.hitVector.zCoord);
+            protoBuf.writeFloat((float) this.hitVector.getX());
+            protoBuf.writeFloat((float) this.hitVector.getY());
+            protoBuf.writeFloat((float) this.hitVector.getZ());
         }
     }
 

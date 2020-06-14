@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.block.chunk;
 
 import com.github.derrop.proxy.api.block.BlockConsumer;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerMapChunk;
 
 import java.util.ArrayList;
@@ -173,25 +173,25 @@ public class Chunk {
         return result;
     }
 
-    public Collection<BlockPos> getPositionsByState(int allowedState) {
-        Collection<BlockPos> result = new ArrayList<>();
+    public Collection<Location> getPositionsByState(int allowedState) {
+        Collection<Location> result = new ArrayList<>();
 
         this.forEachBlockStates((x, y, z, oldState, state) -> {
             if (state == allowedState) {
-                result.add(new BlockPos(x, y, z));
+                result.add(new Location(x, y, z));
             }
         });
 
         return result;
     }
 
-    public Collection<BlockPos> getPositionsByStates(int[] allowedStates) {
-        Collection<BlockPos> result = new ArrayList<>();
+    public Collection<Location> getPositionsByStates(int[] allowedStates) {
+        Collection<Location> result = new ArrayList<>();
 
         this.forEachBlockStates((x, y, z, oldState, state) -> {
             for (int allowedState : allowedStates) {
                 if (allowedState == state) {
-                    result.add(new BlockPos(x, y, z));
+                    result.add(new Location(x, y, z));
                 }
             }
         });
@@ -236,7 +236,7 @@ public class Chunk {
         return this.lastChunkData.getZ();
     }
 
-    public boolean contains(BlockPos pos) {
+    public boolean contains(Location pos) {
         return pos.isInChunk(this.getX(), this.getZ());
     }
 

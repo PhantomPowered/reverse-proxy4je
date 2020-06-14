@@ -1,14 +1,14 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.cores;
 
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
 public class CoreLeaveEvent extends MatchEvent {
 
     private final String player;
-    private final BlockPos core;
+    private final Location core;
 
-    public CoreLeaveEvent(String player, BlockPos core) {
+    public CoreLeaveEvent(String player, Location core) {
         this.player = player;
         this.core = core;
     }
@@ -17,7 +17,7 @@ public class CoreLeaveEvent extends MatchEvent {
         return this.player;
     }
 
-    public BlockPos getCore() {
+    public Location getCore() {
         return this.core;
     }
 }

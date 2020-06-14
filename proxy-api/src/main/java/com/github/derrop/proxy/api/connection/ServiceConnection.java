@@ -27,18 +27,17 @@ package com.github.derrop.proxy.api.connection;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.chat.ChatMessageType;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.player.PlayerId;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.util.player.PlayerId;
 import com.mojang.authlib.UserAuthentication;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -141,8 +140,8 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
 
     boolean isSprinting();
 
-    BlockPos getTargetBlock(Set<Material> transparent, int range);
+    Location getTargetBlock(Set<Material> transparent, int range);
 
-    BlockPos getTargetBlock(int range);
+    Location getTargetBlock(int range);
 
 }

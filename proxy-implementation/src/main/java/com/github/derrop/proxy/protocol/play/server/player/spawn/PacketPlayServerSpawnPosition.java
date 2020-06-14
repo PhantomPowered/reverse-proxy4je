@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.protocol.play.server.player.spawn;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -33,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerSpawnPosition implements Packet {
 
-    private BlockPos spawnPosition;
+    private Location spawnLocation;
 
-    public PacketPlayServerSpawnPosition(BlockPos spawnPosition) {
-        this.spawnPosition = spawnPosition;
+    public PacketPlayServerSpawnPosition(Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
     }
 
     public PacketPlayServerSpawnPosition() {
@@ -47,21 +47,21 @@ public class PacketPlayServerSpawnPosition implements Packet {
         return ProtocolIds.ToClient.Play.SPAWN_POSITION;
     }
 
-    public BlockPos getSpawnPosition() {
-        return this.spawnPosition;
+    public Location getSpawnLocation() {
+        return this.spawnLocation;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.spawnPosition = protoBuf.readBlockPos();
+        this.spawnLocation = protoBuf.readLocation();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeBlockPos(this.spawnPosition);
+        protoBuf.writeLocation(this.spawnLocation);
     }
 
     public String toString() {
-        return "PacketPlayServerSpawnPosition(spawnPosition=" + this.getSpawnPosition() + ")";
+        return "PacketPlayServerSpawnPosition(spawnPosition=" + this.getSpawnLocation() + ")";
     }
 }

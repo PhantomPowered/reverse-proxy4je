@@ -10,7 +10,7 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.EntityPlayer;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -72,11 +72,11 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
                 if (entity instanceof EntityPlayer) {
                     PlayerInfo playerInfo = ((EntityPlayer) entity).getPlayerInfo();
                     if (playerInfo != null) {
-                        player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString() + " (" + playerInfo.getUsername() + ")");
+                        player.sendMessage(" * " + entity.getLocation().toShortString() + " (" + playerInfo.getUsername() + ")");
                     }
                     continue;
                 }
-                player.sendMessage(" * " + entity.getLocation().toBlockPos().toShortString());
+                player.sendMessage(" * " + entity.getLocation().toShortString());
             }
 
         }
@@ -90,24 +90,24 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
         this.findWorker(player, () -> {
             player.sendMessage("Searching for the materials, this may take a while...");
 
-            Collection<BlockPos> positions = blockAccess.getPositions(material);
-            if (positions.isEmpty()) {
+            Collection<Location> locations = blockAccess.getPositions(material);
+            if (locations.isEmpty()) {
                 player.sendMessage("That material doesn't exist in the loaded chunks");
                 return;
             }
-            if (positions.size() >= 500) {
-                player.sendMessage("Too many positions found: §e" + positions.size());
+            if (locations.size() >= 500) {
+                player.sendMessage("Too many positions found: §e" + locations.size());
                 return;
             }
 
             StringBuilder builder = new StringBuilder();
             String splitter = "§e, §7";
 
-            for (BlockPos position : positions) {
+            for (Location position : locations) {
                 builder.append(splitter).append(position.toShortString());
             }
 
-            player.sendMessage("§aFound the following positions (§e" + positions.size() + "§a): §7" + builder.substring(splitter.length()));
+            player.sendMessage("§aFound the following positions (§e" + locations.size() + "§a): §7" + builder.substring(splitter.length()));
         });
     }
 

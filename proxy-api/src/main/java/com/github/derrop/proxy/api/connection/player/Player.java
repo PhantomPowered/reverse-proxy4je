@@ -32,7 +32,7 @@ import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.Side;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;
@@ -169,9 +169,9 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
      */
     void sendTitle(ProvidedTitle providedTitle);
 
-    void sendBlockChange(BlockPos pos, int blockState);
+    void sendBlockChange(Location pos, int blockState);
 
-    void sendBlockChange(BlockPos pos, Material material);
+    void sendBlockChange(Location pos, Material material);
 
     PlayerInventory getInventory();
 

@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.util;
 
 import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.util.serialize.SerializableObject;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -78,8 +78,8 @@ public class DataWatcher {
         return (ItemStack) this.get(i, null);
     }
 
-    public BlockPos getBlockPos(int i) {
-        return (BlockPos) this.get(i, null);
+    public Location getLocation(int i) {
+        return (Location) this.get(i, null);
     }
 
     public Rotations getRotations(int i) {

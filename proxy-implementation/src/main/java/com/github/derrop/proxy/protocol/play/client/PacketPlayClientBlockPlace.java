@@ -1,24 +1,24 @@
 package com.github.derrop.proxy.protocol.play.client;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientBlockPlace implements Packet {
 
-    private BlockPos pos;
+    private Location location;
     private int placedBlockDirection;
     private ItemStack stack;
     private float facingX;
     private float facingY;
     private float facingZ;
 
-    public PacketPlayClientBlockPlace(BlockPos pos, int placedBlockDirection, ItemStack stack, float facingX, float facingY, float facingZ) {
-        this.pos = pos;
+    public PacketPlayClientBlockPlace(Location location, int placedBlockDirection, ItemStack stack, float facingX, float facingY, float facingZ) {
+        this.location = location;
         this.placedBlockDirection = placedBlockDirection;
         this.stack = stack;
         this.facingX = facingX;
@@ -29,12 +29,12 @@ public class PacketPlayClientBlockPlace implements Packet {
     public PacketPlayClientBlockPlace() {
     }
 
-    public BlockPos getPos() {
-        return pos;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public int getPlacedBlockDirection() {
@@ -79,7 +79,7 @@ public class PacketPlayClientBlockPlace implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = buf.readBlockPos();
+        this.location = buf.readLocation();
         this.placedBlockDirection = buf.readUnsignedByte();
         this.stack = buf.readItemStack();
         this.facingX = (float)buf.readUnsignedByte() / 16.0F;
@@ -89,7 +89,7 @@ public class PacketPlayClientBlockPlace implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        buf.writeBlockPos(this.pos);
+        buf.writeLocation(this.location);
         buf.writeByte(this.placedBlockDirection);
         buf.writeItemStack(this.stack);
         buf.writeByte((int) (this.facingX * 16.0F));

@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.protocol.play.server.entity;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerUpdateTileEntity implements Packet {
 
-    private BlockPos pos;
+    private Location location;
     private int metadata;
     private NBTTagCompound nbt;
 
-    public PacketPlayServerUpdateTileEntity(BlockPos pos, int metadata, NBTTagCompound nbt) {
-        this.pos = pos;
+    public PacketPlayServerUpdateTileEntity(Location location, int metadata, NBTTagCompound nbt) {
+        this.location = location;
         this.metadata = metadata;
         this.nbt = nbt;
     }
@@ -23,12 +23,12 @@ public class PacketPlayServerUpdateTileEntity implements Packet {
     public PacketPlayServerUpdateTileEntity() {
     }
 
-    public BlockPos getPos() {
-        return pos;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public int getMetadata() {
@@ -49,14 +49,14 @@ public class PacketPlayServerUpdateTileEntity implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = protoBuf.readBlockPos();
+        this.location = protoBuf.readLocation();
         this.metadata = protoBuf.readUnsignedByte();
         this.nbt = protoBuf.readNBTTagCompound();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.location);
         protoBuf.writeByte((byte) this.metadata);
         protoBuf.writeNBTTagCompound(this.nbt);
     }

@@ -27,7 +27,6 @@ package com.github.derrop.proxy.plugins.pathfinding;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 
 import java.util.Arrays;
@@ -36,7 +35,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Path {
 
-    private final BlockPos beginPos;
+    private final Location beginPos;
     private final PathPoint[] allPoints;
     private final boolean success;
 
@@ -46,7 +45,7 @@ public class Path {
 
     private int[] oldBlocks;
 
-    public Path(BlockPos beginPos, Queue<PathPoint> points) {
+    public Path(Location beginPos, Queue<PathPoint> points) {
         this.beginPos = beginPos;
         this.points = points;
         this.success = !points.isEmpty();
@@ -101,7 +100,7 @@ public class Path {
 
         for (int i = 0; i < this.allPoints.length; i++) {
             PathPoint point = this.allPoints[i];
-            BlockPos pos = this.getAbsoluteLocation(point).toBlockPos().down();
+            Location pos = this.getAbsoluteLocation(point).down();
 
             if (save) {
                 this.oldBlocks[i] = access.getBlockState(pos);
@@ -118,7 +117,7 @@ public class Path {
 
         for (int i = 0; i < this.allPoints.length; i++) {
             PathPoint point = this.allPoints[i];
-            BlockPos pos = this.getAbsoluteLocation(point).toBlockPos().down();
+            Location pos = this.getAbsoluteLocation(point).down();
 
             player.sendBlockChange(pos, this.oldBlocks[i]);
         }

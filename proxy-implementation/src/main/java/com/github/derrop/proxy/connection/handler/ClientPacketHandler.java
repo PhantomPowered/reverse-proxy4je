@@ -120,7 +120,7 @@ public class ClientPacketHandler {
         }
 
         PlayerBlockPlaceEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new PlayerBlockPlaceEvent(player, packet.getPos(), packet.getStack()));
+                .callEvent(new PlayerBlockPlaceEvent(player, packet.getLocation(), packet.getStack()));
         if (event.isCancelled()) {
             // player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos()))); TODO should we send this?
             throw CancelProceedException.INSTANCE;
@@ -196,9 +196,9 @@ public class ClientPacketHandler {
             return;
         }
         PlayerBlockBreakEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new PlayerBlockBreakEvent(player, packet.getPos(), PlayerBlockBreakEvent.Action.values()[packet.getAction().ordinal()]));
+                .callEvent(new PlayerBlockBreakEvent(player, packet.getLocation(), PlayerBlockBreakEvent.Action.values()[packet.getAction().ordinal()]));
         if (event.isCancelled()) {
-            player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos())));
+            player.sendPacket(new PacketPlayServerBlockChange(packet.getLocation(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getLocation())));
             throw CancelProceedException.INSTANCE;
         }
     }

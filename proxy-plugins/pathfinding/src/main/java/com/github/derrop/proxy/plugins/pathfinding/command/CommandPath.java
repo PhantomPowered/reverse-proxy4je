@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
 import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
@@ -44,7 +44,7 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
             return CommandResult.BREAK;
         }
 
-        BlockPos pos = this.getTarget(args);
+        Location pos = this.getTarget(args);
         if (pos == null) {
             sender.sendMessage("§cInvalid target coordinates provided");
             return CommandResult.BREAK;
@@ -95,12 +95,12 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
                 canFly = Boolean.parseBoolean(args[3]);
             }
 
-            BlockPos start = player.getLocation().toBlockPos();
+            Location start = player.getLocation();
             Path path = this.registry.getProviderUnchecked(PathProvider.class)
                     .findShortestPath(interaction, canFly, player.getConnectedClient().getBlockAccess(), start.down(), pos);
 
             if (path.isSuccess()) {
-                double distance = Math.sqrt(start.distanceSq(pos));
+                double distance = Math.sqrt(start.distanceSquared(pos));
                 double bps = (DefaultPathWalker.BPT * DefaultPathWalker.TPS);
                 long time = (long) ((double) path.getAllPoints().length / bps) + 10;
 
@@ -128,12 +128,12 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
         return CommandResult.END;
     }
 
-    private BlockPos getTarget(String[] args) {
+    private Location getTarget(String[] args) {
         try {
             double x = Double.parseDouble(args[0]);
             double y = Double.parseDouble(args[1]);
             double z = Double.parseDouble(args[2]);
-            return new BlockPos(x, y, z);
+            return new Location(x, y, z);
         } catch (NumberFormatException exception) {
             return null;
         }

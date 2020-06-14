@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.protocol.play.server.world;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -35,11 +35,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerUpdateSign implements Packet {
 
-    private BlockPos pos;
+    private Location location;
     private Component[] lines;
 
-    public PacketPlayServerUpdateSign(BlockPos pos, Component[] lines) {
-        this.pos = pos;
+    public PacketPlayServerUpdateSign(Location location, Component[] lines) {
+        this.location = location;
         this.lines = lines;
     }
 
@@ -51,8 +51,8 @@ public class PacketPlayServerUpdateSign implements Packet {
         return ProtocolIds.ToClient.Play.UPDATE_SIGN;
     }
 
-    public BlockPos getPos() {
-        return this.pos;
+    public Location getLocation() {
+        return this.location;
     }
 
     public Component[] getLines() {
@@ -61,7 +61,7 @@ public class PacketPlayServerUpdateSign implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.pos = protoBuf.readBlockPos();
+        this.location = protoBuf.readLocation();
         this.lines = new Component[4];
 
         for (int i = 0; i < 4; i++) {
@@ -71,7 +71,7 @@ public class PacketPlayServerUpdateSign implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.location);
 
         for (int i = 0; i < 4; i++) {
             protoBuf.writeString(GsonComponentSerializer.INSTANCE.serialize(this.lines[i]));
@@ -79,6 +79,6 @@ public class PacketPlayServerUpdateSign implements Packet {
     }
 
     public String toString() {
-        return "PacketPlayServerUpdateSign(pos=" + this.getPos() + ", lines=" + java.util.Arrays.deepToString(this.getLines()) + ")";
+        return "PacketPlayServerUpdateSign(pos=" + this.getLocation() + ", lines=" + java.util.Arrays.deepToString(this.getLines()) + ")";
     }
 }

@@ -12,8 +12,6 @@ import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
-import com.github.derrop.proxy.api.util.player.PlayerId;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
@@ -22,6 +20,7 @@ import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
 import com.github.derrop.proxy.api.util.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.util.player.PlayerId;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
@@ -406,12 +405,12 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
-    public BlockPos getTargetBlock(Set<Material> transparent, int range) {
+    public Location getTargetBlock(Set<Material> transparent, int range) {
         return null;
     }
 
     @Override
-    public BlockPos getTargetBlock(int range) {
+    public Location getTargetBlock(int range) {
         return null;
     }
 

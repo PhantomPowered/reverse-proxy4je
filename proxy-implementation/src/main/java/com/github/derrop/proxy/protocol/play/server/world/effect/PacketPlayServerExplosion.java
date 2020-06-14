@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.protocol.play.server.world.effect;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -16,17 +16,17 @@ public class PacketPlayServerExplosion implements Packet {
     private double posY;
     private double posZ;
     private float strength;
-    private List<BlockPos> affectedBlockPositions;
+    private List<Location> affectedLocations;
     private float velocityX;
     private float velocityY;
     private float velocityZ;
 
-    public PacketPlayServerExplosion(double posX, double posY, double posZ, float strength, List<BlockPos> affectedBlockPositions, float velocityX, float velocityY, float velocityZ) {
+    public PacketPlayServerExplosion(double posX, double posY, double posZ, float strength, List<Location> affectedLocations, float velocityX, float velocityY, float velocityZ) {
         this.posX = posX;
         this.posY = posY;
         this.posZ = posZ;
         this.strength = strength;
-        this.affectedBlockPositions = affectedBlockPositions;
+        this.affectedLocations = affectedLocations;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.velocityZ = velocityZ;
@@ -67,12 +67,12 @@ public class PacketPlayServerExplosion implements Packet {
         this.strength = strength;
     }
 
-    public List<BlockPos> getAffectedBlockPositions() {
-        return affectedBlockPositions;
+    public List<Location> getAffectedLocations() {
+        return affectedLocations;
     }
 
-    public void setAffectedBlockPositions(List<BlockPos> affectedBlockPositions) {
-        this.affectedBlockPositions = affectedBlockPositions;
+    public void setAffectedLocations(List<Location> affectedLocations) {
+        this.affectedLocations = affectedLocations;
     }
 
     public float getVelocityX() {
@@ -106,7 +106,7 @@ public class PacketPlayServerExplosion implements Packet {
         this.posZ = buf.readFloat();
         this.strength = buf.readFloat();
         int i = buf.readInt();
-        this.affectedBlockPositions = Lists.<BlockPos>newArrayListWithCapacity(i);
+        this.affectedLocations = Lists.newArrayListWithCapacity(i);
         int j = (int) this.posX;
         int k = (int) this.posY;
         int l = (int) this.posZ;
@@ -115,7 +115,7 @@ public class PacketPlayServerExplosion implements Packet {
             int j1 = buf.readByte() + j;
             int k1 = buf.readByte() + k;
             int l1 = buf.readByte() + l;
-            this.affectedBlockPositions.add(new BlockPos(j1, k1, l1));
+            this.affectedLocations.add(new Location(j1, k1, l1));
         }
 
         this.velocityX = buf.readFloat();
@@ -129,15 +129,15 @@ public class PacketPlayServerExplosion implements Packet {
         buf.writeFloat((float) this.posY);
         buf.writeFloat((float) this.posZ);
         buf.writeFloat(this.strength);
-        buf.writeInt(this.affectedBlockPositions.size());
+        buf.writeInt(this.affectedLocations.size());
         int i = (int) this.posX;
         int j = (int) this.posY;
         int k = (int) this.posZ;
 
-        for (BlockPos blockpos : this.affectedBlockPositions) {
-            int l = blockpos.getX() - i;
-            int i1 = blockpos.getY() - j;
-            int j1 = blockpos.getZ() - k;
+        for (Location blockpos : this.affectedLocations) {
+            int l = blockpos.getBlockX() - i;
+            int i1 = blockpos.getBlockY() - j;
+            int j1 = blockpos.getBlockZ() - k;
             buf.writeByte(l);
             buf.writeByte(i1);
             buf.writeByte(j1);

@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.block;
 
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,36 +42,36 @@ public interface BlockAccess {
     void untrackBlockUpdates(UUID trackerId);
 
     @NotNull
-    Collection<BlockPos> getPositions(int state);
+    Collection<Location> getPositions(int state);
 
     @NotNull
-    Collection<BlockPos> getPositions(int[] states);
+    Collection<Location> getPositions(int[] states);
 
     @NotNull
-    Collection<BlockPos> getPositions(Material material);
+    Collection<Location> getPositions(Material material);
 
-    int getBlockState(@NotNull BlockPos pos);
+    int getBlockState(@NotNull Location pos);
 
     @NotNull
-    Material getMaterial(@NotNull BlockPos pos);
+    Material getMaterial(@NotNull Location pos);
 
     /**
      * Checks to see if an air block exists at the provided location. Note that this only checks to see if the blocks
      * material is set to air, meaning it is possible for non-vanilla blocks to still pass this check.
      */
-    boolean isAirBlock(@NotNull BlockPos pos);
+    boolean isAirBlock(@NotNull Location pos);
 
-    boolean isWaterBlock(@NotNull BlockPos pos);
+    boolean isWaterBlock(@NotNull Location pos);
 
-    boolean canSeeSky(@NotNull BlockPos pos);
+    boolean canSeeSky(@NotNull Location pos);
 
-    default int getStrongPower(@NotNull BlockPos pos, @NotNull Facing direction) { // redstone (0 - 15)
+    default int getStrongPower(@NotNull Location pos, @NotNull Facing direction) { // redstone (0 - 15)
         return 0;
     }
 
-    void setMaterial(@NotNull BlockPos pos, @Nullable Material material);
+    void setMaterial(@NotNull Location pos, @Nullable Material material);
 
-    void setBlockState(@NotNull BlockPos pos, int blockState);
+    void setBlockState(@NotNull Location pos, int blockState);
 
     BlockStateRegistry getBlockStateRegistry();
 

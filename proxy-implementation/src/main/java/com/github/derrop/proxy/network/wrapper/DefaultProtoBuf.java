@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network.wrapper;
 
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.exception.ComponentTooLargeException;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.item.ItemStack;
@@ -284,12 +284,12 @@ public final class DefaultProtoBuf extends ProtoBuf {
     }
 
     @Override
-    public BlockPos readBlockPos() {
-        return BlockPos.fromLong(this.readLong());
+    public Location readLocation() {
+        return Location.fromLong(this.readLong());
     }
 
     @Override
-    public void writeBlockPos(BlockPos pos) {
+    public void writeLocation(Location pos) {
         this.writeLong(pos.toLong());
     }
 

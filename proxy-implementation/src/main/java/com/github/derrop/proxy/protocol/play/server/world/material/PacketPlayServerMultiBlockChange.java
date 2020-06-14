@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.protocol.play.server.world.material;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -99,7 +99,7 @@ public class PacketPlayServerMultiBlockChange implements Packet {
             this.blockState = blockState;
         }
 
-        public BlockPos getPos() {
+        public Location getPos() {
             int chunkX = PacketPlayServerMultiBlockChange.this.chunkX;
             int chunkZ = PacketPlayServerMultiBlockChange.this.chunkZ;
 
@@ -107,7 +107,7 @@ public class PacketPlayServerMultiBlockChange implements Packet {
             int y = this.chunkPosCrammed & 255;
             int z = this.chunkPosCrammed >> 8 & 15;
 
-            return new BlockPos((chunkX << 4) + x, y, (chunkZ << 4) + z);
+            return new Location((chunkX << 4) + x, y, (chunkZ << 4) + z);
         }
 
         public short getChunkPosCrammed() {

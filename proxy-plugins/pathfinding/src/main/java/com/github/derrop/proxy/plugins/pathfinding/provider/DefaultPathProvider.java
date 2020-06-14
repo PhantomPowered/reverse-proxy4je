@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.plugins.pathfinding.provider;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
 import com.github.derrop.proxy.plugins.pathfinding.finder.PathFindInteraction;
 import com.github.derrop.proxy.plugins.pathfinding.finder.astar.AStarPathFinder;
@@ -41,7 +41,7 @@ public class DefaultPathProvider implements PathProvider {
     private RectanglePathFinder rectanglePathFinder = new RectanglePathFinder();
 
     @Override
-    public Path findShortestPath(@Nullable PathFindInteraction interaction, boolean canFly, @NotNull BlockAccess access, @NotNull BlockPos start, @NotNull BlockPos end) {
+    public Path findShortestPath(@Nullable PathFindInteraction interaction, boolean canFly, @NotNull BlockAccess access, @NotNull Location start, @NotNull Location end) {
         Path path = new Path(start, this.aStarPathFinder.findPath(interaction, access, canFly, start, end));
         if (interaction != null) {
             interaction.complete();
@@ -50,12 +50,12 @@ public class DefaultPathProvider implements PathProvider {
     }
 
     @Override
-    public Path findCirclePath(@Nullable PathFindInteraction interaction, @NotNull BlockAccess access, @Nullable BlockPos start, @NotNull BlockPos center, int radius) {
+    public Path findCirclePath(@Nullable PathFindInteraction interaction, @NotNull BlockAccess access, @Nullable Location start, @NotNull Location center, int radius) {
         return null;
     }
 
     @Override
-    public Path findRectanglePath(@Nullable PathFindInteraction interaction, @NotNull BlockAccess access, @Nullable BlockPos start, @NotNull BlockPos pos1, @NotNull BlockPos pos2) {
+    public Path findRectanglePath(@Nullable PathFindInteraction interaction, @NotNull BlockAccess access, @Nullable Location start, @NotNull Location pos1, @NotNull Location pos2) {
         Path path = new Path(start, this.rectanglePathFinder.findRectanglePath(access, start, pos1, pos2));
         if (interaction != null) {
             interaction.complete();

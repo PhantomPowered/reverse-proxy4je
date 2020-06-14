@@ -157,7 +157,7 @@ public class MCProxy extends Proxy {
                             itr = new BlockIterator(blockAccess, base.toVector(), base.getDirection(), 0, 3);
                             tick++;
 
-                            //player.sendBlockChange(base.toBlockPos(), Material.DIAMOND_BLOCK);
+                            //player.sendBlockChange(base, Material.DIAMOND_BLOCK);
                             player.sendPacket(new PacketPlayServerWorldParticles(Particle.FLAME, (float) base.getX(), (float) base.getY(), (float) base.getZ(), 0, 0, 0, 1F, 1, false, new int[0]));
                         }
                     }

@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.protocol.play.server.world.effect;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
 public class PacketPlayServerWorldSound implements Packet {
 
     private int soundType;
-    private BlockPos soundPos;
+    private Location soundLocation;
 
     private int soundData;
     private boolean serverWide;
 
-    public PacketPlayServerWorldSound(int soundType, BlockPos soundPos, int soundData, boolean serverWide) {
+    public PacketPlayServerWorldSound(int soundType, Location soundLocation, int soundData, boolean serverWide) {
         this.soundType = soundType;
-        this.soundPos = soundPos;
+        this.soundLocation = soundLocation;
         this.soundData = soundData;
         this.serverWide = serverWide;
     }
@@ -33,12 +33,12 @@ public class PacketPlayServerWorldSound implements Packet {
         this.soundType = soundType;
     }
 
-    public BlockPos getSoundPos() {
-        return soundPos;
+    public Location getSoundLocation() {
+        return soundLocation;
     }
 
-    public void setSoundPos(BlockPos soundPos) {
-        this.soundPos = soundPos;
+    public void setSoundLocation(Location soundLocation) {
+        this.soundLocation = soundLocation;
     }
 
     public int getSoundData() {
@@ -60,7 +60,7 @@ public class PacketPlayServerWorldSound implements Packet {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.soundType = protoBuf.readInt();
-        this.soundPos = protoBuf.readBlockPos();
+        this.soundLocation = protoBuf.readLocation();
         this.soundData = protoBuf.readInt();
         this.serverWide = protoBuf.readBoolean();
     }
@@ -68,7 +68,7 @@ public class PacketPlayServerWorldSound implements Packet {
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeInt(this.soundType);
-        protoBuf.writeBlockPos(this.soundPos);
+        protoBuf.writeLocation(this.soundLocation);
         protoBuf.writeInt(this.soundData);
         protoBuf.writeBoolean(this.serverWide);
     }
@@ -82,7 +82,7 @@ public class PacketPlayServerWorldSound implements Packet {
     public String toString() {
         return "PacketPlayServerWorldSound{" +
                 "soundType=" + soundType +
-                ", soundPos=" + soundPos +
+                ", soundPos=" + soundLocation +
                 ", soundData=" + soundData +
                 ", serverWide=" + serverWide +
                 '}';

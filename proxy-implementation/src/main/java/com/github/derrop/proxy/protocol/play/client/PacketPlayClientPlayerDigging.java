@@ -2,7 +2,7 @@ package com.github.derrop.proxy.protocol.play.client;
 
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientPlayerDigging implements Packet {
 
-    private BlockPos pos;
+    private Location location;
     private Facing facing;
     private Action action;
 
-    public PacketPlayClientPlayerDigging(BlockPos pos, Facing facing, Action action) {
-        this.pos = pos;
+    public PacketPlayClientPlayerDigging(Location location, Facing facing, Action action) {
+        this.location = location;
         this.facing = facing;
         this.action = action;
     }
@@ -23,12 +23,12 @@ public class PacketPlayClientPlayerDigging implements Packet {
     public PacketPlayClientPlayerDigging() {
     }
 
-    public BlockPos getPos() {
-        return pos;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPos(BlockPos pos) {
-        this.pos = pos;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Facing getFacing() {
@@ -50,14 +50,14 @@ public class PacketPlayClientPlayerDigging implements Packet {
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.action = Action.values()[protoBuf.readVarInt()];
-        this.pos = protoBuf.readBlockPos();
+        this.location = protoBuf.readLocation();
         this.facing = Facing.getFront(protoBuf.readUnsignedByte());
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.action.ordinal());
-        protoBuf.writeBlockPos(this.pos);
+        protoBuf.writeLocation(this.location);
         protoBuf.writeByte(this.facing.getIndex());
     }
 

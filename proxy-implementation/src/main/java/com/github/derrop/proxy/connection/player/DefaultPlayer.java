@@ -40,7 +40,6 @@ import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -306,12 +305,12 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public void sendBlockChange(BlockPos pos, int blockState) {
+    public void sendBlockChange(Location pos, int blockState) {
         this.sendPacket(new PacketPlayServerBlockChange(pos, blockState));
     }
 
     @Override
-    public void sendBlockChange(BlockPos pos, Material material) {
+    public void sendBlockChange(Location pos, Material material) {
         this.sendBlockChange(pos, this.proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getDefaultBlockState(material));
     }
 

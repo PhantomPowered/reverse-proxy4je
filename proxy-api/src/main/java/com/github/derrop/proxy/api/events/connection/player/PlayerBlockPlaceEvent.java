@@ -2,26 +2,26 @@ package com.github.derrop.proxy.api.events.connection.player;
 
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerBlockPlaceEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel;
 
-    private final BlockPos pos;
+    private final Location location;
     private final ItemStack item;
 
-    public PlayerBlockPlaceEvent(@NotNull Player player, @NotNull BlockPos pos, @NotNull ItemStack item) {
+    public PlayerBlockPlaceEvent(@NotNull Player player, @NotNull Location location, @NotNull ItemStack item) {
         super(player);
-        this.pos = pos;
+        this.location = location;
         this.item = item;
     }
 
     @NotNull
-    public BlockPos getPos() {
-        return this.pos;
+    public Location getLocation() {
+        return this.location;
     }
 
     @NotNull

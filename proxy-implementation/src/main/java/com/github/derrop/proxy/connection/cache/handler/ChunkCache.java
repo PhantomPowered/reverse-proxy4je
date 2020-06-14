@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
@@ -117,14 +117,14 @@ public class ChunkCache implements PacketCacheHandler {
 
     }
 
-    private void handleBlockUpdate(BlockPos pos, int newBlockState) {
+    private void handleBlockUpdate(Location pos, int newBlockState) {
         if (this.blockAccess != null) {
             this.blockAccess.handleBlockUpdate(pos, this.getBlockStateAt(pos), newBlockState);
         }
 
         Chunk chunk = this.getChunk(pos);
         if (chunk != null) {
-            chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), newBlockState);
+            chunk.setBlockStateAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), newBlockState);
         }
     }
 
@@ -156,25 +156,25 @@ public class ChunkCache implements PacketCacheHandler {
         }
     }
 
-    public void setBlockStateAt(BlockPos pos, int blockState) {
+    public void setBlockStateAt(Location pos, int blockState) {
         Chunk chunk = this.getChunk(pos);
         if (chunk == null) {
             return;
         }
-        chunk.setBlockStateAt(pos.getX(), pos.getY(), pos.getZ(), blockState);
+        chunk.setBlockStateAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), blockState);
 
         if (this.connectedPlayer != null) {
             this.connectedPlayer.sendPacket(new PacketPlayServerBlockChange(pos, blockState));
         }
     }
 
-    public int getBlockStateAt(BlockPos pos) {
+    public int getBlockStateAt(Location pos) {
         Chunk chunk = this.getChunk(pos);
         if (chunk == null) {
             return -1;
         }
 
-        return chunk.getBlockStateAt(pos.getX(), pos.getY(), pos.getZ());
+        return chunk.getBlockStateAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
     }
 
     public Collection<Chunk> getChunks() {
@@ -185,11 +185,11 @@ public class ChunkCache implements PacketCacheHandler {
         return this.chunks.stream().filter(chunkData -> chunkData.getX() == x && chunkData.getZ() == z).findFirst().orElse(null);
     }
 
-    public Chunk getChunk(BlockPos pos) {
-        return this.getChunk(pos.getX() >> 4, pos.getZ() >> 4);
+    public Chunk getChunk(Location pos) {
+        return this.getChunk(pos.getBlockX() >> 4, pos.getBlockZ() >> 4);
     }
 
-    public boolean isChunkLoaded(BlockPos pos) {
+    public boolean isChunkLoaded(Location pos) {
         return this.getChunk(pos) != null;
     }
 

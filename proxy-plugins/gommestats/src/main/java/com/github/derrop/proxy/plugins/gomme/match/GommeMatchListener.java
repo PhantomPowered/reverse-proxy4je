@@ -39,7 +39,6 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerMoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
-import com.github.derrop.proxy.api.location.BlockPos;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
@@ -159,15 +158,15 @@ public class GommeMatchListener {
             return;
         }
 
-        Collection<BlockPos> cores = connection.getBlockAccess().getPositions(Material.BEACON);
+        Collection<Location> cores = connection.getBlockAccess().getPositions(Material.BEACON);
 
         if (cores.isEmpty()) {
             return;
         }
 
-        for (BlockPos core : cores) {
-            boolean toNearby = core.distanceSq(to.toBlockPos()) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
-            boolean fromNearby = core.distanceSq(from.toBlockPos()) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
+        for (Location core : cores) {
+            boolean toNearby = core.distanceSquared(to) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
+            boolean fromNearby = core.distanceSquared(from) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
 
             if (fromNearby && !toNearby) {
                 match.callEvent(new CoreLeaveEvent(playerName, core));

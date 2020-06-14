@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SignCache implements PacketCacheHandler {
 
-    private Map<BlockPos, PacketPlayServerUpdateSign> signUpdates = new ConcurrentHashMap<>();
+    private Map<Location, PacketPlayServerUpdateSign> signUpdates = new ConcurrentHashMap<>();
 
     private PacketCache packetCache;
 
@@ -53,12 +53,12 @@ public class SignCache implements PacketCacheHandler {
         this.packetCache = packetCache;
 
         PacketPlayServerUpdateSign sign = (PacketPlayServerUpdateSign) newPacket;
-        this.signUpdates.put(sign.getPos(), sign);
+        this.signUpdates.put(sign.getLocation(), sign);
     }
 
     @Override
     public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
-        for (Map.Entry<BlockPos, PacketPlayServerUpdateSign> entry : this.signUpdates.entrySet()) {
+        for (Map.Entry<Location, PacketPlayServerUpdateSign> entry : this.signUpdates.entrySet()) {
             Material material = this.packetCache.getMaterialAt(entry.getKey());
 
             if (material != Material.WALL_SIGN && material != Material.SIGN_POST) {

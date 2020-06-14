@@ -26,7 +26,7 @@ package com.github.derrop.proxy.plugins.pathfinding.finder.geometric;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,29 +37,29 @@ import java.util.Queue;
 
 public class RectanglePathFinder extends GeometricPathFinder {
 
-    public Queue<PathPoint> findRectanglePath(@NotNull BlockAccess access, @Nullable BlockPos start, @NotNull BlockPos pos1, @NotNull BlockPos pos2) {
-        int lowerX = Math.min(pos1.getX(), pos2.getX());
-        int upperX = Math.max(pos1.getX(), pos2.getX());
+    public Queue<PathPoint> findRectanglePath(@NotNull BlockAccess access, @Nullable Location start, @NotNull Location pos1, @NotNull Location pos2) {
+        int lowerX = Math.min(pos1.getBlockX(), pos2.getBlockX());
+        int upperX = Math.max(pos1.getBlockX(), pos2.getBlockX());
 
-        int y = pos1.getY();
+        int y = pos1.getBlockY();
 
-        int lowerZ = Math.min(pos1.getZ(), pos2.getZ());
-        int upperZ = Math.max(pos1.getZ(), pos2.getZ());
+        int lowerZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+        int upperZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
 
-        Collection<BlockPos> result = new ArrayList<>();
+        Collection<Location> result = new ArrayList<>();
 
         for (int x = lowerX; x < upperX; x++) {
-            result.add(new BlockPos(x, y, lowerZ));
-            result.add(new BlockPos(x, y, upperZ));
+            result.add(new Location(x, y, lowerZ));
+            result.add(new Location(x, y, upperZ));
         }
 
         for (int z = lowerZ; z < upperZ; z++) {
-            result.add(new BlockPos(lowerX, y, z));
-            result.add(new BlockPos(upperX, y, z));
+            result.add(new Location(lowerX, y, z));
+            result.add(new Location(upperX, y, z));
         }
 
         System.out.println(result);
-        for (BlockPos blockPos : result) {
+        for (Location blockPos : result) {
             access.setMaterial(blockPos, Material.EMERALD_BLOCK);
             try {
                 Thread.sleep(20);

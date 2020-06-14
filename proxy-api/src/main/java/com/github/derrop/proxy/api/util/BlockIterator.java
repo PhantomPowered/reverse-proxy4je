@@ -6,7 +6,7 @@ package com.github.derrop.proxy.api.util;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.location.BlockPos;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 /**
  * This class performs ray tracing and iterates along blocks on a line
  */
-public class BlockIterator implements Iterator<BlockPos> {
+public class BlockIterator implements Iterator<Location> {
 
     private final BlockAccess blockAccess;
     private final int maxDistance;
@@ -25,7 +25,7 @@ public class BlockIterator implements Iterator<BlockPos> {
 
     private boolean end = false;
 
-    private BlockPos[] blockQueue = new BlockPos[3];
+    private Location[] blockQueue = new Location[3];
     private int currentBlock = 0;
     private int currentDistance = 0;
     private int maxDistanceInt;
@@ -61,7 +61,7 @@ public class BlockIterator implements Iterator<BlockPos> {
 
         Vector startClone = start.clone();
 
-        startClone.setY(startClone.getY() + yOffset);
+        startClone.setY(startClone.getBlockY() + yOffset);
 
         currentDistance = 0;
 
@@ -73,7 +73,7 @@ public class BlockIterator implements Iterator<BlockPos> {
         double secondPosition = 0;
         double thirdPosition = 0;
 
-        BlockPos startBlock = new BlockPos(MathHelper.floor_double(startClone.getX()), MathHelper.floor_double(startClone.getY()), MathHelper.floor_double(startClone.getZ()));
+        Location startBlock = new Location(MathHelper.floor_double(startClone.getBlockX()), MathHelper.floor_double(startClone.getBlockY()), MathHelper.floor_double(startClone.getBlockZ()));
 
         if (getXLength(direction) > mainDirection) {
             mainFace = getXFace(direction);
@@ -137,7 +137,7 @@ public class BlockIterator implements Iterator<BlockPos> {
             thirdError = -thirdStep + 1;
         }
 
-        BlockPos lastBlock;
+        Location lastBlock;
 
         lastBlock = startBlock.offset(mainFace.getOpposite());
 
@@ -179,48 +179,48 @@ public class BlockIterator implements Iterator<BlockPos> {
 
     }
 
-    private boolean blockEquals(@NotNull BlockPos a, @NotNull BlockPos b) {
-        return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ();
+    private boolean blockEquals(@NotNull Location a, @NotNull Location b) {
+        return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
     }
 
     private Facing getXFace(@NotNull Vector direction) {
-        return ((direction.getX() > 0) ? Facing.EAST : Facing.WEST);
+        return ((direction.getBlockX() > 0) ? Facing.EAST : Facing.WEST);
     }
 
     private Facing getYFace(@NotNull Vector direction) {
-        return ((direction.getY() > 0) ? Facing.UP : Facing.DOWN);
+        return ((direction.getBlockY() > 0) ? Facing.UP : Facing.DOWN);
     }
 
     private Facing getZFace(@NotNull Vector direction) {
-        return ((direction.getZ() > 0) ? Facing.SOUTH : Facing.NORTH);
+        return ((direction.getBlockZ() > 0) ? Facing.SOUTH : Facing.NORTH);
     }
 
     private double getXLength(@NotNull Vector direction) {
-        return Math.abs(direction.getX());
+        return Math.abs(direction.getBlockX());
     }
 
     private double getYLength(@NotNull Vector direction) {
-        return Math.abs(direction.getY());
+        return Math.abs(direction.getBlockY());
     }
 
     private double getZLength(@NotNull Vector direction) {
-        return Math.abs(direction.getZ());
+        return Math.abs(direction.getBlockZ());
     }
 
     private double getPosition(double direction, double position, int blockPosition) {
         return direction > 0 ? (position - blockPosition) : (blockPosition + 1 - position);
     }
 
-    private double getXPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull BlockPos block) {
-        return getPosition(direction.getX(), position.getX(), block.getX());
+    private double getXPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull Location block) {
+        return getPosition(direction.getBlockX(), position.getBlockX(), block.getBlockX());
     }
 
-    private double getYPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull BlockPos block) {
-        return getPosition(direction.getY(), position.getY(), block.getY());
+    private double getYPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull Location block) {
+        return getPosition(direction.getBlockY(), position.getBlockY(), block.getBlockY());
     }
 
-    private double getZPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull BlockPos block) {
-        return getPosition(direction.getZ(), position.getZ(), block.getZ());
+    private double getZPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull Location block) {
+        return getPosition(direction.getBlockZ(), position.getBlockZ(), block.getBlockZ());
     }
 
     public BlockAccess getBlockAccess() {
@@ -301,7 +301,7 @@ public class BlockIterator implements Iterator<BlockPos> {
      */
     @Override
     @NotNull
-    public BlockPos next() throws NoSuchElementException {
+    public Location next() throws NoSuchElementException {
         scan();
         if (currentBlock <= -1) {
             throw new NoSuchElementException();
