@@ -110,8 +110,12 @@ public enum EntityType {
     }
 
     public static EntityType fromId(int id, int subId) { // subId = -1 -> any sub id is ok
-        if (id > Short.MAX_VALUE || subId > Short.MAX_VALUE) {
+        if (id > Short.MAX_VALUE) {
             return null;
+        }
+
+        if (subId > Short.MAX_VALUE) {
+            subId = (short) -1;
         }
 
         for (EntityType value : values()) {

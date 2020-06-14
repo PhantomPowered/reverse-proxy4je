@@ -24,21 +24,21 @@
  */
 package com.github.derrop.proxy.network.listener;
 
-import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
+import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
-import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientChannelListener;
@@ -249,13 +249,8 @@ public class InitialHandler {
                     offlinePlayer = new DefaultOfflinePlayer(uniqueId, result.getName(), -1, -1);
                     repository.insertOfflinePlayer(offlinePlayer);
                 }
+
                 DefaultPlayer player = new DefaultPlayer(this.proxy, offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
-
-                if (!player.getName().equals("Lvkas_") && !player.getName().equals("derrop") && !player.getName().equals("Sutriix")) {
-                    disconnect(channel, "§cNo");
-                    return;
-                }
-
                 repository.updateOfflinePlayer(offlinePlayer);
 
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between

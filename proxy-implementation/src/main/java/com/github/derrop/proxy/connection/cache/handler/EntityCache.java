@@ -103,16 +103,16 @@ public class EntityCache implements PacketCacheHandler {
             }
         } else if (packet instanceof PacketPlayServerSpawnEntityExperienceOrb) {
             PacketPlayServerSpawnEntityExperienceOrb spawn = (PacketPlayServerSpawnEntityExperienceOrb) packet;
-            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.EXPERIENCE_ORB));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.EXPERIENCE_ORB.getTypeId()));
         } else if (packet instanceof PacketPlayServerNamedEntitySpawn) {
             PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) packet;
-            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.PLAYER));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.PLAYER.getTypeId()));
         } else if (packet instanceof PacketPlayServerSpawnLivingEntity) {
             PacketPlayServerSpawnLivingEntity spawn = (PacketPlayServerSpawnLivingEntity) packet;
-            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.fromId(spawn.getType())));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, spawn.getType()));
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
             PacketPlayServerSpawnEntity spawn = (PacketPlayServerSpawnEntity) packet;
-            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, EntityType.fromId(spawn.getType(), spawn.getExtraData())));
+            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, spawn.getType(), spawn.getExtraData()));
         } else if (packet instanceof PacketPlayServerEntityMetadata) {
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
             if (this.entities.containsKey(metadata.getEntityId())) {

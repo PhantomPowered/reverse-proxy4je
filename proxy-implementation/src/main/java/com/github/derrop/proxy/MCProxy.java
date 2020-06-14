@@ -108,7 +108,6 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
-        this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdRepository(this.serviceRegistry), false, true);
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
@@ -257,6 +256,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));
         this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
+        this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdRepository(this.serviceRegistry), false, true);
 
         System.out.println("Loading plugins...");
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();

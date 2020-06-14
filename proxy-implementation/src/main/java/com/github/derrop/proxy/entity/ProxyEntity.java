@@ -52,22 +52,26 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
         this.equipment = new ConcurrentHashMap<>();
     }
 
-    public static ProxyEntity createEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        Preconditions.checkNotNull(type, "EntityType cannot be null");
+    public static ProxyEntity createEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+        LivingEntityType entityType = LivingEntityType.fromId(type);
+        Preconditions.checkNotNull(entityType, "Unable to create entity type from unknown id " + type);
+
         if (spawnPacket instanceof PacketPlayServerNamedEntitySpawn) {
             return new ProxyPlayer(registry, client, spawnPacket);
         }
 
-        return new ProxyLivingEntity(registry, client, spawnPacket, type);
+        return new ProxyLivingEntity(registry, client, spawnPacket, entityType);
     }
 
-    public static ProxyEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
-        Preconditions.checkNotNull(type, "EntityType cannot be null");
-        if (type == EntityType.ARMOR_STAND) {
+    public static ProxyEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type, int subType) {
+        EntityType entityType = EntityType.fromId(type, subType);
+        Preconditions.checkNotNull(entityType, "Cannot create entity from type id " + type + " with sub id " + subType);
+
+        if (entityType == EntityType.ARMOR_STAND) {
             return new ProxyArmorStand(registry, client, spawnPacket);
         }
 
-        return new ProxyEntity(registry, client, spawnPacket, type.getTypeId());
+        return new ProxyEntity(registry, client, spawnPacket, entityType.getTypeId());
     }
 
     public void updateMetadata(PacketPlayServerEntityMetadata metadata) {
