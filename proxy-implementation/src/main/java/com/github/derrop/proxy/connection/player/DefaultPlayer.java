@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
@@ -46,10 +46,8 @@ import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.api.util.Side;
-import com.github.derrop.proxy.connection.AppendedActionBar;
-import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.connection.DefaultServiceConnector;
-import com.github.derrop.proxy.connection.LoginResult;
+import com.github.derrop.proxy.connection.*;
+import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
@@ -66,66 +64,51 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
 import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
-public class DefaultPlayer extends DefaultOfflinePlayer implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
+public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
 
-    private static final Unsafe EMPTY_UNSAFE = location -> {
-    };
-
-    public DefaultPlayer(MCProxy proxy, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
-        super(offlinePlayer.getUniqueId(), loginResult.getName(), System.currentTimeMillis(), version, offlinePlayer.getEffectivePermissions());
+    public DefaultPlayer(MCProxy proxy, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
+        super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER.getTypeId());
         this.proxy = proxy;
+        this.offlinePlayer = offlinePlayer;
         this.displayName = loginResult.getName();
 
         this.channel = channel;
         this.version = version;
 
-        if (!channel.isClosing() && this.compression == -1 && compressionThreshold >= 0) {
-            this.compression = compressionThreshold;
+        if (!channel.isClosing() && compressionThreshold >= 0) {
             this.channel.writeWithResult(new PacketLoginOutSetCompression(compressionThreshold)).join();
-            channel.setCompression(compression);
+            channel.setCompression(compressionThreshold);
         }
     }
 
-
     private final MCProxy proxy;
-
+    private final OfflinePlayer offlinePlayer;
     private final NetworkChannel channel;
     private final int version;
-
     private boolean firstConnection = true;
     private int entityId;
-
     private ServiceConnection connectingClient;
-
     private ServiceConnection connectedClient;
-
     private boolean connected = false;
-
     private boolean autoReconnect = true;
-
-    private int compression = -1;
-
-    private int positionUpdateTicks = 0;
-
     private String displayName;
-
     private String lastCommandCompleteRequest;
-
     private final PlayerInventory inventory = new DefaultPlayerInventory(this);
-
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
-
     private final Collection<AppendedActionBar> actionBars = new CopyOnWriteArrayList<>();
 
     public void applyPermissions(OfflinePlayer offlinePlayer) {
         if (offlinePlayer == this) {
             return;
         }
-        super.getEffectivePermissions().clear();
-        super.getEffectivePermissions().putAll(offlinePlayer.getEffectivePermissions());
+
+        this.clearPermissions();
+        this.getEffectivePermissions().putAll(offlinePlayer.getEffectivePermissions());
     }
 
     public ServiceConnection getConnectingClient() {
@@ -377,7 +360,7 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
             return;
         }
 
-        ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this);
+        ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
             this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
                     + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));
@@ -455,11 +438,6 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public @NotNull Entity.Unsafe unsafe() {
-        return this.connectedClient != null ? this.connectedClient.unsafe() : EMPTY_UNSAFE;
-    }
-
-    @Override
     public @NotNull Callable getCallable() {
         return this;
     }
@@ -498,8 +476,48 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
     }
 
     @Override
-    public void handleEntityPacket(@NotNull Packet packet) {
+    public @NotNull UUID getUniqueId() {
+        return this.offlinePlayer.getUniqueId();
+    }
 
+    @Override
+    public @NotNull String getName() {
+        return this.offlinePlayer.getName();
+    }
+
+    @Override
+    public long getLastLogin() {
+        return this.offlinePlayer.getLastLogin();
+    }
+
+    @Override
+    public int getLastVersion() {
+        return this.offlinePlayer.getLastVersion();
+    }
+
+    @Override
+    public boolean hasPermission(@NotNull String permission) {
+        return this.offlinePlayer.hasPermission(permission);
+    }
+
+    @Override
+    public void addPermission(@NotNull String permission, boolean set) {
+        this.offlinePlayer.addPermission(permission, set);
+    }
+
+    @Override
+    public void removePermission(@NotNull String permission) {
+        this.offlinePlayer.removePermission(permission);
+    }
+
+    @Override
+    public void clearPermissions() {
+        this.offlinePlayer.clearPermissions();
+    }
+
+    @Override
+    public @NotNull Map<String, Boolean> getEffectivePermissions() {
+        return this.offlinePlayer.getEffectivePermissions();
     }
 
     private class PacketSenderUnsafe implements PacketSender.NetworkUnsafe {

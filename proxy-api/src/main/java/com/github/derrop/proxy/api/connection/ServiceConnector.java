@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ServiceConnector extends Tickable {
 
@@ -17,7 +18,7 @@ public interface ServiceConnector extends Tickable {
     ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException;
 
     @Nullable
-    ServiceConnection findBestConnection(Player player);
+    ServiceConnection findBestConnection(UUID playerUniqueId);
 
     @NotNull
     Optional<? extends ServiceConnection> getClientByEmail(String email);

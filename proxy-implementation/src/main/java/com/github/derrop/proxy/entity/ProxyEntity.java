@@ -17,11 +17,11 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import com.github.derrop.proxy.util.DataWatcher;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
 import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,24 +31,36 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     protected final ServiceRegistry registry;
     protected final ConnectedProxyClient client;
 
-    protected final PositionedPacket spawnPacket;
+    protected Location location;
     private boolean onGround;
     private final Unsafe unsafe = this::setLocation;
 
     private final int entityId;
     private final int type;
 
-    protected final Map<Integer, ItemStack> equipment;
-    protected final DataWatcher dataWatcher = new DataWatcher();
+    protected @Nullable PositionedPacket packet;
 
+    protected final Map<Integer, ItemStack> equipment;
     protected final MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
 
     protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+        this(registry, client, new Location(
+                PlayerPositionPacketUtil.getServerLocation(spawnPacket.getX()),
+                PlayerPositionPacketUtil.getServerLocation(spawnPacket.getY()),
+                PlayerPositionPacketUtil.getServerLocation(spawnPacket.getZ()),
+                PlayerPositionPacketUtil.getServerRotation(spawnPacket.getYaw()),
+                PlayerPositionPacketUtil.getServerRotation(spawnPacket.getPitch())
+        ), spawnPacket.getEntityId(), type);
+
+        this.packet = spawnPacket;
+    }
+
+    protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, Location location, int entityId, int type) {
         this.registry = registry;
         this.client = client;
-        this.entityId = spawnPacket.getEntityId();
-        this.spawnPacket = spawnPacket;
+        this.entityId = entityId;
         this.type = type;
+        this.location = location;
         this.equipment = new ConcurrentHashMap<>();
     }
 
@@ -72,12 +84,6 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
         }
 
         return new ProxyEntity(registry, client, spawnPacket, entityType.getTypeId());
-    }
-
-    public void updateMetadata(PacketPlayServerEntityMetadata metadata) {
-        if (metadata.getObjects() != null) {
-            this.objectList.applyUpdate(metadata.getObjects());
-        }
     }
 
     public boolean isOnGround() {
@@ -110,6 +116,62 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     }
 
     @Override
+    public boolean isBurning() {
+        return (this.objectList.getByte(0) & 1) != 0;
+    }
+
+    @Override
+    public boolean isSneaking() {
+        return (this.objectList.getByte(0) & 2) != 0;
+    }
+
+    @Override
+    public boolean isRiding() {
+        return (this.objectList.getByte(0) & 4) != 0;
+    }
+
+    @Override
+    public boolean isSprinting() {
+        return (this.objectList.getByte(0) & 8) != 0;
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return (this.objectList.getByte(0) & 16) != 0;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return (this.objectList.getByte(0) & 32) != 0;
+    }
+
+    @Override
+    public short getAirTicks() {
+        return this.objectList.getShort(1);
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        return this.objectList.getByte(3) == 1;
+    }
+
+    @Override
+    public boolean isSilent() {
+        return this.objectList.getByte(4) == 1;
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        String s = this.objectList.getString(2);
+        return s != null && s.length() > 0;
+    }
+
+    @Override
+    public String getCustomName() {
+        return this.objectList.getString(2);
+    }
+
+    @Override
     public int getType() {
         return this.type;
     }
@@ -117,17 +179,12 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     @NotNull
     @Override
     public Location getLocation() {
-        return new Location(
-                PlayerPositionPacketUtil.getServerLocation(this.spawnPacket.getX()),
-                PlayerPositionPacketUtil.getServerLocation(this.spawnPacket.getY()),
-                PlayerPositionPacketUtil.getServerLocation(this.spawnPacket.getZ()),
-                PlayerPositionPacketUtil.getServerRotation(this.spawnPacket.getYaw()),
-                PlayerPositionPacketUtil.getServerRotation(this.spawnPacket.getPitch())
-        );
+        return this.location;
     }
 
     @Override
     public void setLocation(@NotNull Location location) {
+        this.location = location;
         this.updateLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), location.isOnGround());
     }
 
@@ -143,11 +200,15 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     }
 
     public void updateLocation(int x, int y, int z, byte yaw, byte pitch, boolean onGround) {
-        this.spawnPacket.setX(x);
-        this.spawnPacket.setY(y);
-        this.spawnPacket.setZ(z);
-        this.spawnPacket.setYaw(yaw);
-        this.spawnPacket.setPitch(pitch);
+        if (this.packet == null) {
+            return;
+        }
+
+        this.packet.setX(x);
+        this.packet.setY(y);
+        this.packet.setZ(z);
+        this.packet.setYaw(yaw);
+        this.packet.setPitch(pitch);
         this.onGround = onGround;
     }
 
@@ -169,11 +230,15 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     }
 
     public boolean isPlayer() {
-        return this.spawnPacket instanceof PacketPlayServerNamedEntitySpawn;
+        return this.packet != null && this.type == -2 && this.packet instanceof PacketPlayServerNamedEntitySpawn; // klaro - pail
     }
 
     public void spawn(PacketSender sender) {
-        sender.sendPacket(this.spawnPacket);
+        if (this.packet == null) {
+            return;
+        }
+
+        sender.sendPacket(this.packet);
         this.sendEntityData(sender);
     }
 
@@ -218,5 +283,9 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
 
     @Override
     public void handleEntityPacket(@NotNull Packet packet) {
+        if (packet instanceof PacketPlayServerEntityMetadata) {
+            PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
+            this.objectList.applyUpdate(metadata.getObjects());
+        }
     }
 }

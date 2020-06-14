@@ -34,7 +34,7 @@ public class LoginPrepareListener {
     public void handleLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
 
-        event.setTargetConnection(new LoginServiceConnection(this.proxy, player));
+        //event.setTargetConnection(new LoginServiceConnection(this.proxy, player));
     }
 
     @Listener

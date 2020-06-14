@@ -53,11 +53,11 @@ public class ProxyPlayer extends ProxyLivingEntity implements EntityPlayer {
 
     @Override
     public void spawn(PacketSender sender) {
-        if (!this.infoCache.isCached(this.uniqueId)) {
+        if (!this.infoCache.isCached(this.uniqueId) && super.packet != null) { // klaro - pail
             // NPCs might get removed out of the player list after they have been spawned, but the client doesn't spawn them without them being in the list
             PacketPlayServerPlayerInfo.Item item = infoCache.getRemovedItem(this.uniqueId);
             sender.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.ADD_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item}));
-            sender.sendPacket(super.spawnPacket);
+            sender.sendPacket(super.packet);
             Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(
                     () -> sender.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item})),
                     500, TimeUnit.MILLISECONDS

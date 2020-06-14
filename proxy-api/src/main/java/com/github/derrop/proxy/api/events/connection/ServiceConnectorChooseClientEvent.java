@@ -22,38 +22,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.types;
+package com.github.derrop.proxy.api.events.connection;
 
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
-import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.util.EulerAngle;
-import org.jetbrains.annotations.NotNull;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.event.Event;
 
-public interface ArmorStand {
+import java.util.UUID;
 
-    @NotNull
-    ItemStack getItem(@NotNull EquipmentSlot slot);
+public class ServiceConnectorChooseClientEvent extends Event implements Cancelable {
 
-    @NotNull
-    EulerAngle getBodyPosition(@NotNull BodyPosition position);
+    public ServiceConnectorChooseClientEvent(UUID uniqueId, ServiceConnection connection) {
+        this.uniqueId = uniqueId;
+        this.connection = connection;
+    }
 
-    boolean hasBasePlate();
+    private final UUID uniqueId;
+    private ServiceConnection connection;
+    private boolean cancelled = false;
 
-    boolean hasGravity();
+    public UUID getUniqueId() {
+        return uniqueId;
+    }
 
-    boolean hasArms();
+    public ServiceConnection getConnection() {
+        return connection;
+    }
 
-    boolean isSmall();
+    public void setConnection(ServiceConnection connection) {
+        this.connection = connection;
+    }
 
-    boolean isMarker();
+    @Override
+    public void cancel(boolean cancel) {
+        this.cancelled = cancel;
+    }
 
-    enum BodyPosition {
-
-        ARM_RIGHT,
-        ARM_LEFT,
-        LEG_RIGHT,
-        LEG_LEFT,
-        HEAD,
-        BODY
+    @Override
+    public boolean isCancelled() {
+        return this.cancelled;
     }
 }
