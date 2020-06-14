@@ -22,29 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.events.connection.player;
+package com.github.derrop.proxy.api.events.connection.player.interact;
 
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.events.connection.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
+public class PlayerInteractEntityEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel;
-    private Action action;
+    private final Entity entity;
 
-    public PlayerInteractEvent(@NotNull Player player, @NotNull PlayerInteractEvent.Action action) {
+    public PlayerInteractEntityEvent(@NotNull Player player, @NotNull Entity entity) {
         super(player);
-        this.action = action;
+        this.entity = entity;
     }
 
     @NotNull
-    public PlayerInteractEvent.Action getAction() {
-        return this.action;
-    }
-
-    public void setAction(@NotNull PlayerInteractEvent.Action action) {
-        this.action = action;
+    public Entity getEntity() {
+        return this.entity;
     }
 
     @Override
@@ -55,25 +53,6 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
     @Override
     public boolean isCancelled() {
         return this.cancel;
-    }
-
-    public static enum Action {
-        LEFT_CLICK_BLOCK(true), RIGHT_CLICK_BLOCK(false), LEFT_CLICK_AIR(true), RIGHT_CLICK_AIR(false);
-
-        private final boolean left;
-
-        Action(boolean left) {
-            this.left = left;
-        }
-
-        public boolean isLeftClick() {
-            return this.left;
-        }
-
-        public boolean isRightClick() {
-            return !this.isLeftClick();
-        }
-
     }
 
 }

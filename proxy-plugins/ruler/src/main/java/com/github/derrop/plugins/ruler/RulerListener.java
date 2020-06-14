@@ -10,7 +10,7 @@ public class RulerListener {
 
     @Listener
     public void handleInteract(PlayerInteractEvent event) {
-        if (event.getType() != PlayerInteractEvent.Type.LEFT_CLICK) {
+        if (!event.getAction().isLeftClick()) {
             return;
         }
 

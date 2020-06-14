@@ -42,11 +42,9 @@ public interface Constants {
 
     Random RANDOM = new Random();
 
-    DirectoryStream.Filter<Path> JAR_FILE_FILTER = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            return !Files.isDirectory(path) && path.toString().endsWith(".jar");
-        }
-    };
+    DirectoryStream.Filter<Path> JAR_FILE_FILTER = path -> !Files.isDirectory(path) && path.toString().endsWith(".jar");
+
+    int SURVIVAL_PLACE_DISTANCE = 6;
+    int CREATIVE_PLACE_DISTANCE = 7;
 
 }
