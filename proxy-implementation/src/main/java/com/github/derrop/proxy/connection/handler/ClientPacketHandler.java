@@ -10,6 +10,7 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
@@ -141,26 +142,28 @@ public class ClientPacketHandler {
                 throw new IllegalStateException("Received unknown action " + packet.getAction());
         }
 
-        System.out.println(event.getClass().getSimpleName());
         player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (((Cancelable) event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
     }
 
-    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ARM_ANIMATION, directions = ProtocolDirection.TO_SERVER)
-    public void handleArmAnimation(DefaultPlayer player, PacketPlayClientArmAnimation packet) {
-        if (player.getConnectedClient() == null) {
-            return;
-        }
-        int distance = player.getConnectedClient().getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? Constants.CREATIVE_PLACE_DISTANCE : Constants.SURVIVAL_PLACE_DISTANCE;
+    private boolean isTargettingBlock(ServiceConnection connection) {
+        int distance = connection.getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? Constants.CREATIVE_PLACE_DISTANCE : Constants.SURVIVAL_PLACE_DISTANCE;
         try {
-            Location targetedBlock = player.getConnectedClient().getTargetBlock(distance);
+            Location targetedBlock = connection.getTargetBlock(distance);
             if (targetedBlock != null) {
-                // Left click block is sent in the Digging packet
-                return;
+                return true;
             }
         } catch (IllegalStateException exception) {
+        }
+        return false;
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ARM_ANIMATION, directions = ProtocolDirection.TO_SERVER)
+    public void handleArmAnimation(DefaultPlayer player, PacketPlayClientArmAnimation packet) {
+        if (player.getConnectedClient() == null || this.isTargettingBlock(player.getConnectedClient())) {
+            // Left click block is sent in the Digging packet
             return;
         }
 
@@ -177,8 +180,12 @@ public class ClientPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
     public void handleBlockPlace(DefaultPlayer player, PacketPlayClientBlockPlace packet) {
+        if (player.getConnectedClient() == null) {
+            return;
+        }
         if (packet.getPlacedBlockDirection() == 255) {
-            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
+            boolean block = this.isTargettingBlock(player.getConnectedClient());
+            PlayerInteractEvent event = new PlayerInteractEvent(player, block ? PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK : PlayerInteractEvent.Action.RIGHT_CLICK_AIR);
             player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
             if (event.isCancelled()) {
                 throw CancelProceedException.INSTANCE;

@@ -35,7 +35,6 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
 
     public PlayerInteractEvent(@NotNull Player player, @NotNull PlayerInteractEvent.Action action) {
         super(player);
-        System.out.println(action);
         this.action = action;
     }
 
