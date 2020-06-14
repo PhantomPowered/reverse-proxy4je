@@ -46,6 +46,8 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
     private static final String PASTE_URL = "https://just-paste.it/";
     private static final String PROPERTY_KEY = "GommePlugin-CurrentMatch";
+    private static final long BED_WARS_GOLD_SPAWN_DELAY = 30_000;
+    private static final long BED_WARS_IRON_SPAWN_DELAY = 10_000;
 
     private final GommeStatsCore core;
     private final TeamRegistry teamRegistry;
@@ -106,6 +108,35 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         this.writeToDatabase(matchInfo);
     }
 
+    public void showMatchData(Player player, MatchInfo matchInfo) {
+        player.appendActionBar(Side.RIGHT, () -> {
+            if (!matchInfo.isRunning() || !player.equals(matchInfo.getInvoker().getPlayer())) {
+                return null;
+            }
+
+            long millis = System.currentTimeMillis() - matchInfo.getBeginTimestamp();
+            long seconds = (millis / 1000) % 60;
+            long minutes = (millis / (1000 * 60)) % 60;
+
+            String minutesString = minutes < 10 ? "0" + minutes : String.valueOf(minutes);
+            String secondsString = seconds < 10 ? "0" + seconds : String.valueOf(seconds);
+
+            return " §8× §7Time §8» §e" + minutesString + ":" + secondsString;
+        });
+        if (matchInfo.getGameMode() == GommeGameMode.BED_WARS) {
+            player.appendActionBar(Side.LEFT, () -> {
+                if (!matchInfo.isRunning() || !player.equals(matchInfo.getInvoker().getPlayer())) {
+                    return null;
+                }
+
+                long millis = System.currentTimeMillis() - matchInfo.getBeginTimestamp();
+                long gold = millis / BED_WARS_GOLD_SPAWN_DELAY;
+                long iron = millis / BED_WARS_IRON_SPAWN_DELAY;
+                return "§6Gold §8» §6" + gold + " §8× §fIron §8» §f" + iron + " §8× ";
+            });
+        }
+    }
+
     public void startMatch(MatchInfo matchInfo) {
         if (matchInfo.isRunning()) {
             return;
@@ -114,20 +145,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
         Player player = matchInfo.getInvoker().getPlayer();
         if (player != null) {
-            player.appendActionBar(Side.RIGHT, () -> {
-                if (!matchInfo.isRunning()) {
-                    return null;
-                }
-
-                long millis = System.currentTimeMillis() - matchInfo.getBeginTimestamp();
-                long seconds = (millis / 1000) % 60;
-                long minutes = (millis / (1000 * 60)) % 60;
-
-                String minutesString = minutes < 10 ? "0" + minutes : String.valueOf(minutes);
-                String secondsString = seconds < 10 ? "0" + seconds : String.valueOf(seconds);
-
-                return " §8× §7Time §8» §e" + minutesString + ":" + secondsString;
-            });
+            this.showMatchData(player, matchInfo);
         }
     }
 

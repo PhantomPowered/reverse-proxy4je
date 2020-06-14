@@ -40,6 +40,7 @@ import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
+import com.github.derrop.proxy.api.events.connection.player.PlayerServiceSelectedEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -255,6 +256,8 @@ public class DefaultPlayer extends DefaultOfflinePlayer implements Player, Wrapp
         this.connectedClient = connection;
 
         this.connectingClient = null;
+
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerServiceSelectedEvent(this, connection));
 
         //this.sendMessage("§7Your name: §e" + connection.getName());
     }
