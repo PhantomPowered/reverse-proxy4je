@@ -27,7 +27,7 @@ package com.github.derrop.proxy.plugins.gomme.match;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.PlayerId;
+import com.github.derrop.proxy.api.util.player.PlayerId;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;

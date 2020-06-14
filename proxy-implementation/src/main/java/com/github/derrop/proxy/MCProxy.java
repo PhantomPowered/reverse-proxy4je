@@ -47,6 +47,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.util.BlockIterator;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
+import com.github.derrop.proxy.api.util.player.PlayerIdRepository;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
@@ -74,6 +75,7 @@ import com.github.derrop.proxy.service.BasicServiceRegistry;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
+import com.github.derrop.proxy.util.player.DefaultPlayerIdRepository;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,6 +108,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
+        this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdRepository(this.serviceRegistry), false, true);
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());

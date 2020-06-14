@@ -40,29 +40,31 @@ public class HttpHelper {
     }
 
     public static void getHTTPAsync(String url, Callback<String> callback) {
-        Constants.EXECUTOR_SERVICE.execute(() -> {
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.connect();
+        Constants.EXECUTOR_SERVICE.execute(() -> getHTTPSync(url, callback));
+    }
 
-                try (InputStream inputStream = connection.getInputStream()) {
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    public static void getHTTPSync(String url, Callback<String> callback) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.connect();
 
-                    byte[] buffer = new byte[4096];
-                    int len;
-                    while ((len = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, len);
-                    }
+            try (InputStream inputStream = connection.getInputStream()) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-                    callback.done(outputStream.toString("UTF-8"), null);
+                byte[] buffer = new byte[4096];
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, len);
                 }
 
-                connection.disconnect();
-
-            } catch (IOException exception) {
-                callback.done(null, exception);
+                callback.done(outputStream.toString("UTF-8"), null);
             }
-        });
+
+            connection.disconnect();
+
+        } catch (IOException exception) {
+            callback.done(null, exception);
+        }
     }
 
 }

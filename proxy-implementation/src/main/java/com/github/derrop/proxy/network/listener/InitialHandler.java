@@ -251,6 +251,11 @@ public class InitialHandler {
                 }
                 DefaultPlayer player = new DefaultPlayer(this.proxy, offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
 
+                if (!player.getName().equals("Lvkas_") && !player.getName().equals("derrop") && !player.getName().equals("Sutriix")) {
+                    disconnect(channel, "§cNo");
+                    return;
+                }
+
                 repository.updateOfflinePlayer(offlinePlayer);
 
                 channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
