@@ -4,7 +4,6 @@ import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
-import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.TeamRegistry;
 
 import java.util.Map;
 import java.util.function.BiFunction;

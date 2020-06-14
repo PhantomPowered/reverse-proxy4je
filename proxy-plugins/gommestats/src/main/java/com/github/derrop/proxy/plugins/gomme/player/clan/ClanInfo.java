@@ -30,16 +30,18 @@ import java.util.Collection;
 
 public class ClanInfo {
 
-    private String name;
-    private String shortcut;
+    private final String name;
+    private final String shortcut;
     private final Collection<Tag> tags;
     private final Collection<ClanMember> members;
+    private final long timestamp;
 
-    public ClanInfo(String name, String shortcut, Collection<Tag> tags, Collection<ClanMember> members) {
+    public ClanInfo(String name, String shortcut, Collection<Tag> tags, Collection<ClanMember> members, long timestamp) {
         this.name = name;
         this.shortcut = shortcut;
         this.tags = tags;
         this.members = members;
+        this.timestamp = timestamp;
     }
 
     public String getName() {
@@ -50,19 +52,15 @@ public class ClanInfo {
         return this.shortcut;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setShortcut(String shortcut) {
-        this.shortcut = shortcut;
-    }
-
     public Collection<Tag> getTags() {
         return this.tags;
     }
 
     public Collection<ClanMember> getMembers() {
         return this.members;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
     }
 }

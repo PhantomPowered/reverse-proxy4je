@@ -7,7 +7,6 @@ import com.github.derrop.proxy.plugins.gomme.match.event.global.match.*;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.player.*;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
-import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.TeamRegistry;
 import com.google.common.collect.ImmutableMap;
 
 public class BedWarsGameMessageRegistrar extends SpecificGameMessageRegistrar {

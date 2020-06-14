@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages.defaults;
+package com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game;
 
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;

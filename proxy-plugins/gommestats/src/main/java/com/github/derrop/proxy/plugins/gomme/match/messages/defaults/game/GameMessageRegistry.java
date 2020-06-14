@@ -4,7 +4,6 @@ import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
-import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.TeamRegistry;
 
 import java.util.ArrayList;
 import java.util.Collection;

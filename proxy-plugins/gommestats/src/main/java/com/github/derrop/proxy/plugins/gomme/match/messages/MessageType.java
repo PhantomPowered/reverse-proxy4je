@@ -17,6 +17,7 @@ public enum MessageType {
     PLAYER_GLOBAL_CHAT_MESSAGE(),
     PLAYER_TEAM_CHAT_MESSAGE(),
 
+    // Teams
     TEAM_BLACK(),
     TEAM_BLUE(),
     TEAM_TURQUOISE(),
@@ -43,7 +44,18 @@ public enum MessageType {
     // BedWars
     BED_DESTROYED(GommeGameMode.BED_WARS),
     CANNOT_DESTROY_OWN_BED(GommeGameMode.BED_WARS),
-    TEAM_OUT(GommeGameMode.BED_WARS);
+    TEAM_OUT(GommeGameMode.BED_WARS),
+
+    // Clans
+    CLAN_INFO_BEGIN(),
+    CLAN_INFO_NAME(),
+    CLAN_INFO_TAG(),
+    CLAN_INFO_GENERAL_MEMBER_COUNT(),
+    CLAN_INFO_CLAN_PAGE(),
+    CLAN_INFO_LEADER_COUNT(),
+    CLAN_INFO_MODERATOR_COUNT(),
+    CLAN_INFO_MEMBER_COUNT(),
+    CLAN_INFO_USER();
 
     private final GommeGameMode[] availableGameModes;
 
