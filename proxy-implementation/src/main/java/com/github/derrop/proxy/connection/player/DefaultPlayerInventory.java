@@ -107,7 +107,7 @@ public class DefaultPlayerInventory implements PlayerInventory {
             return;
         }
         if (item == null) {
-            item = ItemStack.NONE;
+            item = ItemStack.AIR;
         }
         this.content[slot] = item;
         if (this.opened) {
@@ -118,6 +118,6 @@ public class DefaultPlayerInventory implements PlayerInventory {
     @Override
     public @NotNull ItemStack getItem(int slot) {
         ItemStack item = slot < 0 || slot >= this.content.length ? null : this.content[slot];
-        return item != null ? item : ItemStack.NONE;
+        return item != null ? item : ItemStack.AIR;
     }
 }

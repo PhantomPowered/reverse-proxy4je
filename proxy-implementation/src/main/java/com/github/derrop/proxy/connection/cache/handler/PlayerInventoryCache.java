@@ -45,7 +45,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     private static final ItemStack[] EMPTY_INVENTORY = new ItemStack[45];
 
     static {
-        Arrays.fill(EMPTY_INVENTORY, ItemStack.NONE);
+        Arrays.fill(EMPTY_INVENTORY, ItemStack.AIR);
     }
 
     private Map<Integer, ItemStack> itemsBySlot = new HashMap<>();
@@ -93,7 +93,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
         this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
             ItemStack[] items = new ItemStack[count + 1];
             for (int slot = 0; slot < items.length; slot++) {
-                items[slot] = this.itemsBySlot.getOrDefault(slot, ItemStack.NONE);
+                items[slot] = this.itemsBySlot.getOrDefault(slot, ItemStack.AIR);
             }
             con.sendPacket(new PacketPlayServerWindowItems(WINDOW_ID, items));
         });

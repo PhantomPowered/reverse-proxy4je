@@ -10,7 +10,6 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.GameMode;
-import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
 import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
@@ -211,7 +210,7 @@ public class ClientPacketHandler {
         PlayerInventoryClickEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerInventoryClickEvent(player, packet.getSlot(), click));
         if (event.isCancelled()) {
-            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ItemStack.NONE));
+            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ItemStack.AIR));
             player.sendPacket(new PacketPlayServerSetSlot(player.getInventory().getWindowId(), packet.getSlot(), player.getInventory().getItem(packet.getSlot())));
             throw CancelProceedException.INSTANCE;
         }

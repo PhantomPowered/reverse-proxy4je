@@ -42,7 +42,7 @@ public class ProxyArmorStand extends ProxyLivingEntity implements ArmorStand {
 
     @Override
     public @NotNull ItemStack getItem(@NotNull EquipmentSlot slot) {
-        return this.equipment.getOrDefault(slot.getSlotId(), ItemStack.NONE);
+        return this.equipment.getOrDefault(slot.getSlotId(), ItemStack.AIR);
     }
 
     @Override

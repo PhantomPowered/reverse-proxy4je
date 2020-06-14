@@ -236,7 +236,7 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
             return new ItemStack(itemId, amount, meta, this.readNBTTagCompound());
         }
-        return ItemStack.NONE;
+        return ItemStack.AIR;
     }
 
     @Override
