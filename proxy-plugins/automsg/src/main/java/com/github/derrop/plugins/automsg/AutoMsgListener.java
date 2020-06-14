@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.PlayerId;
+import com.github.derrop.proxy.api.util.player.PlayerId;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
@@ -70,7 +70,9 @@ public class AutoMsgListener {
         Matcher matcher = MSG_PATTERN.matcher(message);
         if (matcher.find()) {
             String sender = matcher.group(1);
-            this.sendMsg(connection, sender);
+            if (!sender.equals(connection.getName())) {
+                this.sendMsg(connection, sender);
+            }
         }
     }
 
