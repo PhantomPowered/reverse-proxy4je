@@ -113,11 +113,6 @@ public class EntityCache implements PacketCacheHandler {
         } else if (packet instanceof PacketPlayServerSpawnEntity) {
             PacketPlayServerSpawnEntity spawn = (PacketPlayServerSpawnEntity) packet;
             this.entities.put(spawn.getEntityId(), ProxyEntity.createEntity(registry, packetCache.getTargetProxyClient(), spawn, spawn.getType(), spawn.getExtraData()));
-        } else if (packet instanceof PacketPlayServerEntityMetadata) {
-            PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
-            if (this.entities.containsKey(metadata.getEntityId())) {
-                this.entities.get(metadata.getEntityId()).updateMetadata(metadata);
-            }
         } else if (packet instanceof PacketPlayServerEntityDestroy) {
             PacketPlayServerEntityDestroy destroyEntities = (PacketPlayServerEntityDestroy) packet;
             for (int entityId : destroyEntities.getEntityIds()) {

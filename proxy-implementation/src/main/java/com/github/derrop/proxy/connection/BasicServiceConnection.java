@@ -37,7 +37,6 @@ import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
@@ -110,15 +109,12 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private final EntityRewrite entityRewrite = new EntityRewrite_1_8();
 
     private ConnectedProxyClient client;
-    private PlayerAbilities abilities = new DefaultPlayerAbilities(this);
+    private final PlayerAbilities abilities = new DefaultPlayerAbilities(this);
 
     private boolean reScheduleOnFailure;
-
-    private boolean sneaking, sprinting;
-
+    private boolean sneaking;
+    private boolean sprinting;
     private Location location = new Location(0, 0, 0, 0, 0);
-
-    private final Unsafe unsafe = this::handleLocationUpdate;
 
     private void handleLocationUpdate(Location newLocation) {
         Packet clientPacket = PacketPlayClientPlayerPosition.create(this.location, newLocation);
@@ -141,6 +137,21 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public @Nullable Player getPlayer() {
         return this.client == null ? null : this.client.getRedirector();
+    }
+
+    @Override
+    public Location getLocation() {
+        return this.location;
+    }
+
+    @Override
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public int getDimension() {
+        return this.client.getDimension();
     }
 
     @Override
@@ -185,43 +196,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public int getEntityId() {
         return this.client.getEntityId();
-    }
-
-    @Override
-    public int getDimension() {
-        return this.client.getDimension();
-    }
-
-    @Override
-    public @NotNull Unsafe unsafe() {
-        return this.unsafe;
-    }
-
-    @Override
-    public @NotNull Callable getCallable() {
-        return this;
-    }
-
-    @Override
-    public double getEyeHeight() {
-        return 1.8;
-    }
-
-    @Override
-    public int getType() {
-        return LivingEntityType.PLAYER.getTypeId();
-    }
-
-    @Override
-    public @NotNull Location getLocation() {
-        return this.location;
-    }
-
-    @Override
-    public void setLocation(@NotNull Location location) {
-        if (this.location != null && this.location.distanceSquared(location) < 4) {
-            this.unsafe().setLocationUnchecked(location);
-        }
     }
 
     @Override
@@ -272,7 +246,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public Location getTargetBlock(Set<Material> transparent, int range) {
-        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this, range);
+        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this.location, 1.8, range);
         while (iterator.hasNext()) {
             Location location = iterator.next();
             Material material = this.getBlockAccess().getMaterial(location);

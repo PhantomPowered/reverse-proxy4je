@@ -35,11 +35,13 @@ import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
+import com.github.derrop.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.util.Callback;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientChannelListener;
 import com.github.derrop.proxy.connection.player.DefaultOfflinePlayer;
@@ -250,17 +252,18 @@ public class InitialHandler {
                     repository.insertOfflinePlayer(offlinePlayer);
                 }
 
-                DefaultPlayer player = new DefaultPlayer(this.proxy, offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
+                ServiceConnection client = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(offlinePlayer.getUniqueId());
+                ServiceConnectorChooseClientEvent clientEvent = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectorChooseClientEvent(uniqueId, client));
+                client = clientEvent.getConnection();
+                if (client == null || clientEvent.isCancelled()) {
+                    disconnect(channel, TextComponent.of("§7No client found"));
+                    return;
+                }
+
+                DefaultPlayer player = new DefaultPlayer(this.proxy, ((BasicServiceConnection) client).getClient(), offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
                 repository.updateOfflinePlayer(offlinePlayer);
 
-                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
-                channel.setProtocolState(ProtocolState.PLAY);
-                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
-                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientChannelListener(player));
-
-                ServiceConnection client = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
-
-                PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player, client));
+                PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player));
                 if (!channel.isConnected()) {
                     return;
                 }
@@ -270,11 +273,10 @@ public class InitialHandler {
                     return;
                 }
 
-                client = event.getTargetConnection();
-                if (client == null) {
-                    disconnect(channel, TextComponent.of("§7No client found"));
-                    return;
-                }
+                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
+                channel.setProtocolState(ProtocolState.PLAY);
+                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
+                channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientChannelListener(player));
 
                 player.useClient(client);
                 channel.setProperty(INIT_STATE, State.FINISHED);

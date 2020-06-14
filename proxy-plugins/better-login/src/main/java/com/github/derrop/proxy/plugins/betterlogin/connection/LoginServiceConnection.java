@@ -51,12 +51,10 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     private final Player player;
 
     private boolean connected = false;
-
     private LoginBlockAccess blockAccess;
 
     private final PlayerAbilities abilities = new LoginPlayerAbilities();
-
-    private long connectionTimestamp = System.currentTimeMillis();
+    private final long connectionTimestamp = System.currentTimeMillis();
 
     public LoginServiceConnection(Proxy proxy, Player player) {
         this.proxy = proxy;
@@ -123,40 +121,12 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
-    public @NotNull Unsafe unsafe() {
-        return location -> {
-            Packet clientPacket = PacketPlayClientPlayerPosition.create(null, location);
-            if (clientPacket == null) {
-                return;
-            }
-            this.player.sendPacket(new PacketPlayServerEntityTeleport(1265, location));
-            this.sendPacket(clientPacket);
-        };
-    }
-
-    @Override
-    public @NotNull Callable getCallable() {
-        return this;
-    }
-
-    @Override
-    public double getEyeHeight() {
-        return 1.8;
-    }
-
-    @Override
-    public int getType() {
-        return LivingEntityType.PLAYER.getTypeId();
-    }
-
-    @Override
     public @NotNull Location getLocation() {
         return LoginPrepareListener.SPAWN.clone();
     }
 
     @Override
-    public void setLocation(@NotNull Location location) {
-        this.unsafe().setLocationUnchecked(location);
+    public void setLocation(Location location) {
     }
 
     @Override

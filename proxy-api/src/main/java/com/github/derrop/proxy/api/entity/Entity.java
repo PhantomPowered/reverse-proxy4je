@@ -30,6 +30,28 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Entity {
 
+    boolean isBurning();
+
+    boolean isSneaking();
+
+    boolean isRiding();
+
+    boolean isSprinting();
+
+    boolean isBlocking();
+
+    boolean isInvisible();
+
+    short getAirTicks();
+
+    boolean isCustomNameVisible();
+
+    boolean isSilent();
+
+    boolean hasCustomName();
+
+    String getCustomName();
+
     int getType();
 
     @NotNull

@@ -52,8 +52,7 @@ public class DefaultOfflinePlayer implements OfflinePlayer, Serializable {
     private final String name;
     private final long lastLogin;
     private final int lastVersion;
-
-    private Map<String, Boolean> permissions;
+    private final Map<String, Boolean> permissions;
 
     @Override
     public @NotNull UUID getUniqueId() {

@@ -13,9 +13,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class MinecraftSerializableObjectList {
 
-    private final Map<Integer, SerializableObject> objects = new HashMap<>();
+    public MinecraftSerializableObjectList() {
+    }
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Map<Integer, SerializableObject> objects = new HashMap<>();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public Collection<SerializableObject> getObjects() {
         return Collections.unmodifiableCollection(this.objects.values());

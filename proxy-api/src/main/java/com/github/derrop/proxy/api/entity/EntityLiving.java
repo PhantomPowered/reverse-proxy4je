@@ -22,38 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.types;
+package com.github.derrop.proxy.api.entity;
 
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
-import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.util.EulerAngle;
-import org.jetbrains.annotations.NotNull;
+public interface EntityLiving extends SpawnedEntity {
 
-public interface ArmorStand {
+    float getHealth();
 
-    @NotNull
-    ItemStack getItem(@NotNull EquipmentSlot slot);
+    boolean hasPotionEffectColor();
 
-    @NotNull
-    EulerAngle getBodyPosition(@NotNull BodyPosition position);
+    int getPotionEffectColor();
 
-    boolean hasBasePlate();
+    boolean isPotionEffectAmbient();
 
-    boolean hasGravity();
+    byte getArrowsInBody();
 
-    boolean hasArms();
-
-    boolean isSmall();
-
-    boolean isMarker();
-
-    enum BodyPosition {
-
-        ARM_RIGHT,
-        ARM_LEFT,
-        LEG_RIGHT,
-        LEG_LEFT,
-        HEAD,
-        BODY
-    }
+    boolean hasAi();
 }

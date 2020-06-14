@@ -30,7 +30,6 @@ import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
-import com.github.derrop.proxy.api.entity.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.task.Task;
@@ -48,13 +47,19 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-public interface ServiceConnection extends Connection, AutoCloseable, Entity {
+public interface ServiceConnection extends Connection, AutoCloseable {
 
     @NotNull
     Proxy getProxy();
 
     @Nullable
     Player getPlayer();
+
+    Location getLocation(); // klaro - pail
+
+    void setLocation(Location location); // klaro - pail
+
+    int getDimension(); // klaro - pail
 
     long getLastDisconnectionTimestamp();
 

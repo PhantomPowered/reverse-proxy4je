@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public interface EntityPlayer extends EntityWithMetadata {
+public interface EntityPlayer extends EntityLiving {
 
     @NotNull
     UUID getUniqueId();

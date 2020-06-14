@@ -72,7 +72,7 @@ public enum LivingEntityType {
     RABBIT("Rabbit", 101),
     VILLAGER("Villager", 120),
     ENDER_CRYSTAL("EnderCrystal", 200),
-    PLAYER(null, -1),
+    PLAYER(null, -2),
 
     UNKNOWN(null, -1);
 

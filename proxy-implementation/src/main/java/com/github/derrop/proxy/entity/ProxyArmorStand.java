@@ -28,13 +28,10 @@ import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.ArmorStand;
 import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.EulerAngle;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
-import com.github.derrop.proxy.util.serialize.SerializableObject;
 import org.jetbrains.annotations.NotNull;
 
 public class ProxyArmorStand extends ProxyLivingEntity implements ArmorStand {
@@ -52,17 +49,17 @@ public class ProxyArmorStand extends ProxyLivingEntity implements ArmorStand {
     public @NotNull EulerAngle getBodyPosition(@NotNull BodyPosition position) {
         switch (position) {
             case HEAD:
-                return this.dataWatcher.getRotations(11).asEuler();
+                return this.objectList.getRotations(11).asEuler();
             case BODY:
-                return this.dataWatcher.getRotations(12).asEuler();
+                return this.objectList.getRotations(12).asEuler();
             case ARM_LEFT:
-                return this.dataWatcher.getRotations(13).asEuler();
+                return this.objectList.getRotations(13).asEuler();
             case ARM_RIGHT:
-                return this.dataWatcher.getRotations(14).asEuler();
+                return this.objectList.getRotations(14).asEuler();
             case LEG_LEFT:
-                return this.dataWatcher.getRotations(15).asEuler();
+                return this.objectList.getRotations(15).asEuler();
             case LEG_RIGHT:
-                return this.dataWatcher.getRotations(16).asEuler();
+                return this.objectList.getRotations(16).asEuler();
         }
 
         throw new RuntimeException("Magic happened");
@@ -70,43 +67,26 @@ public class ProxyArmorStand extends ProxyLivingEntity implements ArmorStand {
 
     @Override
     public boolean hasBasePlate() {
-        return (this.dataWatcher.getByte(10) & 8) != 0;
+        return (this.objectList.getByte(10) & 8) != 0;
     }
 
     @Override
     public boolean hasGravity() {
-        return (this.dataWatcher.getByte(10) & 2) != 0;
-    }
-
-    @Override
-    public boolean isVisible() {
-        return (this.dataWatcher.getByte(0) & 32) != 0;
+        return (this.objectList.getByte(10) & 2) != 0;
     }
 
     @Override
     public boolean hasArms() {
-        return (this.dataWatcher.getByte(10) & 4) != 0;
+        return (this.objectList.getByte(10) & 4) != 0;
     }
 
     @Override
     public boolean isSmall() {
-        return (this.dataWatcher.getByte(10) & 1) != 0;
+        return (this.objectList.getByte(10) & 1) != 0;
     }
 
     @Override
     public boolean isMarker() {
-        return (this.dataWatcher.getByte(10) & 16) != 0;
-    }
-
-    @Override
-    public void handleEntityPacket(@NotNull Packet packet) {
-        if (packet instanceof PacketPlayServerEntityMetadata) {
-            PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) packet;
-            for (SerializableObject object : metadata.getObjects()) {
-                if (object.getValue().isPresent()) {
-                    this.dataWatcher.set(object.getId(), object.getValue().get());
-                }
-            }
-        }
+        return (this.objectList.getByte(10) & 16) != 0;
     }
 }

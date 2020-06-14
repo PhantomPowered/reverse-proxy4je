@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 
 public class CommandConnect extends NonTabCompleteableCommandCallback {
 
-    private ServiceRegistry registry;
+    private final ServiceRegistry registry;
     
     public CommandConnect(ServiceRegistry registry) {
         super("proxy.command.connect", null);
@@ -107,7 +107,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
     }
 
     private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
-        ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player);
+        ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player.getUniqueId());
         if (nextClient == null || nextClient.equals(oldClient)) {
             player.disconnect(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason"));
             return;

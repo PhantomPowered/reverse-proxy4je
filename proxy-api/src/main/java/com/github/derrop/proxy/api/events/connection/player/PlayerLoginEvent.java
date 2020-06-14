@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.Cancelable;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -36,11 +35,8 @@ public class PlayerLoginEvent extends PlayerEvent implements Cancelable {
     private boolean cancel = false;
     private Component cancelReason;
 
-    private ServiceConnection targetConnection;
-
-    public PlayerLoginEvent(@NotNull Player player, @Nullable ServiceConnection targetConnection) {
+    public PlayerLoginEvent(@NotNull Player player) {
         super(player);
-        this.targetConnection = targetConnection;
     }
 
     public void setCancelReason(@Nullable Component cancelReason) {
@@ -50,18 +46,6 @@ public class PlayerLoginEvent extends PlayerEvent implements Cancelable {
     @Nullable
     public Component getCancelReason() {
         return this.cancelReason;
-    }
-
-    public void setTargetConnection(@Nullable ServiceConnection targetConnection) {
-        if (targetConnection != null && targetConnection.getPlayer() != null) {
-            throw new IllegalArgumentException("Cannot connect player to an already used connection");
-        }
-        this.targetConnection = targetConnection;
-    }
-
-    @Nullable
-    public ServiceConnection getTargetConnection() {
-        return this.targetConnection;
     }
 
     @Override

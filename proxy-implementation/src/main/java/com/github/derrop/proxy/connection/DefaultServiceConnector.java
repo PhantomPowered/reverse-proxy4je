@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
@@ -33,16 +33,16 @@ public class DefaultServiceConnector implements ServiceConnector {
     }
 
     @Override
-    public @Nullable BasicServiceConnection findBestConnection(Player player) {
-        if (player != null && this.reconnectProfiles.containsKey(player.getUniqueId())) {
-            ReconnectProfile profile = this.reconnectProfiles.get(player.getUniqueId());
+    public @Nullable BasicServiceConnection findBestConnection(UUID player) {
+        if (player != null && this.reconnectProfiles.containsKey(player)) {
+            ReconnectProfile profile = this.reconnectProfiles.get(player);
             if (System.currentTimeMillis() < profile.getTimeout()) {
                 Optional<BasicServiceConnection> optionalClient = this.onlineClients.stream()
                         .filter(connection -> connection.getPlayer() == null)
                         .filter(connection -> profile.getTargetUniqueId().equals(connection.getUniqueId()))
                         .findFirst();
                 if (optionalClient.isPresent()) {
-                    this.reconnectProfiles.remove(player.getUniqueId());
+                    this.reconnectProfiles.remove(player);
                     return optionalClient.get();
                 }
             }

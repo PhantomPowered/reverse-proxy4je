@@ -39,5 +39,5 @@ public interface PermissionHolder {
 
     void clearPermissions();
 
-    @NotNull @UnmodifiableView Map<String, Boolean> getEffectivePermissions();
+    @NotNull Map<String, Boolean> getEffectivePermissions();
 }
