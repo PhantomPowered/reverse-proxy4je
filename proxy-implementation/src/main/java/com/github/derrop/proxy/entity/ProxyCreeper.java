@@ -24,20 +24,31 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
+import com.github.derrop.proxy.api.entity.Creeper;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyCreeper extends ProxyEntityLiving implements Creeper {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyCreeper(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.CREEPER);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public boolean isPowered() {
+        return this.objectList.getByte(17) > 0;
+    }
+
+    @Override
+    public State getState() {
+        return MathHelper.clampInt(this.objectList.getByte(16), -1, 1) == 1 ? State.FUSED : State.IDLE;
+    }
+
+    @Override
+    public boolean isIgnited() {
+        return this.objectList.getByte(18) > 0;
     }
 }

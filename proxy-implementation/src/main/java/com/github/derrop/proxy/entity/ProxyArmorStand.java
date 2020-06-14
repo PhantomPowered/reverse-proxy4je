@@ -34,7 +34,7 @@ import com.github.derrop.proxy.api.util.EulerAngle;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import org.jetbrains.annotations.NotNull;
 
-public class ProxyArmorStand extends ProxyLivingEntity implements ArmorStand {
+public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
 
     protected ProxyArmorStand(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.ARMOR_STAND);

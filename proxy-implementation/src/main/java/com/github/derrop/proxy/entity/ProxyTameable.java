@@ -24,20 +24,41 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Tameable;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+import java.util.UUID;
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
+public class ProxyTameable extends ProxyAgeable implements Tameable {
+
+    protected ProxyTameable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         super(registry, client, spawnPacket, type);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public boolean isSitting() {
+        return (this.objectList.getByte(16) & 1) != 0;
+    }
+
+    @Override
+    public boolean isTame() {
+        return (this.objectList.getByte(16) & 4) != 0;
+    }
+
+    @Override
+    public boolean hasOwner() {
+        return this.getOwnerUniqueId() != null;
+    }
+
+    @Override
+    public UUID getOwnerUniqueId() {
+        try {
+            return UUID.fromString(this.objectList.getString(17));
+        } catch (Throwable throwable) {
+            return null;
+        }
     }
 }

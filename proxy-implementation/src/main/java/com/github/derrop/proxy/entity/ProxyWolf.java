@@ -24,20 +24,31 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
+import com.github.derrop.proxy.api.entity.EnumColor;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Wolf;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyWolf extends ProxyTameable implements Wolf {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyWolf(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.WOLF);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public boolean isAngry() {
+        return (this.objectList.getByte(16) & 2) != 0;
+    }
+
+    @Override
+    public boolean isBegging() {
+        return this.objectList.getByte(19) == 1;
+    }
+
+    @Override
+    public EnumColor getColor() {
+        return EnumColor.getByInvIndex(this.objectList.getByte(20) & 15);
     }
 }

@@ -24,9 +24,7 @@
  */
 package com.github.derrop.proxy.api.entity;
 
-import java.util.UUID;
-
-public interface Horse extends Ageable {
+public interface Horse extends Ageable, Ownable {
 
     boolean isTame();
 
@@ -47,10 +45,6 @@ public interface Horse extends Ageable {
     Color getColor();
 
     Style getStyle();
-
-    boolean hasOwner();
-
-    UUID getOwnerUniqueId();
 
     Armor getArmor();
 

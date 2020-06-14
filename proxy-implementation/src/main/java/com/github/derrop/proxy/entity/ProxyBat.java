@@ -30,7 +30,7 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyBat extends ProxyLivingEntity implements Bat {
+public class ProxyBat extends ProxyEntityLiving implements Bat {
 
     protected ProxyBat(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.BAT);

@@ -24,20 +24,20 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
+import com.github.derrop.proxy.api.entity.Blaze;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyBlaze extends ProxyEntityLiving implements Blaze {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyBlaze(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.BLAZE);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public boolean isBurning() {
+        return (this.objectList.getByte(16) & 1) != 0;
     }
 }

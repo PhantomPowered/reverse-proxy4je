@@ -24,20 +24,21 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Villager;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyVillager extends ProxyAgeable implements Villager {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyVillager(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.VILLAGER);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public Profession getProfession() {
+        return Profession.values()[MathHelper.clampInt(this.objectList.getInt(16) % 5, 0, 4)];
     }
 }

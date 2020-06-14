@@ -24,20 +24,20 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Ocelot;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyOcelot extends ProxyTameable implements Ocelot {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyOcelot(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.OZELOT);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public Type getCatType() {
+        return Type.values()[this.objectList.getByte(18)];
     }
 }
