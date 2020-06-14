@@ -13,22 +13,39 @@ public class TeamRegistry extends MessageRegistry {
     public TeamRegistry() {
         super();
 
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_BLACK, "Schwarz", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_BLUE, "Blau", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_TURQUOISE, "Türkis", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_DIAMOND, "Diamant", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_DARK_BLUE, "D-Blau", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_DARK_GRAY, "D-Grau", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_DARK_GREEN, "D-Grün", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_DARK_RED, "D-Rot", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_GRAY, "Grau", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_GREEN, "Grün", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_ORANGE, "Orange", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_PINK, "Pink", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_PURPLE, "Violett", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_RED, "Rot", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_WHITE, "Weiß", () -> null, GommeGameMode.values());
-        super.registerMessage(Language.GERMAN, MessageType.TEAM_YELLOW, "Gelb", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_BLACK, "Schwarz", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_BLUE, "Blau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_TURQUOISE, "Türkis", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_DIAMOND, "Diamant", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_DARK_BLUE, "D-Blau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_DARK_GRAY, "D-Grau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_DARK_GREEN, "D-Grün", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_DARK_RED, "D-Rot", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_GRAY, "Grau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_GREEN, "Grün", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_ORANGE, "Orange", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_PINK, "Pink", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_PURPLE, "Violett", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_RED, "Rot", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_WHITE, "Weiß", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_GERMANY, MessageType.TEAM_YELLOW, "Gelb", () -> null, GommeGameMode.values());
+
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_BLACK, "Schworz", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_BLUE, "Blau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_TURQUOISE, "Türkis", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_DIAMOND, "Diamant", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_DARK_BLUE, "D-Blau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_DARK_GRAY, "D-Grau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_DARK_GREEN, "D-Grün", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_DARK_RED, "D-Rot", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_GRAY, "Grau", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_GREEN, "Grün", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_ORANGE, "Orange", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_PINK, "Pink", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_PURPLE, "Violett", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_RED, "Rot", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_WHITE, "Weiß", () -> null, GommeGameMode.values());
+        super.registerMessage(Language.GERMAN_AUSTRIA, MessageType.TEAM_YELLOW, "Gelb", () -> null, GommeGameMode.values());
     }
 
     public MessageType getTeam(Language language, GommeGameMode gameMode, String name) {

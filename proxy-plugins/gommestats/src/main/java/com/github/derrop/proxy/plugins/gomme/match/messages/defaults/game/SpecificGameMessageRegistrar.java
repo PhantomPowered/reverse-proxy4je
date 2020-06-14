@@ -25,17 +25,17 @@ public abstract class SpecificGameMessageRegistrar {
 
     public abstract void init();
 
-    protected void registerMessage(Language language, MessageType type, String message, Supplier<MatchEvent> matchEventMapper) {
+    public void registerMessage(Language language, MessageType type, String message, Supplier<MatchEvent> matchEventMapper) {
         this.registry.registerMessage(language, type, message, matchEventMapper, this.gameMode);
     }
 
-    protected void registerRegExMessage(Language language, MessageType type, String regex,
+    public void registerRegExMessage(Language language, MessageType type, String regex,
                                      BiFunction<String, Matcher, Map<String, String>> variablesMapper,
                                      Function<Map<String, String>, MatchEvent> matchEventMapper) {
         this.registry.registerRegExMessage(language, type, regex, variablesMapper, matchEventMapper, this.gameMode);
     }
 
-    protected MessageType getTeam(Language language, String name) {
+    public MessageType getTeam(Language language, String name) {
         return this.teamRegistry.getTeam(language, this.gameMode, name);
     }
 

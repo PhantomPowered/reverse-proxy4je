@@ -14,8 +14,10 @@ public class GameMessageRegistry extends MessageRegistry {
     public GameMessageRegistry(TeamRegistry teamRegistry) {
         super();
 
+        String packageName = super.getClass().getPackage().getName() + ".";
+
         Collection<SpecificGameMessageRegistrar> registrars = new ArrayList<>();
-        registrars.add(new BedWarsGameMessageRegistrar(this, teamRegistry));
+        registrars.add(new ReflectiveGameMessageRegistrar(packageName + "bedwars", GommeGameMode.BED_WARS, this, teamRegistry));
 
         for (SpecificGameMessageRegistrar registrar : registrars) {
             registrar.init();

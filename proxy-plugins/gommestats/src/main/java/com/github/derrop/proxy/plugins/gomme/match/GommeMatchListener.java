@@ -198,8 +198,7 @@ public class GommeMatchListener {
 
         String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
 
-        // TODO Language should be dynamic
-        this.matchManager.getMessageRegistry().createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(match::callEvent);
+        this.matchManager.getMessageRegistry().createMatchEvent(match.getSelectedLanguage(), match.getGameMode(), message).ifPresent(match::callEvent);
     }
 
 }

@@ -27,32 +27,20 @@ package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
-public class PlayerLeaveInGameEvent extends MatchEvent {
+public class PlayerLeaveInGameSingleEvent extends MatchEvent {
 
     private final String name;
-    private final MessageType team;
-    private final int teamRemainingPlayers;
 
-    public PlayerLeaveInGameEvent(String name, MessageType team, int teamRemainingPlayers) {
+    public PlayerLeaveInGameSingleEvent(String name) {
         this.name = name;
-        this.team = team;
-        this.teamRemainingPlayers = teamRemainingPlayers;
     }
 
     @Override
     public String toPlainText() {
-        return "Player " + this.name + " left in the in game phase (previous team: " + team + "; remaining players: " + teamRemainingPlayers + ")";
+        return "Player " + this.name + " left in the in game phase";
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public MessageType getTeam() {
-        return this.team;
-    }
-
-    public int getTeamRemainingPlayers() {
-        return this.teamRemainingPlayers;
     }
 }

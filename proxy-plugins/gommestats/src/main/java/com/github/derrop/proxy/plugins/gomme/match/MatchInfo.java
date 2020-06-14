@@ -67,6 +67,8 @@ public class MatchInfo {
 
     private final transient Map<String, Object> properties = new ConcurrentHashMap<>();
 
+    private Language selectedLanguage = Language.GERMAN_GERMANY; // TODO should be dynamic
+
     public MatchInfo(MatchManager matchManager, ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
         this.matchManager = matchManager;
         this.invoker = invoker;
@@ -89,8 +91,7 @@ public class MatchInfo {
                 }
 
                 String prefix = ChatColor.stripColor(scoreTeam.getPrefix()).split(" ")[0];
-                // TODO language should be dynamic
-                MessageType type = this.matchManager.getTeamRegistry().getTeam(Language.GERMAN, this.gameMode, prefix);
+                MessageType type = this.matchManager.getTeamRegistry().getTeam(this.selectedLanguage, this.gameMode, prefix);
                 if (type == null) {
                     continue;
                 }
@@ -129,6 +130,10 @@ public class MatchInfo {
         }
 
         this.events.add(event);
+    }
+
+    public Language getSelectedLanguage() {
+        return this.selectedLanguage;
     }
 
     public ServiceConnection getInvoker() {

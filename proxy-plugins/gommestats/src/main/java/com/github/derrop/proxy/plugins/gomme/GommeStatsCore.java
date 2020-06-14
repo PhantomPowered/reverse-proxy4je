@@ -31,6 +31,7 @@ import com.github.derrop.proxy.plugins.gomme.player.clan.ClanInfoProvider;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeNickDetector;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 
+// TODO SheepTimer: DisplayName or if that doesn't work properly ArmorStand above the sheep
 public class GommeStatsCore {
 
     private final MatchManager matchManager;

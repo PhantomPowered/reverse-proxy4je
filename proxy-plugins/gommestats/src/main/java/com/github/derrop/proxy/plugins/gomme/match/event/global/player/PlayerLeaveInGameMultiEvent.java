@@ -22,32 +22,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.match.event.bedwars;
+package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
-public class BedDestroyEvent extends MatchEvent {
+public class PlayerLeaveInGameMultiEvent extends MatchEvent {
 
-    private final String destroyer;
+    private final String name;
     private final MessageType team;
+    private final int teamRemainingPlayers;
 
-    public BedDestroyEvent(String destroyer, MessageType team) {
-        this.destroyer = destroyer;
+    public PlayerLeaveInGameMultiEvent(String name, MessageType team, int teamRemainingPlayers) {
+        this.name = name;
         this.team = team;
-        highlight();
+        this.teamRemainingPlayers = teamRemainingPlayers;
     }
 
     @Override
     public String toPlainText() {
-        return "The bed of the team " + this.team + " was destroyed by " + this.destroyer;
+        return "Player " + this.name + " left in the in game phase (previous team: " + team + "; remaining players: " + teamRemainingPlayers + ")";
     }
 
-    public String getDestroyer() {
-        return this.destroyer;
+    public String getName() {
+        return this.name;
     }
 
     public MessageType getTeam() {
         return this.team;
+    }
+
+    public int getTeamRemainingPlayers() {
+        return this.teamRemainingPlayers;
     }
 }
