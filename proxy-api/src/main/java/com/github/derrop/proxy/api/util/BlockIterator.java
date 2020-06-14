@@ -61,7 +61,7 @@ public class BlockIterator implements Iterator<Location> {
 
         Vector startClone = start.clone();
 
-        startClone.setY(startClone.getBlockY() + yOffset);
+        startClone.setY(startClone.getY() + yOffset);
 
         currentDistance = 0;
 
@@ -73,7 +73,7 @@ public class BlockIterator implements Iterator<Location> {
         double secondPosition = 0;
         double thirdPosition = 0;
 
-        Location startBlock = new Location(MathHelper.floor_double(startClone.getBlockX()), MathHelper.floor_double(startClone.getBlockY()), MathHelper.floor_double(startClone.getBlockZ()));
+        Location startBlock = new Location(startClone.getX(), startClone.getY(), startClone.getZ());
 
         if (getXLength(direction) > mainDirection) {
             mainFace = getXFace(direction);
@@ -137,9 +137,7 @@ public class BlockIterator implements Iterator<Location> {
             thirdError = -thirdStep + 1;
         }
 
-        Location lastBlock;
-
-        lastBlock = startBlock.offset(mainFace.getOpposite());
+        Location lastBlock = startBlock.offset(mainFace.getOpposite());
 
         if (secondError < 0) {
             secondError += gridSize;
@@ -180,31 +178,31 @@ public class BlockIterator implements Iterator<Location> {
     }
 
     private boolean blockEquals(@NotNull Location a, @NotNull Location b) {
-        return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
+        return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ();
     }
 
     private Facing getXFace(@NotNull Vector direction) {
-        return ((direction.getBlockX() > 0) ? Facing.EAST : Facing.WEST);
+        return ((direction.getX() > 0) ? Facing.EAST : Facing.WEST);
     }
 
     private Facing getYFace(@NotNull Vector direction) {
-        return ((direction.getBlockY() > 0) ? Facing.UP : Facing.DOWN);
+        return ((direction.getY() > 0) ? Facing.UP : Facing.DOWN);
     }
 
     private Facing getZFace(@NotNull Vector direction) {
-        return ((direction.getBlockZ() > 0) ? Facing.SOUTH : Facing.NORTH);
+        return ((direction.getZ() > 0) ? Facing.SOUTH : Facing.NORTH);
     }
 
     private double getXLength(@NotNull Vector direction) {
-        return Math.abs(direction.getBlockX());
+        return Math.abs(direction.getX());
     }
 
     private double getYLength(@NotNull Vector direction) {
-        return Math.abs(direction.getBlockY());
+        return Math.abs(direction.getY());
     }
 
     private double getZLength(@NotNull Vector direction) {
-        return Math.abs(direction.getBlockZ());
+        return Math.abs(direction.getZ());
     }
 
     private double getPosition(double direction, double position, int blockPosition) {
@@ -212,15 +210,15 @@ public class BlockIterator implements Iterator<Location> {
     }
 
     private double getXPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull Location block) {
-        return getPosition(direction.getBlockX(), position.getBlockX(), block.getBlockX());
+        return getPosition(direction.getX(), position.getX(), block.getBlockX());
     }
 
     private double getYPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull Location block) {
-        return getPosition(direction.getBlockY(), position.getBlockY(), block.getBlockY());
+        return getPosition(direction.getY(), position.getY(), block.getBlockY());
     }
 
     private double getZPosition(@NotNull Vector direction, @NotNull Vector position, @NotNull Location block) {
-        return getPosition(direction.getBlockZ(), position.getBlockZ(), block.getBlockZ());
+        return getPosition(direction.getZ(), position.getZ(), block.getBlockZ());
     }
 
     public BlockAccess getBlockAccess() {

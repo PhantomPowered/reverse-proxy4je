@@ -140,8 +140,10 @@ public interface ServiceConnection extends Connection, AutoCloseable, Entity {
 
     boolean isSprinting();
 
-    Location getTargetBlock(Set<Material> transparent, int range);
+    @Nullable
+    Location getTargetBlock(@Nullable Set<Material> transparent, int range);
 
+    @Nullable
     Location getTargetBlock(int range);
 
 }
