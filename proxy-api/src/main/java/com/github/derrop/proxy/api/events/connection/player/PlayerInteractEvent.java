@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
 
     private boolean cancel;
-    private Action action;
+    private final Action action;
 
     public PlayerInteractEvent(@NotNull Player player, @NotNull PlayerInteractEvent.Action action) {
         super(player);
@@ -41,10 +41,6 @@ public class PlayerInteractEvent extends PlayerEvent implements Cancelable {
     @NotNull
     public PlayerInteractEvent.Action getAction() {
         return this.action;
-    }
-
-    public void setAction(@NotNull PlayerInteractEvent.Action action) {
-        this.action = action;
     }
 
     @Override

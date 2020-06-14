@@ -104,12 +104,6 @@ public class ClientPacketHandler {
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
-
-        if (event.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-            if (player.getConnectedClient() != null) {
-                //player.getConnectedClient().sendPacket(new PacketPlayClientUseEntity()); TODO what should we send when we rightclick into the air?
-            }
-        }
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.USE_ENTITY, directions = ProtocolDirection.TO_SERVER)
@@ -147,7 +141,7 @@ public class ClientPacketHandler {
         }
     }
 
-    private boolean isTargettingBlock(ServiceConnection connection) {
+    private boolean isTargetingBlock(ServiceConnection connection) {
         int distance = connection.getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? Constants.CREATIVE_PLACE_DISTANCE : Constants.SURVIVAL_PLACE_DISTANCE;
         try {
             Location targetedBlock = connection.getTargetBlock(distance);
@@ -161,7 +155,7 @@ public class ClientPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ARM_ANIMATION, directions = ProtocolDirection.TO_SERVER)
     public void handleArmAnimation(DefaultPlayer player, PacketPlayClientArmAnimation packet) {
-        if (player.getConnectedClient() == null || this.isTargettingBlock(player.getConnectedClient())) {
+        if (player.getConnectedClient() == null || this.isTargetingBlock(player.getConnectedClient())) {
             // Left click block is sent in the Digging packet
             return;
         }
@@ -171,10 +165,6 @@ public class ClientPacketHandler {
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
-
-        if (event.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_AIR) {
-            //player.getConnectedClient().sendPacket(new PacketPlayClientUseEntity()); TODO what should we send when we rightclick into the air?
-        }
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
@@ -183,7 +173,7 @@ public class ClientPacketHandler {
             return;
         }
         if (packet.getPlacedBlockDirection() == 255) {
-            boolean block = this.isTargettingBlock(player.getConnectedClient());
+            boolean block = this.isTargetingBlock(player.getConnectedClient());
             PlayerInteractEvent event = new PlayerInteractEvent(player, block ? PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK : PlayerInteractEvent.Action.RIGHT_CLICK_AIR);
             player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
             if (event.isCancelled()) {
