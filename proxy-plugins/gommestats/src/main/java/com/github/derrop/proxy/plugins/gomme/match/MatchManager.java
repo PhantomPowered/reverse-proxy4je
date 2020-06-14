@@ -33,6 +33,8 @@ import com.github.derrop.proxy.api.util.Side;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.TeamRegistry;
+import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game.GameMessageRegistry;
 import com.google.gson.JsonObject;
 
 import java.util.Arrays;
@@ -49,14 +51,26 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     private static final String PROPERTY_KEY = "GommePlugin-CurrentMatch";
 
     private final GommeStatsCore core;
+    private final TeamRegistry teamRegistry;
+    private final GameMessageRegistry messageRegistry;
 
     public MatchManager(GommeStatsCore core) {
         super(core.getRegistry(), "gomme_matches", JsonObject.class);
         this.core = core;
+        this.teamRegistry = new TeamRegistry();
+        this.messageRegistry = new GameMessageRegistry(this.teamRegistry);
     }
 
     public GommeStatsCore getCore() {
         return this.core;
+    }
+
+    public TeamRegistry getTeamRegistry() {
+        return this.teamRegistry;
+    }
+
+    public GameMessageRegistry getMessageRegistry() {
+        return this.messageRegistry;
     }
 
     public Stream<MatchInfo> getOpenMatches() {

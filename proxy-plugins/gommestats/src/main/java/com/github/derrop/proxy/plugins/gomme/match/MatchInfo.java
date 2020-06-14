@@ -27,15 +27,14 @@ package com.github.derrop.proxy.plugins.gomme.match;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.util.player.PlayerId;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
+import com.github.derrop.proxy.api.util.player.PlayerId;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchBeginEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndFinishedEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -91,7 +90,7 @@ public class MatchInfo {
 
                 String prefix = ChatColor.stripColor(scoreTeam.getPrefix()).split(" ")[0];
                 // TODO language should be dynamic
-                MessageType type = MessageRegistry.getTeam(Language.GERMAN, this.gameMode, prefix);
+                MessageType type = this.matchManager.getTeamRegistry().getTeam(Language.GERMAN, this.gameMode, prefix);
                 if (type == null) {
                     continue;
                 }

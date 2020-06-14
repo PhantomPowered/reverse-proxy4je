@@ -44,13 +44,11 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
-import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
-import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
-import com.github.derrop.proxy.plugins.gomme.match.event.global.match.*;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndDisconnectedEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndLeftEvent;
 import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageRegistry;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.netty.buffer.ByteBuf;
@@ -193,8 +191,7 @@ public class GommeMatchListener {
         String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
 
         // TODO Language should be dynamic
-        MessageRegistry.createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(match::callEvent);
-
+        this.matchManager.getMessageRegistry().createMatchEvent(Language.GERMAN, match.getGameMode(), message).ifPresent(match::callEvent);
     }
 
 }
