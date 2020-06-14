@@ -267,8 +267,12 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.getProviderUnchecked(EventManager.class).registerListener(null, new ProxyBrandChangeListener());
 
-        System.out.println("Reading accounts...");
-        this.accountReader.readAccounts(this.serviceRegistry, new AccountBiConsumer(this));
+        if (!Boolean.getBoolean("proxy.do-not-read.accounts")) {
+            System.out.println("Reading accounts...");
+            this.accountReader.readAccounts(this.serviceRegistry, new AccountBiConsumer(this));
+        } else {
+            System.out.println("Reading of accounts is disabled");
+        }
 
         System.out.println("Starting entity tick...");
         EntityTickHandler.startTick(this.serviceRegistry);
