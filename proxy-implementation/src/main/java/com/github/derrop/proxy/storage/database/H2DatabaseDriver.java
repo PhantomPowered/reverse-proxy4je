@@ -47,7 +47,7 @@ public class H2DatabaseDriver implements DatabaseDriver {
     public boolean connect(@NotNull DatabaseConfig config) {
         try {
             Driver.load();
-            this.connection = DriverManager.getConnection("jdbc:h2:" + config.getConnectionEndpoint() + "/" + config.getDatabaseName());
+            this.connection = DriverManager.getConnection("jdbc:h2:" + config.getConnectionEndpoint() + "/" + config.getDatabaseName() + ";DB_CLOSE_ON_EXIT=FALSE");
 
             return true;
         } catch (final SQLException ex) {

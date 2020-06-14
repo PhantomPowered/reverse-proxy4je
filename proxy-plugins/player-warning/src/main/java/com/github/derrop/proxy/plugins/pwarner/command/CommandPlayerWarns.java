@@ -90,11 +90,11 @@ public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
             if (data.addEquipmentSlot(new WarnedEquipmentSlot(slot, material, color))) {
                 sender.sendMessage("You will be always warned when a player has §e"
                         + (color != null ? color : "") + material
-                        + " §7in their §e" + slot.getFormattedName());
+                        + "§7 in their §e" + slot.getFormattedName());
             } else {
                 sender.sendMessage("You will no more be warned when a player has §e"
                         + (color != null ? color : "") + material
-                        + " §7in their §e" + slot.getFormattedName());
+                        + "§7 in their §e" + slot.getFormattedName());
             }
 
             this.database.update(data);

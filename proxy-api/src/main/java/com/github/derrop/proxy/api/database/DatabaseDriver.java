@@ -36,7 +36,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface DatabaseDriver {
+public interface DatabaseDriver extends AutoCloseable {
 
     /**
      * Connects to the database

@@ -205,6 +205,8 @@ public class MCProxy extends Proxy {
                     exception.printStackTrace();
                 }
             }
+
+            this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).close();
         }
     }
 

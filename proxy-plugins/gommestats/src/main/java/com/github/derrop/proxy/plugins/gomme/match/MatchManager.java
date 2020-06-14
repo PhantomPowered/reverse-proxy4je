@@ -115,7 +115,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
                 String minutesString = minutes < 10 ? "0" + minutes : String.valueOf(minutes);
                 String secondsString = seconds < 10 ? "0" + seconds : String.valueOf(seconds);
 
-                return " §7┃ Elapsed time: §e" + minutesString + ":" + secondsString;
+                return " §8× §7Time §8» §e" + minutesString + ":" + secondsString;
             });
         }
     }
