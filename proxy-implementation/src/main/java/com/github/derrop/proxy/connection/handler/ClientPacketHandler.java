@@ -11,11 +11,17 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.GameMode;
 import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
+import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.event.Event;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.EventPriority;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.*;
+import com.github.derrop.proxy.api.events.connection.player.interact.PlayerAttackEntityEvent;
+import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInteractAtEntityEvent;
+import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInteractEntityEvent;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
@@ -93,13 +99,13 @@ public class ClientPacketHandler {
                 packet.getAction() != PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK) {
             return;
         }
-        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.LEFT_CLICK);
+        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.LEFT_CLICK_BLOCK);
         player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
-        if (event.getType() != PlayerInteractEvent.Type.LEFT_CLICK) {
+        if (event.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
             if (player.getConnectedClient() != null) {
                 //player.getConnectedClient().sendPacket(new PacketPlayClientUseEntity()); TODO what should we send when we rightclick into the air?
             }
@@ -108,15 +114,37 @@ public class ClientPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.USE_ENTITY, directions = ProtocolDirection.TO_SERVER)
     public void handleUseEntity(DefaultPlayer player, PacketPlayClientUseEntity packet) {
-        PlayerInteractEvent.Type type = packet.getAction() == PacketPlayClientUseEntity.Action.ATTACK ? PlayerInteractEvent.Type.LEFT_CLICK : PlayerInteractEvent.Type.RIGHT_CLICK;
-        PlayerInteractEvent event = new PlayerInteractEvent(player, type);
-        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
-        if (event.isCancelled()) {
-            throw CancelProceedException.INSTANCE;
+        if (player.getConnectedClient() == null) {
+            return;
+        }
+        Entity entity = player.getConnectedClient().getWorldDataProvider().getEntityInWorld(packet.getEntityId());
+
+        Event event;
+
+        switch (packet.getAction()) {
+            case ATTACK: {
+                event = new PlayerAttackEntityEvent(player, entity);
+            }
+            break;
+
+            case INTERACT: {
+                event = new PlayerInteractEntityEvent(player, entity);
+            }
+            break;
+
+            case INTERACT_AT: {
+                event = new PlayerInteractAtEntityEvent(player, entity, packet.getHitVector());
+            }
+            break;
+
+            default:
+                throw new IllegalStateException("Received unknown action " + packet.getAction());
         }
 
-        if (event.getType() != type) {
-            packet.setAction(type == PlayerInteractEvent.Type.LEFT_CLICK ? PacketPlayClientUseEntity.Action.ATTACK : PacketPlayClientUseEntity.Action.INTERACT);
+        System.out.println(event.getClass().getSimpleName());
+        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        if (((Cancelable) event).isCancelled()) {
+            throw CancelProceedException.INSTANCE;
         }
     }
 
@@ -126,19 +154,23 @@ public class ClientPacketHandler {
             return;
         }
         int distance = player.getConnectedClient().getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? Constants.CREATIVE_PLACE_DISTANCE : Constants.SURVIVAL_PLACE_DISTANCE;
-        Location targetedBlock = player.getConnectedClient().getTargetBlock(distance);
-        if (targetedBlock != null) {
-            // Left click block is sent in the Digging packet
+        try {
+            Location targetedBlock = player.getConnectedClient().getTargetBlock(distance);
+            if (targetedBlock != null) {
+                // Left click block is sent in the Digging packet
+                return;
+            }
+        } catch (IllegalStateException exception) {
             return;
         }
 
-        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.LEFT_CLICK);
+        PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.LEFT_CLICK_AIR);
         player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
-        if (event.getType() != PlayerInteractEvent.Type.LEFT_CLICK) {
+        if (event.getAction() != PlayerInteractEvent.Action.LEFT_CLICK_AIR) {
             //player.getConnectedClient().sendPacket(new PacketPlayClientUseEntity()); TODO what should we send when we rightclick into the air?
         }
     }
@@ -146,7 +178,7 @@ public class ClientPacketHandler {
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_PLACE, directions = ProtocolDirection.TO_SERVER)
     public void handleBlockPlace(DefaultPlayer player, PacketPlayClientBlockPlace packet) {
         if (packet.getPlacedBlockDirection() == 255) {
-            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Type.RIGHT_CLICK);
+            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
             player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
             if (event.isCancelled()) {
                 throw CancelProceedException.INSTANCE;
