@@ -22,22 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity;
+package com.github.derrop.proxy.api.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
-import com.github.derrop.proxy.api.entity.LivingEntityType;
-import com.github.derrop.proxy.api.network.util.PositionedPacket;
-import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
+public interface Creeper extends EntityLiving {
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+    boolean isPowered();
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
-    }
+    State getState();
 
-    @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    boolean isIgnited();
+
+    enum State {
+
+        FUSED,
+        IDLE
     }
 }

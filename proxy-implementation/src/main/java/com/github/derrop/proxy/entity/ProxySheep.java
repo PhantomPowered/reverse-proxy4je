@@ -24,20 +24,26 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
+import com.github.derrop.proxy.api.entity.EnumColor;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Sheep;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxySheep extends ProxyAgeable implements Sheep {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxySheep(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.SHEEP);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public EnumColor getColor() {
+        return EnumColor.getById(this.objectList.getByte(16) & 15);
+    }
+
+    @Override
+    public boolean isSheared() {
+        return (this.objectList.getByte(16) & 16) != 0;
     }
 }

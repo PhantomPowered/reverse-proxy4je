@@ -80,7 +80,51 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             return new ProxyHorse(registry, client, spawnPacket);
         }
 
-        return new ProxyLivingEntity(registry, client, spawnPacket, entityType);
+        if (entityType == LivingEntityType.OZELOT) {
+            return new ProxyOcelot(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.WOLF) {
+            return new ProxyWolf(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.PIG) {
+            return new ProxyPig(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.RABBIT) {
+            return new ProxyRabbit(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.SHEEP) {
+            return new ProxySheep(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.VILLAGER) {
+            return new ProxyVillager(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.ENDER_MAN) {
+            return new ProxyEnderman(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.ZOMBIE || entityType == LivingEntityType.PIG_ZOMBIE) {
+            return new ProxyZombie(registry, client, spawnPacket, entityType);
+        }
+
+        if (entityType == LivingEntityType.BLAZE) {
+            return new ProxyBlaze(registry, client, spawnPacket);
+        }
+
+        if (entityType == LivingEntityType.SPIDER || entityType == LivingEntityType.CAVE_SPIDER) {
+            return new ProxySpider(registry, client, spawnPacket, entityType);
+        }
+
+        if (entityType == LivingEntityType.CREEPER) {
+            return new ProxyCreeper(registry, client, spawnPacket);
+        }
+
+        return new ProxyEntityLiving(registry, client, spawnPacket, entityType);
     }
 
     public static ProxyEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type, int subType) {

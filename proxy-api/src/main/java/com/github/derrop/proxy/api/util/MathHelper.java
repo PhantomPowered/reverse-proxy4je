@@ -131,8 +131,8 @@ public class MathHelper {
      * Returns the value of the first parameter, clamped to be within the lower and upper limits given by the second and
      * third parameters.
      */
-    public static int clamp_int(int num, int min, int max) {
-        return num < min ? min : (num > max ? max : num);
+    public static int clampInt(int num, int min, int max) {
+        return num < min ? min : (Math.min(num, max));
     }
 
     /**
@@ -508,9 +508,9 @@ public class MathHelper {
                 throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + p_181758_0_ + ", " + p_181758_1_ + ", " + p_181758_2_);
         }
 
-        int j = clamp_int((int) (f4 * 255.0F), 0, 255);
-        int k = clamp_int((int) (f5 * 255.0F), 0, 255);
-        int l = clamp_int((int) (f6 * 255.0F), 0, 255);
+        int j = clampInt((int) (f4 * 255.0F), 0, 255);
+        int k = clampInt((int) (f5 * 255.0F), 0, 255);
+        int l = clampInt((int) (f6 * 255.0F), 0, 255);
         return j << 16 | k << 8 | l;
     }
 

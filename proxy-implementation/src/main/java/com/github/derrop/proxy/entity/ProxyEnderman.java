@@ -24,20 +24,26 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
+import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.entity.Enderman;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyEnderman extends ProxyEntityLiving implements Enderman {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type);
+    protected ProxyEnderman(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, LivingEntityType.ENDER_MAN);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public Material getCarriedBlock() {
+        return Material.getMaterial(this.objectList.getShort(16) & '\uffff');
+    }
+
+    @Override
+    public boolean isScreaming() {
+        return this.objectList.getByte(18) > 0;
     }
 }

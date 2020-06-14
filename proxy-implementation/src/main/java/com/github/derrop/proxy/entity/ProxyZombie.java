@@ -24,20 +24,30 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Ageable;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Zombie;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyZombie extends ProxyEntityLiving implements Zombie {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
+    public ProxyZombie(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         super(registry, client, spawnPacket, type);
     }
 
     @Override
-    public byte getAge() {
-        return this.objectList.getByte(12);
+    public boolean isChild() {
+        return this.objectList.getByte(12) > 0;
+    }
+
+    @Override
+    public boolean isVillager() {
+        return this.objectList.getByte(13) > 0;
+    }
+
+    @Override
+    public boolean isConverting() {
+        return this.objectList.getByte(14) > 0;
     }
 }

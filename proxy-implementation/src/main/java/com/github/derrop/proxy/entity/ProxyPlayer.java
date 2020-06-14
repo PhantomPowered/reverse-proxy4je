@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class ProxyPlayer extends ProxyLivingEntity implements EntityPlayer {
+public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
 
     private final UUID uniqueId;
     private final PlayerInfoCache infoCache;
