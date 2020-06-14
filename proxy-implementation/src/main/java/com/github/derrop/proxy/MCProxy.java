@@ -36,6 +36,7 @@ import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.connection.Whitelist;
 import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.event.EventManager;
@@ -62,6 +63,7 @@ import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.player.DefaultPlayerRepository;
 import com.github.derrop.proxy.connection.player.title.BasicTitle;
+import com.github.derrop.proxy.connection.whitelist.DefaultWhitelist;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
 import com.github.derrop.proxy.network.SimpleChannelInitializer;
@@ -257,6 +259,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));
         this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
         this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdRepository(this.serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, Whitelist.class, new DefaultWhitelist(this.serviceRegistry), false);
 
         System.out.println("Loading plugins...");
         this.serviceRegistry.getProviderUnchecked(PluginManager.class).detectPlugins();
@@ -304,7 +307,8 @@ public class MCProxy extends Proxy {
         commandMap.registerCommand(null, new CommandPermissions(this.serviceRegistry), "perms");
         commandMap.registerCommand(null, new CommandFind(), "find");
         commandMap.registerCommand(null, new CommandReplace(), "replace");
-        commandMap.registerCommand(null, new CommandDebug(serviceRegistry), "debug");
+        commandMap.registerCommand(null, new CommandDebug(this.serviceRegistry), "debug");
+        commandMap.registerCommand(null, new CommandWhitelist(this.serviceRegistry), "whitelist");
 
         commandMap.registerCommand(null, new CommandAdf(), "adf");
 

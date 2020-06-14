@@ -4,9 +4,9 @@ import java.util.UUID;
 
 public class PlayerId {
 
-    private UUID uniqueId;
-    private String name;
-    private long timestamp;
+    private final UUID uniqueId;
+    private final String name;
+    private final long timestamp;
 
     public PlayerId(UUID uniqueId, String name) {
         this(uniqueId, name, System.currentTimeMillis());
@@ -28,5 +28,10 @@ public class PlayerId {
 
     public long getTimestamp() {
         return this.timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return this.uniqueId + "#" + this.name;
     }
 }
