@@ -76,6 +76,12 @@ public class ServerPacketHandler {
         packet.setMessage(GsonComponentSerializer.INSTANCE.serialize(TextComponent.of(original)));
     }
 
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN, directions = ProtocolDirection.TO_CLIENT)
+    public void handleRespawn(ConnectedProxyClient client, PacketPlayServerRespawn packet) {
+        client.getConnection().setSneaking(false);
+        client.getConnection().setSprinting(false);
+    }
+
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_TELEPORT, directions = ProtocolDirection.TO_CLIENT)
     public void handleEntityTeleport(ConnectedProxyClient client, PacketPlayServerEntityTeleport teleport) {
         Location location = teleport.getLocation();
