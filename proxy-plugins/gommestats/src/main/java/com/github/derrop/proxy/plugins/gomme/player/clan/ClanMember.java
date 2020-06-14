@@ -24,34 +24,50 @@
  */
 package com.github.derrop.proxy.plugins.gomme.player.clan;
 
-import java.util.UUID;
+import com.github.derrop.proxy.api.util.player.PlayerId;
 
 public class ClanMember {
 
-    private UUID uniqueId;
-    private String name;
+    private PlayerId playerId;
     private Type memberType;
+    private Rank rank;
 
-    public ClanMember(UUID uniqueId, String name, Type memberType) {
-        this.uniqueId = uniqueId;
-        this.name = name;
+    public ClanMember(PlayerId playerId, Type memberType, Rank rank) {
+        this.playerId = playerId;
         this.memberType = memberType;
+        this.rank = rank;
     }
 
-    public UUID getUniqueId() {
-        return uniqueId;
+    public PlayerId getPlayerId() {
+        return this.playerId;
     }
 
-    public String getName() {
-        return name;
+    public void setPlayerId(PlayerId playerId) {
+        this.playerId = playerId;
     }
 
     public Type getMemberType() {
         return memberType;
     }
 
+    public void setMemberType(Type memberType) {
+        this.memberType = memberType;
+    }
+
+    public Rank getRank() {
+        return this.rank;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
     public static enum Type {
         LEADER, MODERATOR, MEMBER
+    }
+
+    public static enum Rank {
+        ADMIN, TEAM, SUPREMIUM, PREMIUM, PLAYER
     }
 
 }

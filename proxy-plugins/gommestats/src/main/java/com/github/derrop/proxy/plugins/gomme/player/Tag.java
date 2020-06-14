@@ -24,15 +24,29 @@
  */
 package com.github.derrop.proxy.plugins.gomme.player;
 
+import com.github.derrop.proxy.api.util.player.PlayerId;
+
 public class Tag {
 
     private final String name;
+    private final long timestamp;
+    private final PlayerId creator;
 
-    public Tag(String name) {
+    public Tag(String name, long timestamp, PlayerId creator) {
         this.name = name;
+        this.timestamp = timestamp;
+        this.creator = creator;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public PlayerId getCreator() {
+        return this.creator;
     }
 }

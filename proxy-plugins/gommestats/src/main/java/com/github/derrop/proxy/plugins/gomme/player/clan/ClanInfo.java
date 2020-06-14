@@ -32,10 +32,10 @@ public class ClanInfo {
 
     private String name;
     private String shortcut;
-    private Collection<Tag> tags;
-    private ClanMember[] members;
+    private final Collection<Tag> tags;
+    private final Collection<ClanMember> members;
 
-    public ClanInfo(String name, String shortcut, Collection<Tag> tags, ClanMember[] members) {
+    public ClanInfo(String name, String shortcut, Collection<Tag> tags, Collection<ClanMember> members) {
         this.name = name;
         this.shortcut = shortcut;
         this.tags = tags;
@@ -43,18 +43,26 @@ public class ClanInfo {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getShortcut() {
-        return shortcut;
+        return this.shortcut;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setShortcut(String shortcut) {
+        this.shortcut = shortcut;
     }
 
     public Collection<Tag> getTags() {
-        return tags;
+        return this.tags;
     }
 
-    public ClanMember[] getMembers() {
-        return members;
+    public Collection<ClanMember> getMembers() {
+        return this.members;
     }
 }
