@@ -258,7 +258,7 @@ public class ClientPacketHandler {
                 .callEvent(new PlayerMoveEvent(player, connection.getLocation(), newLocation));
         if (event.isCancelled()) {
             player.sendPacket(new PacketPlayServerPosition(event.getTo()));
-            return;
+            throw CancelProceedException.INSTANCE;
         }
 
         connection.updateLocation(newLocation);
