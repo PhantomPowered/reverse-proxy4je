@@ -91,6 +91,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MCProxy extends Proxy {
 
+
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
 
     private final ProxyServer proxyServer = new ProxyServer(this);
