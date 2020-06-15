@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.Boat;
+import com.github.derrop.proxy.api.entity.types.Boat;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;

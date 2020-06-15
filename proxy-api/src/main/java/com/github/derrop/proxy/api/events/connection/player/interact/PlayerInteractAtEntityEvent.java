@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.api.events.connection.player.interact;
 
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.events.connection.player.PlayerEvent;
 import com.github.derrop.proxy.api.util.Vector;

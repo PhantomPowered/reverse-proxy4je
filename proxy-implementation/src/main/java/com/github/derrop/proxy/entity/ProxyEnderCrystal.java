@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.EnderCrystal;
+import com.github.derrop.proxy.api.entity.types.EnderCrystal;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -32,7 +32,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
 public class ProxyEnderCrystal extends ProxyEntity implements EnderCrystal {
 
-    protected ProxyEnderCrystal(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+    public ProxyEnderCrystal(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, EntityType.ENDER_CRYSTAL.getTypeId());
     }
 

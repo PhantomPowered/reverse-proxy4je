@@ -2,7 +2,7 @@ package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.*;
-import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;

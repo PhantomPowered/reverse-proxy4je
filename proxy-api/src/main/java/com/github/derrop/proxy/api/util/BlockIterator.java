@@ -5,8 +5,7 @@ package com.github.derrop.proxy.api.util;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Facing;
-import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 

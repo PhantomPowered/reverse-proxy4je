@@ -136,6 +136,10 @@ public class MatchInfo {
         return this.selectedLanguage;
     }
 
+    public void setSelectedLanguage(Language selectedLanguage) {
+        this.selectedLanguage = selectedLanguage;
+    }
+
     public ServiceConnection getInvoker() {
         return this.invoker;
     }

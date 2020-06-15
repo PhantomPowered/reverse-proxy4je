@@ -11,7 +11,7 @@ import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.GameMode;
 import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
-import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.event.Event;
 import com.github.derrop.proxy.api.event.EventManager;

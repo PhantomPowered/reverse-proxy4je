@@ -2,6 +2,9 @@ package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.*;
+import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.entity.EntityEffect;
+import com.github.derrop.proxy.api.entity.types.SpawnedEntity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
 import com.github.derrop.proxy.api.item.ItemStack;
@@ -13,6 +16,19 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.connection.cache.handler.EntityEffectCache;
+import com.github.derrop.proxy.entity.types.item.ProxyItem;
+import com.github.derrop.proxy.entity.types.item.ProxyItemFrame;
+import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
+import com.github.derrop.proxy.entity.types.living.animal.ProxyBat;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.*;
+import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyOcelot;
+import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyWolf;
+import com.github.derrop.proxy.entity.types.living.boss.ProxyWither;
+import com.github.derrop.proxy.entity.types.living.human.ProxyPlayer;
+import com.github.derrop.proxy.entity.types.living.monster.*;
+import com.github.derrop.proxy.entity.types.minecart.ProxyCommandBlockMinecart;
+import com.github.derrop.proxy.entity.types.minecart.ProxyFurnaceMinecart;
+import com.github.derrop.proxy.entity.types.minecart.ProxyMinecart;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
@@ -43,7 +59,7 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     protected final Map<Integer, ItemStack> equipment;
     protected final MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
 
-    protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+    public ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
         this(registry, client, new Location(
                 PlayerPositionPacketUtil.getServerLocation(spawnPacket.getX()),
                 PlayerPositionPacketUtil.getServerLocation(spawnPacket.getY()),
@@ -117,7 +133,7 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             case GUARDIAN:
                 return new ProxyGuardian(registry, client, spawnPacket);
             case FURNANCE_MINE_CART:
-                return new ProxyFurnanceMinecart(registry, client, spawnPacket);
+                return new ProxyFurnaceMinecart(registry, client, spawnPacket);
             case COMMAND_BLOCK_MINE_CART:
                 return new ProxyCommandBlockMinecart(registry, client, spawnPacket);
             case MOB_SPAWNER_MINE_CART:

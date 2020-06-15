@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.entity.EntityType;
-import com.github.derrop.proxy.api.entity.Firework;
+import com.github.derrop.proxy.api.entity.types.Firework;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
 public class ProxyFirework extends ProxyEntity implements Firework {
 
-    protected ProxyFirework(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+    public ProxyFirework(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, EntityType.FIREWORK.getTypeId());
     }
 

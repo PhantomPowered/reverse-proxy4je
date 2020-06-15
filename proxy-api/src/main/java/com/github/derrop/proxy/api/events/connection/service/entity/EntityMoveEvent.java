@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.events.connection.service.entity;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.entity.Entity;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Event;
 import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;

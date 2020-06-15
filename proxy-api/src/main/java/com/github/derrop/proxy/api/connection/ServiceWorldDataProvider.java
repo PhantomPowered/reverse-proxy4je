@@ -25,8 +25,8 @@
 package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.connection.player.GameMode;
-import com.github.derrop.proxy.api.entity.Entity;
-import com.github.derrop.proxy.api.entity.EntityPlayer;
+import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import org.jetbrains.annotations.NotNull;
 

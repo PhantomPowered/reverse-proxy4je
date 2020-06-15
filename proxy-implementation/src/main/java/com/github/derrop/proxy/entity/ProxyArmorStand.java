@@ -26,12 +26,13 @@ package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
-import com.github.derrop.proxy.api.entity.ArmorStand;
+import com.github.derrop.proxy.api.entity.types.ArmorStand;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.EulerAngle;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 import org.jetbrains.annotations.NotNull;
 
 public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
