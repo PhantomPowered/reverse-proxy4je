@@ -22,30 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity;
+package com.github.derrop.proxy.api.entity.types.living.animal.npc;
 
-import com.github.derrop.proxy.api.entity.types.Arrow;
-import com.github.derrop.proxy.api.entity.EntityType;
-import com.github.derrop.proxy.api.network.util.PositionedPacket;
-import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.api.entity.types.living.creature.Creature;
 
-public class ProxyArrow extends ProxyEntity implements Arrow {
-
-    public ProxyArrow(ServiceRegistry registry, ConnectedProxyClient client, int tracked, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ARROW.getTypeId());
-        this.tracked = tracked;
-    }
-
-    private final int tracked;
-
-    @Override
-    public boolean isCritical() {
-        return this.objectList.getByte(16) > 0;
-    }
-
-    @Override
-    public int getTrackedEntity() {
-        return this.tracked;
-    }
+public interface NPC extends Creature {
 }

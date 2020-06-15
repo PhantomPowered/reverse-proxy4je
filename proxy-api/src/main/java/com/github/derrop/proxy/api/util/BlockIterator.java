@@ -278,7 +278,7 @@ public class BlockIterator implements Iterator<Location> {
      */
 
     public BlockIterator(@NotNull BlockAccess blockAccess, @NotNull Entity entity, int maxDistance) {
-        this(blockAccess, entity.getLocation(), entity.getEyeHeight(), maxDistance);
+        this(blockAccess, entity.getLocation(), entity.getHeadHeight(), maxDistance);
     }
 
     /**

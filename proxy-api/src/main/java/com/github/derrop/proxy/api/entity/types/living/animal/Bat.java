@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
+import com.github.derrop.proxy.api.entity.types.Ambient;
 
-public interface Bat extends EntityLiving {
+public interface Bat extends Ambient {
 
     boolean isHanging();
 }

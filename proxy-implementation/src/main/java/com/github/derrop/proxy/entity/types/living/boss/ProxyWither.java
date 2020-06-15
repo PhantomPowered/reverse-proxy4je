@@ -34,6 +34,7 @@ public class ProxyWither extends ProxyBoss implements Wither {
 
     public ProxyWither(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.WITHER);
+        this.setSize(0.9F, 3.5F);
     }
 
     @Override

@@ -24,16 +24,16 @@
  */
 package com.github.derrop.proxy.entity.types.living.animal.ageable;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Ageable;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Ageable;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
+import com.github.derrop.proxy.entity.types.living.creature.ProxyCreature;
 
-public class ProxyAgeable extends ProxyEntityLiving implements Ageable {
+public class ProxyAgeable extends ProxyCreature implements Ageable {
 
-    protected ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
+    public ProxyAgeable(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         super(registry, client, spawnPacket, type);
     }
 

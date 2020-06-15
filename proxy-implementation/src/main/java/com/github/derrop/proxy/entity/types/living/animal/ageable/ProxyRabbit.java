@@ -29,12 +29,13 @@ import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Rabbit;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyAgeable;
+import com.github.derrop.proxy.entity.types.living.animal.ProxyAnimal;
 
-public class ProxyRabbit extends ProxyAgeable implements Rabbit {
+public class ProxyRabbit extends ProxyAnimal implements Rabbit {
 
     public ProxyRabbit(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.RABBIT);
+        this.setSize(0.6F, 0.7F);
     }
 
     @Override

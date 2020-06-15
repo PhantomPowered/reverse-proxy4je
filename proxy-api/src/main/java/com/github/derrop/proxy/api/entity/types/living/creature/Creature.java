@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.creature;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
+import com.github.derrop.proxy.api.entity.types.Insentient;
 
-public interface Creature extends EntityLiving {
+public interface Creature extends Insentient {
 }

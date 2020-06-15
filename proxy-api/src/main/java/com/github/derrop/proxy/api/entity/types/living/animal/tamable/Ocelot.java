@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal.tamable;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.tamable.Tameable;
+import com.github.derrop.proxy.api.entity.types.living.animal.Animal;
 
-public interface Ocelot extends Tameable {
+public interface Ocelot extends Animal, Tameable {
 
     Type getCatType();
 

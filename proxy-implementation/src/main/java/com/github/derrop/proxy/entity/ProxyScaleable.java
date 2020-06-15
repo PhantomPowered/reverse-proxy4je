@@ -24,20 +24,31 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.types.EnderCrystal;
-import com.github.derrop.proxy.api.entity.EntityType;
-import com.github.derrop.proxy.api.network.util.PositionedPacket;
-import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.api.entity.types.Scaleable;
 
-public class ProxyEnderCrystal extends ProxyEntity implements EnderCrystal {
+public class ProxyScaleable implements Scaleable {
 
-    public ProxyEnderCrystal(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ENDER_CRYSTAL.getTypeId());
+    public ProxyScaleable(float width, float length) {
+        this.width = width;
+        this.length = length;
+    }
+
+    protected float width;
+    protected float length;
+
+    @Override
+    public float getWidth() {
+        return this.width;
     }
 
     @Override
-    public int getHealth() {
-        return this.objectList.getInt(8);
+    public float getLength() {
+        return this.length;
+    }
+
+    @Override
+    public void setSize(float width, float length) {
+        this.width = width;
+        this.length = length;
     }
 }

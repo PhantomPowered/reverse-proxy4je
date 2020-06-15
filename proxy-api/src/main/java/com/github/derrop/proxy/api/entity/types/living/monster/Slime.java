@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.monster;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
+import com.github.derrop.proxy.api.entity.types.Insentient;
 
-public interface Slime extends EntityLiving {
+public interface Slime extends Insentient {
 
     byte getSize();
 }

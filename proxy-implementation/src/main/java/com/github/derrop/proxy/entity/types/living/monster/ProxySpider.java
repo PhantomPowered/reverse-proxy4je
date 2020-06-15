@@ -29,12 +29,12 @@ import com.github.derrop.proxy.api.entity.types.living.monster.Spider;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxySpider extends ProxyEntityLiving implements Spider {
+public class ProxySpider extends ProxyMonster implements Spider {
 
     public ProxySpider(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         super(registry, client, spawnPacket, type);
+        this.setSize(1.4F, 0.9F);
     }
 
     @Override

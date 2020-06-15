@@ -24,9 +24,7 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.monster;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
-
-public interface Guardian extends EntityLiving {
+public interface Guardian extends Monster {
 
     boolean isElderly();
 

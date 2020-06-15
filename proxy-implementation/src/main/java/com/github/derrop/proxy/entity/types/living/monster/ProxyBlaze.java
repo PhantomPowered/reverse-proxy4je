@@ -24,14 +24,13 @@
  */
 package com.github.derrop.proxy.entity.types.living.monster;
 
-import com.github.derrop.proxy.api.entity.types.living.monster.Blaze;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.monster.Blaze;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxyBlaze extends ProxyEntityLiving implements Blaze {
+public class ProxyBlaze extends ProxyMonster implements Blaze {
 
     public ProxyBlaze(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.BLAZE);

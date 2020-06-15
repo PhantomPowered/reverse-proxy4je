@@ -22,24 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity.types.living.animal.ageable;
+package com.github.derrop.proxy.entity.types.item;
 
-import com.github.derrop.proxy.api.entity.LivingEntityType;
-import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Villager;
+import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.types.item.Leash;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyAgeable;
+import com.github.derrop.proxy.entity.types.ProxyHanging;
 
-public class ProxyVillager extends ProxyAgeable implements Villager {
+public class ProxyLeash extends ProxyHanging implements Leash {
 
-    public ProxyVillager(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, LivingEntityType.VILLAGER);
+    public ProxyLeash(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
+        super(registry, client, spawnPacket, EntityType.LEASH.getTypeId());
     }
 
     @Override
-    public Profession getProfession() {
-        return Profession.values()[MathHelper.clampInt(this.objectList.getInt(16) % 5, 0, 4)];
+    public float getHeadHeight() {
+        return -0.0625F;
     }
 }

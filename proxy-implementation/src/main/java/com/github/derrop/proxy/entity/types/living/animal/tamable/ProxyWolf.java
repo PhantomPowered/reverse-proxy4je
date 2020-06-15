@@ -36,6 +36,7 @@ public class ProxyWolf extends ProxyTameable implements Wolf {
 
     public ProxyWolf(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.WOLF);
+        this.setSize(0.6F, 0.8F);
     }
 
     @Override

@@ -34,9 +34,9 @@ import java.util.Objects;
 
 public class NetworkAddress {
 
-    private String rawHost;
-    private String host;
-    private int port;
+    private final String rawHost;
+    private final String host;
+    private final int port;
 
     public NetworkAddress(String rawHost, String host, int port) {
         this.rawHost = rawHost;

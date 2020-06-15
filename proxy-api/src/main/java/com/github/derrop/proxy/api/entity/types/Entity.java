@@ -28,7 +28,7 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import org.jetbrains.annotations.NotNull;
 
-public interface Entity {
+public interface Entity extends Scaleable {
 
     boolean isBurning();
 
@@ -71,9 +71,7 @@ public interface Entity {
     @NotNull
     Callable getCallable();
 
-    // todo: unfortunately i forgot to set this for the different entity types
-    // todo: and we should add information about length, width and the head height
-    double getEyeHeight();
+    float getHeadHeight();
 
     interface Unsafe {
 

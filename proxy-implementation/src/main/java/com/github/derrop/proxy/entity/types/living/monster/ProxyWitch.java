@@ -29,16 +29,21 @@ import com.github.derrop.proxy.api.entity.types.living.monster.Witch;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxyWitch extends ProxyEntityLiving implements Witch {
+public class ProxyWitch extends ProxyMonster implements Witch {
 
     public ProxyWitch(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.WITCH);
+        this.setSize(0.6F, 1.95F);
     }
 
     @Override
     public boolean isAggressive() {
         return this.objectList.getByte(21) > 0;
+    }
+
+    @Override
+    public float getHeadHeight() {
+        return 1.62F;
     }
 }

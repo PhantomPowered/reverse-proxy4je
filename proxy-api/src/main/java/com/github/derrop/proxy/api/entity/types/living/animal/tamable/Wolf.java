@@ -25,9 +25,10 @@
 package com.github.derrop.proxy.api.entity.types.living.animal.tamable;
 
 import com.github.derrop.proxy.api.entity.EnumColor;
+import com.github.derrop.proxy.api.entity.types.living.animal.Animal;
 import com.github.derrop.proxy.api.entity.types.living.animal.tamable.Tameable;
 
-public interface Wolf extends Tameable {
+public interface Wolf extends Animal, Tameable {
 
     boolean isAngry();
 

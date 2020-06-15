@@ -446,8 +446,8 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     }
 
     @Override
-    public double getEyeHeight() {
-        return 1.8;
+    public float getHeadHeight() {
+        return 1.8F;
     }
 
     private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {

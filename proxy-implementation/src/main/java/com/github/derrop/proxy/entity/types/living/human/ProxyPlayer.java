@@ -1,10 +1,10 @@
 package com.github.derrop.proxy.entity.types.living.human;
 
 import com.github.derrop.proxy.api.Constants;
-import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.PlayerSkinConfiguration;
+import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -74,5 +74,10 @@ public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
         } else {
             super.spawn(sender);
         }
+    }
+
+    @Override
+    public float getHeadHeight() {
+        return this.isSneaking() ? 1.54F : 1.62F;
     }
 }

@@ -22,18 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.types.living.animal.ageable;
+package com.github.derrop.proxy.api.entity.types.item;
 
-public interface Villager extends Ageable {
+public interface Fireball extends Projectile {
 
-    Profession getProfession();
-
-    enum Profession {
-
-        FARMER,
-        LIBRARIAN,
-        PRIEST,
-        BLACKSMITH,
-        BUTCHER
-    }
+    int getShooter();
 }

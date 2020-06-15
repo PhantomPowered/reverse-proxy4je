@@ -22,11 +22,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.types;
+package com.github.derrop.proxy.api.entity.types.item;
 
-public interface Arrow extends Entity {
+public interface Arrow extends Projectile {
 
     boolean isCritical();
 
-    int getTrackedEntity();
+    int getShooter();
 }

@@ -29,12 +29,13 @@ import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Pig;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyAgeable;
+import com.github.derrop.proxy.entity.types.living.animal.ProxyAnimal;
 
-public class ProxyPig extends ProxyAgeable implements Pig {
+public class ProxyPig extends ProxyAnimal implements Pig {
 
     public ProxyPig(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.PIG);
+        this.setSize(0.9F, 0.9F);
     }
 
     @Override

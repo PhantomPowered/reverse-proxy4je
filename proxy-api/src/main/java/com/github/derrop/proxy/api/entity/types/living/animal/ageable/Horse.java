@@ -24,9 +24,10 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal.ageable;
 
+import com.github.derrop.proxy.api.entity.types.living.animal.Animal;
 import com.github.derrop.proxy.api.entity.types.living.animal.Ownable;
 
-public interface Horse extends Ageable, Ownable {
+public interface Horse extends Animal, Ownable {
 
     boolean isTame();
 

@@ -25,9 +25,8 @@
 package com.github.derrop.proxy.api.entity.types.living.monster;
 
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
 
-public interface Enderman extends EntityLiving {
+public interface Enderman extends Monster {
 
     Material getCarriedBlock();
 

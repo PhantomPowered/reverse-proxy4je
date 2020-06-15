@@ -37,6 +37,4 @@ public interface EntityLiving extends SpawnedEntity {
     boolean isPotionEffectAmbient();
 
     byte getArrowsInBody();
-
-    boolean hasAi();
 }

@@ -24,14 +24,14 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.entity.types.living.monster.Guardian;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.monster.Guardian;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
+import com.github.derrop.proxy.entity.types.living.monster.ProxyMonster;
 
-public class ProxyGuardian extends ProxyEntityLiving implements Guardian {
+public class ProxyGuardian extends ProxyMonster implements Guardian {
 
     public ProxyGuardian(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.GUARDIAN);

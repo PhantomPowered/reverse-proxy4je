@@ -31,12 +31,13 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.Rotations;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.ProxyEntity;
+import com.github.derrop.proxy.entity.types.ProxyHanging;
 
-public class ProxyItemFrame extends ProxyEntity implements ItemFrame {
+public class ProxyItemFrame extends ProxyHanging implements ItemFrame {
 
     public ProxyItemFrame(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, EntityType.ITEM_FRAME.getTypeId());
+        this.setSize(0.25F, 0.25F);
     }
 
     @Override

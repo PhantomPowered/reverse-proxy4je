@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.entity.types.living;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
@@ -36,10 +36,5 @@ public class ProxyEntityLiving extends ProxyEntity implements EntityLiving {
     @Override
     public byte getArrowsInBody() {
         return this.objectList.getByte(9);
-    }
-
-    @Override
-    public boolean hasAi() {
-        return this.objectList.getByte(15) != 0;
     }
 }

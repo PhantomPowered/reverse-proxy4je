@@ -25,17 +25,17 @@
 package com.github.derrop.proxy.entity.types.living.monster;
 
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.entity.types.living.monster.Enderman;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.monster.Enderman;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxyEnderman extends ProxyEntityLiving implements Enderman {
+public class ProxyEnderman extends ProxyMonster implements Enderman {
 
     public ProxyEnderman(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.ENDER_MAN);
+        this.setSize(0.6F, 2.9F);
     }
 
     @Override

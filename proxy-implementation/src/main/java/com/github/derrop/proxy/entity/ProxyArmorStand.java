@@ -90,4 +90,9 @@ public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
     public boolean isMarker() {
         return (this.objectList.getByte(10) & 16) != 0;
     }
+
+    @Override
+    public float getHeadHeight() {
+        return this.isSmall() ? this.length * 0.5F : this.length * 0.9F;
+    }
 }

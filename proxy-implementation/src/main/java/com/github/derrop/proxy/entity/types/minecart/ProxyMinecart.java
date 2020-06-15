@@ -37,6 +37,7 @@ public class ProxyMinecart extends ProxyEntity implements Minecart {
 
     public ProxyMinecart(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
         super(registry, client, spawnPacket, type);
+        this.setSize(0.98F, 0.7F);
     }
 
     @Override

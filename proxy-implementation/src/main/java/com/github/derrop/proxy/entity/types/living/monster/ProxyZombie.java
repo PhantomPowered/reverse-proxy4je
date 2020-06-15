@@ -26,15 +26,18 @@ package com.github.derrop.proxy.entity.types.living.monster;
 
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.living.monster.Zombie;
+import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import org.jetbrains.annotations.NotNull;
 
-public class ProxyZombie extends ProxyEntityLiving implements Zombie {
+public class ProxyZombie extends ProxyMonster implements Zombie {
 
     public ProxyZombie(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         super(registry, client, spawnPacket, type);
+        this.setSize(0.6F, 1.95F);
     }
 
     @Override
@@ -50,5 +53,25 @@ public class ProxyZombie extends ProxyEntityLiving implements Zombie {
     @Override
     public boolean isConverting() {
         return this.objectList.getByte(14) > 0;
+    }
+
+    @Override
+    public float getHeadHeight() {
+        float f = 1.74F;
+
+        if (this.isChild()) {
+            f = (float) ((double) f - 0.81D);
+        }
+
+        return f;
+    }
+
+    @Override
+    public void handleEntityPacket(@NotNull Packet packet) {
+        super.handleEntityPacket(packet);
+
+        if (packet instanceof PacketPlayServerEntityMetadata) {
+            this.setSize(this.isChild() ? 0.6F * 0.5F : 0.6F, this.isChild() ? 1.95F * 0.5F : 1.95F);
+        }
     }
 }

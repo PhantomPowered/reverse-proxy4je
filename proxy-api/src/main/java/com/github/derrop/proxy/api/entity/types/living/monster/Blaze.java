@@ -24,7 +24,5 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.monster;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
-
-public interface Blaze extends EntityLiving {
+public interface Blaze extends Monster {
 }

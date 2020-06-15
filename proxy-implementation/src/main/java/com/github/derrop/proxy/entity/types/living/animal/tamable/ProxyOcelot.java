@@ -29,12 +29,12 @@ import com.github.derrop.proxy.api.entity.types.living.animal.tamable.Ocelot;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyTameable;
 
 public class ProxyOcelot extends ProxyTameable implements Ocelot {
 
     public ProxyOcelot(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.OZELOT);
+        this.setSize(0.6F, 0.7F);
     }
 
     @Override

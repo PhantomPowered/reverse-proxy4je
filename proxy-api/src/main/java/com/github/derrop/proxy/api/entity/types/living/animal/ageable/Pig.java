@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal.ageable;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Ageable;
+import com.github.derrop.proxy.api.entity.types.living.animal.Animal;
 
-public interface Pig extends Ageable {
+public interface Pig extends Animal {
 
     boolean hasSaddle();
 }

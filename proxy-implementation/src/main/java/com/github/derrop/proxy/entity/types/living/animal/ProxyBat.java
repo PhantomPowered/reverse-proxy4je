@@ -24,17 +24,18 @@
  */
 package com.github.derrop.proxy.entity.types.living.animal;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.Bat;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.animal.Bat;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
+import com.github.derrop.proxy.entity.types.ProxyAmbient;
 
-public class ProxyBat extends ProxyEntityLiving implements Bat {
+public class ProxyBat extends ProxyAmbient implements Bat {
 
     public ProxyBat(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.BAT);
+        this.setSize(0.5F, 0.9F);
     }
 
     @Override

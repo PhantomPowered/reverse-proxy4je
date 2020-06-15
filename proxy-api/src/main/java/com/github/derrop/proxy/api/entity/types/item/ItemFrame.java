@@ -24,11 +24,11 @@
  */
 package com.github.derrop.proxy.api.entity.types.item;
 
-import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.entity.types.Hanging;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.util.Rotations;
 
-public interface ItemFrame extends Entity {
+public interface ItemFrame extends Hanging {
 
     ItemStack getItem();
 

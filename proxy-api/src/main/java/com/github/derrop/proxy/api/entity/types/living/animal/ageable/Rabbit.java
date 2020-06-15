@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal.ageable;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Ageable;
+import com.github.derrop.proxy.api.entity.types.living.animal.Animal;
 
-public interface Rabbit extends Ageable {
+public interface Rabbit extends Animal {
 
     Type getRabbitType();
 
@@ -37,7 +37,7 @@ public interface Rabbit extends Ageable {
         BLACK,
         BLACK_AND_WHITE,
         GOLD,
-        SALT_AND_PEPPER,
+        SALT_AND_PEPPER, // Anyone saw this anywhere?
         THE_KILLER_BUNNY
     }
 }

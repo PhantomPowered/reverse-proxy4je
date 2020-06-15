@@ -22,7 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity.types;
+package com.github.derrop.proxy.api.entity.types.block;
+
+import com.github.derrop.proxy.api.entity.types.Entity;
 
 public interface EnderCrystal extends Entity {
 

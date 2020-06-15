@@ -24,9 +24,7 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.creature;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
-
-public interface IronGolem extends EntityLiving {
+public interface IronGolem extends Golem {
 
     /**
      * Normally this is called 'isPlayerCreated' but this name was easier to understand

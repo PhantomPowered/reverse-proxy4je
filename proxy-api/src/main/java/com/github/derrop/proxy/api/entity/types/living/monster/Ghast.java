@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.monster;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
+import com.github.derrop.proxy.api.entity.types.living.Flying;
 
-public interface Ghast extends EntityLiving {
+public interface Ghast extends Flying {
 
     boolean isAttacking();
 }

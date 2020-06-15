@@ -30,12 +30,13 @@ import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Sheep;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyAgeable;
+import com.github.derrop.proxy.entity.types.living.animal.ProxyAnimal;
 
-public class ProxySheep extends ProxyAgeable implements Sheep {
+public class ProxySheep extends ProxyAnimal implements Sheep {
 
     public ProxySheep(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.SHEEP);
+        this.setSize(0.9F, 1.3F);
     }
 
     @Override

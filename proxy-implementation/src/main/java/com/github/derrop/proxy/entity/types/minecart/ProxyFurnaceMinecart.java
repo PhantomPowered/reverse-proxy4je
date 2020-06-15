@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyFurnaceMinecart extends ProxyMinecart implements FurnaceMinecart {
 
     public ProxyFurnaceMinecart(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.FURNANCE_MINE_CART.getTypeId());
+        super(registry, client, spawnPacket, EntityType.FURNACE_MINE_CART.getTypeId());
     }
 
     @Override

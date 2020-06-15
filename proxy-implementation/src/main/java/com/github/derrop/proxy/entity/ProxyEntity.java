@@ -1,9 +1,10 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
-import com.github.derrop.proxy.api.entity.*;
-import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.entity.EntityEffect;
+import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.entity.types.SpawnedEntity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
@@ -16,19 +17,29 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.connection.cache.handler.EntityEffectCache;
-import com.github.derrop.proxy.entity.types.item.ProxyItem;
-import com.github.derrop.proxy.entity.types.item.ProxyItemFrame;
+import com.github.derrop.proxy.entity.types.block.ProxyEnderCrystal;
+import com.github.derrop.proxy.entity.types.block.ProxyFallingBlock;
+import com.github.derrop.proxy.entity.types.block.ProxyTNTPrimed;
+import com.github.derrop.proxy.entity.types.item.*;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 import com.github.derrop.proxy.entity.types.living.animal.ProxyBat;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.*;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyHorse;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyPig;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyRabbit;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxySheep;
+import com.github.derrop.proxy.entity.types.living.animal.npc.ProxyVillager;
 import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyOcelot;
 import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyWolf;
+import com.github.derrop.proxy.entity.types.living.boss.ProxyEnderDragon;
 import com.github.derrop.proxy.entity.types.living.boss.ProxyWither;
+import com.github.derrop.proxy.entity.types.living.creature.ProxyIronGolem;
+import com.github.derrop.proxy.entity.types.living.creature.ProxySnowman;
 import com.github.derrop.proxy.entity.types.living.human.ProxyPlayer;
 import com.github.derrop.proxy.entity.types.living.monster.*;
 import com.github.derrop.proxy.entity.types.minecart.ProxyCommandBlockMinecart;
 import com.github.derrop.proxy.entity.types.minecart.ProxyFurnaceMinecart;
 import com.github.derrop.proxy.entity.types.minecart.ProxyMinecart;
+import com.github.derrop.proxy.logging.ProxyLogger;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
@@ -42,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProxyEntity implements SpawnedEntity, Entity.Callable {
+public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity.Callable {
 
     protected final ServiceRegistry registry;
     protected final ConnectedProxyClient client;
@@ -72,6 +83,7 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     }
 
     protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, Location location, int entityId, int type) {
+        super(0.6F, 1.8F);
         this.registry = registry;
         this.client = client;
         this.entityId = entityId;
@@ -88,7 +100,6 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             return new ProxyPlayer(registry, client, spawnPacket);
         }
 
-        // todo: proper mapping?
         switch (entityType) {
             case BAT:
                 return new ProxyBat(registry, client, spawnPacket);
@@ -109,14 +120,15 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             case ENDER_MAN:
                 return new ProxyEnderman(registry, client, spawnPacket);
             case ZOMBIE:
-            case PIG_ZOMBIE:
-                // pig zombie does different things - but there is no extra data
                 return new ProxyZombie(registry, client, spawnPacket, entityType);
+            case PIG_ZOMBIE:
+                return new ProxyPigZombie(registry, client, spawnPacket);
             case BLAZE:
                 return new ProxyBlaze(registry, client, spawnPacket);
             case SPIDER:
-            case CAVE_SPIDER:
                 return new ProxySpider(registry, client, spawnPacket, entityType);
+            case CAVE_SPIDER:
+                return new ProxyCaveSpider(registry, client, spawnPacket);
             case CREEPER:
                 return new ProxyCreeper(registry, client, spawnPacket);
             case GHAST:
@@ -142,32 +154,76 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             case HOPPER_MINE_CART:
             case TNT_MINE_CART:
                 return new ProxyMinecart(registry, client, spawnPacket, type);
+            case ENDER_DRAGON:
+                return new ProxyEnderDragon(registry, client, spawnPacket);
+            case SNOW_MAN:
+                return new ProxySnowman(registry, client, spawnPacket);
+            case VILLAGER_GOLEM:
+                return new ProxyIronGolem(registry, client, spawnPacket);
             default:
+                registry.getProviderUnchecked(ProxyLogger.class).warning(String.format("Unable to create correct living entity type for type id %d", type));
                 return new ProxyEntityLiving(registry, client, spawnPacket, entityType);
         }
     }
 
-    public static ProxyEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type, int subType) {
+    public static ProxyEntity createEntity(ServiceRegistry serviceRegistry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type, int subType) {
         EntityType entityType = EntityType.fromId(type, subType);
         Preconditions.checkNotNull(entityType, "Cannot create entity from type id " + type + " with sub id " + subType);
 
         switch (entityType) {
             case ARMOR_STAND:
-                return new ProxyArmorStand(registry, client, spawnPacket);
+                return new ProxyArmorStand(serviceRegistry, client, spawnPacket);
             case BOAT:
-                return new ProxyBoat(registry, client, spawnPacket);
+                return new ProxyBoat(serviceRegistry, client, spawnPacket);
             case ITEM:
-                return new ProxyItem(registry, client, spawnPacket);
+                return new ProxyItem(serviceRegistry, client, spawnPacket);
             case ARROW:
-                return new ProxyArrow(registry, client, subType, spawnPacket);
+                return new ProxyArrow(serviceRegistry, client, subType, spawnPacket);
             case FIREWORK:
-                return new ProxyFirework(registry, client, spawnPacket);
+                return new ProxyFirework(serviceRegistry, client, spawnPacket);
             case ITEM_FRAME:
-                return new ProxyItemFrame(registry, client, spawnPacket);
+                return new ProxyItemFrame(serviceRegistry, client, spawnPacket);
             case ENDER_CRYSTAL:
-                return new ProxyEnderCrystal(registry, client, spawnPacket);
+                return new ProxyEnderCrystal(serviceRegistry, client, spawnPacket);
+            case EGG:
+                return new ProxyEgg(serviceRegistry, client, spawnPacket);
+            case LEASH:
+                return new ProxyLeash(serviceRegistry, client, spawnPacket);
+            case POTION:
+                return new ProxyPotion(serviceRegistry, client, spawnPacket, subType);
+            case SNOWBALL:
+                return new ProxySnowball(serviceRegistry, client, spawnPacket);
+            case FIRE_BALL:
+                return new ProxyFireball(serviceRegistry, client, spawnPacket, entityType.getTypeId(), subType);
+            case TNT_PRIMED:
+                return new ProxyTNTPrimed(serviceRegistry, client, spawnPacket);
+            case ENDER_PEARL:
+                return new ProxyEnderPearl(serviceRegistry, client, spawnPacket);
+            case ENDER_SIGNAL:
+                return new ProxyEnderSignal(serviceRegistry, client, spawnPacket);
+            case FISHING_HOOK:
+                return new ProxyFishingHook(serviceRegistry, client, spawnPacket, subType);
+            case WITHER_SKULL:
+                return new ProxyWitherSkull(serviceRegistry, client, spawnPacket, subType);
+            case FALLING_BLOCK:
+                return new ProxyFallingBlock(serviceRegistry, client, spawnPacket, subType);
+            case FURNACE_MINE_CART:
+                return new ProxyFurnaceMinecart(serviceRegistry, client, spawnPacket);
+            case COMMAND_BLOCK_MINE_CART:
+                return new ProxyCommandBlockMinecart(serviceRegistry, client, spawnPacket);
+            case MOB_SPAWNER_MINE_CART:
+            case CHEST_MINE_CART:
+            case EMPTY_MINE_CART:
+            case HOPPER_MINE_CART:
+            case TNT_MINE_CART:
+                return new ProxyMinecart(serviceRegistry, client, spawnPacket, type);
+            case SMALL_FIRE_BALL:
+                return new ProxySmallFireball(serviceRegistry, client, spawnPacket, subType);
+            case THROWN_EXP_BOTTLE:
+                return new ProxyThrownExpBottle(serviceRegistry, client, spawnPacket);
             default:
-                return new ProxyEntity(registry, client, spawnPacket, entityType.getTypeId());
+                serviceRegistry.getProviderUnchecked(ProxyLogger.class).warning(String.format("Unable to create correct entity type for type id %d (sub: %d)", type, subType));
+                return new ProxyEntity(serviceRegistry, client, spawnPacket, entityType.getTypeId());
         }
     }
 
@@ -196,8 +252,8 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
     }
 
     @Override
-    public double getEyeHeight() {
-        return 1.8;
+    public float getHeadHeight() {
+        return this.length * 0.85F;
     }
 
     @Override

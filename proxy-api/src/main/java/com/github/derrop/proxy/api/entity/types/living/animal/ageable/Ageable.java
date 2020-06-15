@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal.ageable;
 
-import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
+import com.github.derrop.proxy.api.entity.types.living.creature.Creature;
 
-public interface Ageable extends EntityLiving {
+public interface Ageable extends Creature {
 
     byte getAge();
 }

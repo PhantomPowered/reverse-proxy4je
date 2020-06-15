@@ -32,7 +32,7 @@ import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxyCreeper extends ProxyEntityLiving implements Creeper {
+public class ProxyCreeper extends ProxyMonster implements Creeper {
 
     public ProxyCreeper(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.CREEPER);

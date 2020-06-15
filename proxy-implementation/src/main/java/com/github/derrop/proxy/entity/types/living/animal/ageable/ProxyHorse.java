@@ -24,19 +24,20 @@
  */
 package com.github.derrop.proxy.entity.types.living.animal.ageable;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Horse;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Horse;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyAgeable;
+import com.github.derrop.proxy.entity.types.living.animal.ProxyAnimal;
 
 import java.util.UUID;
 
-public class ProxyHorse extends ProxyAgeable implements Horse {
+public class ProxyHorse extends ProxyAnimal implements Horse {
 
     public ProxyHorse(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.HORSE);
+        this.setSize(1.4F, 1.6F);
     }
 
     @Override
@@ -106,5 +107,10 @@ public class ProxyHorse extends ProxyAgeable implements Horse {
     @Override
     public Armor getArmor() {
         return Armor.values()[this.objectList.getInt(22)];
+    }
+
+    @Override
+    public float getHeadHeight() {
+        return this.length;
     }
 }

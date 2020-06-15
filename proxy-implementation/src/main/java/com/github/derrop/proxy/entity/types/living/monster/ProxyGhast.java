@@ -24,17 +24,17 @@
  */
 package com.github.derrop.proxy.entity.types.living.monster;
 
-import com.github.derrop.proxy.api.entity.types.living.monster.Ghast;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.types.living.monster.Ghast;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxyGhast extends ProxyEntityLiving implements Ghast {
+public class ProxyGhast extends ProxyFlying implements Ghast {
 
     public ProxyGhast(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.GHAST);
+        this.setSize(4.0F, 4.0F);
     }
 
     @Override

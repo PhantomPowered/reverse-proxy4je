@@ -31,7 +31,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
-public class ProxySkeleton extends ProxyEntityLiving implements Skeleton {
+public class ProxySkeleton extends ProxyMonster implements Skeleton {
 
     public ProxySkeleton(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
         super(registry, client, spawnPacket, LivingEntityType.SKELETON);
