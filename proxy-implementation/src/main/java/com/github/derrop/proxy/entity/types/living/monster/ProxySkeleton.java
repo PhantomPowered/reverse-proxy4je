@@ -29,7 +29,6 @@ import com.github.derrop.proxy.api.entity.types.living.monster.Skeleton;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
 public class ProxySkeleton extends ProxyMonster implements Skeleton {
 
@@ -40,5 +39,10 @@ public class ProxySkeleton extends ProxyMonster implements Skeleton {
     @Override
     public Type getSkeletonType() {
         return Type.values()[this.objectList.getByte(13)];
+    }
+
+    @Override
+    public float getHeadHeight() {
+        return this.objectList.getByte(13) == 1 ? super.getHeadHeight() : 1.74F;
     }
 }

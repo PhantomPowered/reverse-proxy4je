@@ -41,4 +41,9 @@ public class ProxySlime extends ProxyInsentient implements Slime {
     public byte getSize() {
         return this.objectList.getByte(16);
     }
+
+    @Override
+    public float getHeadHeight() {
+        return 0.625F * this.getSize();
+    }
 }

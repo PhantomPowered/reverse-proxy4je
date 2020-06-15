@@ -49,4 +49,9 @@ public class ProxyArrow extends ProxyProjectile implements Arrow {
     public int getShooter() {
         return this.tracked;
     }
+
+    @Override
+    public float getHeadHeight() {
+        return 0.0F;
+    }
 }

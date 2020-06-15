@@ -41,4 +41,14 @@ public class ProxyVillager extends ProxyNPC implements Villager {
     public Profession getProfession() {
         return Profession.values()[MathHelper.clampInt(this.objectList.getInt(16) % 5, 0, 4)];
     }
+
+    @Override
+    public float getHeadHeight() {
+        float f = 1.62F;
+        if (this.isChild()) {
+            f = (float) ((double) f - 0.81D);
+        }
+
+        return f;
+    }
 }

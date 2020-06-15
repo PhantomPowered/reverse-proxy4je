@@ -36,6 +36,8 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.entity.ProxyEntity;
+import com.github.derrop.proxy.entity.types.ProxyExperienceOrb;
+import com.github.derrop.proxy.entity.types.living.human.ProxyPlayer;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
@@ -100,10 +102,10 @@ public class EntityCache implements PacketCacheHandler {
             }
         } else if (newPacket instanceof PacketPlayServerSpawnEntityExperienceOrb) {
             PacketPlayServerSpawnEntityExperienceOrb spawn = (PacketPlayServerSpawnEntityExperienceOrb) newPacket;
-            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.EXPERIENCE_ORB.getTypeId()));
+            this.entities.put(spawn.getEntityId(), new ProxyExperienceOrb(registry, packetCache.getTargetProxyClient(), spawn, spawn.getXpValue()));
         } else if (newPacket instanceof PacketPlayServerNamedEntitySpawn) {
             PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) newPacket;
-            this.entities.put(spawn.getEntityId(), ProxyEntity.createEntityLiving(registry, packetCache.getTargetProxyClient(), spawn, LivingEntityType.PLAYER.getTypeId()));
+            this.entities.put(spawn.getEntityId(), new ProxyPlayer(registry, packetCache.getTargetProxyClient(), spawn));
         } else if (newPacket instanceof PacketPlayServerEntityMetadata) {
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) newPacket;
             if (this.entities.containsKey(metadata.getEntityId())) {

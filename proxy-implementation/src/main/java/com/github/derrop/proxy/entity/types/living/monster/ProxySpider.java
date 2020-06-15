@@ -41,4 +41,9 @@ public class ProxySpider extends ProxyMonster implements Spider {
     public boolean isClimbing() {
         return (this.objectList.getByte(16) & 1) != 0;
     }
+
+    @Override
+    public float getHeadHeight() {
+        return 0.65F;
+    }
 }

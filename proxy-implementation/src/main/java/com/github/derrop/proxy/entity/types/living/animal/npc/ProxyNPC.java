@@ -29,9 +29,9 @@ import com.github.derrop.proxy.api.entity.types.living.animal.npc.NPC;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.creature.ProxyCreature;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyAgeable;
 
-public class ProxyNPC extends ProxyCreature implements NPC {
+public class ProxyNPC extends ProxyAgeable implements NPC {
 
     protected ProxyNPC(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
         super(registry, client, spawnPacket, type);

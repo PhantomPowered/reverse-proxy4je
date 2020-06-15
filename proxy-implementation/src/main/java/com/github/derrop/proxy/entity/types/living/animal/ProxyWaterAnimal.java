@@ -22,28 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity.types.living.monster;
+package com.github.derrop.proxy.entity.types.living.animal;
 
 import com.github.derrop.proxy.api.entity.LivingEntityType;
-import com.github.derrop.proxy.api.entity.types.living.monster.Ghast;
+import com.github.derrop.proxy.api.entity.types.living.animal.WaterAnimal;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.entity.types.ProxyInsentient;
 
-public class ProxyGhast extends ProxyFlying implements Ghast {
+public class ProxyWaterAnimal extends ProxyInsentient implements WaterAnimal {
 
-    public ProxyGhast(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, LivingEntityType.GHAST);
-        this.setSize(4.0F, 4.0F);
-    }
-
-    @Override
-    public boolean isAttacking() {
-        return this.objectList.getByte(16) > 0;
-    }
-
-    @Override
-    public float getHeadHeight() {
-        return 2.6F;
+    public ProxyWaterAnimal(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
+        super(registry, client, spawnPacket, type);
     }
 }

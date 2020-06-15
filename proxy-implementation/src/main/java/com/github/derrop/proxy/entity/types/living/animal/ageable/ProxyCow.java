@@ -22,28 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.entity.types.living.monster;
+package com.github.derrop.proxy.entity.types.living.animal.ageable;
 
 import com.github.derrop.proxy.api.entity.LivingEntityType;
-import com.github.derrop.proxy.api.entity.types.living.monster.Ghast;
+import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Cow;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.entity.types.living.animal.ProxyAnimal;
 
-public class ProxyGhast extends ProxyFlying implements Ghast {
+public class ProxyCow extends ProxyAnimal implements Cow {
 
-    public ProxyGhast(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, LivingEntityType.GHAST);
-        this.setSize(4.0F, 4.0F);
-    }
-
-    @Override
-    public boolean isAttacking() {
-        return this.objectList.getByte(16) > 0;
+    public ProxyCow(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
+        super(registry, client, spawnPacket, type);
+        this.setSize(0.9F, 1.3F);
     }
 
     @Override
     public float getHeadHeight() {
-        return 2.6F;
+        return this.length;
     }
 }

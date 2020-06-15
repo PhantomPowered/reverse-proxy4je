@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyOcelot extends ProxyTameable implements Ocelot {
 
     public ProxyOcelot(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, LivingEntityType.OZELOT);
+        super(registry, client, spawnPacket, LivingEntityType.OCELOT);
         this.setSize(0.6F, 0.7F);
     }
 

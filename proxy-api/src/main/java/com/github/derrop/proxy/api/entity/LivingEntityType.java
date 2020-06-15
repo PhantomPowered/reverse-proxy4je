@@ -3,81 +3,62 @@
  */
 package com.github.derrop.proxy.api.entity;
 
+import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
+import com.github.derrop.proxy.api.entity.types.living.animal.Bat;
+import com.github.derrop.proxy.api.entity.types.living.animal.Squid;
+import com.github.derrop.proxy.api.entity.types.living.animal.ageable.*;
+import com.github.derrop.proxy.api.entity.types.living.animal.npc.Villager;
+import com.github.derrop.proxy.api.entity.types.living.animal.tamable.Ocelot;
+import com.github.derrop.proxy.api.entity.types.living.animal.tamable.Wolf;
+import com.github.derrop.proxy.api.entity.types.living.boss.EnderDragon;
+import com.github.derrop.proxy.api.entity.types.living.boss.Wither;
+import com.github.derrop.proxy.api.entity.types.living.creature.IronGolem;
+import com.github.derrop.proxy.api.entity.types.living.creature.Snowman;
+import com.github.derrop.proxy.api.entity.types.living.monster.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public enum LivingEntityType {
 
-    ITEM("Item", 1),
-    EXPERIENCE_ORB("XPOrb", 2),
-    EGG("ThrownEgg", 7),
-    LEASH_KNOT("LeashKnot", 8),
-    PAINTING("Painting", 9),
-    ARROW("Arrow", 10),
-    SNOW_BALL("Snowball", 11),
-    FIRE_BALL("Fireball", 12),
-    SMALL_FIRE_BALL("SmallFireball", 13),
-    ENDER_PEARL("ThrownEnderpearl", 14),
-    ENDER_EYE("EyeOfEnderSignal", 15),
-    POTION("ThrownPotion", 16),
-    EXP_BOTTLE("ThrownExpBottle", 17),
-    ITEM_FRAME("ItemFrame", 18),
-    WITHER_SKULL("WitherSkull", 19),
-    PRIMED_TNT("PrimedTnt", 20),
-    FALLING_SAND("FallingSand", 21),
-    FIRE_WORK_ROCKET("FireworksRocketEntity", 22),
-    ARMOR_STAND("ArmorStand", 30),
-    BOAT("Boat", 41),
+    CREEPER("Creeper", 50, Creeper.class),
+    SKELETON("Skeleton", 51, Skeleton.class),
+    SPIDER("Spider", 52, Spider.class),
+    GIANT("Giant", 53, GiantZombie.class),
+    ZOMBIE("Zombie", 54, Zombie.class),
+    SLIME("Slime", 55, Slime.class),
+    GHAST("Ghast", 56, Ghast.class),
+    PIG_ZOMBIE("PigZombie", 57, PigZombie.class),
+    ENDER_MAN("Enderman", 58, Enderman.class),
+    CAVE_SPIDER("CaveSpider", 59, CaveSpider.class),
+    SILVER_FISH("Silverfish", 60, Silverfish.class),
+    BLAZE("Balze", 61, Blaze.class),
+    LAVA_SLIME("LavaSlime", 62, LavaSlime.class),
+    ENDER_DRAGON("EnderDragon", 63, EnderDragon.class),
+    WITHER("WitherBoss", 64, Wither.class),
+    BAT("Bat", 65, Bat.class),
+    WITCH("Witch", 66, Witch.class),
+    ENDER_MITE("Endermite", 67, Endermite.class),
+    GUARDIAN("Guardian", 68, Guardian.class),
+    PIG("Pig", 90, Pig.class),
+    SHEEP("Sheep", 91, Sheep.class),
+    COW("Cow", 92, Cow.class),
+    CHICKEN("Chicken", 93, Chicken.class),
+    SQUID("Squid", 94, Squid.class),
+    WOLF("Wolf", 95, Wolf.class),
+    MUSHROOM_COW("MushroomCow", 96, MushroomCow.class),
+    SNOW_MAN("SnowMan", 97, Snowman.class),
+    OCELOT("Ozelot", 98, Ocelot.class),
+    VILLAGER_GOLEM("VillagerGolem", 99, IronGolem.class),
+    HORSE("EntityHorse", 100, Horse.class),
+    RABBIT("Rabbit", 101, Rabbit.class),
+    VILLAGER("Villager", 120, Villager.class),
 
-    EMPTY_MINE_CART("MinecartRideable", 42),
-    CHEST_MINE_CART("MinecartChest", 43),
-    FURNANCE_MINE_CART("MinecartFurnace", 44),
-    TNT_MINE_CART("MinecartTNT", 45),
-    HOPPER_MINE_CART("MinecartHopper", 46),
-    MOB_SPAWNER_MINE_CART("MinecartSpawner", 47),
-    COMMAND_BLOCK_MINE_CART("MinecartCommandBlock", 48),
-
-    MOB("Mob", 48),
-    MONSTER("Monster", 49),
-    CREEPER("Creeper", 50),
-    SKELETON("Skeleton", 51),
-    SPIDER("Spider", 52),
-    GIANT("Giant", 53),
-    ZOMBIE("Zombie", 54),
-    SLIME("Slime", 55),
-    GHAST("Ghast", 56),
-    PIG_ZOMBIE("PigZombie", 57),
-    ENDER_MAN("Enderman", 58),
-    CAVE_SPIDER("CaveSpider", 59),
-    SILVER_FISH("Silverfish", 60),
-    BLAZE("Balze", 61),
-    LAVA_SLIME("LavaSlime", 62),
-    ENDER_DRAGON("EnderDragon", 63),
-    WITHER("WitherBoss", 64),
-    BAT("Bat", 65),
-    WITCH("Witch", 66),
-    ENDER_MITE("Endermite", 67),
-    GUARDIAN("Guardian", 68),
-    PIG("Pig", 90),
-    SHEEP("Sheep", 91),
-    COW("Cow", 92),
-    CHICKEN("Chicken", 93),
-    SQUID("Squid", 94),
-    WOLF("Wolf", 95),
-    MUSHROOM_COW("MushroomCow", 96),
-    SNOW_MAN("SnowMan", 97),
-    OZELOT("Ozelot", 98),
-    VILLAGER_GOLEM("VillagerGolem", 99),
-    HORSE("EntityHorse", 100),
-    RABBIT("Rabbit", 101),
-    VILLAGER("Villager", 120),
-    ENDER_CRYSTAL("EnderCrystal", 200),
-    PLAYER(null, -2),
-
-    UNKNOWN(null, -1);
+    UNKNOWN(null, -1, null);
 
     private final String name;
     private final short typeId;
+    private final Class<? extends EntityLiving> clazz;
 
     private static final Map<String, LivingEntityType> NAME_MAP = new HashMap<>();
     private static final Map<Short, LivingEntityType> ID_MAP = new HashMap<>();
@@ -94,9 +75,10 @@ public enum LivingEntityType {
         }
     }
 
-    LivingEntityType(String name, int typeId) {
+    LivingEntityType(String name, int typeId, Class<? extends EntityLiving> clazz) {
         this.name = name;
         this.typeId = (short) typeId;
+        this.clazz = clazz;
     }
 
     public String getName() {

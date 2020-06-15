@@ -37,7 +37,6 @@ import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.entity.types.Entity;
-import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerServiceSelectedEvent;
@@ -73,7 +72,7 @@ import java.util.function.Supplier;
 public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
 
     public DefaultPlayer(MCProxy proxy, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
-        super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER.getTypeId());
+        super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), -2);
         this.proxy = proxy;
         this.offlinePlayer = offlinePlayer;
         this.displayName = loginResult.getName();
@@ -410,7 +409,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public int getType() {
-        return LivingEntityType.PLAYER.getTypeId();
+        return -2;
     }
 
     @Override

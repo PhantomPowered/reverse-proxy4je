@@ -41,4 +41,9 @@ public class ProxyAgeable extends ProxyCreature implements Ageable {
     public byte getAge() {
         return this.objectList.getByte(12);
     }
+
+    @Override
+    public boolean isChild() {
+        return getAge() < 0;
+    }
 }

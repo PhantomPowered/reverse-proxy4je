@@ -30,7 +30,6 @@ import com.github.derrop.proxy.api.entity.types.living.animal.tamable.Wolf;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyTameable;
 
 public class ProxyWolf extends ProxyTameable implements Wolf {
 
@@ -52,5 +51,10 @@ public class ProxyWolf extends ProxyTameable implements Wolf {
     @Override
     public EnumColor getColor() {
         return EnumColor.getByInvIndex(this.objectList.getByte(20) & 15);
+    }
+
+    @Override
+    public float getHeadHeight() {
+        return this.length * 0.8F;
     }
 }

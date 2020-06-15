@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal.npc;
 
-import com.github.derrop.proxy.api.entity.types.living.creature.Creature;
+import com.github.derrop.proxy.api.entity.types.living.animal.ageable.Ageable;
 
-public interface NPC extends Creature {
+public interface NPC extends Ageable {
 }

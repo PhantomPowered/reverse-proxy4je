@@ -23,10 +23,8 @@ import com.github.derrop.proxy.entity.types.block.ProxyTNTPrimed;
 import com.github.derrop.proxy.entity.types.item.*;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 import com.github.derrop.proxy.entity.types.living.animal.ProxyBat;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyHorse;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyPig;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxyRabbit;
-import com.github.derrop.proxy.entity.types.living.animal.ageable.ProxySheep;
+import com.github.derrop.proxy.entity.types.living.animal.ProxySquid;
+import com.github.derrop.proxy.entity.types.living.animal.ageable.*;
 import com.github.derrop.proxy.entity.types.living.animal.npc.ProxyVillager;
 import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyOcelot;
 import com.github.derrop.proxy.entity.types.living.animal.tamable.ProxyWolf;
@@ -34,7 +32,6 @@ import com.github.derrop.proxy.entity.types.living.boss.ProxyEnderDragon;
 import com.github.derrop.proxy.entity.types.living.boss.ProxyWither;
 import com.github.derrop.proxy.entity.types.living.creature.ProxyIronGolem;
 import com.github.derrop.proxy.entity.types.living.creature.ProxySnowman;
-import com.github.derrop.proxy.entity.types.living.human.ProxyPlayer;
 import com.github.derrop.proxy.entity.types.living.monster.*;
 import com.github.derrop.proxy.entity.types.minecart.ProxyCommandBlockMinecart;
 import com.github.derrop.proxy.entity.types.minecart.ProxyFurnaceMinecart;
@@ -96,16 +93,12 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
         LivingEntityType entityType = LivingEntityType.fromId(type);
         Preconditions.checkNotNull(entityType, "Unable to create entity type from unknown id " + type);
 
-        if (spawnPacket instanceof PacketPlayServerNamedEntitySpawn) {
-            return new ProxyPlayer(registry, client, spawnPacket);
-        }
-
         switch (entityType) {
             case BAT:
                 return new ProxyBat(registry, client, spawnPacket);
             case HORSE:
                 return new ProxyHorse(registry, client, spawnPacket);
-            case OZELOT:
+            case OCELOT:
                 return new ProxyOcelot(registry, client, spawnPacket);
             case WOLF:
                 return new ProxyWolf(registry, client, spawnPacket);
@@ -134,8 +127,9 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
             case GHAST:
                 return new ProxyGhast(registry, client, spawnPacket);
             case SLIME:
-            case LAVA_SLIME:
                 return new ProxySlime(registry, client, spawnPacket, entityType);
+            case LAVA_SLIME:
+                return new ProxyLavaSlime(registry, client, spawnPacket);
             case SKELETON:
                 return new ProxySkeleton(registry, client, spawnPacket);
             case WITCH:
@@ -144,22 +138,26 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
                 return new ProxyWither(registry, client, spawnPacket);
             case GUARDIAN:
                 return new ProxyGuardian(registry, client, spawnPacket);
-            case FURNANCE_MINE_CART:
-                return new ProxyFurnaceMinecart(registry, client, spawnPacket);
-            case COMMAND_BLOCK_MINE_CART:
-                return new ProxyCommandBlockMinecart(registry, client, spawnPacket);
-            case MOB_SPAWNER_MINE_CART:
-            case CHEST_MINE_CART:
-            case EMPTY_MINE_CART:
-            case HOPPER_MINE_CART:
-            case TNT_MINE_CART:
-                return new ProxyMinecart(registry, client, spawnPacket, type);
             case ENDER_DRAGON:
                 return new ProxyEnderDragon(registry, client, spawnPacket);
             case SNOW_MAN:
                 return new ProxySnowman(registry, client, spawnPacket);
             case VILLAGER_GOLEM:
                 return new ProxyIronGolem(registry, client, spawnPacket);
+            case GIANT:
+                return new ProxyGiantZombie(registry, client, spawnPacket);
+            case SILVER_FISH:
+                return new ProxySilverfish(registry, client, spawnPacket);
+            case COW:
+                return new ProxyCow(registry, client, spawnPacket, entityType);
+            case CHICKEN:
+                return new ProxyChicken(registry, client, spawnPacket);
+            case SQUID:
+                return new ProxySquid(registry, client, spawnPacket);
+            case MUSHROOM_COW:
+                return new ProxyMushroomCow(registry, client, spawnPacket);
+            case ENDER_MITE:
+                return new ProxyEndermite(registry, client, spawnPacket);
             default:
                 registry.getProviderUnchecked(ProxyLogger.class).warning(String.format("Unable to create correct living entity type for type id %d", type));
                 return new ProxyEntityLiving(registry, client, spawnPacket, entityType);

@@ -29,4 +29,6 @@ import com.github.derrop.proxy.api.entity.types.living.creature.Creature;
 public interface Ageable extends Creature {
 
     byte getAge();
+
+    boolean isChild();
 }

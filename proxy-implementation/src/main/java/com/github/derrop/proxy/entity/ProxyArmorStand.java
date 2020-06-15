@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
-import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.ArmorStand;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
 
     protected ProxyArmorStand(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, LivingEntityType.ARMOR_STAND);
+        super(registry, client, spawnPacket, EntityType.ARMOR_STAND.getTypeId());
     }
 
     @Override

@@ -48,4 +48,9 @@ public class ProxySheep extends ProxyAnimal implements Sheep {
     public boolean isSheared() {
         return (this.objectList.getByte(16) & 16) != 0;
     }
+
+    @Override
+    public float getHeadHeight() {
+        return 0.95F * this.length;
+    }
 }

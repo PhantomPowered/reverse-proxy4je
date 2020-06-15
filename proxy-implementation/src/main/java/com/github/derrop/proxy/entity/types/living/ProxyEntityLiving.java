@@ -13,6 +13,10 @@ public class ProxyEntityLiving extends ProxyEntity implements EntityLiving {
         super(registry, client, spawnPacket, type.getTypeId());
     }
 
+    public ProxyEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+        super(registry, client, spawnPacket, type);
+    }
+
     @Override
     public float getHealth() {
         return this.objectList.getFloat(6);

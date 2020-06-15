@@ -47,4 +47,9 @@ public class ProxyEnderman extends ProxyMonster implements Enderman {
     public boolean isScreaming() {
         return this.objectList.getByte(18) > 0;
     }
+
+    @Override
+    public float getHeadHeight() {
+        return 2.55F;
+    }
 }
