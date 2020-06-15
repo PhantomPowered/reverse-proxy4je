@@ -48,6 +48,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServe
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntityExperienceOrb;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerCamera;
+import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -64,6 +65,8 @@ public class EntityCache implements PacketCacheHandler {
     private int cameraTargetId = -1;
 
     private PacketCache packetCache;
+
+    private final MinecraftSerializableObjectList ownMetadata = new MinecraftSerializableObjectList();
 
     @Override
     public int[] getPacketIDs() {
@@ -110,6 +113,8 @@ public class EntityCache implements PacketCacheHandler {
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) newPacket;
             if (this.entities.containsKey(metadata.getEntityId())) {
                 this.entities.get(metadata.getEntityId()).getCallable().handleEntityPacket(metadata);
+            } else if (metadata.getEntityId() == packetCache.getTargetProxyClient().getEntityId()) {
+                this.ownMetadata.applyUpdate(metadata.getObjects());
             }
         } else if (newPacket instanceof PacketPlayServerSpawnLivingEntity) {
             PacketPlayServerSpawnLivingEntity spawn = (PacketPlayServerSpawnLivingEntity) newPacket;
@@ -155,6 +160,8 @@ public class EntityCache implements PacketCacheHandler {
                 }
             }, 500, TimeUnit.MILLISECONDS);
         }
+
+        con.sendPacket(new PacketPlayServerEntityMetadata(targetProxyClient.getEntityId(), this.ownMetadata.getObjects()));
     }
 
     private boolean shouldSendCameraPacket(ConnectedProxyClient targetProxyClient) {
