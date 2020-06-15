@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class AutoMsgDatabase extends DatabaseProvidedStorage<String> {
 
-    private static final String DEFAULT_MESSAGE = "Ich bin seit %date% (%min% Minuten) AFK!";
+    private static final String DEFAULT_MESSAGE = "Ich bin seit dem %date% (%min% Minuten) AFK!";
 
     public AutoMsgDatabase(ServiceRegistry registry) {
         super(registry, "auto_msg_data", String.class);
