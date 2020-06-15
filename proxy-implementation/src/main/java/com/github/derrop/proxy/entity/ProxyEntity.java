@@ -72,70 +72,87 @@ public class ProxyEntity implements SpawnedEntity, Entity.Callable {
             return new ProxyPlayer(registry, client, spawnPacket);
         }
 
-        if (entityType == LivingEntityType.BAT) {
-            return new ProxyBat(registry, client, spawnPacket);
+        // todo: proper mapping?
+        switch (entityType) {
+            case BAT:
+                return new ProxyBat(registry, client, spawnPacket);
+            case HORSE:
+                return new ProxyHorse(registry, client, spawnPacket);
+            case OZELOT:
+                return new ProxyOcelot(registry, client, spawnPacket);
+            case WOLF:
+                return new ProxyWolf(registry, client, spawnPacket);
+            case PIG:
+                return new ProxyPig(registry, client, spawnPacket);
+            case RABBIT:
+                return new ProxyRabbit(registry, client, spawnPacket);
+            case SHEEP:
+                return new ProxySheep(registry, client, spawnPacket);
+            case VILLAGER:
+                return new ProxyVillager(registry, client, spawnPacket);
+            case ENDER_MAN:
+                return new ProxyEnderman(registry, client, spawnPacket);
+            case ZOMBIE:
+            case PIG_ZOMBIE:
+                // pig zombie does different things - but there is no extra data
+                return new ProxyZombie(registry, client, spawnPacket, entityType);
+            case BLAZE:
+                return new ProxyBlaze(registry, client, spawnPacket);
+            case SPIDER:
+            case CAVE_SPIDER:
+                return new ProxySpider(registry, client, spawnPacket, entityType);
+            case CREEPER:
+                return new ProxyCreeper(registry, client, spawnPacket);
+            case GHAST:
+                return new ProxyGhast(registry, client, spawnPacket);
+            case SLIME:
+            case LAVA_SLIME:
+                return new ProxySlime(registry, client, spawnPacket, entityType);
+            case SKELETON:
+                return new ProxySkeleton(registry, client, spawnPacket);
+            case WITCH:
+                return new ProxyWitch(registry, client, spawnPacket);
+            case WITHER:
+                return new ProxyWither(registry, client, spawnPacket);
+            case GUARDIAN:
+                return new ProxyGuardian(registry, client, spawnPacket);
+            case FURNANCE_MINE_CART:
+                return new ProxyFurnanceMinecart(registry, client, spawnPacket);
+            case COMMAND_BLOCK_MINE_CART:
+                return new ProxyCommandBlockMinecart(registry, client, spawnPacket);
+            case MOB_SPAWNER_MINE_CART:
+            case CHEST_MINE_CART:
+            case EMPTY_MINE_CART:
+            case HOPPER_MINE_CART:
+            case TNT_MINE_CART:
+                return new ProxyMinecart(registry, client, spawnPacket, type);
+            default:
+                return new ProxyEntityLiving(registry, client, spawnPacket, entityType);
         }
-
-        if (entityType == LivingEntityType.HORSE) {
-            return new ProxyHorse(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.OZELOT) {
-            return new ProxyOcelot(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.WOLF) {
-            return new ProxyWolf(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.PIG) {
-            return new ProxyPig(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.RABBIT) {
-            return new ProxyRabbit(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.SHEEP) {
-            return new ProxySheep(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.VILLAGER) {
-            return new ProxyVillager(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.ENDER_MAN) {
-            return new ProxyEnderman(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.ZOMBIE || entityType == LivingEntityType.PIG_ZOMBIE) {
-            return new ProxyZombie(registry, client, spawnPacket, entityType);
-        }
-
-        if (entityType == LivingEntityType.BLAZE) {
-            return new ProxyBlaze(registry, client, spawnPacket);
-        }
-
-        if (entityType == LivingEntityType.SPIDER || entityType == LivingEntityType.CAVE_SPIDER) {
-            return new ProxySpider(registry, client, spawnPacket, entityType);
-        }
-
-        if (entityType == LivingEntityType.CREEPER) {
-            return new ProxyCreeper(registry, client, spawnPacket);
-        }
-
-        return new ProxyEntityLiving(registry, client, spawnPacket, entityType);
     }
 
     public static ProxyEntity createEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type, int subType) {
         EntityType entityType = EntityType.fromId(type, subType);
         Preconditions.checkNotNull(entityType, "Cannot create entity from type id " + type + " with sub id " + subType);
 
-        if (entityType == EntityType.ARMOR_STAND) {
-            return new ProxyArmorStand(registry, client, spawnPacket);
+        switch (entityType) {
+            case ARMOR_STAND:
+                return new ProxyArmorStand(registry, client, spawnPacket);
+            case BOAT:
+                return new ProxyBoat(registry, client, spawnPacket);
+            case ITEM:
+                return new ProxyItem(registry, client, spawnPacket);
+            case ARROW:
+                return new ProxyArrow(registry, client, subType, spawnPacket);
+            case FIREWORK:
+                return new ProxyFirework(registry, client, spawnPacket);
+            case ITEM_FRAME:
+                return new ProxyItemFrame(registry, client, spawnPacket);
+            case ENDER_CRYSTAL:
+                return new ProxyEnderCrystal(registry, client, spawnPacket);
+            default:
+                return new ProxyEntity(registry, client, spawnPacket, entityType.getTypeId());
         }
-
-        return new ProxyEntity(registry, client, spawnPacket, entityType.getTypeId());
     }
 
     public boolean isOnGround() {

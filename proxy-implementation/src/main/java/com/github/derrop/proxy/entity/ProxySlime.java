@@ -22,67 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.entity;
+package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.network.Packet;
-import org.jetbrains.annotations.NotNull;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.entity.Slime;
+import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
-public interface Entity {
+public class ProxySlime extends ProxyEntityLiving implements Slime {
 
-    boolean isBurning();
-
-    boolean isSneaking();
-
-    boolean isRiding();
-
-    boolean isSprinting();
-
-    boolean isBlocking();
-
-    boolean isInvisible();
-
-    short getAirTicks();
-
-    boolean isCustomNameVisible();
-
-    boolean isSilent();
-
-    boolean hasCustomName();
-
-    String getCustomName();
-
-    int getType();
-
-    @NotNull
-    Location getLocation();
-
-    void setLocation(@NotNull Location location);
-
-    boolean isOnGround();
-
-    int getEntityId();
-
-    int getDimension();
-
-    @NotNull
-    Unsafe unsafe();
-
-    @NotNull
-    Callable getCallable();
-
-    // todo: unfortunately i forgot to set this for the different entity types
-    // todo: and we should add information about length, width and the head height
-    double getEyeHeight();
-
-    interface Unsafe {
-
-        void setLocationUnchecked(@NotNull Location locationUnchecked);
-
+    protected ProxySlime(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType entityType) {
+        super(registry, client, spawnPacket, entityType);
     }
 
-    interface Callable {
-
-        void handleEntityPacket(@NotNull Packet packet);
+    @Override
+    public byte getSize() {
+        return this.objectList.getByte(16);
     }
 }

@@ -24,65 +24,19 @@
  */
 package com.github.derrop.proxy.api.entity;
 
-import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.network.Packet;
-import org.jetbrains.annotations.NotNull;
+import com.github.derrop.proxy.api.item.ItemStack;
 
-public interface Entity {
+public interface Minecart extends Entity {
 
-    boolean isBurning();
+    int getShakingPower();
 
-    boolean isSneaking();
+    int getShakingDirection();
 
-    boolean isRiding();
+    float getDamage();
 
-    boolean isSprinting();
+    boolean displayBlock();
 
-    boolean isBlocking();
+    ItemStack getBlock();
 
-    boolean isInvisible();
-
-    short getAirTicks();
-
-    boolean isCustomNameVisible();
-
-    boolean isSilent();
-
-    boolean hasCustomName();
-
-    String getCustomName();
-
-    int getType();
-
-    @NotNull
-    Location getLocation();
-
-    void setLocation(@NotNull Location location);
-
-    boolean isOnGround();
-
-    int getEntityId();
-
-    int getDimension();
-
-    @NotNull
-    Unsafe unsafe();
-
-    @NotNull
-    Callable getCallable();
-
-    // todo: unfortunately i forgot to set this for the different entity types
-    // todo: and we should add information about length, width and the head height
-    double getEyeHeight();
-
-    interface Unsafe {
-
-        void setLocationUnchecked(@NotNull Location locationUnchecked);
-
-    }
-
-    interface Callable {
-
-        void handleEntityPacket(@NotNull Packet packet);
-    }
+    int getDisplayBlockOffset();
 }

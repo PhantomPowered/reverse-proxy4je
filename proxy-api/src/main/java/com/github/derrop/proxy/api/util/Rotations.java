@@ -22,9 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.api.util;
 
-import com.github.derrop.proxy.api.util.EulerAngle;
 import com.github.derrop.proxy.api.util.nbt.NBTTagFloat;
 import com.github.derrop.proxy.api.util.nbt.NBTTagList;
 

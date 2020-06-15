@@ -3,7 +3,7 @@ package com.github.derrop.proxy.util.serialize;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.util.Rotations;
+import com.github.derrop.proxy.api.util.Rotations;
 
 import java.util.HashMap;
 import java.util.Map;
