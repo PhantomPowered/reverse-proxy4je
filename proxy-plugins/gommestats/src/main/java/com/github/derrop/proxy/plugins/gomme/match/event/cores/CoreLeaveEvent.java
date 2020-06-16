@@ -20,4 +20,9 @@ public class CoreLeaveEvent extends MatchEvent {
     public Location getCore() {
         return this.core;
     }
+
+    @Override
+    public String toPlainText() {
+        return "Player " + this.player + " is no more near the core at " + this.core.toShortString();
+    }
 }

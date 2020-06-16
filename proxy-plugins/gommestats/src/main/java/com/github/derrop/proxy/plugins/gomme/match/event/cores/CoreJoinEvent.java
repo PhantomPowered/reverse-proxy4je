@@ -21,4 +21,9 @@ public class CoreJoinEvent extends MatchEvent {
     public Location getCore() {
         return this.core;
     }
+
+    @Override
+    public String toPlainText() {
+        return "Player " + this.player + " is near the core at " + this.core.toShortString();
+    }
 }
