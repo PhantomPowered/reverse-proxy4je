@@ -31,6 +31,7 @@ import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 
@@ -43,7 +44,11 @@ public class EntityEffectCache implements PacketCacheHandler {
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{ProtocolIds.ToClient.Play.ENTITY_EFFECT, ProtocolIds.ToClient.Play.REMOVE_ENTITY_EFFECT};
+        return new int[]{
+                ProtocolIds.ToClient.Play.ENTITY_EFFECT,
+                ProtocolIds.ToClient.Play.REMOVE_ENTITY_EFFECT,
+                ProtocolIds.ToClient.Play.ENTITY_DESTROY
+        };
     }
 
     @Override
@@ -65,6 +70,11 @@ public class EntityEffectCache implements PacketCacheHandler {
             }
 
             this.effects.get(effect.getEntityId()).put(effect.getEffectId(), effect);
+        } else if (newPacket instanceof PacketPlayServerEntityDestroy) {
+            PacketPlayServerEntityDestroy destroy = (PacketPlayServerEntityDestroy) newPacket;
+            for (int entityId : destroy.getEntityIds()) {
+                this.effects.remove(entityId);
+            }
         }
     }
 
