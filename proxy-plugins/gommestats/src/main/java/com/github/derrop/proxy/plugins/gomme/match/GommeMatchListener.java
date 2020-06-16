@@ -30,28 +30,23 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
-import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerMoveEvent;
 import com.github.derrop.proxy.api.events.connection.player.PlayerServiceSelectedEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.util.ByteBufUtils;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.events.GommeServerSwitchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndDisconnectedEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndLeftEvent;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Arrays;
@@ -92,49 +87,27 @@ public class GommeMatchListener {
     }
 
     @Listener
-    public void handlePluginMessage(PluginMessageEvent event) {
-        if (event.getDirection() != ProtocolDirection.TO_CLIENT || !event.getTag().equals("GoMod")) {
+    public void handleMatchJoin(GommeServerSwitchEvent event) {
+        ServiceConnection connection = event.getConnection();
+
+        this.matchManager.deleteMatch(connection, new MatchEndLeftEvent());
+
+        if (this.matchManager.getMatch(connection) != null) {
             return;
         }
 
-        ServiceConnection connection = (ServiceConnection) event.getConnection();
-        ByteBuf buf = Unpooled.wrappedBuffer(event.getData());
+        GommeGameMode gameMode = event.getGameMode();
 
-        JsonObject jsonObject = JsonParser.parseString(ByteBufUtils.readString(buf)).getAsJsonObject();
+        this.matchManager.createMatch(new MatchInfo(this.matchManager, connection, gameMode, event.getMatchId()));
 
-        String action = jsonObject.get("action").getAsString().toUpperCase();
-        JsonObject data = jsonObject.has("data") ? jsonObject.get("data").getAsJsonObject() : null;
-
-        if (data != null && action.equals("JOIN_SERVER")) {
-            String serverType = data.get("cloud_type").getAsString().toUpperCase();
-            String matchId = data.get("id").getAsString();
-
-            this.matchManager.deleteMatch((ServiceConnection) event.getConnection(), new MatchEndLeftEvent());
-
-            if (this.matchManager.getMatch(connection) != null) {
-                return;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
             }
-
-            GommeGameMode gameMode = GommeGameMode.getByGommeName(serverType);
-            if (gameMode == null) {
-                return;
-            }
-
-            this.matchManager.createMatch(new MatchInfo(
-                    this.matchManager,
-                    (ServiceConnection) event.getConnection(),
-                    gameMode,
-                    matchId
-            ));
-            Executors.newSingleThreadExecutor().execute(() -> {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                }
-                System.out.println("MatchBegin on " + gameMode + ": " + Arrays.stream(((ServiceConnection) event.getConnection()).getWorldDataProvider().getOnlinePlayers()).map(playerInfo -> playerInfo.getUniqueId() + "#" + playerInfo.getUsername()).collect(Collectors.joining(", ")));
-            });
-        }
+            System.out.println("MatchBegin on " + gameMode + ": " + Arrays.stream(event.getConnection().getWorldDataProvider().getOnlinePlayers()).map(playerInfo -> playerInfo.getUniqueId() + "#" + playerInfo.getUsername()).collect(Collectors.joining(", ")));
+        });
     }
 
     @Listener

@@ -33,6 +33,7 @@ import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.command.CommandNicklist;
 import com.github.derrop.proxy.plugins.gomme.command.CommandSpectatorlist;
+import com.github.derrop.proxy.plugins.gomme.listener.GommeEventListener;
 import com.github.derrop.proxy.plugins.gomme.match.GommeMatchListener;
 
 @Plugin(
@@ -50,6 +51,7 @@ public class GommeStatsPlugin {
 
         //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(container, new TeamParser(core));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeEventListener());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getSpectatorDetector());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getNickDetector());
 
