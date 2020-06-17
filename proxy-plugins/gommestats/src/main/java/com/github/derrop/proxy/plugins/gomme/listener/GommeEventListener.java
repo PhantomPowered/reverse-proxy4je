@@ -28,11 +28,9 @@ public class GommeEventListener {
 
         String action = jsonObject.get("action").getAsString().toUpperCase();
         JsonObject data = jsonObject.has("data") ? jsonObject.get("data").getAsJsonObject() : null;
-        System.out.println(action + " " + jsonObject);
         if (data != null && action.equals("JOIN_SERVER")) {
             String serverType = data.get("cloud_type").getAsString().toUpperCase();
             String matchId = data.get("id").getAsString();
-            System.out.println(serverType);
 
             GommeGameMode gameMode = GommeGameMode.getByGommeName(serverType);
             if (gameMode == null) {
