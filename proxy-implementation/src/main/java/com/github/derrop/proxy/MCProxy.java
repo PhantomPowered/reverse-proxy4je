@@ -57,7 +57,6 @@ import com.github.derrop.proxy.config.JsonConfiguration;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
-import com.github.derrop.proxy.connection.handler.NameUUIDRewritePacketHandler;
 import com.github.derrop.proxy.connection.handler.PingPacketHandler;
 import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
@@ -118,7 +117,6 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ClientPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ServerPacketHandler());
-        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new NameUUIDRewritePacketHandler());
 
         System.out.println("Loading configuration...");
         this.serviceRegistry.getProviderUnchecked(Configuration.class).load();

@@ -47,7 +47,7 @@ public class CommandInfo extends NonTabCompleteableCommandCallback {
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
         if (commandSender instanceof Player) {
             ServiceConnection client = ((Player) commandSender).getConnectedClient();
-            commandSender.sendMessage("SHOW-REAL-NAME§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
+            commandSender.sendMessage("§7Connected with client: " + (client == null ? "§cNONE" : "§e" + client.getName() + " §7on §e" + client.getServerAddress()));
         }
 
         ServiceConnector connector = this.registry.getProviderUnchecked(ServiceConnector.class);

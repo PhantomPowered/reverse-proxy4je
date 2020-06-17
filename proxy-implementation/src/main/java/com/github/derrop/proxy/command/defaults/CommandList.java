@@ -52,7 +52,7 @@ public class CommandList extends NonTabCompleteableCommandCallback {
         commandSender.sendMessage("Connected clients: (" + clients.size() + ")");
 
         for (ServiceConnection onlineClient : clients) {
-            commandSender.sendMessage("SHOW-REAL-NAME- §e" + onlineClient.getName() + " §7(" + (onlineClient.getPlayer() != null ? "§cnot free" : "§afree") + "§7); Connected on: " + onlineClient.getServerAddress());
+            commandSender.sendMessage("- §e" + onlineClient.getName() + " §7(" + (onlineClient.getPlayer() != null ? "§cnot free" : "§afree") + "§7); Connected on: " + onlineClient.getServerAddress());
         }
 
         commandSender.sendMessage(" ");
@@ -61,7 +61,7 @@ public class CommandList extends NonTabCompleteableCommandCallback {
         commandSender.sendMessage("Connected users: (" + players.size() + ")");
 
         for (Player player : players) {
-            commandSender.sendMessage("SHOW-REAL-NAME- §e" + player.getName() + " §7(on: " + (player.getConnectedClient() == null ? "§cnone" : "§7" + player.getConnectedClient().getName()) + "§7)");
+            commandSender.sendMessage("- §e" + player.getName() + " §7(on: " + (player.getConnectedClient() == null ? "§cnone" : "§7" + player.getConnectedClient().getName()) + "§7)");
         }
 
         return CommandResult.END;
