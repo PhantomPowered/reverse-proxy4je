@@ -31,6 +31,7 @@ public enum GommeGameMode {
     //LOBBY("Lobby", "LOBBY", "compass"), Lobby is not a GameMode
     //CITY_BUILD("CityBuild", "", "workbench"), 1.13.2+ only
     CORES("Cores", "CORES", "beacon"),
+    CWCORES("CWCores", "CWCORES", "beacon"),
     JUMP_LEAGUE("JumpLeague", "JL", "diamond_boots"),
     TTT("TTT", "TTT", "stick"),
     SPEED_UHC("SpeedUHC", "SPEEDUHC", "golden_apple"),
