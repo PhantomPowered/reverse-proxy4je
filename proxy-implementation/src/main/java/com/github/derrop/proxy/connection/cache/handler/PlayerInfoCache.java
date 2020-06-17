@@ -58,7 +58,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
 
     private final Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
 
-    private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new ArrayList<>(); // TODO Remove players when despawn packet received?
+    private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new CopyOnWriteArrayList<>(); // TODO Remove players when despawn packet received?
 
     private PacketCache packetCache;
 
