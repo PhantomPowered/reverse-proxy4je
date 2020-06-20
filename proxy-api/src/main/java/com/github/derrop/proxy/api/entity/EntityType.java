@@ -137,7 +137,7 @@ public enum EntityType {
         }
 
         for (EntityType value : values()) {
-            if (subId == 0 && value.getSubId() == -1 && value.getTypeId() == id) {
+            if (subId == 0 && (value.getSubId() == -1 || value.getSubId() == 0) && value.getTypeId() == id) {
                 return value;
             }
 
