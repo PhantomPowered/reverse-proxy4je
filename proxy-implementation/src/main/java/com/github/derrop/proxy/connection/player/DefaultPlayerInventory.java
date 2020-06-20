@@ -1,9 +1,10 @@
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerCloseWindow;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
@@ -107,7 +108,7 @@ public class DefaultPlayerInventory implements PlayerInventory {
             return;
         }
         if (item == null) {
-            item = ItemStack.AIR;
+            item = ProxyItemStack.AIR;
         }
         this.content[slot] = item;
         if (this.opened) {
@@ -118,6 +119,6 @@ public class DefaultPlayerInventory implements PlayerInventory {
     @Override
     public @NotNull ItemStack getItem(int slot) {
         ItemStack item = slot < 0 || slot >= this.content.length ? null : this.content[slot];
-        return item != null ? item : ItemStack.AIR;
+        return item != null ? item : ProxyItemStack.AIR;
     }
 }

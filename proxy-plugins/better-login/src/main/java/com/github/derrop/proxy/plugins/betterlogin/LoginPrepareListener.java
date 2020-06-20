@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.plugins.betterlogin.connection.LoginServiceConnection;
 
 public class LoginPrepareListener {
@@ -16,7 +17,7 @@ public class LoginPrepareListener {
     public static final ItemStack[] PARENT_INVENTORY = new ItemStack[63];
 
     static {
-        PARENT_INVENTORY[1] = new ItemStack(Material.BARRIER.getId(), 1, 0, new NBTTagCompound());
+        PARENT_INVENTORY[1] = new ProxyItemStack(Material.BARRIER.getId(), 1, 0, new NBTTagCompound());
         //PARENT_INVENTORY[3] = new ItemStack(Material.COMPASS.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cWatch replay")));
        // PARENT_INVENTORY[5] = new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cConnect with client")));
         //   PARENT_INVENTORY[7] = new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§7Spectate player")));

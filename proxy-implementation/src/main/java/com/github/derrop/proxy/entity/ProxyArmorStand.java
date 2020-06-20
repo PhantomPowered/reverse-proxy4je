@@ -33,6 +33,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.EulerAngle;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
+import com.github.derrop.proxy.item.ProxyItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
@@ -43,7 +44,7 @@ public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
 
     @Override
     public @NotNull ItemStack getItem(@NotNull EquipmentSlot slot) {
-        return this.equipment.getOrDefault(slot.getSlotId(), ItemStack.AIR);
+        return this.equipment.getOrDefault(slot.getSlotId(), ProxyItemStack.AIR);
     }
 
     @Override

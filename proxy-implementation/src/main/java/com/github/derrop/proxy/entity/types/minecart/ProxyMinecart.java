@@ -32,6 +32,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.ProxyEntity;
+import com.github.derrop.proxy.item.ProxyItemStack;
 
 public class ProxyMinecart extends ProxyEntity implements Minecart {
 
@@ -67,7 +68,7 @@ public class ProxyMinecart extends ProxyEntity implements Minecart {
             return null;
         }
 
-        return new ItemStack(material.getId(), 1, this.objectList.getInt(20) & 65280, new NBTTagCompound());
+        return new ProxyItemStack(material.getId(), 1, this.objectList.getInt(20) & 65280, new NBTTagCompound());
     }
 
     @Override

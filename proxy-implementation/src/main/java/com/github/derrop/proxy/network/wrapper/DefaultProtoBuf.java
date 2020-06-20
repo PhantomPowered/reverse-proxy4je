@@ -24,13 +24,14 @@
  */
 package com.github.derrop.proxy.network.wrapper;
 
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.exception.ComponentTooLargeException;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.util.nbt.CompressedStreamTools;
 import com.github.derrop.proxy.api.util.nbt.NBTSizeTracker;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.item.ProxyItemStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufInputStream;
@@ -234,9 +235,9 @@ public final class DefaultProtoBuf extends ProtoBuf {
             int amount = this.readByte();
             int meta = this.readShort();
 
-            return new ItemStack(itemId, amount, meta, this.readNBTTagCompound());
+            return new ProxyItemStack(itemId, amount, meta, this.readNBTTagCompound());
         }
-        return ItemStack.AIR;
+        return ProxyItemStack.AIR;
     }
 
     @Override

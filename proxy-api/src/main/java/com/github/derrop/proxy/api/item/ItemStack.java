@@ -29,17 +29,15 @@ import com.google.errorprone.annotations.concurrent.LazyInit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemStack {
+public abstract class ItemStack {
 
-    public static final ItemStack AIR = new ItemStack(0, 0, 0, null);
-
-    private int itemId;
-    private final int amount;
-    private final int meta;
-    private final NBTTagCompound nbt;
+    protected int itemId;
+    protected final int amount;
+    protected final int meta;
+    protected final NBTTagCompound nbt;
 
     @LazyInit
-    private @Nullable ItemMeta itemMeta;
+    protected @Nullable ItemMeta itemMeta;
 
     public ItemStack(int itemId, int amount, int meta, NBTTagCompound nbt) {
         this.itemId = itemId;
@@ -70,13 +68,7 @@ public class ItemStack {
     }
 
     @Nullable
-    public ItemMeta getItemMeta() {
-        if (this.itemMeta == null && this.nbt != null) {
-            this.itemMeta = new ItemMeta(this.nbt);
-        }
-
-        return itemMeta;
-    }
+    public abstract ItemMeta getItemMeta();
 
     public void setItemMeta(@NotNull ItemMeta itemMeta) {
         this.itemMeta = itemMeta;

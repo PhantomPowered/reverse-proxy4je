@@ -22,12 +22,12 @@ import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.events.connection.player.interact.PlayerAttackEntityEvent;
 import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInteractAtEntityEvent;
 import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInteractEntityEvent;
-import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
+import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.client.*;
@@ -200,7 +200,7 @@ public class ClientPacketHandler {
         PlayerInventoryClickEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerInventoryClickEvent(player, packet.getSlot(), click));
         if (event.isCancelled()) {
-            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ItemStack.AIR));
+            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ProxyItemStack.AIR));
             player.sendPacket(new PacketPlayServerSetSlot(player.getInventory().getWindowId(), packet.getSlot(), player.getInventory().getItem(packet.getSlot())));
             throw CancelProceedException.INSTANCE;
         }

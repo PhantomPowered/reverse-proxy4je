@@ -25,12 +25,13 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
@@ -45,10 +46,10 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     private static final ItemStack[] EMPTY_INVENTORY = new ItemStack[45];
 
     static {
-        Arrays.fill(EMPTY_INVENTORY, ItemStack.AIR);
+        Arrays.fill(EMPTY_INVENTORY, ProxyItemStack.AIR);
     }
 
-    private Map<Integer, ItemStack> itemsBySlot = new HashMap<>();
+    private final Map<Integer, ItemStack> itemsBySlot = new HashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -93,7 +94,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
         this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
             ItemStack[] items = new ItemStack[count + 1];
             for (int slot = 0; slot < items.length; slot++) {
-                items[slot] = this.itemsBySlot.getOrDefault(slot, ItemStack.AIR);
+                items[slot] = this.itemsBySlot.getOrDefault(slot, ProxyItemStack.AIR);
             }
             con.sendPacket(new PacketPlayServerWindowItems(WINDOW_ID, items));
         });
