@@ -38,7 +38,7 @@ import java.util.function.BiConsumer;
 
 public class AccountBiConsumer implements BiConsumer<MCServiceCredentials, NetworkAddress> {
 
-    private MCProxy proxy;
+    private final MCProxy proxy;
 
     public AccountBiConsumer(MCProxy proxy) {
         this.proxy = proxy;

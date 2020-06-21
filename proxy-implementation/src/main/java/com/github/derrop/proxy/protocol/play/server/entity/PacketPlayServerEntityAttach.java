@@ -29,10 +29,12 @@ public class PacketPlayServerEntityAttach implements Packet, EntityPacket {
         this.leash = leash;
     }
 
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

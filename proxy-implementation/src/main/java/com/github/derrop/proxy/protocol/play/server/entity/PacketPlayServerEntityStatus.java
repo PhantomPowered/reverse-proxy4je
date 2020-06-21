@@ -48,6 +48,7 @@ public class PacketPlayServerEntityStatus implements Packet, EntityPacket {
         return ProtocolIds.ToClient.Play.ENTITY_STATUS;
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
@@ -56,6 +57,7 @@ public class PacketPlayServerEntityStatus implements Packet, EntityPacket {
         return this.status;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

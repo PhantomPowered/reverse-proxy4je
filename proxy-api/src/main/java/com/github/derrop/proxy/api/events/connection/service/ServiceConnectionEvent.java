@@ -37,6 +37,7 @@ public class ServiceConnectionEvent extends ConnectionEvent {
         this.connection = connection;
     }
 
+    @Override
     @NotNull
     public ServiceConnection getConnection() {
         return this.connection;

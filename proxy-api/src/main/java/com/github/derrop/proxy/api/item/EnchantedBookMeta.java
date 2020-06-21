@@ -32,6 +32,7 @@ public interface EnchantedBookMeta extends ItemMeta {
 
     boolean hasEnchantments();
 
+    @Override
     @NotNull Map<Enchantment, Integer> getEnchantments();
 
     void removeEnchantment(@NotNull Enchantment enchantment);

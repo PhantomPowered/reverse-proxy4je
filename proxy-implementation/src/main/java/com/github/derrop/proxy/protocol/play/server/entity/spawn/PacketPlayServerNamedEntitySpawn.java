@@ -78,6 +78,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         return ProtocolIds.ToClient.Play.NAMED_ENTITY_SPAWN;
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
@@ -86,22 +87,27 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         return this.playerId;
     }
 
+    @Override
     public int getX() {
         return this.x;
     }
 
+    @Override
     public int getY() {
         return this.y;
     }
 
+    @Override
     public int getZ() {
         return this.z;
     }
 
+    @Override
     public byte getYaw() {
         return this.yaw;
     }
 
+    @Override
     public byte getPitch() {
         return this.pitch;
     }
@@ -114,6 +120,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         return this.objects;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }
@@ -122,22 +129,27 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.playerId = playerId;
     }
 
+    @Override
     public void setX(int x) {
         this.x = x;
     }
 
+    @Override
     public void setY(int y) {
         this.y = y;
     }
 
+    @Override
     public void setZ(int z) {
         this.z = z;
     }
 
+    @Override
     public void setYaw(byte yaw) {
         this.yaw = yaw;
     }
 
+    @Override
     public void setPitch(byte pitch) {
         this.pitch = pitch;
     }

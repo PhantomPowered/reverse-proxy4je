@@ -73,18 +73,22 @@ public class PacketPlayServerSpawnEntityWeather implements PositionedPacket, Ent
         return ProtocolIds.ToClient.Play.SPAWN_ENTITY_WEATHER;
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
 
+    @Override
     public int getX() {
         return this.x;
     }
 
+    @Override
     public int getY() {
         return this.y;
     }
 
+    @Override
     public int getZ() {
         return this.z;
     }
@@ -93,18 +97,22 @@ public class PacketPlayServerSpawnEntityWeather implements PositionedPacket, Ent
         return this.type;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }
 
+    @Override
     public void setX(int x) {
         this.x = x;
     }
 
+    @Override
     public void setY(int y) {
         this.y = y;
     }
 
+    @Override
     public void setZ(int z) {
         this.z = z;
     }

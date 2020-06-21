@@ -47,10 +47,12 @@ public class PacketPlayServerCamera implements Packet, EntityPacket {
         return ProtocolIds.ToClient.Play.CAMERA;
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

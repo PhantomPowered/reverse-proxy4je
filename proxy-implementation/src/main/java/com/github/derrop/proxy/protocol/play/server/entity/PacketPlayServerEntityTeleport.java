@@ -72,6 +72,7 @@ public class PacketPlayServerEntityTeleport implements Packet, EntityPacket {
         return ProtocolIds.ToClient.Play.ENTITY_TELEPORT;
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
@@ -100,6 +101,7 @@ public class PacketPlayServerEntityTeleport implements Packet, EntityPacket {
         return this.onGround;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

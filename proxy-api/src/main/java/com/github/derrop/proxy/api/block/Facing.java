@@ -390,6 +390,7 @@ public enum Facing {
             return this.name;
         }
 
+        @Override
         public boolean apply(Facing p_apply_1_) {
             return p_apply_1_ != null && p_apply_1_.getAxis() == this;
         }
@@ -450,10 +451,12 @@ public enum Facing {
             return aenumfacing[rand.nextInt(aenumfacing.length)];
         }
 
+        @Override
         public boolean apply(Facing p_apply_1_) {
             return p_apply_1_ != null && p_apply_1_.getAxis().getPlane() == this;
         }
 
+        @Override
         public Iterator<Facing> iterator() {
             return Iterators.forArray(this.facings());
         }

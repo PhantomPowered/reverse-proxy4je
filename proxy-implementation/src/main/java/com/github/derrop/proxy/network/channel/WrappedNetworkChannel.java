@@ -50,6 +50,7 @@ public interface WrappedNetworkChannel extends NetworkChannel {
         this.getWrappedNetworkChannel().setProtocolState(state);
     }
 
+    @Override
     @NotNull
     default Task<Boolean> writeWithResult(@NotNull Object packet) {
         return this.getWrappedNetworkChannel().writeWithResult(packet);
