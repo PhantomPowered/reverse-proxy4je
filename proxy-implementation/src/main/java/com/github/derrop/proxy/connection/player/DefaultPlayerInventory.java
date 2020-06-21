@@ -35,10 +35,12 @@ public class DefaultPlayerInventory implements PlayerInventory {
         this.opened = opened;
     }
 
+    @Override
     public byte getWindowId() {
         return windowId;
     }
 
+    @Override
     public void setWindowId(byte windowId) {
         this.windowId = windowId;
     }

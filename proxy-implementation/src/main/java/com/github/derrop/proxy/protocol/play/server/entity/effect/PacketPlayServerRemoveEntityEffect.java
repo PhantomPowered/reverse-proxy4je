@@ -61,6 +61,7 @@ public class PacketPlayServerRemoveEntityEffect implements Packet, EntityPacket 
         protoBuf.writeByte(this.effectId);
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
@@ -69,6 +70,7 @@ public class PacketPlayServerRemoveEntityEffect implements Packet, EntityPacket 
         return this.effectId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

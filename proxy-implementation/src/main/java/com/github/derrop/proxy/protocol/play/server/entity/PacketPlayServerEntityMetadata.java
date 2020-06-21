@@ -52,6 +52,7 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
         return ProtocolIds.ToClient.Play.ENTITY_METADATA;
     }
 
+    @Override
     public int getEntityId() {
         return this.entityId;
     }
@@ -60,6 +61,7 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
         return objects;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

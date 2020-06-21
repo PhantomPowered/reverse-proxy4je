@@ -59,6 +59,7 @@ public class ScorePlayerTeam extends Team {
     /**
      * Retrieve the name by which this team is registered in the scoreboard
      */
+    @Override
     public String getRegisteredName() {
         return this.registeredName;
     }
@@ -76,6 +77,7 @@ public class ScorePlayerTeam extends Team {
         }
     }
 
+    @Override
     public Set<String> getMembershipCollection() {
         return this.membershipSet;
     }
@@ -108,6 +110,7 @@ public class ScorePlayerTeam extends Team {
         this.theScoreboard.sendTeamUpdate(this);
     }
 
+    @Override
     public String formatString(String input) {
         return this.getColorPrefix() + input + this.getColorSuffix();
     }
@@ -119,6 +122,7 @@ public class ScorePlayerTeam extends Team {
         return p_96667_0_ == null ? p_96667_1_ : p_96667_0_.formatString(p_96667_1_);
     }
 
+    @Override
     public boolean getAllowFriendlyFire() {
         return this.allowFriendlyFire;
     }
@@ -128,6 +132,7 @@ public class ScorePlayerTeam extends Team {
         this.theScoreboard.sendTeamUpdate(this);
     }
 
+    @Override
     public boolean getSeeFriendlyInvisiblesEnabled() {
         return this.canSeeFriendlyInvisibles;
     }
@@ -137,10 +142,12 @@ public class ScorePlayerTeam extends Team {
         this.theScoreboard.sendTeamUpdate(this);
     }
 
+    @Override
     public EnumVisible getNameTagVisibility() {
         return this.nameTagVisibility;
     }
 
+    @Override
     public EnumVisible getDeathMessageVisibility() {
         return this.deathMessageVisibility;
     }

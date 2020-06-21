@@ -24,14 +24,14 @@
  */
 package com.github.derrop.proxy.api.util.nbt;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
 public class NBTTagInt extends NBTBase.NBTPrimitive {
-    /**
-     * The integer value for the tag.
-     */
+
     private int data;
 
     NBTTagInt() {
@@ -41,21 +41,18 @@ public class NBTTagInt extends NBTBase.NBTPrimitive {
         this.data = data;
     }
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    void write(DataOutput output) throws IOException {
+    @Override
+    public void write(DataOutput output) throws IOException {
         output.writeInt(this.data);
     }
 
-    void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+    @Override
+    public void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
         sizeTracker.read(96L);
         this.data = input.readInt();
     }
 
-    /**
-     * Gets the type byte for the tag.
-     */
+    @Override
     public byte getId() {
         return (byte) 3;
     }
@@ -64,16 +61,15 @@ public class NBTTagInt extends NBTBase.NBTPrimitive {
         return "" + this.data;
     }
 
-    /**
-     * Creates a clone of the tag.
-     */
+    @Override
     public NBTBase copy() {
         return new NBTTagInt(this.data);
     }
 
-    public boolean equals(Object p_equals_1_) {
-        if (super.equals(p_equals_1_)) {
-            NBTTagInt nbttagint = (NBTTagInt) p_equals_1_;
+    @Contract(value = "null -> false", pure = true)
+    public boolean equals(Object other) {
+        if (super.equals(other)) {
+            NBTTagInt nbttagint = (NBTTagInt) other;
             return this.data == nbttagint.data;
         } else {
             return false;
@@ -84,26 +80,32 @@ public class NBTTagInt extends NBTBase.NBTPrimitive {
         return super.hashCode() ^ this.data;
     }
 
+    @Override
     public long getLong() {
         return this.data;
     }
 
+    @Override
     public int getInt() {
         return this.data;
     }
 
+    @Override
     public short getShort() {
         return (short) (this.data & 65535);
     }
 
+    @Override
     public byte getByte() {
         return (byte) (this.data & 255);
     }
 
+    @Override
     public double getDouble() {
         return this.data;
     }
 
+    @Override
     public float getFloat() {
         return (float) this.data;
     }

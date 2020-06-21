@@ -22,10 +22,12 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
     public PacketPlayServerEntityEquipment() {
     }
 
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

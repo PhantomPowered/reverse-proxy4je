@@ -35,18 +35,22 @@ public class ScoreDummyCriteria implements IScoreObjectiveCriteria {
         IScoreObjectiveCriteria.INSTANCES.put(name, this);
     }
 
+    @Override
     public String getName() {
         return this.dummyName;
     }
 
+    @Override
     public int getScoreForPlayers(List<UUID> p_96635_1_) {
         return 0;
     }
 
+    @Override
     public boolean isReadOnly() {
         return false;
     }
 
+    @Override
     public IScoreObjectiveCriteria.EnumRenderType getRenderType() {
         return IScoreObjectiveCriteria.EnumRenderType.INTEGER;
     }

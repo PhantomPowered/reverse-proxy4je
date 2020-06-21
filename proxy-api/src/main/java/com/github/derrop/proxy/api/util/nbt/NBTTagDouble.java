@@ -25,15 +25,14 @@
 package com.github.derrop.proxy.api.util.nbt;
 
 import com.github.derrop.proxy.api.util.MathHelper;
+import org.jetbrains.annotations.Contract;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
 public class NBTTagDouble extends NBTBase.NBTPrimitive {
-    /**
-     * The double value for the tag.
-     */
+
     private double data;
 
     NBTTagDouble() {
@@ -43,21 +42,18 @@ public class NBTTagDouble extends NBTBase.NBTPrimitive {
         this.data = data;
     }
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    void write(DataOutput output) throws IOException {
+    @Override
+    public void write(DataOutput output) throws IOException {
         output.writeDouble(this.data);
     }
 
-    void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+    @Override
+    public void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
         sizeTracker.read(128L);
         this.data = input.readDouble();
     }
 
-    /**
-     * Gets the type byte for the tag.
-     */
+    @Override
     public byte getId() {
         return (byte) 6;
     }
@@ -66,16 +62,15 @@ public class NBTTagDouble extends NBTBase.NBTPrimitive {
         return "" + this.data + "d";
     }
 
-    /**
-     * Creates a clone of the tag.
-     */
+    @Override
     public NBTBase copy() {
         return new NBTTagDouble(this.data);
     }
 
-    public boolean equals(Object p_equals_1_) {
-        if (super.equals(p_equals_1_)) {
-            NBTTagDouble nbttagdouble = (NBTTagDouble) p_equals_1_;
+    @Contract(value = "null -> false", pure = true)
+    public boolean equals(Object other) {
+        if (super.equals(other)) {
+            NBTTagDouble nbttagdouble = (NBTTagDouble) other;
             return this.data == nbttagdouble.data;
         } else {
             return false;
@@ -87,26 +82,32 @@ public class NBTTagDouble extends NBTBase.NBTPrimitive {
         return super.hashCode() ^ (int) (i ^ i >>> 32);
     }
 
+    @Override
     public long getLong() {
         return (long) Math.floor(this.data);
     }
 
+    @Override
     public int getInt() {
         return MathHelper.floor_double(this.data);
     }
 
+    @Override
     public short getShort() {
         return (short) (MathHelper.floor_double(this.data) & 65535);
     }
 
+    @Override
     public byte getByte() {
         return (byte) (MathHelper.floor_double(this.data) & 255);
     }
 
+    @Override
     public double getDouble() {
         return this.data;
     }
 
+    @Override
     public float getFloat() {
         return (float) this.data;
     }

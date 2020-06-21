@@ -401,6 +401,7 @@ public class Location {
         return Objects.hash(x, y, z, yaw, pitch, onGround);
     }
 
+    @Override
     @NotNull
     public Location clone() {
         try {

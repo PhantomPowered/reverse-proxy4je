@@ -63,6 +63,7 @@ public class DefaultServiceConnector implements ServiceConnector {
         this.reconnectProfiles.put(uniqueId, new ReconnectProfile(uniqueId, targetUniqueId));
     }
 
+    @Override
     @NotNull
     public Optional<? extends ServiceConnection> getClientByEmail(String email) {
         return this.onlineClients.stream()
@@ -71,11 +72,13 @@ public class DefaultServiceConnector implements ServiceConnector {
                 .findFirst();
     }
 
+    @Override
     @NotNull
     public Collection<BasicServiceConnection> getOnlineClients() {
         return this.onlineClients;
     }
 
+    @Override
     @NotNull
     public Collection<ServiceConnection> getFreeClients() {
         return this.getOnlineClients().stream().filter(proxyClient -> proxyClient.getPlayer() == null).collect(Collectors.toList());

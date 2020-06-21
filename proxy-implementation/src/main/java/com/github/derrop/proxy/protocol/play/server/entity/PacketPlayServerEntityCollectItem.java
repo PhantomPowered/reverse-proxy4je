@@ -27,10 +27,12 @@ public class PacketPlayServerEntityCollectItem implements Packet, EntityPacket {
         this.collectedItemEntityId = collectedItemEntityId;
     }
 
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

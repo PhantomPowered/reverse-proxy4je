@@ -52,26 +52,32 @@ public class BasicPlayerInfo implements PlayerInfo {
         this.displayName = displayName;
     }
 
+    @Override
     public UUID getUniqueId() {
         return this.uniqueId;
     }
 
+    @Override
     public String getUsername() {
         return this.username;
     }
 
+    @Override
     public String[][] getProperties() {
         return this.properties;
     }
 
+    @Override
     public GameMode getGamemode() {
         return this.gamemode;
     }
 
+    @Override
     public int getPing() {
         return this.ping;
     }
 
+    @Override
     public String getDisplayName() {
         return this.displayName;
     }

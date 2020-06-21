@@ -225,6 +225,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
         }
     }
 
+    @Override
     public boolean isOnGround() {
         return this.onGround;
     }

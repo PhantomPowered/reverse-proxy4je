@@ -26,10 +26,12 @@ public class PacketPlayClientEntityAction implements Packet, EntityPacket {
     public PacketPlayClientEntityAction() {
     }
 
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

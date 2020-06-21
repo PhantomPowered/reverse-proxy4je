@@ -24,15 +24,15 @@
  */
 package com.github.derrop.proxy.api.util.nbt;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class NBTTagByteArray extends NBTBase {
-    /**
-     * The byte array stored in the tag.
-     */
+
     private byte[] data;
 
     NBTTagByteArray() {
@@ -42,15 +42,14 @@ public class NBTTagByteArray extends NBTBase {
         this.data = data;
     }
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    void write(DataOutput output) throws IOException {
+    @Override
+    public void write(DataOutput output) throws IOException {
         output.writeInt(this.data.length);
         output.write(this.data);
     }
 
-    void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
+    @Override
+    public void read(DataInput input, int depth, NBTSizeTracker sizeTracker) throws IOException {
         sizeTracker.read(192L);
         int i = input.readInt();
         sizeTracker.read(8 * i);
@@ -58,9 +57,7 @@ public class NBTTagByteArray extends NBTBase {
         input.readFully(this.data);
     }
 
-    /**
-     * Gets the type byte for the tag.
-     */
+    @Override
     public byte getId() {
         return (byte) 7;
     }
@@ -69,17 +66,16 @@ public class NBTTagByteArray extends NBTBase {
         return "[" + this.data.length + " bytes]";
     }
 
-    /**
-     * Creates a clone of the tag.
-     */
+    @Override
     public NBTBase copy() {
         byte[] abyte = new byte[this.data.length];
         System.arraycopy(this.data, 0, abyte, 0, this.data.length);
         return new NBTTagByteArray(abyte);
     }
 
-    public boolean equals(Object p_equals_1_) {
-        return super.equals(p_equals_1_) && Arrays.equals(this.data, ((NBTTagByteArray) p_equals_1_).data);
+    @Contract(value = "null -> false", pure = true)
+    public boolean equals(Object other) {
+        return super.equals(other) && Arrays.equals(this.data, ((NBTTagByteArray) other).data);
     }
 
     public int hashCode() {

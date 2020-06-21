@@ -87,6 +87,7 @@ public abstract class ProtoBuf extends ByteBuf implements Cloneable {
 
     public abstract void writeUniqueId(@NotNull UUID uniqueId);
 
+    @Override
     @NotNull
     public abstract ProtoBuf clone();
 }

@@ -145,5 +145,6 @@ public interface DatabaseDriver extends AutoCloseable {
     /**
      * Closes the current connection to the database
      */
+    @Override
     void close();
 }

@@ -50,10 +50,12 @@ public class PacketPlayServerEntityVelocity implements Packet, EntityPacket {
     public PacketPlayServerEntityVelocity() {
     }
 
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }

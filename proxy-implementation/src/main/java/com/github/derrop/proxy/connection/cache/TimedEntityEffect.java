@@ -49,30 +49,37 @@ public class TimedEntityEffect implements EntityEffect {
         return this.entityId;
     }
 
+    @Override
     public byte getEffectId() {
         return this.effectId;
     }
 
+    @Override
     public byte getAmplifier() {
         return this.amplifier;
     }
 
+    @Override
     public long getTimeout() {
         return this.timeout;
     }
 
+    @Override
     public boolean isInfinite() {
         return this.timeout == -1;
     }
 
+    @Override
     public boolean isHidingParticles() {
         return this.hideParticles;
     }
 
+    @Override
     public int getInitialDurationTicks() {
         return this.initialDurationTicks;
     }
 
+    @Override
     public boolean isValid() {
         return this.timeout == -1 || this.timeout >= System.currentTimeMillis();
     }

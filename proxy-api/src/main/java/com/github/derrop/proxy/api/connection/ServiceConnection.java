@@ -122,6 +122,7 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     boolean isReScheduleOnFailure();
 
+    @Override
     boolean isConnected();
 
     void unregister();
