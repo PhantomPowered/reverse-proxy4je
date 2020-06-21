@@ -56,11 +56,11 @@ public enum MessageType {
     CLAN_INFO_NAME(),
     CLAN_INFO_TAG(),
     CLAN_INFO_GENERAL_MEMBER_COUNT(),
-    CLAN_INFO_CLAN_PAGE(),
     CLAN_INFO_LEADER_COUNT(),
     CLAN_INFO_MODERATOR_COUNT(),
     CLAN_INFO_MEMBER_COUNT(),
-    CLAN_INFO_USER();
+    CLAN_INFO_USER(),
+    CLAN_INFO_MORE();
 
     private final GommeServerType[] availableGameModes;
 

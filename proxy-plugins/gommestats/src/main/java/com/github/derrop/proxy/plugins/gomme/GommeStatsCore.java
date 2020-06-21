@@ -25,9 +25,10 @@
 package com.github.derrop.proxy.plugins.gomme;
 
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.gomme.clan.parser.ClanParser;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
 import com.github.derrop.proxy.plugins.gomme.player.PlayerDataProvider;
-import com.github.derrop.proxy.plugins.gomme.player.clan.ClanInfoProvider;
+import com.github.derrop.proxy.plugins.gomme.clan.ClanInfoProvider;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 
 // TODO SheepTimer: DisplayName or if that doesn't work properly ArmorStand above the sheep
@@ -36,6 +37,7 @@ public class GommeStatsCore {
     private final MatchManager matchManager;
     private final PlayerDataProvider playerDataProvider;
     private final ClanInfoProvider clanInfoProvider;
+    private final ClanParser clanParser;
 
     private final GommeSpectatorDetector spectatorDetector = new GommeSpectatorDetector(this);
 
@@ -46,6 +48,7 @@ public class GommeStatsCore {
         this.matchManager = new MatchManager(this);
         this.playerDataProvider = new PlayerDataProvider(this.registry);
         this.clanInfoProvider = new ClanInfoProvider(this.registry);
+        this.clanParser = new ClanParser(this.registry, this.clanInfoProvider);
     }
 
     public MatchManager getMatchManager() {
@@ -58,6 +61,10 @@ public class GommeStatsCore {
 
     public ClanInfoProvider getClanInfoProvider() {
         return this.clanInfoProvider;
+    }
+
+    public ClanParser getClanParser() {
+        return this.clanParser;
     }
 
     public ServiceRegistry getRegistry() {

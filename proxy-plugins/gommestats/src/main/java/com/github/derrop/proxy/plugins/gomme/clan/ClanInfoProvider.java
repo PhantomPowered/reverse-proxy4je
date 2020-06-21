@@ -22,52 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.player.clan;
+package com.github.derrop.proxy.plugins.gomme.clan;
 
-import com.github.derrop.proxy.api.util.player.PlayerId;
+import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 
-public class ClanMember {
+public class ClanInfoProvider extends DatabaseProvidedStorage<ClanInfo> {
 
-    private PlayerId playerId;
-    private Type memberType;
-    private Rank rank;
-
-    public ClanMember(PlayerId playerId, Type memberType, Rank rank) {
-        this.playerId = playerId;
-        this.memberType = memberType;
-        this.rank = rank;
+    public ClanInfoProvider(ServiceRegistry registry) {
+        super(registry, "gomme_clan_info", ClanInfo.class);
     }
 
-    public PlayerId getPlayerId() {
-        return this.playerId;
+    public ClanInfo getClan(String name) {
+        return super.get(name);
     }
 
-    public void setPlayerId(PlayerId playerId) {
-        this.playerId = playerId;
+    public ClanInfo getClanByShortcut(String shortcut) {
+        return super.getAll().stream().filter(clanInfo -> clanInfo.getShortcut().equals(shortcut)).findFirst().orElse(null);
     }
 
-    public Type getMemberType() {
-        return memberType;
-    }
-
-    public void setMemberType(Type memberType) {
-        this.memberType = memberType;
-    }
-
-    public Rank getRank() {
-        return this.rank;
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
-    }
-
-    public static enum Type {
-        LEADER, MODERATOR, MEMBER
-    }
-
-    public static enum Rank {
-        ADMIN, TEAM, SUPREMIUM, PREMIUM, PLAYER
+    public void updateClan(ClanInfo info) {
+        super.insertOrUpdate(info.getName(), info);
     }
 
 }

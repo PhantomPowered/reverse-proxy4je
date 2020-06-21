@@ -54,7 +54,7 @@ public class CommandMatch extends NonTabCompleteableCommandCallback {
                 sender.sendMessage(" * Begin: " + (matchInfo.getBeginTimestamp() == -1 ? "None" : MatchInfo.FORMAT.format(matchInfo.getBeginTimestamp())));
                 sender.sendMessage(" * End: " + (matchInfo.getEndTimestamp() == -1 ? "None" : MatchInfo.FORMAT.format(matchInfo.getEndTimestamp())));
 
-                TextComponent component = TextComponent.of(Constants.MESSAGE_PREFIX + " * §7[§aCreate log§7]")
+                TextComponent component = TextComponent.of(Constants.MESSAGE_PREFIX + " * §7[§aClick to get the MatchLog§7]")
                         .clickEvent(ClickEvent.runCommand("/proxy match createLog " + connection.getName()))
                         .hoverEvent(HoverEvent.showText(TextComponent.of("§7Click to create the log for this match")));
                 sender.sendMessage(component);
@@ -82,6 +82,7 @@ public class CommandMatch extends NonTabCompleteableCommandCallback {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("match createLog <ALL|name>");
         sender.sendMessage("match info <ALL|name>");
+        // TODO add commands to get/count matches in the past
     }
 
 }

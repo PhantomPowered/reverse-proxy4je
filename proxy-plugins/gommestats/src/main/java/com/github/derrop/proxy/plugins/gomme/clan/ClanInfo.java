@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.player.clan;
+package com.github.derrop.proxy.plugins.gomme.clan;
 
 import com.github.derrop.proxy.plugins.gomme.player.Tag;
 
@@ -34,13 +34,17 @@ public class ClanInfo {
     private final String shortcut;
     private final Collection<Tag> tags;
     private final Collection<ClanMember> members;
+    private final int unknownMemberCount;
+    private final int maxMemberCount;
     private final long timestamp;
 
-    public ClanInfo(String name, String shortcut, Collection<Tag> tags, Collection<ClanMember> members, long timestamp) {
+    public ClanInfo(String name, String shortcut, Collection<Tag> tags, Collection<ClanMember> members, int unknownMemberCount, int maxMemberCount, long timestamp) {
         this.name = name;
         this.shortcut = shortcut;
         this.tags = tags;
         this.members = members;
+        this.unknownMemberCount = unknownMemberCount;
+        this.maxMemberCount = maxMemberCount;
         this.timestamp = timestamp;
     }
 
@@ -60,7 +64,28 @@ public class ClanInfo {
         return this.members;
     }
 
+    public int getUnknownMemberCount() {
+        return this.unknownMemberCount;
+    }
+
+    public int getMaxMemberCount() {
+        return this.maxMemberCount;
+    }
+
     public long getTimestamp() {
         return this.timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "ClanInfo{" +
+                "name='" + name + '\'' +
+                ", shortcut='" + shortcut + '\'' +
+                ", tags=" + tags +
+                ", members=" + members +
+                ", unknownMemberCount=" + unknownMemberCount +
+                ", maxMemberCount=" + maxMemberCount +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }

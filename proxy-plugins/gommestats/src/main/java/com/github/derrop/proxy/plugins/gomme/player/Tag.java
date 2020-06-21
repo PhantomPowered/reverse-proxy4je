@@ -49,4 +49,13 @@ public class Tag {
     public PlayerId getCreator() {
         return this.creator;
     }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "name='" + name + '\'' +
+                ", timestamp=" + timestamp +
+                ", creator=" + creator +
+                '}';
+    }
 }

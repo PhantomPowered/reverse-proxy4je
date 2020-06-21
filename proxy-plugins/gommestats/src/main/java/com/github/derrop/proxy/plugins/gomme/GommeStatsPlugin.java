@@ -54,6 +54,7 @@ public class GommeStatsPlugin {
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeEventListener());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getSpectatorDetector());
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getClanParser());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new LanguageDetector(core.getMatchManager()));
 
         registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandSpectatorlist(registry, core.getSpectatorDetector()), "spectatorlist", "speclist");

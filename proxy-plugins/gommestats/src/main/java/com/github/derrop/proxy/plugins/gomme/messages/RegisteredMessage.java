@@ -8,23 +8,30 @@ import java.util.function.Predicate;
 
 public class RegisteredMessage {
 
+    private final MessageType type;
     private final Predicate<String> messageTester;
     private final boolean variables;
     private final Function<String, Map<String, String>> variablesMapper;
     private final Function<Map<String, String>, MatchEvent> matchEventMapper;
 
-    public RegisteredMessage(Predicate<String> messageTester, Function<String, Map<String, String>> variablesMapper, Function<Map<String, String>, MatchEvent> matchEventMapper) {
+    public RegisteredMessage(MessageType type, Predicate<String> messageTester, Function<String, Map<String, String>> variablesMapper, Function<Map<String, String>, MatchEvent> matchEventMapper) {
+        this.type = type;
         this.messageTester = messageTester;
         this.variables = true;
         this.variablesMapper = variablesMapper;
         this.matchEventMapper = matchEventMapper;
     }
 
-    public RegisteredMessage(Predicate<String> messageTester, Function<Map<String, String>, MatchEvent> matchEventMapper) {
+    public RegisteredMessage(MessageType type, Predicate<String> messageTester, Function<Map<String, String>, MatchEvent> matchEventMapper) {
+        this.type = type;
         this.messageTester = messageTester;
         this.variables = false;
         this.variablesMapper = null;
         this.matchEventMapper = matchEventMapper;
+    }
+
+    public MessageType getType() {
+        return this.type;
     }
 
     public Predicate<String> getMessageTester() {
