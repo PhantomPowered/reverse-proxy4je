@@ -157,11 +157,9 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
+        String url = this.createPaste(matchInfo);
 
-        if (key != null) {
-            String url = PASTE_URL + key;
-
+        if (url != null) {
             System.out.println("The MatchLog of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " has been uploaded to " + url);
 
             Player player = matchInfo.getInvoker().getPlayer();
@@ -173,6 +171,11 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         }
 
         super.insert(matchInfo.getMatchId(), MatchInfo.GSON.toJsonTree(matchInfo).getAsJsonObject());
+    }
+
+    public String createPaste(MatchInfo matchInfo) {
+        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
+        return key == null ? null : PASTE_URL + key;
     }
 
     public long countMatches() {

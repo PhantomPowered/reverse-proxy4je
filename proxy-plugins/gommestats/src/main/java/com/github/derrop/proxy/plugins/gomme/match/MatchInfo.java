@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MatchInfo {
 
-    private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    public static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     public static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
     public static final Gson GSON = new GsonBuilder().registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
 

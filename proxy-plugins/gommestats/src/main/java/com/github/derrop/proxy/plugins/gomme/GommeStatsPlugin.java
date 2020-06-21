@@ -31,6 +31,7 @@ import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.gomme.command.CommandMatch;
 import com.github.derrop.proxy.plugins.gomme.command.CommandSpectatorlist;
 import com.github.derrop.proxy.plugins.gomme.listener.GommeEventListener;
 import com.github.derrop.proxy.plugins.gomme.match.GommeMatchListener;
@@ -56,6 +57,7 @@ public class GommeStatsPlugin {
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new LanguageDetector(core.getMatchManager()));
 
         registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandSpectatorlist(registry, core.getSpectatorDetector()), "spectatorlist", "speclist");
+        registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandMatch(registry, core.getMatchManager()), "match");
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
