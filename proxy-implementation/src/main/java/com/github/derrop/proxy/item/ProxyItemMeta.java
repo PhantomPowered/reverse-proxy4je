@@ -45,10 +45,10 @@ import java.util.*;
 public class ProxyItemMeta implements ItemMeta {
 
     @NotNull
-    public static ItemMeta createFromItemId(int itemId, NBTTagCompound data) {
+    public static ItemMeta createFromItemId(int itemId, int meta, NBTTagCompound data) {
         switch (itemId) {
             case 373:
-                return new ProxyPotionMeta(data);
+                return new ProxyPotionMeta(data, meta);
             case 386:
                 return new ProxyBookMeta(data, false);
             case 387:

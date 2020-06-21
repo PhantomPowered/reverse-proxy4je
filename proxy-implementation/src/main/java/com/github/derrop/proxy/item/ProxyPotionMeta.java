@@ -25,12 +25,15 @@
 package com.github.derrop.proxy.item;
 
 import com.github.derrop.proxy.api.item.PotionMeta;
+import com.github.derrop.proxy.api.potion.BrewedPotion;
 import com.github.derrop.proxy.api.potion.PotionEffect;
 import com.github.derrop.proxy.api.potion.PotionEffectType;
 import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
 import com.github.derrop.proxy.api.util.nbt.NBTTagList;
 import com.github.derrop.proxy.potion.ProxyPotionEffect;
+import com.google.errorprone.annotations.concurrent.LazyInit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +52,7 @@ public class ProxyPotionMeta extends ProxyItemMeta implements PotionMeta {
         ));
     }
 
-    public ProxyPotionMeta(@NotNull NBTTagCompound source) {
+    public ProxyPotionMeta(@NotNull NBTTagCompound source, int data) {
         super(source);
 
         if (source.hasKey(PotionMetaKeys.POTION_EFFECTS, NbtTagNumbers.TAG_LIST)) {
@@ -57,14 +60,16 @@ public class ProxyPotionMeta extends ProxyItemMeta implements PotionMeta {
             for (int i = 0; i < list.tagCount(); i++) {
                 this.customEffects.add(ProxyPotionEffect.fromNbt(list.getCompoundTagAt(i)));
             }
-
-            for (PotionEffect customEffect : this.customEffects) {
-                System.out.println("EFFECT: " + customEffect.getType() + "@" + customEffect.getAmplifier() + "->" + customEffect.getDuration());
-            }
         }
+
+        this.data = data;
     }
 
+    private final int data;
     private final List<PotionEffect> customEffects = new ArrayList<>();
+
+    @LazyInit
+    private @Nullable BrewedPotion potion;
 
     @Override
     public boolean hasCustomEffects() {
@@ -125,6 +130,15 @@ public class ProxyPotionMeta extends ProxyItemMeta implements PotionMeta {
         boolean empty = this.customEffects.isEmpty();
         this.customEffects.clear();
         return !empty;
+    }
+
+    @Override
+    public @Nullable BrewedPotion asPotion() {
+        if (this.potion == null) {
+            this.potion = BrewedPotion.fromPotionValue(this.data);
+        }
+
+        return this.potion;
     }
 
     @Override

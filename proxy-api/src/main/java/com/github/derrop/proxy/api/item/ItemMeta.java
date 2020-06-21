@@ -29,6 +29,7 @@ import com.google.common.collect.Multimap;
 import net.kyori.text.TranslatableComponent;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public interface ItemMeta {
 
     void setLore(@NotNull List<TranslatableComponent> lore);
 
-    @NotNull TranslatableComponent getDisplayName();
+    @Nullable TranslatableComponent getDisplayName();
 
     void setDisplayName(@NotNull TranslatableComponent displayName);
 
