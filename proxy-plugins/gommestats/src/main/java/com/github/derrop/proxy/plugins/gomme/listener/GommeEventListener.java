@@ -5,8 +5,10 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
+import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
 import com.github.derrop.proxy.api.util.ByteBufUtils;
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeConstants;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.events.GommeServerSwitchEvent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -32,14 +34,21 @@ public class GommeEventListener {
             String serverType = data.get("cloud_type").getAsString().toUpperCase();
             String matchId = data.get("id").getAsString();
 
-            GommeGameMode gameMode = GommeGameMode.getByGommeName(serverType);
-            if (gameMode == null) {
+            GommeServerType type = GommeServerType.getByGommeName(serverType);
+            if (type == null) {
                 return;
             }
 
             connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                    .callEvent(new GommeServerSwitchEvent(connection, matchId, gameMode));
+                    .callEvent(new GommeServerSwitchEvent(connection, matchId, type));
+
+            connection.setProperty(GommeConstants.CURRENT_SERVER_PROPERTY, type);
         }
+    }
+
+    @Listener
+    public void handleServiceDisconnect(ServiceDisconnectEvent event) {
+        event.getConnection().removeProperty(GommeConstants.CURRENT_SERVER_PROPERTY);
     }
 
 }

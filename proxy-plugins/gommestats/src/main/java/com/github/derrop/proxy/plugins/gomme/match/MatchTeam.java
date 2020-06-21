@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
+import com.github.derrop.proxy.plugins.gomme.messages.MessageType;
 
 import java.util.Collection;
 import java.util.UUID;

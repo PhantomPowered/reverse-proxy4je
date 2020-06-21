@@ -30,12 +30,13 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.api.util.player.PlayerId;
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeConstants;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchBeginEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndFinishedEvent;
-import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
+import com.github.derrop.proxy.plugins.gomme.messages.Language;
+import com.github.derrop.proxy.plugins.gomme.messages.MessageType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -47,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MatchInfo {
 
-    private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    public static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     public static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
     public static final Gson GSON = new GsonBuilder().registerTypeAdapter(MatchEvent.class, new MatchEventSerializer()).create();
 
@@ -55,7 +56,7 @@ public class MatchInfo {
     private final transient ServiceConnection invoker;
 
     private final PlayerId recorderId;
-    private final GommeGameMode gameMode;
+    private final GommeServerType gameMode;
     private final String matchId;
     private transient boolean running;
     private long beginTimestamp = -1;
@@ -67,9 +68,9 @@ public class MatchInfo {
 
     private final transient Map<String, Object> properties = new ConcurrentHashMap<>();
 
-    private Language selectedLanguage = Language.GERMAN_GERMANY; // TODO should be dynamic
+    private Language selectedLanguage;
 
-    public MatchInfo(MatchManager matchManager, ServiceConnection invoker, GommeGameMode gameMode, String matchId) {
+    public MatchInfo(MatchManager matchManager, ServiceConnection invoker, GommeServerType gameMode, String matchId) {
         this.matchManager = matchManager;
         this.invoker = invoker;
         this.recorderId = new PlayerId(invoker.getUniqueId(), invoker.getName());
@@ -78,6 +79,11 @@ public class MatchInfo {
 
         // TODO delay:
         this.players.addAll(Arrays.asList(invoker.getWorldDataProvider().getOnlinePlayers()));
+
+        this.selectedLanguage = invoker.getProperty(GommeConstants.SELECTED_LANGUAGE);
+        if (this.selectedLanguage == null) {
+            this.selectedLanguage = Language.GERMANY;
+        }
     }
 
     protected void start() {
@@ -145,7 +151,7 @@ public class MatchInfo {
         return this.invoker;
     }
 
-    public GommeGameMode getGameMode() {
+    public GommeServerType getGameMode() {
         return this.gameMode;
     }
 

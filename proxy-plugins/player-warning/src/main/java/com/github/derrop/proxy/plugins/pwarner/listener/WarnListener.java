@@ -46,7 +46,7 @@ public class WarnListener {
         Material material = Material.getMaterial(event.getItem().getItemId());
         int amount = event.getItem().getAmount();
         ItemMeta itemMeta = event.getItem().getItemMeta();
-        String itemName = material + (itemMeta != null ? " " + itemMeta.getDisplayName().key() : "");
+        String itemName = material + (itemMeta != null && itemMeta.getDisplayName() != null ? " " + itemMeta.getDisplayName().key() : "");
 
         WarnedEquipmentSlot slot = data.getEquipmentSlotData(event.getSlot().getSlotId(), material);
         if (slot != null) {

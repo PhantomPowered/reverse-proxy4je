@@ -41,7 +41,7 @@ import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEv
 import com.github.derrop.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.events.GommeServerSwitchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
@@ -96,9 +96,12 @@ public class GommeMatchListener {
             return;
         }
 
-        GommeGameMode gameMode = event.getGameMode();
+        GommeServerType serverType = event.getServerType();
+        if (serverType == GommeServerType.LOBBY) {
+            return;
+        }
 
-        this.matchManager.createMatch(new MatchInfo(this.matchManager, connection, gameMode, event.getMatchId()));
+        this.matchManager.createMatch(new MatchInfo(this.matchManager, connection, serverType, event.getMatchId()));
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
@@ -106,7 +109,7 @@ public class GommeMatchListener {
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
-            System.out.println("MatchBegin on " + gameMode + ": " + Arrays.stream(event.getConnection().getWorldDataProvider().getOnlinePlayers()).map(playerInfo -> playerInfo.getUniqueId() + "#" + playerInfo.getUsername()).collect(Collectors.joining(", ")));
+            System.out.println("MatchBegin on " + serverType + ": " + Arrays.stream(event.getConnection().getWorldDataProvider().getOnlinePlayers()).map(playerInfo -> playerInfo.getUniqueId() + "#" + playerInfo.getUsername()).collect(Collectors.joining(", ")));
         });
     }
 
@@ -135,7 +138,7 @@ public class GommeMatchListener {
 
     private void handleMove(ServiceConnection connection, String playerName, Location from, Location to) {
         MatchInfo match = this.matchManager.getMatch(connection);
-        if (match == null || match.getGameMode() != GommeGameMode.CORES) {
+        if (match == null || match.getGameMode() != GommeServerType.CORES) {
             return;
         }
 

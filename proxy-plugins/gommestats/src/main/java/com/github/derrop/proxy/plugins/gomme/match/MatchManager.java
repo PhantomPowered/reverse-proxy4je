@@ -30,11 +30,11 @@ import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.util.PasteServerUtils;
 import com.github.derrop.proxy.api.util.Side;
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game.TeamRegistry;
-import com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game.GameMessageRegistry;
+import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.TeamRegistry;
+import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.GameMessageRegistry;
 import com.google.gson.JsonObject;
 
 import java.util.Collection;
@@ -83,7 +83,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         return this.getOpenMatches().filter(MatchInfo::isRunning).collect(Collectors.toList());
     }
 
-    public Collection<MatchInfo> getRunningMatches(GommeGameMode gameMode) {
+    public Collection<MatchInfo> getRunningMatches(GommeServerType gameMode) {
         return this.getRunningMatches().stream().filter(matchInfo -> matchInfo.getGameMode() == gameMode).collect(Collectors.toList());
     }
 
@@ -123,7 +123,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
             return " §8× §7Time §8» §e" + minutesString + ":" + secondsString;
         });
-        if (matchInfo.getGameMode() == GommeGameMode.BED_WARS) {
+        if (matchInfo.getGameMode() == GommeServerType.BED_WARS) {
             player.appendActionBar(Side.LEFT, () -> {
                 if (!matchInfo.isRunning() || !player.equals(matchInfo.getInvoker().getPlayer())) {
                     return null;
@@ -157,11 +157,9 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
+        String url = this.createPaste(matchInfo);
 
-        if (key != null) {
-            String url = PASTE_URL + key;
-
+        if (url != null) {
             System.out.println("The MatchLog of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " has been uploaded to " + url);
 
             Player player = matchInfo.getInvoker().getPlayer();
@@ -175,11 +173,16 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
         super.insert(matchInfo.getMatchId(), MatchInfo.GSON.toJsonTree(matchInfo).getAsJsonObject());
     }
 
+    public String createPaste(MatchInfo matchInfo) {
+        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
+        return key == null ? null : PASTE_URL + key;
+    }
+
     public long countMatches() {
         return super.size();
     }
 
-    public long countMatches(GommeGameMode gameMode) {
+    public long countMatches(GommeServerType gameMode) {
         return super.getAll().stream()
                 .map(jsonObject -> MatchInfo.GSON.fromJson(jsonObject, MatchInfo.class))
                 .filter(matchInfo -> matchInfo.getGameMode() == gameMode)

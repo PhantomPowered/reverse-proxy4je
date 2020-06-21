@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.bedwars;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
+import com.github.derrop.proxy.plugins.gomme.messages.MessageType;
 
 public class BedDestroyEvent extends MatchEvent {
 
