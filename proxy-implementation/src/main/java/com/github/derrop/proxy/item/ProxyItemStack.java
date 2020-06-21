@@ -40,7 +40,7 @@ public class ProxyItemStack extends ItemStack {
     @Override
     public @Nullable ItemMeta getItemMeta() {
         if (this.itemMeta == null && this.nbt != null) {
-            this.itemMeta = ProxyItemMeta.createFromItemId(this.itemId, this.nbt);
+            this.itemMeta = ProxyItemMeta.createFromItemId(this.itemId, this.meta, this.nbt);
         }
 
         return this.itemMeta;

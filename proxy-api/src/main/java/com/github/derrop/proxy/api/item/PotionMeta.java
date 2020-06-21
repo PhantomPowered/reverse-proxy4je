@@ -24,9 +24,11 @@
  */
 package com.github.derrop.proxy.api.item;
 
+import com.github.derrop.proxy.api.potion.BrewedPotion;
 import com.github.derrop.proxy.api.potion.PotionEffect;
 import com.github.derrop.proxy.api.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -45,4 +47,6 @@ public interface PotionMeta extends ItemMeta {
     boolean setMainEffect(@NotNull PotionEffectType type);
 
     boolean clearCustomEffects();
+
+    @Nullable BrewedPotion asPotion();
 }

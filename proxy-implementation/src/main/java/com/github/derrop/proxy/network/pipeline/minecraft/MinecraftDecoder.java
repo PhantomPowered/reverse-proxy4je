@@ -68,8 +68,9 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
             return;
         }
 
-        this.logger.finer("Receiving packet (class: " + packet.getClass().getName() + "; id: " + packetId + ") length: " + protoBuf.readableBytes());
         packet.read(protoBuf, this.direction, protoBuf.getProtocolVersion());
+        this.logger.finer("Receiving packet (class: " + packet.getClass().getName() + "; id: " + packetId + ") length: "
+                + protoBuf.readableBytes() + "; data: " + packet.toString());
         list.add(new DecodedPacket(new DefaultProtoBuf(47, copy), packet));
     }
 

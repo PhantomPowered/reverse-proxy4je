@@ -86,6 +86,26 @@ public class BrewedPotion {
         this.extended = extended;
     }
 
+    public boolean isExtended() {
+        return extended;
+    }
+
+    public boolean isSplash() {
+        return splash;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getName() {
+        return name;
+    }
+
+    public PotionType getType() {
+        return type;
+    }
+
     public short toPotionValue() {
         short result;
         if (type == PotionType.WATER) {
