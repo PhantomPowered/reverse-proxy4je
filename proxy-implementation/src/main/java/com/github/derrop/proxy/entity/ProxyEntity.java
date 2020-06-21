@@ -325,6 +325,16 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
         return this.type instanceof LivingEntityType ? (LivingEntityType) this.type : null;
     }
 
+    @Override
+    public boolean isOfType(@Nullable EntityType type) {
+        return this.type.equals(type);
+    }
+
+    @Override
+    public boolean isOfType(@Nullable LivingEntityType type) {
+        return this.type.equals(type);
+    }
+
     @NotNull
     @Override
     public Location getLocation() {

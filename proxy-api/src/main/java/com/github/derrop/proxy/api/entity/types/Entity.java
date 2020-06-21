@@ -63,6 +63,10 @@ public interface Entity extends Scaleable {
     @Nullable
     LivingEntityType getLivingType();
 
+    boolean isOfType(@Nullable EntityType type);
+
+    boolean isOfType(@Nullable LivingEntityType type);
+
     @NotNull
     Location getLocation();
 

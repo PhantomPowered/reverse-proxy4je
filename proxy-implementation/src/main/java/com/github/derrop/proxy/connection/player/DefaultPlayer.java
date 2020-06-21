@@ -75,7 +75,7 @@ import java.util.function.Supplier;
 public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
 
     public DefaultPlayer(MCProxy proxy, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
-        super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), -2);
+        super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
         this.proxy = proxy;
         this.offlinePlayer = offlinePlayer;
         this.displayName = loginResult.getName();
