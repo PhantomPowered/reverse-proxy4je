@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages;
+package com.github.derrop.proxy.plugins.gomme.messages;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 

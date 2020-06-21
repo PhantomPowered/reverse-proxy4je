@@ -1,8 +1,12 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages;
+package com.github.derrop.proxy.plugins.gomme.messages;
 
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 
 public enum MessageType {
+
+    // Language detection
+    YOUR_RANK_INFO(GommeServerType.LOBBY),
+    LANGUAGE_SELECTED(),
 
     // Every game mode
     GAME_BEGIN(),
@@ -38,14 +42,14 @@ public enum MessageType {
 
 
     // Cores
-    CORE_DESTROYED(GommeGameMode.CORES),
-    CORE_NEARBY_PLAYERS(GommeGameMode.CORES),
+    CORE_DESTROYED(GommeServerType.CORES),
+    CORE_NEARBY_PLAYERS(GommeServerType.CORES),
 
 
     // BedWars
-    BED_DESTROYED(GommeGameMode.BED_WARS),
-    CANNOT_DESTROY_OWN_BED(GommeGameMode.BED_WARS),
-    TEAM_OUT(GommeGameMode.BED_WARS),
+    BED_DESTROYED(GommeServerType.BED_WARS),
+    CANNOT_DESTROY_OWN_BED(GommeServerType.BED_WARS),
+    TEAM_OUT(GommeServerType.BED_WARS),
 
     // Clans
     CLAN_INFO_BEGIN(),
@@ -58,17 +62,17 @@ public enum MessageType {
     CLAN_INFO_MEMBER_COUNT(),
     CLAN_INFO_USER();
 
-    private final GommeGameMode[] availableGameModes;
+    private final GommeServerType[] availableGameModes;
 
     MessageType() {
-        this(GommeGameMode.values());
+        this(GommeServerType.values());
     }
 
-    MessageType(GommeGameMode... availableGameModes) {
+    MessageType(GommeServerType... availableGameModes) {
         this.availableGameModes = availableGameModes;
     }
 
-    public GommeGameMode[] getAvailableGameModes() {
+    public GommeServerType[] getAvailableGameModes() {
         return this.availableGameModes;
     }
 }

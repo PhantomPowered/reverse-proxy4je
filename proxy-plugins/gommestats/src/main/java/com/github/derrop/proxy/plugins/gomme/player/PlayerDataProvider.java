@@ -26,10 +26,8 @@ package com.github.derrop.proxy.plugins.gomme.player;
 
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
-import com.github.derrop.proxy.plugins.gomme.player.clan.ClanInfo;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.UUID;
@@ -53,19 +51,19 @@ public class PlayerDataProvider extends DatabaseProvidedStorage<PlayerData> {
         return super.size();
     }
 
-    public long countPlayerData(GommeGameMode gameMode) {
+    public long countPlayerData(GommeServerType gameMode) {
         return super.getAll().stream().filter(playerData -> playerData.getStatistics().containsKey(gameMode)).count();
     }
 
-    public PlayerData getBestPlayer(GommeGameMode gameMode) {
+    public PlayerData getBestPlayer(GommeServerType gameMode) {
         return this.sortedPlayerDataStream(gameMode).min(Collections.reverseOrder()).orElse(null);
     }
 
-    public PlayerData getWorstPlayer(GommeGameMode gameMode) {
+    public PlayerData getWorstPlayer(GommeServerType gameMode) {
         return this.sortedPlayerDataStream(gameMode).findFirst().orElse(null);
     }
 
-    public Stream<PlayerData> sortedPlayerDataStream(GommeGameMode gameMode) {
+    public Stream<PlayerData> sortedPlayerDataStream(GommeServerType gameMode) {
         return super.getAll().stream()
                 .filter(playerData -> playerData.getStatistics().containsKey(gameMode))
                 .sorted(Comparator.comparing(value -> value.getStatistics().get(gameMode)));

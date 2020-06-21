@@ -1,9 +1,9 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game;
+package com.github.derrop.proxy.plugins.gomme.messages.defaults.game;
 
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.match.messages.Language;
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
+import com.github.derrop.proxy.plugins.gomme.messages.Language;
+import com.github.derrop.proxy.plugins.gomme.messages.MessageType;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -13,11 +13,11 @@ import java.util.regex.Matcher;
 
 public abstract class SpecificGameMessageRegistrar {
 
-    private final GommeGameMode gameMode;
+    private final GommeServerType gameMode;
     private final GameMessageRegistry registry;
     private final TeamRegistry teamRegistry;
 
-    public SpecificGameMessageRegistrar(GommeGameMode gameMode, GameMessageRegistry registry, TeamRegistry teamRegistry) {
+    public SpecificGameMessageRegistrar(GommeServerType gameMode, GameMessageRegistry registry, TeamRegistry teamRegistry) {
         this.gameMode = gameMode;
         this.registry = registry;
         this.teamRegistry = teamRegistry;

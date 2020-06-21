@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.global.player;
 
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.match.messages.MessageType;
 
 public class PlayerLeaveInGameSingleEvent extends MatchEvent {
 

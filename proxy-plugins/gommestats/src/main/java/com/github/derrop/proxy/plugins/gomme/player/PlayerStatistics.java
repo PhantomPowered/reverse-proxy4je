@@ -24,26 +24,26 @@
  */
 package com.github.derrop.proxy.plugins.gomme.player;
 
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class PlayerStatistics implements Comparable<PlayerStatistics> {
 
-    private GommeGameMode gameMode;
+    private GommeServerType gameMode;
     private Map<String, String> stats;
     private int rank;
     private boolean privateStats;
 
-    public PlayerStatistics(GommeGameMode gameMode, Map<String, String> stats, int rank, boolean privateStats) {
+    public PlayerStatistics(GommeServerType gameMode, Map<String, String> stats, int rank, boolean privateStats) {
         this.gameMode = gameMode;
         this.stats = stats;
         this.rank = rank;
         this.privateStats = privateStats;
     }
 
-    public GommeGameMode getGameMode() {
+    public GommeServerType getGameMode() {
         return this.gameMode;
     }
 

@@ -34,6 +34,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.command.CommandSpectatorlist;
 import com.github.derrop.proxy.plugins.gomme.listener.GommeEventListener;
 import com.github.derrop.proxy.plugins.gomme.match.GommeMatchListener;
+import com.github.derrop.proxy.plugins.gomme.messages.LanguageDetector;
 
 @Plugin(
         id = "com.github.derrop.plugins.gommestats",
@@ -52,6 +53,7 @@ public class GommeStatsPlugin {
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeEventListener());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getSpectatorDetector());
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new LanguageDetector(core.getMatchManager()));
 
         registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandSpectatorlist(registry, core.getSpectatorDetector()), "spectatorlist", "speclist");
 

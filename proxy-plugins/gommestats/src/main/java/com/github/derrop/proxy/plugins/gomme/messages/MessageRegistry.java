@@ -1,6 +1,6 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages;
+package com.github.derrop.proxy.plugins.gomme.messages;
 
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
 import java.util.HashMap;
@@ -14,23 +14,23 @@ import java.util.regex.Pattern;
 
 public class MessageRegistry {
 
-    protected final Map<Language, Map<GommeGameMode, Map<MessageType, RegisteredMessage>>> messages = new HashMap<>();
+    protected final Map<Language, Map<GommeServerType, Map<MessageType, RegisteredMessage>>> messages = new HashMap<>();
 
     public MessageRegistry() {
         for (Language language : Language.values()) {
-            Map<GommeGameMode, Map<MessageType, RegisteredMessage>> messagesForLanguage = new HashMap<>();
-            for (GommeGameMode gameMode : GommeGameMode.values()) {
+            Map<GommeServerType, Map<MessageType, RegisteredMessage>> messagesForLanguage = new HashMap<>();
+            for (GommeServerType gameMode : GommeServerType.values()) {
                 messagesForLanguage.put(gameMode, new HashMap<>());
             }
             messages.put(language, messagesForLanguage);
         }
     }
 
-    public void registerMessage(Language language, MessageType type, String message, Supplier<MatchEvent> matchEventMapper, GommeGameMode... gameModes) {
+    public void registerMessage(Language language, MessageType type, String message, Supplier<MatchEvent> matchEventMapper, GommeServerType... gameModes) {
         RegisteredMessage registeredMessage = new RegisteredMessage(input -> input.equals(message), map -> matchEventMapper.get());
         
-        Map<GommeGameMode, Map<MessageType, RegisteredMessage>> messagesForLanguage = messages.get(language);
-        for (GommeGameMode gameMode : gameModes) {
+        Map<GommeServerType, Map<MessageType, RegisteredMessage>> messagesForLanguage = messages.get(language);
+        for (GommeServerType gameMode : gameModes) {
             messagesForLanguage.get(gameMode).put(type, registeredMessage);
         }
     }
@@ -38,7 +38,7 @@ public class MessageRegistry {
     public void registerRegExMessage(Language language, MessageType type, String regex,
                                              BiFunction<String, Matcher, Map<String, String>> variablesMapper,
                                              Function<Map<String, String>, MatchEvent> matchEventMapper,
-                                             GommeGameMode... gameModes) {
+                                             GommeServerType... gameModes) {
         Pattern pattern = Pattern.compile(regex);
         RegisteredMessage registeredMessage = new RegisteredMessage(
                 input -> pattern.matcher(input).matches(),
@@ -52,13 +52,13 @@ public class MessageRegistry {
                 matchEventMapper
         );
 
-        Map<GommeGameMode, Map<MessageType, RegisteredMessage>> messagesForLanguage = messages.get(language);
-        for (GommeGameMode gameMode : gameModes) {
+        Map<GommeServerType, Map<MessageType, RegisteredMessage>> messagesForLanguage = messages.get(language);
+        for (GommeServerType gameMode : gameModes) {
             messagesForLanguage.get(gameMode).put(type, registeredMessage);
         }
     }
 
-    public Optional<RegisteredMessage> getMessage(Language language, GommeGameMode gameMode, String message) {
+    public Optional<RegisteredMessage> getMessage(Language language, GommeServerType gameMode, String message) {
         Map<MessageType, RegisteredMessage> messages = this.messages.get(language).get(gameMode);
         for (Map.Entry<MessageType, RegisteredMessage> entry : messages.entrySet()) {
             if (entry.getValue().getMessageTester().test(message)) {
@@ -68,4 +68,7 @@ public class MessageRegistry {
         return Optional.empty();
     }
 
+    public Map<Language, Map<GommeServerType, Map<MessageType, RegisteredMessage>>> getMessages() {
+        return this.messages;
+    }
 }

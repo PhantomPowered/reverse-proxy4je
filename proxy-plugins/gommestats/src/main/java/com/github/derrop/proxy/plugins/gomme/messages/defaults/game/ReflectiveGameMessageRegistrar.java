@@ -1,6 +1,6 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game;
+package com.github.derrop.proxy.plugins.gomme.messages.defaults.game;
 
-import com.github.derrop.proxy.plugins.gomme.GommeGameMode;
+import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ public class ReflectiveGameMessageRegistrar extends SpecificGameMessageRegistrar
 
     private final String packageName;
 
-    public ReflectiveGameMessageRegistrar(String packageName, GommeGameMode gameMode, GameMessageRegistry registry, TeamRegistry teamRegistry) {
+    public ReflectiveGameMessageRegistrar(String packageName, GommeServerType gameMode, GameMessageRegistry registry, TeamRegistry teamRegistry) {
         super(gameMode, registry, teamRegistry);
         this.packageName = packageName;
     }

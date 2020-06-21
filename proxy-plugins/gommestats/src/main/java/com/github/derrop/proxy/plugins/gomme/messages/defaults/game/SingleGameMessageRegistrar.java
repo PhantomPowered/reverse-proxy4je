@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.plugins.gomme.match.messages.defaults.game;
+package com.github.derrop.proxy.plugins.gomme.messages.defaults.game;
 
 public abstract class SingleGameMessageRegistrar {
 

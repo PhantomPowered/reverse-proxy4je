@@ -27,8 +27,8 @@ package com.github.derrop.proxy.plugins.gomme;
 /**
  * Commented lines cannot be detected easily because Gomme doesn't send them on the 'GoMod' channel.
  */
-public enum GommeGameMode {
-    //LOBBY("Lobby", "LOBBY", "compass"), Lobby is not a GameMode
+public enum GommeServerType {
+    LOBBY("Lobby", "LOBBY", "compass"),
     //CITY_BUILD("CityBuild", "", "workbench"), 1.13.2+ only
     CORES("Cores", "CORES", "beacon"),
     CWCORES("CWCores", "CWCORES", "beacon"),
@@ -52,7 +52,7 @@ public enum GommeGameMode {
     private final String gommeInternalName;
     private final String icon;
 
-    GommeGameMode(String displayName, String gommeInternalName, String icon) {
+    GommeServerType(String displayName, String gommeInternalName, String icon) {
         this.displayName = displayName;
         this.gommeInternalName = gommeInternalName;
         this.icon = icon;
@@ -70,8 +70,8 @@ public enum GommeGameMode {
         return icon;
     }
 
-    public static GommeGameMode getByGommeName(String name) {
-        for (GommeGameMode value : values()) {
+    public static GommeServerType getByGommeName(String name) {
+        for (GommeServerType value : values()) {
             if (value.gommeInternalName.equals(name)) {
                 return value;
             }
