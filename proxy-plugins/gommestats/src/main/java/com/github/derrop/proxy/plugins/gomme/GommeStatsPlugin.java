@@ -31,7 +31,6 @@ import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.plugins.gomme.command.CommandNicklist;
 import com.github.derrop.proxy.plugins.gomme.command.CommandSpectatorlist;
 import com.github.derrop.proxy.plugins.gomme.listener.GommeEventListener;
 import com.github.derrop.proxy.plugins.gomme.match.GommeMatchListener;
@@ -53,9 +52,7 @@ public class GommeStatsPlugin {
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeEventListener());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getSpectatorDetector());
-        registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getNickDetector());
 
-        registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandNicklist(registry, core.getNickDetector()), "nicklist");
         registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandSpectatorlist(registry, core.getSpectatorDetector()), "spectatorlist", "speclist");
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
