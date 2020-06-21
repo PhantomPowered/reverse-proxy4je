@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
 
     protected ProxyArmorStand(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ARMOR_STAND.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ARMOR_STAND);
     }
 
     @Override

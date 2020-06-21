@@ -14,6 +14,7 @@ import com.github.derrop.proxy.api.entity.types.living.boss.EnderDragon;
 import com.github.derrop.proxy.api.entity.types.living.boss.Wither;
 import com.github.derrop.proxy.api.entity.types.living.creature.IronGolem;
 import com.github.derrop.proxy.api.entity.types.living.creature.Snowman;
+import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.entity.types.living.monster.*;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 public enum LivingEntityType {
 
+    PLAYER("Player", -2, EntityPlayer.class),
     CREEPER("Creeper", 50, Creeper.class),
     SKELETON("Skeleton", 51, Skeleton.class),
     SPIDER("Spider", 52, Spider.class),

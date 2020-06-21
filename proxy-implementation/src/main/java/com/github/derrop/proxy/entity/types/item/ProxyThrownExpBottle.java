@@ -33,6 +33,6 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyThrownExpBottle extends ProxyProjectile implements ThrownExpBottle {
 
     public ProxyThrownExpBottle(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.THROWN_EXP_BOTTLE.getTypeId());
+        super(registry, client, spawnPacket, EntityType.THROWN_EXP_BOTTLE);
     }
 }

@@ -33,6 +33,6 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyEnderPearl extends ProxyProjectile implements EnderPearl {
 
     public ProxyEnderPearl(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ENDER_PEARL.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ENDER_PEARL);
     }
 }

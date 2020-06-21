@@ -34,7 +34,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyFirework extends ProxyEntity implements Firework {
 
     public ProxyFirework(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.FIREWORK.getTypeId());
+        super(registry, client, spawnPacket, EntityType.FIREWORK);
     }
 
     @Override

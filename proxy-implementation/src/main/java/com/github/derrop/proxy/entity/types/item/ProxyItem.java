@@ -35,7 +35,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 public class ProxyItem extends ProxyEntity implements Item {
 
     public ProxyItem(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ITEM.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ITEM);
         this.setSize(0.25F, 0.25F);
     }
 

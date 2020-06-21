@@ -33,6 +33,6 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyEgg extends ProxyProjectile implements Egg {
 
     public ProxyEgg(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.EGG.getTypeId());
+        super(registry, client, spawnPacket, EntityType.EGG);
     }
 }

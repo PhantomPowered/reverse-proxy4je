@@ -34,7 +34,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 public class ProxyFishingHook extends ProxyEntity implements FishingHook {
 
     public ProxyFishingHook(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int extra) {
-        super(registry, client, spawnPacket, EntityType.FISHING_HOOK.getTypeId());
+        super(registry, client, spawnPacket, EntityType.FISHING_HOOK);
         this.extra = extra;
     }
 

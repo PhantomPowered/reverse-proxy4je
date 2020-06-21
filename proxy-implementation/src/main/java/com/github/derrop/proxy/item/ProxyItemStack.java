@@ -43,6 +43,6 @@ public class ProxyItemStack extends ItemStack {
             this.itemMeta = ProxyItemMeta.createFromItemId(this.itemId, this.nbt);
         }
 
-        return itemMeta;
+        return this.itemMeta;
     }
 }

@@ -287,6 +287,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         sender.sendMessage("acc export");
         sender.sendMessage("acc import <file-path>");
         sender.sendMessage("acc list");
+        // TODO acc start <e-mail> to let an account connect to its default server
     }
 
     private void connect(ServiceConnector connector, MCServiceCredentials credentials, NetworkAddress address, CommandSender sender) {

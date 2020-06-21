@@ -35,7 +35,7 @@ import net.kyori.text.serializer.gson.GsonComponentSerializer;
 public class ProxyCommandBlockMinecart extends ProxyMinecart implements CommandBlockMinecart {
 
     public ProxyCommandBlockMinecart(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.COMMAND_BLOCK_MINE_CART.getTypeId());
+        super(registry, client, spawnPacket, EntityType.COMMAND_BLOCK_MINE_CART);
     }
 
     @Override

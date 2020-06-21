@@ -24,9 +24,12 @@
  */
 package com.github.derrop.proxy.api.entity.types;
 
+import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface Entity extends Scaleable {
 
@@ -52,7 +55,13 @@ public interface Entity extends Scaleable {
 
     String getCustomName();
 
-    int getType();
+    boolean isLiving();
+
+    @Nullable
+    EntityType getType();
+
+    @Nullable
+    LivingEntityType getLivingType();
 
     @NotNull
     Location getLocation();

@@ -34,7 +34,7 @@ import com.github.derrop.proxy.entity.types.ProxyHanging;
 public class ProxyLeash extends ProxyHanging implements Leash {
 
     public ProxyLeash(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.LEASH.getTypeId());
+        super(registry, client, spawnPacket, EntityType.LEASH);
     }
 
     @Override

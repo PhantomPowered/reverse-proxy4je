@@ -36,6 +36,8 @@ import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.PlayerKickEvent;
@@ -61,6 +63,7 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.SocketAddress;
 import java.util.Collection;
@@ -408,8 +411,18 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     }
 
     @Override
-    public int getType() {
-        return -2;
+    public boolean isLiving() {
+        return true;
+    }
+
+    @Override
+    public EntityType getType() {
+        return null;
+    }
+
+    @Override
+    public @Nullable LivingEntityType getLivingType() {
+        return LivingEntityType.PLAYER;
     }
 
     @Override

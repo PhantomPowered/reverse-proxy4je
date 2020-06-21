@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.entity.types.minecart;
 
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.minecart.Minecart;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
@@ -36,7 +37,7 @@ import com.github.derrop.proxy.item.ProxyItemStack;
 
 public class ProxyMinecart extends ProxyEntity implements Minecart {
 
-    public ProxyMinecart(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+    public ProxyMinecart(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
         super(registry, client, spawnPacket, type);
         this.setSize(0.98F, 0.7F);
     }

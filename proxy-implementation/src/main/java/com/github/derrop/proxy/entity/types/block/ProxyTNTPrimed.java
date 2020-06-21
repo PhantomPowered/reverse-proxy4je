@@ -34,7 +34,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 public class ProxyTNTPrimed extends ProxyEntity implements TNTPrimed {
 
     public ProxyTNTPrimed(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.TNT_PRIMED.getTypeId());
+        super(registry, client, spawnPacket, EntityType.TNT_PRIMED);
         this.setSize(0.98F, 0.98F);
     }
 }

@@ -76,6 +76,7 @@ public class MatchInfo {
         this.gameMode = gameMode;
         this.matchId = matchId;
 
+        // TODO delay:
         this.players.addAll(Arrays.asList(invoker.getWorldDataProvider().getOnlinePlayers()));
     }
 

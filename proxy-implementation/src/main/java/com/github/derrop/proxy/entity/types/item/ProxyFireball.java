@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.entity.types.item;
 
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.item.Fireball;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -31,7 +32,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
 public class ProxyFireball extends ProxyProjectile implements Fireball {
 
-    public ProxyFireball(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type, int extra) {
+    public ProxyFireball(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type, int extra) {
         super(registry, client, spawnPacket, type);
         this.setSize(1.0F, 1.0F);
         this.extra = extra;

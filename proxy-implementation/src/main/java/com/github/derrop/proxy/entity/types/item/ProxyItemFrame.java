@@ -36,7 +36,7 @@ import com.github.derrop.proxy.entity.types.ProxyHanging;
 public class ProxyItemFrame extends ProxyHanging implements ItemFrame {
 
     public ProxyItemFrame(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ITEM_FRAME.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ITEM_FRAME);
         this.setSize(0.25F, 0.25F);
     }
 

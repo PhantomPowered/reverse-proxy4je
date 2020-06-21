@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxySmallFireball extends ProxyFireball implements SmallFireball {
 
     public ProxySmallFireball(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int extra) {
-        super(registry, client, spawnPacket, EntityType.SMALL_FIRE_BALL.getTypeId(), extra);
+        super(registry, client, spawnPacket, EntityType.SMALL_FIRE_BALL, extra);
         this.setSize(0.3125F, 0.3125F);
     }
 }

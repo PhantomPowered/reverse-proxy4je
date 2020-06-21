@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyWitherSkull extends ProxyFireball implements WitherSkull {
 
     public ProxyWitherSkull(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int extra) {
-        super(registry, client, spawnPacket, EntityType.WITHER_SKULL.getTypeId(), extra);
+        super(registry, client, spawnPacket, EntityType.WITHER_SKULL, extra);
         this.setSize(0.3125F, 0.3125F);
     }
 

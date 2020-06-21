@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.entity.types.living;
 
-import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -9,11 +8,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 
 public class ProxyEntityLiving extends ProxyEntity implements EntityLiving {
 
-    public ProxyEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, LivingEntityType type) {
-        super(registry, client, spawnPacket, type.getTypeId());
-    }
-
-    public ProxyEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+    public ProxyEntityLiving(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, Object type) {
         super(registry, client, spawnPacket, type);
     }
 

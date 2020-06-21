@@ -60,14 +60,14 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     private final Unsafe unsafe = this::setLocation;
 
     private final int entityId;
-    private final int type;
+    private final Object type;
 
     protected @Nullable PositionedPacket packet;
 
     protected final Map<Integer, ItemStack> equipment;
     protected final MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
 
-    public ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+    public ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, Object type) {
         this(registry, client, new Location(
                 PlayerPositionPacketUtil.getServerLocation(spawnPacket.getX()),
                 PlayerPositionPacketUtil.getServerLocation(spawnPacket.getY()),
@@ -79,7 +79,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
         this.packet = spawnPacket;
     }
 
-    protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, Location location, int entityId, int type) {
+    protected ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, Location location, int entityId, Object type) {
         super(0.6F, 1.8F);
         this.registry = registry;
         this.client = client;
@@ -192,7 +192,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
             case SNOWBALL:
                 return new ProxySnowball(serviceRegistry, client, spawnPacket);
             case FIRE_BALL:
-                return new ProxyFireball(serviceRegistry, client, spawnPacket, entityType.getTypeId(), subType);
+                return new ProxyFireball(serviceRegistry, client, spawnPacket, entityType, subType);
             case TNT_PRIMED:
                 return new ProxyTNTPrimed(serviceRegistry, client, spawnPacket);
             case ENDER_PEARL:
@@ -214,14 +214,14 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
             case EMPTY_MINE_CART:
             case HOPPER_MINE_CART:
             case TNT_MINE_CART:
-                return new ProxyMinecart(serviceRegistry, client, spawnPacket, type);
+                return new ProxyMinecart(serviceRegistry, client, spawnPacket, entityType);
             case SMALL_FIRE_BALL:
                 return new ProxySmallFireball(serviceRegistry, client, spawnPacket, subType);
             case THROWN_EXP_BOTTLE:
                 return new ProxyThrownExpBottle(serviceRegistry, client, spawnPacket);
             default:
                 serviceRegistry.getProviderUnchecked(ProxyLogger.class).warning(String.format("Unable to create correct entity type for type id %d (sub: %d)", type, subType));
-                return new ProxyEntity(serviceRegistry, client, spawnPacket, entityType.getTypeId());
+                return new ProxyEntity(serviceRegistry, client, spawnPacket, entityType);
         }
     }
 
@@ -311,8 +311,18 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     }
 
     @Override
-    public int getType() {
-        return this.type;
+    public boolean isLiving() {
+        return this.type instanceof LivingEntityType;
+    }
+
+    @Override
+    public EntityType getType() {
+        return this.type instanceof EntityType ? (EntityType) this.type : null;
+    }
+
+    @Override
+    public @Nullable LivingEntityType getLivingType() {
+        return this.type instanceof LivingEntityType ? (LivingEntityType) this.type : null;
     }
 
     @NotNull
@@ -369,7 +379,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     }
 
     public boolean isPlayer() {
-        return this.packet != null && this.type == -2 && this.packet instanceof PacketPlayServerNamedEntitySpawn; // klaro - pail
+        return this.packet != null && this.packet instanceof PacketPlayServerNamedEntitySpawn; // klaro - pail
     }
 
     public void spawn(PacketSender sender) {

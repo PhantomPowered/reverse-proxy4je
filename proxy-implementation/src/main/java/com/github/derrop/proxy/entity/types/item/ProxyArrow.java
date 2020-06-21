@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyArrow extends ProxyProjectile implements Arrow {
 
     public ProxyArrow(ServiceRegistry registry, ConnectedProxyClient client, int tracked, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ARROW.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ARROW);
         this.setSize(0.5F, 0.5F);
         this.tracked = tracked;
     }

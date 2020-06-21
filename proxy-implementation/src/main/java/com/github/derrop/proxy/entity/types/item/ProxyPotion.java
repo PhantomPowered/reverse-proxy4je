@@ -34,7 +34,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyPotion extends ProxyProjectile implements Potion {
 
     public ProxyPotion(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int extra) {
-        super(registry, client, spawnPacket, EntityType.POTION.getTypeId());
+        super(registry, client, spawnPacket, EntityType.POTION);
         this.extra = extra;
     }
 

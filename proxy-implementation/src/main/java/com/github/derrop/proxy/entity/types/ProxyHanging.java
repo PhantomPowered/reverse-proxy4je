@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.entity.types;
 
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.Hanging;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -32,7 +33,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 
 public class ProxyHanging extends ProxyEntity implements Hanging {
 
-    public ProxyHanging(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+    public ProxyHanging(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
         super(registry, client, spawnPacket, type);
         this.setSize(0.5F, 0.5F);
     }

@@ -34,7 +34,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 public class ProxyEnderCrystal extends ProxyEntity implements EnderCrystal {
 
     public ProxyEnderCrystal(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ENDER_CRYSTAL.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ENDER_CRYSTAL);
         this.setSize(2F, 2F);
     }
 

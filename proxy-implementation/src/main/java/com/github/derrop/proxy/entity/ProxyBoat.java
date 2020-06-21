@@ -33,7 +33,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxyBoat extends ProxyEntity implements Boat {
 
     protected ProxyBoat(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.BOAT.getTypeId());
+        super(registry, client, spawnPacket, EntityType.BOAT);
     }
 
     @Override

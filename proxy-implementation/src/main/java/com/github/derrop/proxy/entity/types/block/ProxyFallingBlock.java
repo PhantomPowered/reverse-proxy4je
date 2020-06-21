@@ -36,7 +36,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 public class ProxyFallingBlock extends ProxyEntity implements FallingBlock {
 
     public ProxyFallingBlock(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int extra) {
-        super(registry, client, spawnPacket, EntityType.FALLING_BLOCK.getTypeId());
+        super(registry, client, spawnPacket, EntityType.FALLING_BLOCK);
         this.setSize(0.98F, 0.98F);
         this.extra = extra;
     }

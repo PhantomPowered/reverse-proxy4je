@@ -34,7 +34,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 public class ProxyEnderSignal extends ProxyEntity implements EnderSignal {
 
     public ProxyEnderSignal(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.ENDER_SIGNAL.getTypeId());
+        super(registry, client, spawnPacket, EntityType.ENDER_SIGNAL);
         this.setSize(0.25F, 0.25F);
     }
 }

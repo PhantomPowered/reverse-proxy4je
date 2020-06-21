@@ -33,7 +33,7 @@ public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
     };
 
     public ProxyPlayer(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, -2);
+        super(registry, client, spawnPacket, LivingEntityType.PLAYER);
         this.uniqueId = ((PacketPlayServerNamedEntitySpawn) spawnPacket).getPlayerId();
         this.infoCache = (PlayerInfoCache) client.getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
     }

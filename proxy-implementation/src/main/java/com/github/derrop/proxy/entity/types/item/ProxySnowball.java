@@ -33,6 +33,6 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 public class ProxySnowball extends ProxyProjectile implements Snowball {
 
     public ProxySnowball(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket) {
-        super(registry, client, spawnPacket, EntityType.SNOWBALL.getTypeId());
+        super(registry, client, spawnPacket, EntityType.SNOWBALL);
     }
 }

@@ -69,14 +69,19 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
             player.sendMessage("Entities in your world:");
 
             for (Entity entity : entities) {
+                String distance = String.format("%.2f", player.getLocation().distance(entity.getLocation()));
+
                 if (entity instanceof EntityPlayer) {
                     PlayerInfo playerInfo = ((EntityPlayer) entity).getPlayerInfo();
                     if (playerInfo != null) {
-                        player.sendMessage(" * " + entity.getLocation().toShortString() + " (" + playerInfo.getUsername() + ")");
+                        player.sendMessage(" * " + entity.getLocation().toShortString() + " (" + playerInfo.getUsername() + ")" + " <-> " + distance + " blocks");
                     }
                     continue;
                 }
-                player.sendMessage(" * " + entity.getLocation().toShortString());
+
+                String type = entity.getType() != null ? entity.getType().getName() : entity.getLivingType() != null ? entity.getLivingType().getName() : "Unknown";
+
+                player.sendMessage(" * " + entity.getLocation().toShortString() + " - " + type + " <-> " + distance + " blocks");
             }
 
         }

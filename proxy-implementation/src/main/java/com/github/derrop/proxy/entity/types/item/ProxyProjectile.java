@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.entity.types.item;
 
+import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.item.Projectile;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -32,7 +33,7 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 
 public class ProxyProjectile extends ProxyEntity implements Projectile {
 
-    public ProxyProjectile(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, int type) {
+    public ProxyProjectile(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, EntityType type) {
         super(registry, client, spawnPacket, type);
         this.setSize(0.25F, 0.25F);
     }
