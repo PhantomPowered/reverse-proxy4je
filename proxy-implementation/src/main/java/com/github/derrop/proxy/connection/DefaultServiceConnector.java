@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class DefaultServiceConnector implements ServiceConnector {
 
-    private MCProxy proxy;
+    private final MCProxy proxy;
 
     private final Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private final Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
@@ -69,6 +69,13 @@ public class DefaultServiceConnector implements ServiceConnector {
         return this.onlineClients.stream()
                 .filter(connection -> connection.getCredentials().getEmail() != null)
                 .filter(connection -> connection.getCredentials().getEmail().equals(email))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<? extends ServiceConnection> getClientByName(String name) {
+        return this.onlineClients.stream()
+                .filter(connection -> connection.getName().equals(name))
                 .findFirst();
     }
 

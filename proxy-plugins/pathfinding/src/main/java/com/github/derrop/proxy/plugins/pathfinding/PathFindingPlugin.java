@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.plugins.pathfinding;
 
+import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.command.CommandMap;
-import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
@@ -47,11 +47,12 @@ import com.github.derrop.proxy.plugins.pathfinding.walk.PathWalker;
 public class PathFindingPlugin {
 
     @Inject(state = PluginState.ENABLED)
-    public void enable(PluginContainer plugin, ServiceRegistry registry, PluginContainer container) {
-        registry.getProviderUnchecked(EventManager.class).registerListener(container, this);
+    public void enable(PluginContainer plugin, ServiceRegistry registry, Proxy proxy) {
         registry.setProvider(plugin, PathProvider.class, new DefaultPathProvider());
 
-        registry.setProvider(plugin, PathWalker.class, new DefaultPathWalker());
+        DefaultPathWalker pathWalker = new DefaultPathWalker();
+        registry.setProvider(plugin, PathWalker.class, pathWalker);
+        proxy.registerTickable(pathWalker);
 
         registry.getProviderUnchecked(CommandMap.class).registerCommand(plugin, new CommandPath(registry), "path");
     }
