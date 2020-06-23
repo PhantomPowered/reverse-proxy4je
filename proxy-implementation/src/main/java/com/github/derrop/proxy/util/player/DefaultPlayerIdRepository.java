@@ -79,6 +79,10 @@ public class DefaultPlayerIdRepository extends DatabaseProvidedStorage<PlayerId>
 
     @Override
     public PlayerId getPlayerId(@NotNull String name) {
+        if (name.length() < 3) {
+            return null;
+        }
+
         String lowerName = name.toLowerCase();
 
         PlayerId cached = this.nameCache.getIfPresent(lowerName);
