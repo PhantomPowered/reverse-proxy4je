@@ -6,8 +6,6 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
-import com.github.derrop.proxy.api.events.connection.player.PlayerServiceSelectedEvent;
-import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
@@ -20,12 +18,10 @@ import com.github.derrop.proxy.plugins.gomme.clan.ClanMember;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanMessageRegistry;
 import com.github.derrop.proxy.plugins.gomme.messages.Language;
 import com.google.common.base.Preconditions;
-import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ClanParser {
 
@@ -34,12 +30,10 @@ public class ClanParser {
     private static final String PENDING_CLAN_REQUEST = "GommePendingClanRequest";
 
     private final ServiceRegistry registry;
-    private final ClanInfoProvider clanInfoProvider;
     private final ClanMessageRegistry messageRegistry;
 
-    public ClanParser(ServiceRegistry registry, ClanInfoProvider clanInfoProvider) {
+    public ClanParser(ServiceRegistry registry) {
         this.registry = registry;
-        this.clanInfoProvider = clanInfoProvider;
         this.messageRegistry = new ClanMessageRegistry();
     }
 
@@ -173,13 +167,6 @@ public class ClanParser {
 
         Constants.EXECUTOR_SERVICE.execute(() -> {
             ClanInfo clanInfo = request.toClanInfo(this.registry.getProviderUnchecked(PlayerIdRepository.class));
-
-            ClanInfo oldClanInfo = this.clanInfoProvider.getClan(clanInfo.getName());
-            if (oldClanInfo != null) {
-                clanInfo.getTags().addAll(oldClanInfo.getTags());
-            }
-
-            this.clanInfoProvider.updateClan(clanInfo);
 
             if (task != null) {
                 task.complete(clanInfo);

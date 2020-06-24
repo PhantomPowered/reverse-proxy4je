@@ -47,8 +47,8 @@ public class GommeStatsCore {
         this.registry = registry;
         this.matchManager = new MatchManager(this);
         this.playerDataProvider = new PlayerDataProvider(this.registry);
-        this.clanInfoProvider = new ClanInfoProvider(this.registry);
-        this.clanParser = new ClanParser(this.registry, this.clanInfoProvider);
+        this.clanParser = new ClanParser(this.registry);
+        this.clanInfoProvider = new ClanInfoProvider(this.registry, this.clanParser);
     }
 
     public MatchManager getMatchManager() {
@@ -63,7 +63,7 @@ public class GommeStatsCore {
         return this.clanInfoProvider;
     }
 
-    public ClanParser getClanParser() {
+    protected ClanParser getClanParser() {
         return this.clanParser;
     }
 

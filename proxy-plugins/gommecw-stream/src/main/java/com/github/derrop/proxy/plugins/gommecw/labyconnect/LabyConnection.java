@@ -93,37 +93,35 @@ public class LabyConnection extends PacketHandler {
         this.bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
         this.bootstrap.channel(NioSocketChannel.class);
         this.bootstrap.handler(new ClientChannelInitializer(this));
-        this.executorService.execute(() -> {
-            try {
-                System.out.println("Connecting to " + ip + ":" + port);
-                LabyConnection.this.bootstrap.connect(ip, port).syncUninterruptibly();
+        try {
+            System.out.println("Connecting to " + ip + ":" + port);
+            LabyConnection.this.bootstrap.connect(ip, port).syncUninterruptibly();
 
-                LabyConnection.this.sendPacket(new LabyPacketHelloPing(System.currentTimeMillis()));
-            } catch (UnresolvedAddressException error) {
-
-
-                LabyConnection.this.updateConnectionState(EnumConnectionState.OFFLINE);
+            LabyConnection.this.sendPacket(new LabyPacketHelloPing(System.currentTimeMillis()));
+        } catch (UnresolvedAddressException error) {
 
 
-                LabyConnection.this.lastKickMessage = (error.getMessage() == null) ? "Unknown error" : error.getMessage();
-                System.err.println("UnresolvedAddressException: " + error.getMessage());
-                error.printStackTrace();
-            } catch (Throwable throwable) {
+            LabyConnection.this.updateConnectionState(EnumConnectionState.OFFLINE);
 
 
-                LabyConnection.this.updateConnectionState(EnumConnectionState.OFFLINE);
+            LabyConnection.this.lastKickMessage = (error.getMessage() == null) ? "Unknown error" : error.getMessage();
+            System.err.println("UnresolvedAddressException: " + error.getMessage());
+            error.printStackTrace();
+        } catch (Throwable throwable) {
 
 
-                LabyConnection.this.lastKickMessage = (throwable.getMessage() == null) ? "Unknown error" : throwable.getMessage();
-                System.err.println("Throwable: " + throwable.getMessage());
-                throwable.printStackTrace();
+            LabyConnection.this.updateConnectionState(EnumConnectionState.OFFLINE);
 
 
-                if (LabyConnection.this.lastKickMessage.contains("no further information") || throwable.getMessage() == null) {
-                    LabyConnection.this.lastKickMessage = ("chat_not_reachable");
-                }
+            LabyConnection.this.lastKickMessage = (throwable.getMessage() == null) ? "Unknown error" : throwable.getMessage();
+            System.err.println("Throwable: " + throwable.getMessage());
+            throwable.printStackTrace();
+
+
+            if (LabyConnection.this.lastKickMessage.contains("no further information") || throwable.getMessage() == null) {
+                LabyConnection.this.lastKickMessage = ("chat_not_reachable");
             }
-        });
+        }
     }
 
 
@@ -239,7 +237,7 @@ public class LabyConnection extends PacketHandler {
     public Task<UserData[]> requestUserData(UUID... uuids) {
         Preconditions.checkArgument(this.requestedUserData == null, "Cannot make multiple user data requests at the same time");
         this.requestedUserData = new DefaultTask<>();
-        this.sendPacket(new LabyPacketUserBadge(uuids));
+        this.executorService.execute(() -> this.sendPacket(new LabyPacketUserBadge(uuids)));
         return this.requestedUserData;
     }
 

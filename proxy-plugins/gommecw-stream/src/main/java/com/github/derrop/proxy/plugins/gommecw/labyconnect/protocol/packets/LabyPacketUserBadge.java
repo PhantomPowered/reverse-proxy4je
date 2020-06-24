@@ -40,8 +40,6 @@ public class LabyPacketUserBadge extends LabyPacket {
         byte[] bytes = new byte[size];
         buf.readBytes(bytes);
         this.ranks = bytes;
-
-        System.out.println(this);
     }
 
 

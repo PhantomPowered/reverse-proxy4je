@@ -28,10 +28,12 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
+import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.util.PasteServerUtils;
 import com.github.derrop.proxy.api.util.Side;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
+import com.github.derrop.proxy.plugins.gomme.events.GommeMatchDetectEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.TeamRegistry;
 import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.GameMessageRegistry;
@@ -93,6 +95,9 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
     public void createMatch(MatchInfo matchInfo) {
         matchInfo.getInvoker().setProperty(PROPERTY_KEY, matchInfo);
+
+        this.core.getRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new GommeMatchDetectEvent(matchInfo.getInvoker(), matchInfo));
     }
 
     public void deleteMatch(ServiceConnection invoker, MatchEvent event) {

@@ -270,4 +270,22 @@ public class MatchInfo {
         return builder.toString();
     }
 
+    @Override
+    public String toString() {
+        return "MatchInfo{" +
+                "matchManager=" + matchManager +
+                ", invoker=" + invoker +
+                ", recorderId=" + recorderId +
+                ", gameMode=" + gameMode +
+                ", matchId='" + matchId + '\'' +
+                ", running=" + running +
+                ", beginTimestamp=" + beginTimestamp +
+                ", endTimestamp=" + endTimestamp +
+                ", players=" + players +
+                ", bacPlayers=" + bacPlayers +
+                ", teams=" + teams +
+                ", properties=" + properties +
+                ", selectedLanguage=" + selectedLanguage +
+                '}';
+    }
 }

@@ -47,12 +47,12 @@ public class LabyBufferUtils {
     public static ChatUser readChatUser(ProtoBuf buf) {
         String username = readString(buf);
         UUID uuid = UUID.fromString(readString(buf));
-        String statusMessage = buf.readString();
+        String statusMessage = readString(buf);
         UserStatus status = readUserStatus(buf);
 
         boolean request = buf.readBoolean();
         String timeZone = readString(buf);
-        int contactsAmound = buf.readInt();
+        int contactsAmount = buf.readInt();
         long lastOnline = buf.readLong();
         long firstJoined = buf.readLong();
 
@@ -61,7 +61,7 @@ public class LabyBufferUtils {
         if (request) {
             return new ChatRequest(new GameProfile(uuid, username));
         }
-        return new ChatUser(new GameProfile(uuid, username), status, statusMessage, serverInfo, 0, timeZone, lastOnline, firstJoined, contactsAmound, false);
+        return new ChatUser(new GameProfile(uuid, username), status, statusMessage, serverInfo, 0, timeZone, lastOnline, firstJoined, contactsAmount, false);
     }
 
     public static void writeChatUser(ProtoBuf buf, ChatUser user) {

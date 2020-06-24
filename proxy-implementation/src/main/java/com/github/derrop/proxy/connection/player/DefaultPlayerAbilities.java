@@ -3,7 +3,9 @@ package com.github.derrop.proxy.connection.player;
 import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
+import com.github.derrop.proxy.protocol.play.client.PacketPlayClientPlayerAbilities;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
+import com.google.common.base.Preconditions;
 
 import java.util.Optional;
 
@@ -52,5 +54,27 @@ public class DefaultPlayerAbilities implements PlayerAbilities {
     @Override
     public float getWalkSpeed() {
         return this.getLastAbilitiesPacket().map(PacketPlayServerPlayerAbilities::getWalkSpeed).orElse(-1F);
+    }
+
+    @Override
+    public void setFlying(boolean flying) {
+        this.getLastAbilitiesPacket()
+                .map(abilities -> {
+                    if (flying) {
+                        Preconditions.checkArgument(abilities.isAllowFlying(), "cannot set flying to true without allowFlight true");
+                    }
+
+                    if (abilities.isFlying() == flying) {
+                        return null;
+                    }
+
+                    return new PacketPlayClientPlayerAbilities(abilities.isInvulnerable(), flying, abilities.isAllowFlying(), abilities.isCreativeMode(), abilities.getFlySpeed(), abilities.getWalkSpeed());
+                })
+                .ifPresent(abilities -> {
+                    this.connection.sendPacket(abilities);
+                    if (this.connection.getPlayer() != null) {
+                        this.connection.getPlayer().sendPacket(new PacketPlayServerPlayerAbilities(abilities.isInvulnerable(), abilities.isFlying(), abilities.isAllowFlying(), abilities.isCreativeMode(), abilities.getFlySpeed(), abilities.getWalkSpeed()));
+                    }
+                });
     }
 }

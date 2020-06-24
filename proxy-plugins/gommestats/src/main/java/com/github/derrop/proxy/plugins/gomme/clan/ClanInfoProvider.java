@@ -24,25 +24,58 @@
  */
 package com.github.derrop.proxy.plugins.gomme.clan;
 
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.gomme.clan.parser.ClanId;
+import com.github.derrop.proxy.plugins.gomme.clan.parser.ClanParser;
+
+import java.util.concurrent.TimeUnit;
 
 public class ClanInfoProvider extends DatabaseProvidedStorage<ClanInfo> {
 
-    public ClanInfoProvider(ServiceRegistry registry) {
+    private static final long VALID_MILLIS = TimeUnit.HOURS.toMillis(12);
+
+    private final ClanParser parser;
+
+    public ClanInfoProvider(ServiceRegistry registry, ClanParser parser) {
         super(registry, "gomme_clan_info", ClanInfo.class);
+        this.parser = parser;
     }
 
-    public ClanInfo getClan(String name) {
+    public ClanInfo getStoredClan(String name) {
         return super.get(name);
+    }
+
+    public ClanInfo getActualClan(ServiceConnection connection, String name) {
+        ClanInfo info = this.getStoredClan(name);
+        if (info != null && info.getTimestamp() + VALID_MILLIS >= System.currentTimeMillis()) {
+            return info;
+        }
+        ClanId id = ClanId.forName(name);
+        if (this.parser.hasPendingRequest(connection, id)) {
+            return null;
+        }
+        ClanInfo newInfo = this.parser.requestClanInfo(connection, id).getUninterruptedly(15, TimeUnit.SECONDS);
+        if (newInfo == null) {
+            return null;
+        }
+
+        if (info != null) {
+            newInfo.getTags().addAll(info.getTags());
+        }
+
+        if (info != null) {
+            super.update(newInfo.getName(), newInfo);
+        } else {
+            super.insert(newInfo.getName(), newInfo);
+        }
+
+        return newInfo;
     }
 
     public ClanInfo getClanByShortcut(String shortcut) {
         return super.getAll().stream().filter(clanInfo -> clanInfo.getShortcut().equals(shortcut)).findFirst().orElse(null);
-    }
-
-    public void updateClan(ClanInfo info) {
-        super.insertOrUpdate(info.getName(), info);
     }
 
 }

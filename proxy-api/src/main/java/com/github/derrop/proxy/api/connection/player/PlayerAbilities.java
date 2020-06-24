@@ -14,4 +14,6 @@ public interface PlayerAbilities {
 
     float getWalkSpeed();
 
+    void setFlying(boolean flying);
+
 }
