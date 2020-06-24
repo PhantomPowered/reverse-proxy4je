@@ -56,8 +56,8 @@ public class ClanWarTeam {
     }
 
     public enum Color {
-        RED(java.awt.Color.RED),
-        BLUE(java.awt.Color.BLUE);
+        RED(java.awt.Color.RED/*new Color(16733525) MC §c */),
+        BLUE(java.awt.Color.BLUE/*new Color(5592575) MC §9 */);
 
         private final java.awt.Color color;
 

@@ -15,18 +15,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Frame extends JFrame {
-
-    private static final Color BLUE = Color.BLUE;//new Color(5592575);
-    private static final Color RED = Color.RED;//new Color(16733525);
 
     private static final int WIDTH = 1920, HEIGHT = 1080;
 
@@ -38,18 +32,16 @@ public class Frame extends JFrame {
 
     static {
         try {
-            // TODO Don't use any URLs, store them locally
-            BAC_IMAGE = scale(ImageIO.read(new URL("https://www.gommehd.net/forum/styles/gomme_hd/images/badlion/bac_badge_244_80.png")), 81, 27);
+            BAC_IMAGE = scale(ImageIO.read(Objects.requireNonNull(Frame.class.getClassLoader().getResourceAsStream("img/bac.png"))), 81, 27);
 
-            Image x = ImageIO.read(new URL("https://cdn.discordapp.com/emojis/267095012838342666.png?v=1"));
+            Image x = ImageIO.read(Objects.requireNonNull(Frame.class.getClassLoader().getResourceAsStream("img/labymod.png")));
             LABYMOD_IMAGE = scale(x, 40, 42);
 
-            //BACKGROUND_IMAGE = scale(ImageIO.read(new URL("https://cdn.discordapp.com/attachments/630742545886085121/725089582839758938/87848.jpg")), WIDTH, HEIGHT);
-            BACKGROUND_IMAGE = scale(ImageIO.read(new URL("https://p0.pikist.com/photos/225/42/mountain-landscape-clouds-sun-sky-adventure-summit-4k-wallpaper.jpg")), WIDTH, HEIGHT);
+            BACKGROUND_IMAGE = scale(ImageIO.read(Objects.requireNonNull(Frame.class.getClassLoader().getResourceAsStream("img/background.jpg"))), WIDTH, HEIGHT);
 
-            GOMME_ICON = ImageIO.read(new URL("https://www.gommehd.net/images/brandmark@3x.png"));
+            GOMME_ICON = ImageIO.read(Objects.requireNonNull(Frame.class.getClassLoader().getResourceAsStream("img/gomme.png")));
         } catch (IOException exception) {
-            throw new Error("Cannot load BAC/Background image", exception);
+            throw new Error("Cannot load images", exception);
         }
     }
 
@@ -110,22 +102,25 @@ public class Frame extends JFrame {
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }
-                this.togglePlayerCamera(state ? null : "derrop");
+                this.togglePlayerCamera(
+                        new ClanWarTeam(ClanWarTeam.Color.RED, true, "", "", Collections.emptyList()),
+                        new ClanWarMember(UUID.fromString("fdef0011-1c58-40c8-bfef-0bdcb1495938"), "juliarn", true, false)
+                );
                 state = !state;
             }
         }).start();
     }
 
-    public void togglePlayerCamera(String targetPlayer) {
-        boolean visible = targetPlayer != null;
-        if (targetPlayer != null) {
+    public void togglePlayerCamera(ClanWarTeam team, ClanWarMember member) {
+        boolean visible = team != null && member != null;
+        if (visible) {
             try {
-                this.playerCameraLabelHead.setIcon(new ImageIcon(new URL(String.format(AVATAR_URL, targetPlayer, HEAD_SIZE)))); // TODO cache icon
+                this.playerCameraLabelHead.setIcon(new ImageIcon(new URL(String.format(AVATAR_URL, member.getUniqueId().toString().replace("-", ""), HEAD_SIZE)))); // TODO cache icon
             } catch (MalformedURLException exception) {
                 exception.printStackTrace();
             }
-            this.playerCameraLabel.setText(targetPlayer);
-            this.playerCameraLabel.setForeground(RED); // TODO use the color of the players team
+            this.playerCameraLabel.setText(member.getName());
+            this.playerCameraLabel.setForeground(team.getColor().getColor());
         }
 
         for (Container container : this.generalInformation) {
