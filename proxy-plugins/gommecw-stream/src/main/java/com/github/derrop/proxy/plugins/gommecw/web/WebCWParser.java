@@ -54,9 +54,13 @@ public class WebCWParser {
                             }
                             break;
                     }
-                } else if (current != null && element.tagName().equals("a")) {
-                    current.setMatchId(element.attr("href").replaceFirst("/clan-match\\?id=", ""));
-                    infos.add(current);
+                } else if (current != null && element.tagName().equals("a") && element.text().equals("Matchpage")) {
+                    String matchId = element.attr("href").replaceFirst("/clan-match\\?id=", "");
+                    current.setMatchId(matchId);
+                    if (infos.stream().noneMatch(info -> matchId.equals(info.getMatchId()))) {
+                        infos.add(current);
+                    }
+                    current = null;
                 }
             }
 
