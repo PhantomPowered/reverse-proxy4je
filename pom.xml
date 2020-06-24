@@ -18,7 +18,6 @@
         <module>proxy-implementation</module>
         <module>proxy-api</module>
         <module>proxy-plugins</module>
-        <module>proxy-plugins/gommecw-stream</module>
     </modules>
 
     <repositories>
