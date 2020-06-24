@@ -1,10 +1,11 @@
-package com.github.derrop.proxy.plugins.gommecw;
+package com.github.derrop.proxy.plugins.gommecw.running;
 
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gommecw.labyconnect.LabyConnection;
 import com.github.derrop.proxy.plugins.gommecw.labyconnect.user.UserData;
+import com.github.derrop.proxy.plugins.gommecw.web.WebClanInfo;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.UserAuthentication;
 
@@ -19,10 +20,12 @@ import java.util.stream.Collectors;
 public class RunningClanWar {
 
     private final Collection<PlayerInfo> spectators = new CopyOnWriteArrayList<>();
+    private final WebClanInfo info;
     private final MatchInfo matchInfo;
     private Collection<UUID> labyUsers;
 
-    public RunningClanWar(MatchInfo matchInfo) {
+    public RunningClanWar(WebClanInfo info, MatchInfo matchInfo) {
+        this.info = info;
         this.matchInfo = matchInfo;
     }
 

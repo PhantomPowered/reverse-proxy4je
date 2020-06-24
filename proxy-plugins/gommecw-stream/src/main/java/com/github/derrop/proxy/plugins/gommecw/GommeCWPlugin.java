@@ -6,6 +6,7 @@ import com.github.derrop.proxy.api.plugin.annotation.Dependency;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.plugins.gommecw.web.WebCWParser;
 
 @Plugin(
         id = "com.github.derrop.plugins.gommecw",
@@ -17,9 +18,14 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 )
 public class GommeCWPlugin {
 
+    private final WebCWParser webParser = new WebCWParser();
+
     @Inject(state = PluginState.ENABLED)
     public void enable(ServiceRegistry registry, PluginContainer container) {
+    }
 
+    public WebCWParser getWebParser() {
+        return this.webParser;
     }
 
 }
