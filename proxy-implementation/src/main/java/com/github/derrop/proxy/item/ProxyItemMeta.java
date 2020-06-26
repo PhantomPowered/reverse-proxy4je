@@ -323,7 +323,7 @@ public class ProxyItemMeta implements ItemMeta {
     }
 
     @Override
-    public @NotNull @NotNull TranslatableComponent getLocName() {
+    public @NotNull TranslatableComponent getLocName() {
         return locName;
     }
 
