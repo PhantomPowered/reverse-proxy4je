@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.network;
 
-import com.github.derrop.proxy.api.util.OverflowPacketException;
+import com.github.derrop.proxy.api.network.exception.ComponentTooLargeException;
 import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
 
@@ -32,8 +32,7 @@ public class ByteBufUtils {
 
     public static void writeString(String s, ByteBuf buf) {
         if (s.length() > Short.MAX_VALUE) {
-            // TODO - why
-            throw new OverflowPacketException(String.format("Cannot send string longer than Short.MAX_VALUE (got %s characters)", s.length()));
+            throw new ComponentTooLargeException(String.format("Cannot send string longer than Short.MAX_VALUE (got %s characters)", s.length()));
         }
 
         byte[] b = s.getBytes(Charsets.UTF_8);
@@ -44,8 +43,7 @@ public class ByteBufUtils {
     public static String readString(ByteBuf buf) {
         int len = readVarInt(buf);
         if (len > Short.MAX_VALUE) {
-            // TODO - why
-            throw new OverflowPacketException(String.format("Cannot receive string longer than Short.MAX_VALUE (got %s characters)", len));
+            throw new ComponentTooLargeException(String.format("Cannot receive string longer than Short.MAX_VALUE (got %s characters)", len));
         }
 
         byte[] b = new byte[len];
