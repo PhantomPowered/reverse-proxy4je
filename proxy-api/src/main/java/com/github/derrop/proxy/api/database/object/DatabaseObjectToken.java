@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 public abstract class DatabaseObjectToken<T> {
 
-    public static final Gson GSON = new Gson(); // TODO: not thread save
+    public static final ThreadLocal<Gson> GSON = ThreadLocal.withInitial(() -> new Gson());
 
     @NotNull
     public static <T> DatabaseObjectToken<T> newToken(@NotNull Function<byte[], T> mapFunction,
@@ -59,7 +59,7 @@ public abstract class DatabaseObjectToken<T> {
 
     @NotNull
     public static <T> DatabaseObjectToken<T> newToken(@NotNull String key, @NotNull String table, @NotNull Type type) {
-        return newToken(bytes -> GSON.fromJson(new String(bytes), type), key, table);
+        return newToken(bytes -> GSON.get().fromJson(new String(bytes), type), key, table);
     }
 
     @NotNull
