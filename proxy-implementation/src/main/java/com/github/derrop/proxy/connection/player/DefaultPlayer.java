@@ -359,7 +359,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
             this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
-                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason)));
+                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));
             return;
         }
 
