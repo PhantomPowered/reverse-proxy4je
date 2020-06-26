@@ -100,7 +100,7 @@ public final class DefaultPluginManager implements PluginManager {
 
     @Override
     public @NotNull Collection<PluginContainer> getPlugins() {
-        return this.pluginContainers.stream().map(e -> e.getPluginContainer()).collect(Collectors.toList());
+        return this.pluginContainers.stream().map(PluginContainerEntry::getPluginContainer).collect(Collectors.toList());
     }
 
     @Override
@@ -212,14 +212,14 @@ public final class DefaultPluginManager implements PluginManager {
             this.toLoad.remove(path);
 
             try {
-                URLClassLoader classLoader = new URLClassLoader(new URL[]{path.toUri().toURL()});
+                URLClassLoader classLoader = new FinalizeURLClassLoader(new URL[]{path.toUri().toURL()});
                 List<Duo<Class<?>, Plugin>> mainClassPossibilities = this.findMainClass(path, classLoader);
                 if (mainClassPossibilities.size() != 1) {
                     throw new PluginMainClassNotDefinedException("Found " + mainClassPossibilities.size() + " main class targets in " + path.toString() + ". Expected: 1");
                 }
 
                 Duo<Class<?>, Plugin> mainClass = mainClassPossibilities.get(0);
-                PluginContainer container = new DefaultPluginContainer(mainClass.getRight(), this.registry, mainClass.getLeft(), classLoader, path);
+                PluginContainer container = new DefaultPluginContainer(this.pluginsDirectory, mainClass.getRight(), this.registry, mainClass.getLeft(), classLoader, path);
 
                 Object instance;
                 try {

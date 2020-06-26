@@ -27,8 +27,8 @@ public class MessageRegistry {
     }
 
     public void registerMessage(Language language, MessageType type, String message, Supplier<MatchEvent> matchEventMapper, GommeServerType... gameModes) {
-        RegisteredMessage registeredMessage = new RegisteredMessage(input -> input.equals(message), map -> matchEventMapper.get());
-        
+        RegisteredMessage registeredMessage = new RegisteredMessage(type, input -> input.equals(message), map -> matchEventMapper.get());
+
         Map<GommeServerType, Map<MessageType, RegisteredMessage>> messagesForLanguage = messages.get(language);
         for (GommeServerType gameMode : gameModes) {
             messagesForLanguage.get(gameMode).put(type, registeredMessage);
@@ -41,6 +41,7 @@ public class MessageRegistry {
                                              GommeServerType... gameModes) {
         Pattern pattern = Pattern.compile(regex);
         RegisteredMessage registeredMessage = new RegisteredMessage(
+                type,
                 input -> pattern.matcher(input).matches(),
                 input -> {
                     Matcher matcher = pattern.matcher(input);

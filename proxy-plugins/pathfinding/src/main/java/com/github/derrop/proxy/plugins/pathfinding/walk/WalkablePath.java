@@ -6,19 +6,13 @@ import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 
 import java.util.Queue;
 
-public class WalkablePath {
+public abstract class WalkablePath {
 
     private final ServiceConnection connection;
-    private final Path path;
     private final Runnable finishHandler;
 
-    private PathPoint previousPoint;
-    private PathPoint currentPoint;
-    private Queue<PathPoint> currentWay;
-
-    public WalkablePath(ServiceConnection connection, Path path, Runnable finishHandler) {
+    public WalkablePath(ServiceConnection connection, Runnable finishHandler) {
         this.connection = connection;
-        this.path = path;
         this.finishHandler = finishHandler;
     }
 
@@ -30,35 +24,10 @@ public class WalkablePath {
         return connection;
     }
 
-    public Path getPath() {
-        return path;
-    }
+    public abstract boolean isRecursive();
 
-    public PathPoint getNextPoint() {
-        return this.path.getNextPoint();
-    }
+    public abstract boolean isDone();
 
-    public PathPoint getCurrentPoint() {
-        return currentPoint;
-    }
+    public abstract void handleTick();
 
-    public void setCurrentPoint(PathPoint currentPoint) {
-        this.currentPoint = currentPoint;
-    }
-
-    public PathPoint getPreviousPoint() {
-        return previousPoint;
-    }
-
-    public void setPreviousPoint(PathPoint previousPoint) {
-        this.previousPoint = previousPoint;
-    }
-
-    public Queue<PathPoint> getCurrentWay() {
-        return currentWay;
-    }
-
-    public void setCurrentWay(Queue<PathPoint> currentWay) {
-        this.currentWay = currentWay;
-    }
 }

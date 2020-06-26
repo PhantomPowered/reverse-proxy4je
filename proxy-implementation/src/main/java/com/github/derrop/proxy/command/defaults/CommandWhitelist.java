@@ -7,7 +7,7 @@ import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Whitelist;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.player.id.PlayerId;
-import com.github.derrop.proxy.api.player.id.PlayerIdRepository;
+import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.mojang.util.UUIDTypeAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class CommandWhitelist extends NonTabCompleteableCommandCallback {
         }
         Whitelist whitelist = optionalWhitelist.get();
 
-        PlayerIdRepository playerIdRepository = this.registry.getProviderUnchecked(PlayerIdRepository.class);
+        PlayerIdStorage playerIdStorage = this.registry.getProviderUnchecked(PlayerIdStorage.class);
 
 
         if (args.length == 1 && args[0].equalsIgnoreCase("enable")) {
@@ -63,7 +63,7 @@ public class CommandWhitelist extends NonTabCompleteableCommandCallback {
 
             sender.sendMessage("§aEntries:");
             for (UUID entry : entries) {
-                PlayerId id = playerIdRepository.getPlayerId(entry);
+                PlayerId id = playerIdStorage.getPlayerId(entry);
                 sender.sendMessage("§7- " + id);
             }
             return CommandResult.SUCCESS;
@@ -75,11 +75,11 @@ public class CommandWhitelist extends NonTabCompleteableCommandCallback {
 
             try {
                 if (input.length() <= 16) {
-                    id = playerIdRepository.getPlayerId(input);
+                    id = playerIdStorage.getPlayerId(input);
                 } else if (input.contains("-")) {
-                    id = playerIdRepository.getPlayerId(UUID.fromString(input));
+                    id = playerIdStorage.getPlayerId(UUID.fromString(input));
                 } else {
-                    id = playerIdRepository.getPlayerId(UUIDTypeAdapter.fromString(input));
+                    id = playerIdStorage.getPlayerId(UUIDTypeAdapter.fromString(input));
                 }
             } catch (IllegalArgumentException exception) {
                 sender.sendMessage("§cThis UUID is not valid");

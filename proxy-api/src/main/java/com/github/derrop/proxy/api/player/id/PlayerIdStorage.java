@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface PlayerIdRepository {
+public interface PlayerIdStorage {
 
     PlayerId getPlayerId(@NotNull String name);
 

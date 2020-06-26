@@ -37,12 +37,13 @@ import java.nio.file.Path;
 
 public final class DefaultPluginContainer implements PluginContainer {
 
-    DefaultPluginContainer(Plugin plugin, ServiceRegistry registry, Class<?> mainClass, URLClassLoader urlClassLoader, Path path) {
+    DefaultPluginContainer(Path pluginsDirectory, Plugin plugin, ServiceRegistry registry, Class<?> mainClass, URLClassLoader urlClassLoader, Path path) {
         this.plugin = plugin;
         this.registry = registry;
         this.mainClass = mainClass;
         this.urlClassLoader = urlClassLoader;
         this.path = path;
+        this.dataFolder = pluginsDirectory.resolve(plugin.displayName());
         this.pluginState = PluginState.LOADED;
     }
 
@@ -55,6 +56,7 @@ public final class DefaultPluginContainer implements PluginContainer {
     private final URLClassLoader urlClassLoader;
 
     private final Path path;
+    private final Path dataFolder;
 
     private PluginState pluginState;
 
@@ -111,6 +113,11 @@ public final class DefaultPluginContainer implements PluginContainer {
     @Override
     public @NotNull Path getPluginPath() {
         return this.path;
+    }
+
+    @Override
+    public @NotNull Path getDataFolder() {
+        return this.dataFolder;
     }
 
     @Override

@@ -50,10 +50,13 @@ public class GommeStatsPlugin {
     public void enable(ServiceRegistry registry, PluginContainer container) {
         GommeStatsCore core = new GommeStatsCore(registry);
 
+        registry.setProvider(container, GommeStatsCore.class, core);
+
         //super.getServiceRegistry().getProviderUnchecked(EventManager.class).registerListener(container, new TeamParser(core));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeMatchListener(core.getMatchManager()));
-        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeEventListener());
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeEventListener(core.getMatchManager()));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getSpectatorDetector());
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, core.getClanParser());
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new LanguageDetector(core.getMatchManager()));
 
         registry.getProviderUnchecked(CommandMap.class).registerCommand(container, new CommandSpectatorlist(registry, core.getSpectatorDetector()), "spectatorlist", "speclist");

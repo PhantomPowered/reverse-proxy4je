@@ -42,7 +42,7 @@ import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistr
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.player.PlayerRepository;
-import com.github.derrop.proxy.api.player.id.PlayerIdRepository;
+import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
@@ -180,7 +180,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));
         this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
-        this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdStorage(this.serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, PlayerIdStorage.class, new DefaultPlayerIdStorage(this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, Whitelist.class, new DefaultWhitelist(this.serviceRegistry), false);
 
         System.out.println("Loading plugins...");

@@ -89,7 +89,7 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
 
     @Override
     public @NotNull MCServiceCredentials getCredentials() {
-        return new MCServiceCredentials(player.getName());
+        return MCServiceCredentials.offline(this.player.getName(), null, false);
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableMap;
 public class BedWarsMessageMapSelected extends SingleGameMessageRegistrar {
     @Override
     public void register(SpecificGameMessageRegistrar registrar) {
-        registrar.registerRegExMessage(Language.GERMANY, MessageType.MAP_SELECTED, "\\[BedWars] Map: (.*) von (.*)",
+        registrar.registerRegExMessage(Language.GERMANY, MessageType.MAP_SELECTED, "\\[BedWars] Map: (.*) von: (.*)",
                 (input, matcher) -> ImmutableMap.of("map", matcher.group(1), "builder", matcher.group(2)),
                 map -> new MapSelectedEvent(map.get("map"), map.get("builder"))
         );

@@ -38,15 +38,21 @@ public class MCServiceCredentials {
     private String defaultServer;
     private boolean exportable;
 
-    public MCServiceCredentials(String email, String password, String defaultServer, boolean exportable) {
+    public MCServiceCredentials(String username, String email, byte[] password, String defaultServer, boolean exportable) {
+        this.username = username;
         this.email = email;
-        this.password = Base64.getEncoder().encode(password.getBytes(StandardCharsets.UTF_8));
+        this.password = password;
         this.defaultServer = defaultServer;
         this.exportable = exportable;
     }
 
-    public MCServiceCredentials(String username) {
-        this.username = username;
+    public static MCServiceCredentials online(String email, String password, String defaultServer, boolean exportable) {
+        byte[] passwordBytes = Base64.getEncoder().encode(password.getBytes(StandardCharsets.UTF_8));
+        return new MCServiceCredentials(null, email, passwordBytes, defaultServer, exportable);
+    }
+
+    public static MCServiceCredentials offline(String username, String defaultServer, boolean exportable) {
+        return new MCServiceCredentials(username, null, null, defaultServer, exportable);
     }
 
     public String getUsername() {

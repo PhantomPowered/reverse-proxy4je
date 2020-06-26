@@ -22,6 +22,8 @@ public interface ServiceConnector extends Tickable {
     @NotNull
     Optional<? extends ServiceConnection> getClientByEmail(String email);
 
+    Optional<? extends ServiceConnection> getClientByName(String name);
+
     @NotNull
     Collection<? extends ServiceConnection> getOnlineClients();
 

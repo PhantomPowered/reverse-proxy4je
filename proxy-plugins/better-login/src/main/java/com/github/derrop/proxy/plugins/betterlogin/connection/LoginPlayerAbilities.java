@@ -32,4 +32,8 @@ public class LoginPlayerAbilities implements PlayerAbilities {
     public float getWalkSpeed() {
         return 0;
     }
+
+    @Override
+    public void setFlying(boolean flying) {
+    }
 }

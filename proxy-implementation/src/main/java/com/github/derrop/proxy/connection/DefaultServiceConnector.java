@@ -73,6 +73,13 @@ public class DefaultServiceConnector implements ServiceConnector {
     }
 
     @Override
+    public Optional<? extends ServiceConnection> getClientByName(String name) {
+        return this.onlineClients.stream()
+                .filter(connection -> connection.getName().equals(name))
+                .findFirst();
+    }
+
+    @Override
     @NotNull
     public Collection<BasicServiceConnection> getOnlineClients() {
         return this.onlineClients;

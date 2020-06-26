@@ -42,6 +42,7 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
 
+import javax.script.ScriptEngine;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -68,9 +69,9 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         ServiceConnector connector = this.registry.getProviderUnchecked(ServiceConnector.class);
         MCServiceCredentialsStorage storage = this.registry.getProviderUnchecked(MCServiceCredentialsStorage.class);
 
-        if (args.length == 5 && args[0].equalsIgnoreCase("add")) {
+        if ((args.length == 4 || args.length == 5) && args[0].equalsIgnoreCase("add")) {
             NetworkAddress address = NetworkAddress.parse(args[1]);
-            boolean exportable = Boolean.parseBoolean(args[4]);
+            boolean exportable = Boolean.parseBoolean(args[args.length - 1]);
 
             if (address == null) {
                 sender.sendMessage("§cInvalid address");
@@ -83,9 +84,16 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
             }
 
             sender.sendMessage("§aImporting account " + args[2] + "...");
-            MCServiceCredentials credentials = new MCServiceCredentials(args[2], args[3], address.asString(), exportable);
+
+            String password = args.length == 5 ? args[3] : null;
+
+            MCServiceCredentials credentials = password == null ?
+                    MCServiceCredentials.offline(args[2], address.asString(), exportable) :
+                    MCServiceCredentials.online(args[2], password, address.asString(), exportable);
+
             storage.insert(args[2], credentials);
             this.connect(connector, credentials, address, sender);
+
             sender.sendMessage("§aSuccessfully imported account " + args[2]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("close")) {
             this.closeAll(connector, sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1])) ||
@@ -102,6 +110,11 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
             storage.delete(args[1]);
             connector.getClientByEmail(args[1]).ifPresent(client -> {
                 sender.sendMessage("§cDisconnecting online client...");
+                client.close();
+                sender.sendMessage("§cDisconnected client");
+            });
+            connector.getClientByName(args[1]).ifPresent(client -> {
+                sender.sendMessage("§cDisconnecting offline client...");
                 client.close();
                 sender.sendMessage("§cDisconnected client");
             });
@@ -173,7 +186,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                         continue;
                     }
 
-                    MCServiceCredentials credentials = new MCServiceCredentials(email, password, defaultServer, true);
+                    MCServiceCredentials credentials = MCServiceCredentials.online(email, password, defaultServer, true);
                     storage.insert(email, credentials);
 
                     sender.sendMessage("§aImported " + credentials.getEmail() + " successfully, trying to connect");
@@ -187,6 +200,10 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
             MCServiceCredentials credentials = storage.get(args[0]);
             if (credentials == null) {
                 sender.sendMessage("§cThe account " + args[0] + " is unknown");
+                return CommandResult.BREAK;
+            }
+
+            if (credentials.isOffline()) {
                 return CommandResult.BREAK;
             }
 
@@ -277,7 +294,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage("acc add <default-address> <E-Mail> <Password> <exportable>");
+        sender.sendMessage("acc add <default-address> <E-Mail|OfflineUsername> [Password] <exportable>");
         sender.sendMessage("acc <email> setEmail <new-email>");
         sender.sendMessage("acc <email> setPassword <password>");
         sender.sendMessage("acc <email> setDefaultServer <default-server>");
@@ -304,7 +321,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 return;
             }
 
-            sender.sendMessage(success ? ("§aSuccessfully connected as §e" + credentials.getEmail() + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
+            sender.sendMessage(success ? ("§aSuccessfully connected as §e" + (credentials.getEmail() != null ? credentials.getEmail() : credentials.getUsername()) + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
             if (sender instanceof Player) {
                 TextComponent component = TextComponent.of(Constants.MESSAGE_PREFIX + "§aClick to connect");
                 component.clickEvent(ClickEvent.runCommand("/switch " + client.getName()));

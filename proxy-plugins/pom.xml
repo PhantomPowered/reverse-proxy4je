@@ -24,6 +24,8 @@
         <module>jumpmaster</module>
         <module>ruler</module>
         <module>automsg</module>
+        <module>gommecw-stream</module>
+        <module>discord-bot</module>
     </modules>
 
 </project>

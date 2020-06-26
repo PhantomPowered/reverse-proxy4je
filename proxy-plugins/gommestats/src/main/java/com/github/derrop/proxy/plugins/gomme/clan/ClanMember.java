@@ -22,9 +22,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gomme.player.clan;
+package com.github.derrop.proxy.plugins.gomme.clan;
 
 import com.github.derrop.proxy.api.player.id.PlayerId;
+
+import java.util.Arrays;
 
 public class ClanMember {
 
@@ -62,12 +64,46 @@ public class ClanMember {
         this.rank = rank;
     }
 
+    @Override
+    public String toString() {
+        return "ClanMember{" +
+                "playerId=" + playerId +
+                ", memberType=" + memberType +
+                ", rank=" + rank +
+                '}';
+    }
+
     public static enum Type {
         LEADER, MODERATOR, MEMBER
     }
 
     public static enum Rank {
-        ADMIN, TEAM, SUPREMIUM, PREMIUM, PLAYER
+        ADMIN("4"),
+        TEAM("c"),
+        YOUTUBER("5"),
+        SUPREMIUM("b"),
+        PREMIUM_PLUS("e"),
+        PREMIUM("6"),
+        PLAYER("a"),
+        UNKNOWN(null);
+
+        private final String requiredColor;
+
+        Rank(String requiredColor) {
+            this.requiredColor = requiredColor;
+        }
+
+        public String getRequiredColor() {
+            return this.requiredColor;
+        }
+
+        public static Rank parseRank(String color) {
+            return Arrays.stream(values())
+                    .filter(rank -> rank.requiredColor != null && rank.requiredColor.equals(color))
+                    .findFirst()
+                    .orElse(Rank.UNKNOWN);
+        }
+
     }
 
 }

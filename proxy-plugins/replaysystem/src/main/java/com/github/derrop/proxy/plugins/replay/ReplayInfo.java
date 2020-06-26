@@ -92,6 +92,8 @@ public class ReplayInfo {
         outputStream.writeBoolean(this.recorder.isOffline());
         if (this.recorder.isOffline()) {
             outputStream.writeUTF(this.recorder.getUsername());
+            outputStream.writeUTF(this.recorder.getDefaultServer());
+            outputStream.writeBoolean(this.recorder.isExportable());
         } else {
             outputStream.writeUTF(this.recorder.getEmail());
             outputStream.writeUTF(this.recorder.getPassword());
@@ -112,9 +114,9 @@ public class ReplayInfo {
 
         boolean offline = inputStream.readBoolean();
         if (offline) {
-            this.recorder = new MCServiceCredentials(inputStream.readUTF());
+            this.recorder = MCServiceCredentials.online(inputStream.readUTF(), inputStream.readUTF(), inputStream.readUTF(), inputStream.readBoolean());
         } else {
-            this.recorder = new MCServiceCredentials(inputStream.readUTF(), inputStream.readUTF(), inputStream.readUTF(), inputStream.readBoolean());
+            this.recorder = MCServiceCredentials.offline(inputStream.readUTF(), inputStream.readUTF(), inputStream.readBoolean());
         }
 
         this.timestamp = inputStream.readLong();

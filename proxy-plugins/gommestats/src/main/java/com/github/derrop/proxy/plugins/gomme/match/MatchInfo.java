@@ -61,7 +61,9 @@ public class MatchInfo {
     private transient boolean running;
     private long beginTimestamp = -1;
     private long endTimestamp = -1;
+
     private final Collection<PlayerInfo> players = new ArrayList<>();
+    private final Collection<UUID> bacPlayers = new ArrayList<>(); // TODO fill
 
     private final Collection<MatchTeam> teams = new ArrayList<>();
     private final Collection<MatchEvent> events = new ArrayList<>();
@@ -183,6 +185,10 @@ public class MatchInfo {
         return this.players;
     }
 
+    public Collection<UUID> getBacPlayers() {
+        return this.bacPlayers;
+    }
+
     public Collection<MatchEvent> getEvents() {
         return this.events;
     }
@@ -228,6 +234,9 @@ public class MatchInfo {
                 builder.append("none");
             }
             builder.append(") Team: ").append(team == null ? "no team" : team.getType());
+            if (this.bacPlayers.contains(player.getUniqueId())) {
+                builder.append(" | BAC");
+            }
             builder.append('\n');
         }
         builder.append("=========================== Players ===========================\n");
@@ -261,4 +270,22 @@ public class MatchInfo {
         return builder.toString();
     }
 
+    @Override
+    public String toString() {
+        return "MatchInfo{" +
+                "matchManager=" + matchManager +
+                ", invoker=" + invoker +
+                ", recorderId=" + recorderId +
+                ", gameMode=" + gameMode +
+                ", matchId='" + matchId + '\'' +
+                ", running=" + running +
+                ", beginTimestamp=" + beginTimestamp +
+                ", endTimestamp=" + endTimestamp +
+                ", players=" + players +
+                ", bacPlayers=" + bacPlayers +
+                ", teams=" + teams +
+                ", properties=" + properties +
+                ", selectedLanguage=" + selectedLanguage +
+                '}';
+    }
 }
