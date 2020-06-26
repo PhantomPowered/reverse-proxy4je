@@ -34,13 +34,42 @@ public enum SubMaterial {
     POLISHED_ANDESITE(Material.STONE, 6),
 
     COARSE_DIRT(Material.DIRT, 1),
-    PODZOL(Material.DIRT, 2);
+    PODZOL(Material.DIRT, 2),
 
-    private final Material parent;
+    COLOR_WHITE(0, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_ORANGE(1, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_MAGENTA(2, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_LIGHT_BLUE(3, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_YELLOW(4, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_LIME(5, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_PINK(6, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_GRAY(7, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_LIGHT_GRAY(8, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_CYAN(9, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_PURPLE(10, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_BLUE(11, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_BROWN(12, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_GREEN(13, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_RED(14, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+    COLOR_BLACK(15, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE);
+
+    private final Material[] parents;
     private final int subId;
 
     SubMaterial(Material parent, int subId) {
-        this.parent = parent;
+        this(subId, parent);
+    }
+
+    SubMaterial(int subId, Material... parents) {
+        this.parents = parents;
         this.subId = subId;
+    }
+
+    public Material[] getParents() {
+        return this.parents;
+    }
+
+    public int getSubId() {
+        return this.subId;
     }
 }

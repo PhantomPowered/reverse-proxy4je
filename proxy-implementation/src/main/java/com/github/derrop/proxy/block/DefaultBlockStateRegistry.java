@@ -271,22 +271,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(555, Material.PISTON_BASE);
         registerState(556, Material.PISTON_BASE);
         registerState(557, Material.PISTON_BASE);
-        registerState(560, Material.WOOL);
-        registerState(561, Material.WOOL);
-        registerState(562, Material.WOOL);
-        registerState(563, Material.WOOL);
-        registerState(564, Material.WOOL);
-        registerState(565, Material.WOOL);
-        registerState(566, Material.WOOL);
-        registerState(567, Material.WOOL);
-        registerState(568, Material.WOOL);
-        registerState(569, Material.WOOL);
-        registerState(570, Material.WOOL);
-        registerState(571, Material.WOOL);
-        registerState(572, Material.WOOL);
-        registerState(573, Material.WOOL);
-        registerState(574, Material.WOOL);
-        registerState(575, Material.WOOL);
+        registerState(560, Material.WOOL).subMaterial(SubMaterial.COLOR_WHITE); // complete;
+        registerState(561, Material.WOOL).subMaterial(SubMaterial.COLOR_ORANGE); // complete
+        registerState(562, Material.WOOL).subMaterial(SubMaterial.COLOR_MAGENTA); // complete
+        registerState(563, Material.WOOL).subMaterial(SubMaterial.COLOR_LIGHT_BLUE); // complete
+        registerState(564, Material.WOOL).subMaterial(SubMaterial.COLOR_YELLOW); // complete
+        registerState(565, Material.WOOL).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(566, Material.WOOL).subMaterial(SubMaterial.COLOR_PINK); // complete
+        registerState(567, Material.WOOL).subMaterial(SubMaterial.COLOR_GRAY); // complete
+        registerState(568, Material.WOOL).subMaterial(SubMaterial.COLOR_LIGHT_GRAY); // complete
+        registerState(569, Material.WOOL).subMaterial(SubMaterial.COLOR_CYAN); // complete
+        registerState(570, Material.WOOL).subMaterial(SubMaterial.COLOR_PURPLE); // complete
+        registerState(571, Material.WOOL).subMaterial(SubMaterial.COLOR_BLUE); // complete
+        registerState(572, Material.WOOL).subMaterial(SubMaterial.COLOR_BROWN); // complete
+        registerState(573, Material.WOOL).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(574, Material.WOOL).subMaterial(SubMaterial.COLOR_RED); // complete
+        registerState(575, Material.WOOL).subMaterial(SubMaterial.COLOR_BLACK); // complete
         registerState(576, Material.PISTON_EXTENSION);
         registerState(577, Material.PISTON_EXTENSION);
         registerState(578, Material.PISTON_EXTENSION);
@@ -636,22 +636,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1517, Material.DIODE_BLOCK_ON);
         registerState(1518, Material.DIODE_BLOCK_ON);
         registerState(1519, Material.DIODE_BLOCK_ON);
-        registerState(1520, Material.STAINED_GLASS);
-        registerState(1521, Material.STAINED_GLASS);
-        registerState(1522, Material.STAINED_GLASS);
-        registerState(1523, Material.STAINED_GLASS);
-        registerState(1524, Material.STAINED_GLASS);
-        registerState(1525, Material.STAINED_GLASS);
-        registerState(1526, Material.STAINED_GLASS);
-        registerState(1527, Material.STAINED_GLASS);
-        registerState(1528, Material.STAINED_GLASS);
-        registerState(1529, Material.STAINED_GLASS);
-        registerState(1530, Material.STAINED_GLASS);
-        registerState(1531, Material.STAINED_GLASS);
-        registerState(1532, Material.STAINED_GLASS);
-        registerState(1533, Material.STAINED_GLASS);
-        registerState(1534, Material.STAINED_GLASS);
-        registerState(1535, Material.STAINED_GLASS);
+        registerState(1520, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_WHITE); // complete
+        registerState(1521, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_ORANGE); // complete
+        registerState(1522, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_MAGENTA); // complete
+        registerState(1523, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_LIGHT_BLUE); // complete
+        registerState(1524, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_YELLOW); // complete
+        registerState(1525, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(1526, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_PINK); // complete
+        registerState(1527, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_GRAY); // complete
+        registerState(1528, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_LIGHT_GRAY); // complete
+        registerState(1529, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_CYAN); // complete
+        registerState(1530, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_PURPLE); // complete
+        registerState(1531, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_BLUE); // complete
+        registerState(1532, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_BROWN); // complete
+        registerState(1533, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(1534, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_RED); // complete
+        registerState(1535, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_BLACK); // complete
         registerState(1536, Material.TRAP_DOOR).facing(Facing.SOUTH).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
         registerState(1537, Material.TRAP_DOOR).facing(Facing.NORTH).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
         registerState(1538, Material.TRAP_DOOR).facing(Facing.EAST).half(TrapdoorPosition.BOTTOM).height(0.3D); // complete
@@ -1119,38 +1119,38 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2539, Material.DROPPER);
         registerState(2540, Material.DROPPER);
         registerState(2541, Material.DROPPER);
-        registerState(2544, Material.STAINED_CLAY);
-        registerState(2545, Material.STAINED_CLAY);
-        registerState(2546, Material.STAINED_CLAY);
-        registerState(2547, Material.STAINED_CLAY);
-        registerState(2548, Material.STAINED_CLAY);
-        registerState(2549, Material.STAINED_CLAY);
-        registerState(2550, Material.STAINED_CLAY);
-        registerState(2551, Material.STAINED_CLAY);
-        registerState(2552, Material.STAINED_CLAY);
-        registerState(2553, Material.STAINED_CLAY);
-        registerState(2554, Material.STAINED_CLAY);
-        registerState(2555, Material.STAINED_CLAY);
-        registerState(2556, Material.STAINED_CLAY);
-        registerState(2557, Material.STAINED_CLAY);
-        registerState(2558, Material.STAINED_CLAY);
-        registerState(2559, Material.STAINED_CLAY);
-        registerState(2560, Material.STAINED_GLASS_PANE);
-        registerState(2561, Material.STAINED_GLASS_PANE);
-        registerState(2562, Material.STAINED_GLASS_PANE);
-        registerState(2563, Material.STAINED_GLASS_PANE);
-        registerState(2564, Material.STAINED_GLASS_PANE);
-        registerState(2565, Material.STAINED_GLASS_PANE);
-        registerState(2566, Material.STAINED_GLASS_PANE);
-        registerState(2567, Material.STAINED_GLASS_PANE);
-        registerState(2568, Material.STAINED_GLASS_PANE);
-        registerState(2569, Material.STAINED_GLASS_PANE);
-        registerState(2570, Material.STAINED_GLASS_PANE);
-        registerState(2571, Material.STAINED_GLASS_PANE);
-        registerState(2572, Material.STAINED_GLASS_PANE);
-        registerState(2573, Material.STAINED_GLASS_PANE);
-        registerState(2574, Material.STAINED_GLASS_PANE);
-        registerState(2575, Material.STAINED_GLASS_PANE);
+        registerState(2544, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_WHITE); // complete
+        registerState(2545, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_ORANGE); // complete
+        registerState(2546, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_MAGENTA); // complete
+        registerState(2547, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_LIGHT_BLUE); // complete
+        registerState(2548, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_YELLOW); // complete
+        registerState(2549, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(2550, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_PINK); // complete
+        registerState(2551, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_GRAY); // complete
+        registerState(2552, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_LIGHT_GRAY); // complete
+        registerState(2553, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_CYAN); // complete
+        registerState(2554, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_PURPLE); // complete
+        registerState(2555, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_BLUE); // complete
+        registerState(2556, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_BROWN); // complete
+        registerState(2557, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(2558, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_RED); // complete
+        registerState(2559, Material.STAINED_CLAY).subMaterial(SubMaterial.COLOR_BLACK); // complete
+        registerState(2560, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_WHITE); // complete
+        registerState(2561, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_ORANGE); // complete
+        registerState(2562, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_MAGENTA); // complete
+        registerState(2563, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_LIGHT_BLUE); // complete
+        registerState(2564, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_YELLOW); // complete
+        registerState(2565, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(2566, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_PINK); // complete
+        registerState(2567, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_GRAY); // complete
+        registerState(2568, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_LIGHT_GRAY); // complete
+        registerState(2569, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_CYAN); // complete
+        registerState(2570, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_PURPLE); // complete
+        registerState(2571, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_BLUE); // complete
+        registerState(2572, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_BROWN); // complete
+        registerState(2573, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_GREEN); // complete
+        registerState(2574, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_RED); // complete
+        registerState(2575, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_BLACK); // complete
         registerState(2576, Material.LEAVES);
         registerState(2577, Material.LEAVES);
         registerState(2580, Material.LEAVES);
