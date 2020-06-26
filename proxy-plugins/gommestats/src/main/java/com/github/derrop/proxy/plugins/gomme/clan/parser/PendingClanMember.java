@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins.gomme.clan.parser;
 
-import com.github.derrop.proxy.api.util.player.PlayerIdRepository;
+import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanMember;
 
 public class PendingClanMember {
@@ -27,7 +27,7 @@ public class PendingClanMember {
         return this.rank;
     }
 
-    public ClanMember toMember(PlayerIdRepository repository) {
+    public ClanMember toMember(PlayerIdStorage repository) {
         return new ClanMember(repository.getPlayerId(this.name), this.type, this.rank);
     }
 

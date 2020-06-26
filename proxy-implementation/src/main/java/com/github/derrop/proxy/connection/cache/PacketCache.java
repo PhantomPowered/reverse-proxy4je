@@ -27,10 +27,10 @@ package com.github.derrop.proxy.connection.cache;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
-import com.github.derrop.proxy.api.network.ByteBufUtils;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.block.DefaultBlockAccess;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.handler.*;
@@ -78,10 +78,10 @@ public class PacketCache {
         return this.handlers;
     }
 
-    public void handlePacket(ByteBuf packet, Packet deserialized) {
+    public void handlePacket(ProtoBuf packet, Packet deserialized) {
         packet.markReaderIndex();
 
-        int receivedPacketId = ByteBufUtils.readVarInt(packet);
+        int receivedPacketId = packet.readVarInt();
 
         for (PacketCacheHandler handler : this.handlers) {
             for (int packetId : handler.getPacketIDs()) {

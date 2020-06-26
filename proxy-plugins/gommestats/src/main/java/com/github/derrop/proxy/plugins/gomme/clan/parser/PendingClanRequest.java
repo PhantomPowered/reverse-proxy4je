@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins.gomme.clan.parser;
 
-import com.github.derrop.proxy.api.util.player.PlayerIdRepository;
+import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanInfo;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanMember;
 import com.google.common.base.Preconditions;
@@ -61,7 +61,7 @@ public class PendingClanRequest {
         this.members.add(member);
     }
 
-    public ClanInfo toClanInfo(PlayerIdRepository repository) {
+    public ClanInfo toClanInfo(PlayerIdStorage repository) {
         Preconditions.checkNotNull(this.name, "name");
         Preconditions.checkNotNull(this.shortcut, "shortcut");
         Preconditions.checkArgument(this.generalMemberCount == this.members.size() || this.unknownMemberCount != -1, "Wrong member count");

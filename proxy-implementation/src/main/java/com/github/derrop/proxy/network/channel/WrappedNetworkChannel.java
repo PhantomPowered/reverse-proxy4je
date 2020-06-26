@@ -32,6 +32,7 @@ import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -62,7 +63,7 @@ public interface WrappedNetworkChannel extends NetworkChannel {
     }
 
     @Override
-    default @NotNull SocketAddress getAddress() {
+    default @NotNull InetSocketAddress getAddress() {
         return this.getWrappedNetworkChannel().getAddress();
     }
 

@@ -36,6 +36,7 @@ import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.function.Consumer;
@@ -208,7 +209,7 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
-    public @NotNull SocketAddress getSocketAddress() {
+    public @NotNull InetSocketAddress getSocketAddress() {
         return this.player.getSocketAddress();
     }
 
@@ -236,7 +237,7 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
-    public @NotNull SocketAddress getAddress() {
+    public @NotNull InetSocketAddress getAddress() {
         return this.player.getAddress();
     }
 

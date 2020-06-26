@@ -30,12 +30,13 @@ import net.kyori.text.Component;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 public interface Connection extends PacketSender, NetworkChannel {
 
     @NotNull
-    SocketAddress getSocketAddress(); // TODO: replace with InetSocket
+    InetSocketAddress getSocketAddress();
 
     @Deprecated
     default void disconnect(@NotNull String reason) {
