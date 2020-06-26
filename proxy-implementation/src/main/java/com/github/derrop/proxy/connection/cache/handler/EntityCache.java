@@ -25,19 +25,21 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.Constants;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.data.DataWatcher;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.entity.types.ProxyExperienceOrb;
 import com.github.derrop.proxy.entity.types.living.human.ProxyPlayer;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityEquipment;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
@@ -47,7 +49,6 @@ import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServe
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntityExperienceOrb;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerCamera;
-import com.github.derrop.proxy.data.DataWatcher;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -56,8 +57,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class EntityCache implements PacketCacheHandler {
-    // TODO Remove all entities on Bungee ServerSwitch
-    // TODO entities are not properly removed
 
     private final Map<Integer, ProxyEntity> entities = new ConcurrentHashMap<>();
 
@@ -80,7 +79,9 @@ public class EntityCache implements PacketCacheHandler {
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY,
                 ProtocolIds.ToClient.Play.SPAWN_ENTITY_EXPERIENCE_ORB,
 
-                ProtocolIds.ToClient.Play.ENTITY_DESTROY
+                ProtocolIds.ToClient.Play.ENTITY_DESTROY,
+
+                ProtocolIds.ToClient.Play.RESPAWN
         };
     }
 
@@ -93,7 +94,9 @@ public class EntityCache implements PacketCacheHandler {
         this.packetCache = packetCache;
         ServiceRegistry registry = packetCache.getTargetProxyClient().getProxy().getServiceRegistry();
 
-        if (newPacket instanceof PacketPlayServerEntityTeleport) {
+        if (newPacket instanceof PacketPlayServerRespawn) {
+            this.entities.clear();
+        } else if (newPacket instanceof PacketPlayServerEntityTeleport) {
             PacketPlayServerEntityTeleport teleport = (PacketPlayServerEntityTeleport) newPacket;
             if (this.entities.containsKey(teleport.getEntityId())) {
                 this.entities.get(teleport.getEntityId()).updateLocation(

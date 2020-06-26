@@ -121,7 +121,7 @@ public interface DatabaseDriver extends AutoCloseable {
 
     @NotNull
     default <T> Collection<T> getAll(@NotNull String table, @NotNull Type type) {
-        return this.getAll(table, bytes -> DatabaseObjectToken.GSON.fromJson(new String(bytes), type));
+        return this.getAll(table, bytes -> DatabaseObjectToken.GSON.get().fromJson(new String(bytes), type));
     }
 
     /**
