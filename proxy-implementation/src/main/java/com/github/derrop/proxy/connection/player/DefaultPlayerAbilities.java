@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
+import com.github.derrop.proxy.api.player.PlayerAbilities;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.cache.handler.SimplePacketCache;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class DefaultPlayerAbilities implements PlayerAbilities {
 
-    private BasicServiceConnection connection;
+    private final BasicServiceConnection connection;
 
     public DefaultPlayerAbilities(BasicServiceConnection connection) {
         this.connection = connection;

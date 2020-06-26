@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 
+@Deprecated // TODO: LOOKS LIKE SHIT FIX THIS ASAP
 public class PasteServerUtils {
 
     private PasteServerUtils() {

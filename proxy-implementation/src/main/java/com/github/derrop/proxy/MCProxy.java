@@ -32,23 +32,21 @@ import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
-import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.Whitelist;
-import com.github.derrop.proxy.api.connection.player.PlayerRepository;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
+import com.github.derrop.proxy.api.player.PlayerRepository;
+import com.github.derrop.proxy.api.player.id.PlayerIdRepository;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
-import com.github.derrop.proxy.api.util.BlockIterator;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.api.util.player.PlayerIdRepository;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
@@ -73,14 +71,13 @@ import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
 import com.github.derrop.proxy.service.BasicServiceRegistry;
+import com.github.derrop.proxy.storage.DefaultPlayerIdStorage;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
-import com.github.derrop.proxy.util.player.DefaultPlayerIdRepository;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -89,7 +86,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MCProxy extends Proxy {
-
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
 
@@ -121,60 +117,6 @@ public class MCProxy extends Proxy {
         System.out.println("Loading configuration...");
         this.serviceRegistry.getProviderUnchecked(Configuration.class).load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
-
-        //PlayerVelocityHandler.start(this.serviceRegistry);
-
-        /* TODO: bow aimbot
-        new Thread(() -> {
-            AtomicReference<Location> location = new AtomicReference<>();
-
-            while (!Thread.interrupted()) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                }
-
-                this.serviceRegistry.getProvider(PlayerRepository.class).ifPresent(playerRepository -> {
-                    for (Player player : playerRepository.getOnlinePlayers()) {
-                        if (player.getConnectedClient() == null) {
-                            continue;
-                        }
-                        if (location.get() == null) {
-                            location.set(player.getLocation().add(new Vector(0, player.getEyeHeight(), 0)));
-                        }
-
-                        BlockAccess blockAccess = player.getConnectedClient().getBlockAccess();
-
-                        Location base = player.getLocation();
-                        Vector velocity = base.getDirection();
-                        Vector drag = new Vector(0.01, 0.01, 0.01); // https://minecraft.gamepedia.com/Entity#Motion_of_entities
-                        Vector downwardAccel = new Vector(0, -0.05, 0);
-                        BlockIterator itr = new BlockIterator(blockAccess, base.toVector(), base.getDirection(), 0, 3);
-                        int tick = 0;
-                        while (base.getY() > 0 && !intercepts(itr)) { //can do an extra check against velocity to ensure arrow isn't stationary
-                            velocity.add(drag).add(downwardAccel);
-                            base.add(velocity);
-                            itr = new BlockIterator(blockAccess, base.toVector(), base.getDirection(), 0, 3);
-                            tick++;
-
-                            //player.sendBlockChange(base, Material.DIAMOND_BLOCK);
-                            player.sendPacket(new PacketPlayServerWorldParticles(Particle.FLAME, (float) base.getX(), (float) base.getY(), (float) base.getZ(), 0, 0, 0, 1F, 1, false, new int[0]));
-                        }
-                    }
-                });
-            }
-        }).start();*/
-    }
-
-    public boolean intercepts(BlockIterator itr) {
-        while (itr.hasNext()) {
-            Material material = itr.getBlockAccess().getMaterial(itr.next());
-            if (material != Material.AIR && material != Material.WATER && material != Material.STATIONARY_WATER) { //can be more specific
-                return true;
-            }
-        }
-        return false;
     }
 
     private void startMainLoop() {
@@ -227,28 +169,9 @@ public class MCProxy extends Proxy {
         return this.baseChannelInitializer;
     }
 
-    public void bootstrap(int port, long start) throws IOException {
+    public void bootstrap(int port, long start) {
         System.out.println("Registering incoming packets...");
         PacketRegistrar.registerPackets(this.serviceRegistry.getProviderUnchecked(PacketRegistry.class));
-
-        /*while (!Thread.interrupted()) {
-            ServerPing ping = this.serviceRegistry.getProviderUnchecked(ServerPingProvider.class).pingServer(NetworkAddress.parse("91.218.67.147")).getUninterruptedly(5, TimeUnit.SECONDS);
-            if (ping == null) {
-                System.out.println(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date()) + ": ERROR");
-            } else {
-                System.out.println(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date()) + ": " + ping.getPlayers().getOnline() + "/" + ping.getPlayers().getMax());
-            }
-
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException exception) {
-                exception.printStackTrace();
-            }
-        }
-
-        if (true) {
-            return;
-        }*/
 
         System.out.println("Connecting to database...");
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
@@ -257,7 +180,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));
         this.serviceRegistry.setProvider(null, PlayerRepository.class, new DefaultPlayerRepository(this.serviceRegistry), true);
-        this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdRepository(this.serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, PlayerIdRepository.class, new DefaultPlayerIdStorage(this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, Whitelist.class, new DefaultWhitelist(this.serviceRegistry), false);
 
         System.out.println("Loading plugins...");
@@ -317,8 +240,4 @@ public class MCProxy extends Proxy {
 
         this.serviceRegistry.setProvider(null, CommandMap.class, commandMap, false, true);
     }
-
-    // todo we could put information like "CPS (autoclicker)" into the action bar
-    //  Or maybe an extra program (like a labymod addon), a website or a standalone program which can be opened on a second screen/mobile to display some information
-
 }

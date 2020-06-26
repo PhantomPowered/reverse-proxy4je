@@ -36,8 +36,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ListPacketCache implements PacketCacheHandler {
 
-    private Queue<Packet> lastPackets = new LinkedBlockingQueue<>();
-    private int packetId;
+    private final Queue<Packet> lastPackets = new LinkedBlockingQueue<>();
+    private final int packetId;
     private int limit = -1;
 
     public ListPacketCache(int packetId, int limit) {

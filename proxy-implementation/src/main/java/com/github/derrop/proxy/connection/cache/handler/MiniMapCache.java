@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MiniMapCache implements PacketCacheHandler {
 
-    private Map<Integer, PacketPlayServerMap> maps = new ConcurrentHashMap<>();
+    private final Map<Integer, PacketPlayServerMap> maps = new ConcurrentHashMap<>();
 
     @Override
     public int[] getPacketIDs() {

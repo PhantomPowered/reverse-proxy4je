@@ -30,7 +30,7 @@ import com.github.derrop.proxy.api.entity.types.minecart.Minecart;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.item.ProxyItemStack;

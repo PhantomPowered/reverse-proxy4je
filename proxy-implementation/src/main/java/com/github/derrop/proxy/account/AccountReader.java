@@ -25,12 +25,13 @@
 package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 
 import java.util.function.BiConsumer;
 
+// TODO: shit
 public class AccountReader {
 
     public void readAccounts(ServiceRegistry registry, BiConsumer<MCServiceCredentials, NetworkAddress> consumer) {

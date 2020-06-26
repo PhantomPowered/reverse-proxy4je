@@ -31,10 +31,10 @@ import java.util.Map;
 
 public class PlayerStatistics implements Comparable<PlayerStatistics> {
 
-    private GommeServerType gameMode;
-    private Map<String, String> stats;
-    private int rank;
-    private boolean privateStats;
+    private final GommeServerType gameMode;
+    private final Map<String, String> stats;
+    private final int rank;
+    private final boolean privateStats;
 
     public PlayerStatistics(GommeServerType gameMode, Map<String, String> stats, int rank, boolean privateStats) {
         this.gameMode = gameMode;

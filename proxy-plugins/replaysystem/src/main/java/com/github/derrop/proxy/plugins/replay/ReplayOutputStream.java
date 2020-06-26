@@ -36,7 +36,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ReplayOutputStream extends DataOutputStream {
 
-    private BlockingQueue<ReplayPacket> receivedPackets = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ReplayPacket> receivedPackets = new LinkedBlockingQueue<>();
 
     private boolean closed = false;
     private Runnable closeHandler;

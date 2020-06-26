@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.secret.GommeSpectatorDetector;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class CommandSpectatorlist extends NonTabCompleteableCommandCallback {
     // TODO
 
-    private ServiceRegistry registry;
-    private GommeSpectatorDetector spectatorDetector;
+    private final ServiceRegistry registry;
+    private final GommeSpectatorDetector spectatorDetector;
 
     public CommandSpectatorlist(ServiceRegistry registry, GommeSpectatorDetector spectatorDetector) {
         super("command.spectatorlist", null);

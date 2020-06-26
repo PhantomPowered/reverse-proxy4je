@@ -36,12 +36,11 @@ public interface Configuration {
 
     void setProxyPort(int proxyPort);
 
-    int getWebPort();
+//    int getWebPort(); // todo: maybe next time?
 
     void setWebPort(int webPort);
 
     ServerPing getMotd();
 
     void setMotd(ServerPing motd);
-
 }

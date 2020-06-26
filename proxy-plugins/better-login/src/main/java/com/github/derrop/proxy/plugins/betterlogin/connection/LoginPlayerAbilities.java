@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins.betterlogin.connection;
 
-import com.github.derrop.proxy.api.connection.player.PlayerAbilities;
+import com.github.derrop.proxy.api.player.PlayerAbilities;
 
 public class LoginPlayerAbilities implements PlayerAbilities {
     @Override

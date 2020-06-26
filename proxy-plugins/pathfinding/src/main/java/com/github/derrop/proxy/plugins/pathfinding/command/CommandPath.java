@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
@@ -25,7 +25,7 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
     private final ExecutorService executorService = Executors.newFixedThreadPool(6);
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
 
-    private ServiceRegistry registry;
+    private final ServiceRegistry registry;
 
     public CommandPath(ServiceRegistry registry) {
         super("command.path", null);

@@ -11,7 +11,7 @@ import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEv
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
-import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.api.player.Side;
 import com.github.derrop.proxy.connection.AppendedActionBar;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;

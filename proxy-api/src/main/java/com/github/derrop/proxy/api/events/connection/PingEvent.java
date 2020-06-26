@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PingEvent extends Event {
 
-    private NetworkChannel channel;
+    private final NetworkChannel channel;
     private ServerPing response;
 
     public PingEvent(@NotNull NetworkChannel channel, @Nullable ServerPing response) {

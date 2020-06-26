@@ -28,6 +28,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated // TODO: replace this shit of stupid code - it's completely unused at all
 public abstract class Proxy {
 
     @NotNull

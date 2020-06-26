@@ -1,8 +1,8 @@
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.connection.player.inventory.InventoryType;
-import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.inventory.InventoryType;
+import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerCloseWindow;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 //TODO: https://github.com/Exceptionflug/protocolize/
 public class DefaultPlayerInventory implements PlayerInventory {
 
-    private Player player;
+    private final Player player;
 
     private Component title;
     private InventoryType type;

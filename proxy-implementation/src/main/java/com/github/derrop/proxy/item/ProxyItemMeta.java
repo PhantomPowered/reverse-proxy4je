@@ -24,12 +24,12 @@
  */
 package com.github.derrop.proxy.item;
 
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.item.*;
-import com.github.derrop.proxy.api.util.nbt.NBTBase;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
-import com.github.derrop.proxy.api.util.nbt.NBTTagList;
-import com.github.derrop.proxy.api.util.nbt.NBTTagString;
+import com.github.derrop.proxy.api.nbt.NBTBase;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagList;
+import com.github.derrop.proxy.api.nbt.NBTTagString;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Enums;
 import com.google.common.collect.LinkedHashMultimap;
@@ -323,7 +323,7 @@ public class ProxyItemMeta implements ItemMeta {
     }
 
     @Override
-    public TranslatableComponent getLocName() {
+    public @NotNull @NotNull TranslatableComponent getLocName() {
         return locName;
     }
 

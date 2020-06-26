@@ -9,8 +9,8 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.player.GameMode;
-import com.github.derrop.proxy.api.connection.player.inventory.ClickType;
+import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.player.inventory.ClickType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.event.Event;
@@ -55,9 +55,7 @@ public class ClientPacketHandler {
 
             if (packet.getPacket() != null && player.getConnectedClient() instanceof BasicServiceConnection) {
                 ((BasicServiceConnection) player.getConnectedClient()).getEntityRewrite().updatePacketToServer(packet.getPacket(), player.getEntityId(), player.getConnectedClient().getEntityId());
-
                 ((BasicServiceConnection) player.getConnectedClient()).getClient().handleClientPacket(packet.getPacket());
-
                 ((BasicServiceConnection) player.getConnectedClient()).getClient().getVelocityHandler().handlePacket(ProtocolDirection.TO_SERVER, packet.getPacket());
             }
 
@@ -71,8 +69,8 @@ public class ClientPacketHandler {
         if (player.getConnectedClient() == null || !(player.getConnectedClient() instanceof BasicServiceConnection)) {
             return;
         }
-        BasicServiceConnection connection = (BasicServiceConnection) player.getConnectedClient();
 
+        BasicServiceConnection connection = (BasicServiceConnection) player.getConnectedClient();
         switch (packet.getAction()) {
             case START_SNEAKING:
                 connection.setSneaking(true);
@@ -99,6 +97,7 @@ public class ClientPacketHandler {
                 packet.getAction() != PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK) {
             return;
         }
+
         PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.LEFT_CLICK_BLOCK);
         player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (event.isCancelled()) {
@@ -111,26 +110,19 @@ public class ClientPacketHandler {
         if (player.getConnectedClient() == null) {
             return;
         }
+
         Entity entity = player.getConnectedClient().getWorldDataProvider().getEntityInWorld(packet.getEntityId());
-
         Event event;
-
         switch (packet.getAction()) {
-            case ATTACK: {
+            case ATTACK:
                 event = new PlayerAttackEntityEvent(player, entity);
-            }
-            break;
-
-            case INTERACT: {
+                break;
+            case INTERACT:
                 event = new PlayerInteractEntityEvent(player, entity);
-            }
-            break;
-
-            case INTERACT_AT: {
+                break;
+            case INTERACT_AT:
                 event = new PlayerInteractAtEntityEvent(player, entity, packet.getHitVector());
-            }
-            break;
-
+                break;
             default:
                 throw new IllegalStateException("Received unknown action " + packet.getAction());
         }
@@ -148,8 +140,9 @@ public class ClientPacketHandler {
             if (targetedBlock != null) {
                 return true;
             }
-        } catch (IllegalStateException exception) {
+        } catch (IllegalStateException ignored) {
         }
+
         return false;
     }
 

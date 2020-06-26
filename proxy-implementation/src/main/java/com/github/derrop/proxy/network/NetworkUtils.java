@@ -35,36 +35,19 @@ public final class NetworkUtils {
         throw new UnsupportedOperationException();
     }
 
-
     public static final String TIMEOUT = "timeout";
-
     public static final String LENGTH_DECODER = "length_decoder";
-
     public static final String LENGTH_ENCODER = "length_encoder";
-
     public static final String ENDPOINT = "endpoint";
-
     public static final String PACKET_DECODER = "packet_decoder";
-
     public static final String PACKET_ENCODER = "packet_encoder";
-
     public static final String DECRYPT = "decrypt";
-
     public static final String ENCRYPT = "encrypt";
-
     public static final String COMPRESSOR = "compressor";
-
     public static final String DE_COMPRESSOR = "de-compressor";
 
-
     public static final MessageToByteEncoder<ByteBuf> LENGTH_FRAME_ENCODER = new LengthFrameEncoder();
-
     public static final WriteBufferWaterMark WATER_MARK = new WriteBufferWaterMark(524288, 2097152);
-
-    public static int roundedPowDouble(double d1, double d2) {
-        long result = Math.round(Math.pow(d1, d2));
-        return longToInt(result);
-    }
 
     public static int longToInt(long in) {
         return in > Integer.MAX_VALUE ? Integer.MAX_VALUE : in < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int) in;

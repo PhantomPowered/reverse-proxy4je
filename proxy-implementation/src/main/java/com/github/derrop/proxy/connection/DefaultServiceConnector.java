@@ -4,8 +4,8 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class DefaultServiceConnector implements ServiceConnector {
 
-    private MCProxy proxy;
+    private final MCProxy proxy;
 
     private final Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private final Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();

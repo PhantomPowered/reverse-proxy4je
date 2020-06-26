@@ -68,7 +68,7 @@ public class ProxyConsole implements AutoCloseable {
         return "";
     }
 
-    public void clearScreen() {
+    public void clearScreen() { // TODO: clear command
         this.terminal.puts(InfoCmp.Capability.clear_screen);
         this.terminal.flush();
     }

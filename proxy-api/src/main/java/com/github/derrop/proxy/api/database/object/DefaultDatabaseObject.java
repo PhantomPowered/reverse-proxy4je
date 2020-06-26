@@ -34,7 +34,7 @@ import java.io.Serializable;
 
 public class DefaultDatabaseObject implements DatabaseObject {
 
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson(); // TODO: not thread save
 
     private final String key;
     private final String table;

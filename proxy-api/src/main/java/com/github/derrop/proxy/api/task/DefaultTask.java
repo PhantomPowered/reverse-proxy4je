@@ -24,8 +24,6 @@
  */
 package com.github.derrop.proxy.api.task;
 
-import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.task.TaskFutureListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

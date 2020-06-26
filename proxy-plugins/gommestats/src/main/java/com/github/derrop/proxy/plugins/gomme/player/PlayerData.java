@@ -32,10 +32,10 @@ import java.util.Map;
 
 public class PlayerData {
 
-    private PlayerInfo playerInfo;
-    private Map<GommeServerType, PlayerStatistics> statistics;
-    private String clan;
-    private Collection<Tag> tags;
+    private final PlayerInfo playerInfo;
+    private final Map<GommeServerType, PlayerStatistics> statistics;
+    private final String clan;
+    private final Collection<Tag> tags;
 
     public PlayerData(PlayerInfo playerInfo, Map<GommeServerType, PlayerStatistics> statistics, String clan, Collection<Tag> tags) {
         this.playerInfo = playerInfo;

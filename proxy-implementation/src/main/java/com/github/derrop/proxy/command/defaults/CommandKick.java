@@ -29,8 +29,8 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.connection.player.PlayerRepository;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.api.events.connection.player;
 
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;

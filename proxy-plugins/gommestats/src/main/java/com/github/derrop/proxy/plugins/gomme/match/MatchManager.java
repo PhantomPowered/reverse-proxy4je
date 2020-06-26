@@ -26,10 +26,10 @@ package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.util.PasteServerUtils;
-import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.api.player.Side;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;

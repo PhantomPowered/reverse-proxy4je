@@ -25,7 +25,7 @@
 package com.github.derrop.proxy.storage;
 
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
-import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.player.DefaultOfflinePlayer;
 
@@ -34,7 +34,7 @@ import java.util.UUID;
 
 public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOfflinePlayer> {
 
-    private UUIDNameStorage uuidNameStorage;
+    private final UUIDNameStorage uuidNameStorage;
 
     public OfflinePlayerStorage(ServiceRegistry registry) {
         super(registry, "player_storage", DefaultOfflinePlayer.class);

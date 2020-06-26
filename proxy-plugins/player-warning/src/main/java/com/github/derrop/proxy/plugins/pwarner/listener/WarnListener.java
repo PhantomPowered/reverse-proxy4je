@@ -2,7 +2,7 @@ package com.github.derrop.proxy.plugins.pwarner.listener;
 
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatColor;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.event.annotation.Listener;
@@ -15,7 +15,7 @@ import com.github.derrop.proxy.plugins.pwarner.storage.WarnedEquipmentSlot;
 
 public class WarnListener {
 
-    private PlayerWarningDatabase database;
+    private final PlayerWarningDatabase database;
 
     public WarnListener(PlayerWarningDatabase database) {
         this.database = database;

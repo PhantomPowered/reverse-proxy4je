@@ -33,9 +33,9 @@ import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.connection.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.Entity;
@@ -47,7 +47,7 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.api.player.Side;
 import com.github.derrop.proxy.connection.*;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -91,6 +91,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     private final MCProxy proxy;
     private final OfflinePlayer offlinePlayer;
+    private final long lastLogin = System.currentTimeMillis();
     private final NetworkChannel channel;
     private final int version;
     private boolean firstConnection = true;
@@ -125,16 +126,6 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public Proxy getProxy() {
         return this.proxy;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    @Override
-    public void setDisplayName(String name) {
-        this.displayName = name;
     }
 
     public String getLastCommandCompleteRequest() {
@@ -368,7 +359,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
             this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
-                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));
+                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason)));
             return;
         }
 
@@ -502,12 +493,12 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public long getLastLogin() {
-        return this.offlinePlayer.getLastLogin();
+        return this.lastLogin; // pail - that we can update the offline player properly in the database
     }
 
     @Override
     public int getLastVersion() {
-        return this.offlinePlayer.getLastVersion();
+        return this.version; // pail - that we can update the offline player properly in the database
     }
 
     @Override

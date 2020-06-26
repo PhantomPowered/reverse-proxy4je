@@ -24,11 +24,12 @@
  */
 package com.github.derrop.proxy.api.util;
 
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated // TODO: fix some shit in here
 public interface ProvidedTitle {
 
     /**

@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.connection.player.Player;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import net.kyori.text.Component;
@@ -35,34 +34,14 @@ import java.net.SocketAddress;
 
 public interface Connection extends PacketSender, NetworkChannel {
 
-    /**
-     * Gets the remote address of this connection.
-     *
-     * @return the remote address
-     */
     @NotNull
-    SocketAddress getSocketAddress();
+    SocketAddress getSocketAddress(); // TODO: replace with InetSocket
 
-    /**
-     * Disconnects this end of the connection for the specified reason. If this
-     * is an {@link Player} the respective server connection will be
-     * closed too.
-     *
-     * @param reason the reason shown to the player / sent to the server on
-     *               disconnect
-     */
+    @Deprecated
     default void disconnect(@NotNull String reason) {
         this.disconnect(LegacyComponentSerializer.legacy().deserialize(reason));
     }
 
-    /**
-     * Disconnects this end of the connection for the specified reason. If this
-     * is an {@link Player} the respective server connection will be
-     * closed too.
-     *
-     * @param reason the reason shown to the player / sent to the server on
-     *               disconnect
-     */
     void disconnect(@NotNull Component reason);
 
     void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason);

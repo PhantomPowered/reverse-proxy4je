@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 public class ServiceDisconnectEvent extends ServiceConnectionEvent implements Cancelable {
 
     private boolean cancel;
-    private Component reason;
+    private final Component reason;
 
     public ServiceDisconnectEvent(@NotNull ServiceConnection connection, @Nullable Component reason) {
         super(connection);

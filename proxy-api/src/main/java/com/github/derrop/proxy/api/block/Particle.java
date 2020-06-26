@@ -59,14 +59,14 @@ public enum Particle {
     private static final Map<Integer, Particle> PARTICLES = new HashMap<>();
     private static final String[] PARTICLE_NAMES;
 
-    private Particle(String name, int particleId, boolean shouldIgnoreRange, int argumentCount) {
+    Particle(String name, int particleId, boolean shouldIgnoreRange, int argumentCount) {
         this.particleName = name;
         this.particleId = particleId;
         this.shouldIgnoreRange = shouldIgnoreRange;
         this.argumentCount = argumentCount;
     }
 
-    private Particle(String particleNameIn, int particleIDIn, boolean shouldIgnoreRange) {
+    Particle(String particleNameIn, int particleIDIn, boolean shouldIgnoreRange) {
         this(particleNameIn, particleIDIn, shouldIgnoreRange, 0);
     }
 
@@ -94,15 +94,12 @@ public enum Particle {
         return this.argumentCount > 0;
     }
 
-    /**
-     * Gets the relative EnumParticleTypes by id.
-     */
     public static Particle getById(int particleId) {
         return PARTICLES.get(particleId);
     }
 
     static {
-        List<String> list = Lists.<String>newArrayList();
+        List<String> list = Lists.newArrayList();
 
         for (Particle particle : values()) {
             PARTICLES.put(particle.getParticleId(), particle);
@@ -112,6 +109,6 @@ public enum Particle {
             }
         }
 
-        PARTICLE_NAMES = (String[]) list.toArray(new String[list.size()]);
+        PARTICLE_NAMES = list.toArray(new String[0]);
     }
 }

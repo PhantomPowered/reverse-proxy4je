@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.replay;
 
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 
 import java.io.DataInputStream;

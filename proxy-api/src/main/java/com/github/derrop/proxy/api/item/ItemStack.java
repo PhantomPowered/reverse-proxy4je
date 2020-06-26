@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.item;
 
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

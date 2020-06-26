@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -45,7 +45,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChunkCache implements PacketCacheHandler {
 
-    private Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
+    private final Collection<Chunk> chunks = new CopyOnWriteArrayList<>();
     private int dimension;
 
     private Player connectedPlayer;

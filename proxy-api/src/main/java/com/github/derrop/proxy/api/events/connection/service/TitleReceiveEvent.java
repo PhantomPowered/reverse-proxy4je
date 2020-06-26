@@ -32,12 +32,12 @@ public class TitleReceiveEvent extends ServiceConnectionEvent implements Cancela
 
     private boolean cancel;
 
-    private TitleUpdateType type;
-    private String title;
-    private String subTitle;
-    private int fadeIn;
-    private int stay;
-    private int fadeOut;
+    private final TitleUpdateType type;
+    private final String title;
+    private final String subTitle;
+    private final int fadeIn;
+    private final int stay;
+    private final int fadeOut;
 
     public TitleReceiveEvent(@NotNull ServiceConnection connection, String title, TitleUpdateType type) {
         this(connection, type, type == TitleUpdateType.TITLE ? title : null, type == TitleUpdateType.SUB_TITLE ? title : null, -1, -1, -1);

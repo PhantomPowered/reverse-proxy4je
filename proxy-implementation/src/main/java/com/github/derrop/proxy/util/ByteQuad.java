@@ -28,10 +28,10 @@ import java.util.Objects;
 
 public class ByteQuad {
 
-    private byte first;
-    private byte second;
-    private byte third;
-    private byte fourth;
+    private final byte first;
+    private final byte second;
+    private final byte third;
+    private final byte fourth;
 
     public ByteQuad(byte first, byte second, byte third, byte fourth) {
         this.first = first;
@@ -65,15 +65,11 @@ public class ByteQuad {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ByteQuad byteQuad = (ByteQuad) o;
-        return first == byteQuad.first &&
-                second == byteQuad.second &&
-                third == byteQuad.third &&
-                fourth == byteQuad.fourth;
+        return first == byteQuad.first && second == byteQuad.second && third == byteQuad.third && fourth == byteQuad.fourth;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(first, second, third, fourth);
     }
-
 }

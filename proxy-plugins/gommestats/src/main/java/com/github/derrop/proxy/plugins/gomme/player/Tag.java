@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.player;
 
-import com.github.derrop.proxy.api.util.player.PlayerId;
+import com.github.derrop.proxy.api.player.id.PlayerId;
 
 public class Tag {
 

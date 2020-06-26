@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;

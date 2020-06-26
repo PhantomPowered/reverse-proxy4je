@@ -29,7 +29,7 @@ import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.event.annotation.Listener;

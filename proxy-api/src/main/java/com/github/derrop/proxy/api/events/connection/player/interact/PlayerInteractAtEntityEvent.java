@@ -24,11 +24,11 @@
  */
 package com.github.derrop.proxy.api.events.connection.player.interact;
 
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.events.connection.player.PlayerEvent;
-import com.github.derrop.proxy.api.util.Vector;
+import com.github.derrop.proxy.api.location.Vector;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerInteractAtEntityEvent extends PlayerEvent implements Cancelable {

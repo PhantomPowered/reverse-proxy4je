@@ -26,7 +26,7 @@ package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.ChatColor;
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
@@ -47,12 +47,12 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-// TODO as plugin
+// TODO as plugin (since 1998)
 public class BanTester {
 
     private static final Path DATA_PATH = Paths.get("proxy_info.txt");
 
-    private MCProxy proxy;
+    private final MCProxy proxy;
     
     private NetworkAddress[] proxies;
     private int currentProxyIndex = 0;

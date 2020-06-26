@@ -34,7 +34,6 @@ public abstract class BlockMaterialHandler implements BlockConsumer {
         this.registry = registry;
     }
 
-    // materials will be null if the chunk was unloaded (newMaterial is null) or loaded (oldMaterial is null)
     public abstract void accept(int x, int y, int z, @Nullable Material oldMaterial, @Nullable Material newMaterial);
 
     @Override

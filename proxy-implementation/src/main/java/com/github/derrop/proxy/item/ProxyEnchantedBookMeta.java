@@ -26,7 +26,7 @@ package com.github.derrop.proxy.item;
 
 import com.github.derrop.proxy.api.item.EnchantedBookMeta;
 import com.github.derrop.proxy.api.item.Enchantment;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

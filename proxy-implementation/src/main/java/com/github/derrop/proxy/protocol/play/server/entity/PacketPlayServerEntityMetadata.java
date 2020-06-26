@@ -28,8 +28,8 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
-import com.github.derrop.proxy.util.serialize.SerializableObject;
+import com.github.derrop.proxy.data.DataWatcher;
+import com.github.derrop.proxy.data.DataWatcherEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -37,9 +37,9 @@ import java.util.Collection;
 public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
 
     private int entityId;
-    private Collection<SerializableObject> objects;
+    private Collection<DataWatcherEntry> objects;
 
-    public PacketPlayServerEntityMetadata(int entityId, Collection<SerializableObject> objects) {
+    public PacketPlayServerEntityMetadata(int entityId, Collection<DataWatcherEntry> objects) {
         this.entityId = entityId;
         this.objects = objects;
     }
@@ -57,7 +57,7 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
         return this.entityId;
     }
 
-    public Collection<SerializableObject> getObjects() {
+    public Collection<DataWatcherEntry> getObjects() {
         return objects;
     }
 
@@ -66,20 +66,20 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
         this.entityId = entityId;
     }
 
-    public void setObjects(Collection<SerializableObject> objects) {
+    public void setObjects(Collection<DataWatcherEntry> objects) {
         this.objects = objects;
     }
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.entityId = protoBuf.readVarInt();
-        this.objects = MinecraftSerializableObjectList.readList(protoBuf);
+        this.objects = DataWatcher.readList(protoBuf);
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeVarInt(this.entityId);
-        MinecraftSerializableObjectList.writeList(protoBuf, this.objects);
+        DataWatcher.writeList(protoBuf, this.objects);
     }
 
     @Override

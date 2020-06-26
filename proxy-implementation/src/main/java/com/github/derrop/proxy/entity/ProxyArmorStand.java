@@ -24,13 +24,13 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.ArmorStand;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.EulerAngle;
+import com.github.derrop.proxy.api.location.EulerAngle;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 import com.github.derrop.proxy.item.ProxyItemStack;
@@ -51,17 +51,17 @@ public class ProxyArmorStand extends ProxyEntityLiving implements ArmorStand {
     public @NotNull EulerAngle getBodyPosition(@NotNull BodyPosition position) {
         switch (position) {
             case HEAD:
-                return this.objectList.getRotations(11).asEuler();
+                return this.objectList.getEulerAngle(11);
             case BODY:
-                return this.objectList.getRotations(12).asEuler();
+                return this.objectList.getEulerAngle(12);
             case ARM_LEFT:
-                return this.objectList.getRotations(13).asEuler();
+                return this.objectList.getEulerAngle(13);
             case ARM_RIGHT:
-                return this.objectList.getRotations(14).asEuler();
+                return this.objectList.getEulerAngle(14);
             case LEG_LEFT:
-                return this.objectList.getRotations(15).asEuler();
+                return this.objectList.getEulerAngle(15);
             case LEG_RIGHT:
-                return this.objectList.getRotations(16).asEuler();
+                return this.objectList.getEulerAngle(16);
         }
 
         throw new RuntimeException("Magic happened");

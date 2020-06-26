@@ -26,7 +26,7 @@ package com.github.derrop.proxy.storage;
 
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

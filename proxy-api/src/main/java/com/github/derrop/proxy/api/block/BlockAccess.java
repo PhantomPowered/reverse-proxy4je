@@ -33,10 +33,8 @@ import java.util.UUID;
 
 public interface BlockAccess {
 
-    // the consumer will be called with -1 when a chunk is unloaded
     void trackBlockUpdates(UUID trackerId, int[] states, BlockConsumer consumer);
 
-    // the consumer will be called with -1 when a chunk is unloaded
     void trackBlockUpdates(UUID trackerId, Material material, BlockConsumer consumer);
 
     void untrackBlockUpdates(UUID trackerId);
@@ -55,10 +53,6 @@ public interface BlockAccess {
     @NotNull
     Material getMaterial(@NotNull Location pos);
 
-    /**
-     * Checks to see if an air block exists at the provided location. Note that this only checks to see if the blocks
-     * material is set to air, meaning it is possible for non-vanilla blocks to still pass this check.
-     */
     boolean isAirBlock(@NotNull Location pos);
 
     boolean isWaterBlock(@NotNull Location pos);

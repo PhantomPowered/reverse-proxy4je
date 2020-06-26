@@ -2,12 +2,12 @@ package com.github.derrop.proxy.plugins.betterlogin;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.plugins.betterlogin.connection.LoginServiceConnection;
 
@@ -25,7 +25,7 @@ public class LoginPrepareListener {
         // TODO items are not added
     }
 
-    private Proxy proxy;
+    private final Proxy proxy;
 
     public LoginPrepareListener(Proxy proxy) {
         this.proxy = proxy;

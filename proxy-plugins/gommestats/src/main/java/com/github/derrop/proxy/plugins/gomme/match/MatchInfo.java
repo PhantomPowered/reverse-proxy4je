@@ -29,7 +29,7 @@ import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.scoreboard.Team;
-import com.github.derrop.proxy.api.util.player.PlayerId;
+import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
