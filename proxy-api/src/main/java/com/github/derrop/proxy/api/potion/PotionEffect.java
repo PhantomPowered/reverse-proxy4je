@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.potion;
 
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 

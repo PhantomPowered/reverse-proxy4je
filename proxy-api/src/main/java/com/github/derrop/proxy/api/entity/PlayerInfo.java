@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.entity;
 
-import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.player.GameMode;
 
 import java.util.UUID;
 

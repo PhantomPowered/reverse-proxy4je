@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.events.connection.service;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.item.ItemStack;
@@ -11,8 +11,8 @@ public class EquipmentSlotChangeEvent extends ServiceConnectionEvent implements 
 
     private boolean cancel;
 
-    private Entity entity;
-    private EquipmentSlot slot;
+    private final Entity entity;
+    private final EquipmentSlot slot;
     private ItemStack item;
 
     public EquipmentSlotChangeEvent(@NotNull ServiceConnection connection, Entity entity, EquipmentSlot slot, ItemStack item) {

@@ -26,11 +26,11 @@ package com.github.derrop.proxy.api.entity.types.item;
 
 import com.github.derrop.proxy.api.entity.types.Hanging;
 import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.util.Rotations;
+import com.github.derrop.proxy.api.location.EulerAngle;
 
 public interface ItemFrame extends Hanging {
 
     ItemStack getItem();
 
-    Rotations getRotation();
+    EulerAngle getRotation();
 }

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class CommandChat extends NonTabCompleteableCommandCallback {
 
-    private ServiceRegistry registry;
+    private final ServiceRegistry registry;
 
     public CommandChat(ServiceRegistry registry) {
         super("proxy.command.chat", null);

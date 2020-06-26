@@ -24,6 +24,7 @@
  */
 package com.github.derrop.proxy.api.util;
 
+@Deprecated // TODO - PAIL
 public interface Identifiable {
 
     int getId();

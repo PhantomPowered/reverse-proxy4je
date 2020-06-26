@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.EntityEffect;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
@@ -42,7 +42,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.data.DataWatcher;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +65,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     protected @Nullable PositionedPacket packet;
 
     protected final Map<Integer, ItemStack> equipment;
-    protected final MinecraftSerializableObjectList objectList = new MinecraftSerializableObjectList();
+    protected final DataWatcher objectList = new DataWatcher();
 
     public ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, Object type) {
         this(registry, client, new Location(

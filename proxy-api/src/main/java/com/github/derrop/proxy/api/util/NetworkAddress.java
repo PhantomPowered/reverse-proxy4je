@@ -110,9 +110,11 @@ public class NetworkAddress {
             if (records == null) {
                 return null;
             }
+
             for (Record record : records) {
                 return (SRVRecord) record;
             }
+
             return null;
         } catch (TextParseException exception) {
             exception.printStackTrace();

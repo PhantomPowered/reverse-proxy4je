@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.api.entity.types;
 
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.types.living.EntityLiving;
 import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.util.EulerAngle;
+import com.github.derrop.proxy.api.location.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
 public interface ArmorStand extends EntityLiving {

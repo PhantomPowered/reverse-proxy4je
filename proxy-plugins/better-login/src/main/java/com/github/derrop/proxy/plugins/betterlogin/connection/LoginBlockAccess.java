@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.util.Vector;
+import com.github.derrop.proxy.api.location.Vector;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import org.jetbrains.annotations.NotNull;

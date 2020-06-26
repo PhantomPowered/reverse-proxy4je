@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network.pipeline.length;
 
-import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.api.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;

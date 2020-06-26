@@ -26,7 +26,7 @@ package com.github.derrop.proxy.potion;
 
 import com.github.derrop.proxy.api.potion.PotionEffect;
 import com.github.derrop.proxy.api.potion.PotionEffectType;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.item.ProxyPotionMeta;
 import org.jetbrains.annotations.NotNull;
 

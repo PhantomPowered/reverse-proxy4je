@@ -7,6 +7,7 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import java.lang.reflect.Type;
 
 public class LegacyGsonComponentSerializer implements JsonSerializer<Component>, JsonDeserializer<Component> {
+
     @Override
     public Component deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return LegacyComponentSerializer.legacy().deserialize(json.getAsString());

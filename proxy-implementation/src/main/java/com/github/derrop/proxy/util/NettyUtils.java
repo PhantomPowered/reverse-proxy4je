@@ -74,5 +74,4 @@ public final class NettyUtils {
     public static ThreadFactory threadFactory() {
         return r -> new FastThreadLocalThread(r);
     }
-
 }

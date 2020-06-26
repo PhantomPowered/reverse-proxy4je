@@ -25,10 +25,10 @@
 package com.github.derrop.proxy.connection.player;
 
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
-import com.github.derrop.proxy.api.connection.player.PlayerRepository;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.storage.OfflinePlayerStorage;
 

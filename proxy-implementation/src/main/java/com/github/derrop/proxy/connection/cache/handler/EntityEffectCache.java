@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityEffectCache implements PacketCacheHandler {
 
-    private Map<Integer, Map<Byte, TimedEntityEffect>> effects = new ConcurrentHashMap<>();
+    private final Map<Integer, Map<Byte, TimedEntityEffect>> effects = new ConcurrentHashMap<>();
 
     @Override
     public int[] getPacketIDs() {

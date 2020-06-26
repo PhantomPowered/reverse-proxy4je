@@ -32,10 +32,10 @@ import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 
 public class SimplePacketCache implements PacketCacheHandler {
 
-    private int packetId;
+    private final int packetId;
 
     private Packet lastPacket;
-    private boolean sendOnSwitch;
+    private final boolean sendOnSwitch;
 
     public SimplePacketCache(int packetId) {
         this(packetId, true);

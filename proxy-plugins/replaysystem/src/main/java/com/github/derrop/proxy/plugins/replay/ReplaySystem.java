@@ -25,11 +25,11 @@
 package com.github.derrop.proxy.plugins.replay;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
-import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.api.network.ByteBufUtils;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -37,7 +37,7 @@ import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import com.github.derrop.proxy.util.serialize.SerializableObject;
+import com.github.derrop.proxy.data.DataWatcherEntry;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -62,9 +62,9 @@ import java.util.function.Consumer;
 public class ReplaySystem { // TODO
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private Path replayDirectory;
+    private final Path replayDirectory;
 
-    private Map<ReplayInfo, ReplayOutputStream> runningReplays = new ConcurrentHashMap<>();
+    private final Map<ReplayInfo, ReplayOutputStream> runningReplays = new ConcurrentHashMap<>();
 
     public ReplaySystem() throws IOException {
         this(Paths.get("replays"));
@@ -282,19 +282,19 @@ public class ReplaySystem { // TODO
                 connection.getLocation(),
                 (short) 0,
                 Arrays.asList(
-                        new SerializableObject(2, 18, 0),
-                        new SerializableObject(3, 17, 0F),
-                        new SerializableObject(0, 16, (byte) 0),
-                        new SerializableObject(0, 10, (byte) 127),
-                        new SerializableObject(0, 9, (byte) 0),
-                        new SerializableObject(0, 8, (byte) 0),
-                        new SerializableObject(2, 7, 0),
-                        new SerializableObject(3, 6, 20F),
-                        new SerializableObject(0, 4, (byte) 0),
-                        new SerializableObject(0, 3, (byte) 0),
-                        new SerializableObject(4, 2, ""),
-                        new SerializableObject(1, 1, (short) 300),
-                        new SerializableObject(0, 0, (byte) 0)
+                        new DataWatcherEntry(2, 18, 0),
+                        new DataWatcherEntry(3, 17, 0F),
+                        new DataWatcherEntry(0, 16, (byte) 0),
+                        new DataWatcherEntry(0, 10, (byte) 127),
+                        new DataWatcherEntry(0, 9, (byte) 0),
+                        new DataWatcherEntry(0, 8, (byte) 0),
+                        new DataWatcherEntry(2, 7, 0),
+                        new DataWatcherEntry(3, 6, 20F),
+                        new DataWatcherEntry(0, 4, (byte) 0),
+                        new DataWatcherEntry(0, 3, (byte) 0),
+                        new DataWatcherEntry(4, 2, ""),
+                        new DataWatcherEntry(1, 1, (short) 300),
+                        new DataWatcherEntry(0, 0, (byte) 0)
                 )
         ));
         receiver.sendPacket(proxyClient.getEntityMetadata());

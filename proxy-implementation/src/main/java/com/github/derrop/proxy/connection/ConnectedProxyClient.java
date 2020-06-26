@@ -29,8 +29,8 @@ import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.player.PlayerId;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
@@ -41,7 +41,7 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
@@ -103,8 +103,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
     private final UUID redirectorListenerKey = UUID.randomUUID();
     private Player redirector;
 
-    private PacketCache packetCache;
-    private Scoreboard scoreboard;
+    private final PacketCache packetCache;
+    private final Scoreboard scoreboard;
 
     private int entityId;
     private int dimension;
@@ -117,7 +117,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
 
     private boolean globalAccount = true;
 
-    private Map<Predicate<Packet>, Long> blockedPackets = new ConcurrentHashMap<>();
+    private final Map<Predicate<Packet>, Long> blockedPackets = new ConcurrentHashMap<>();
 
     private Component lastKickReason;
 

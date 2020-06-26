@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.player.GameMode;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.util.MathHelper;
@@ -58,7 +58,7 @@ public class GameStateCache implements PacketCacheHandler {
             this.raining = false;
             this.rainStrength = 1;
         } else if (packet.getState() == 3) {
-            this.gameMode = GameMode.getById(MathHelper.floor_float(packet.getValue() + 0.5F));
+            this.gameMode = GameMode.getById(MathHelper.floor(packet.getValue() + 0.5F));
         }/* else if (packet.getState() == 4) { // display win game screen
         } else if (packet.getState() == 5) { // some demo actions (display demo screen, display some messages)
         } else if (packet.getState() == 6) { // play "random.successful_hit" sound

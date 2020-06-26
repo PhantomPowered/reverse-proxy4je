@@ -28,9 +28,9 @@ import java.util.UUID;
 
 public class ReconnectProfile {
 
-    private UUID uniqueId;
-    private UUID targetUniqueId;
-    private long timeout;
+    private final UUID uniqueId;
+    private final UUID targetUniqueId;
+    private final long timeout;
 
     public ReconnectProfile(UUID uniqueId, UUID targetUniqueId) {
         this.uniqueId = uniqueId;

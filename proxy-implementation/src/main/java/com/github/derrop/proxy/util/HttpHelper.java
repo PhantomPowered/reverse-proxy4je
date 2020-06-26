@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@Deprecated // TODO - PAIL
 public class HttpHelper {
 
     private HttpHelper() {

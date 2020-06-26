@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SignCache implements PacketCacheHandler {
 
-    private Map<Location, PacketPlayServerUpdateSign> signUpdates = new ConcurrentHashMap<>();
+    private final Map<Location, PacketPlayServerUpdateSign> signUpdates = new ConcurrentHashMap<>();
 
     private PacketCache packetCache;
 

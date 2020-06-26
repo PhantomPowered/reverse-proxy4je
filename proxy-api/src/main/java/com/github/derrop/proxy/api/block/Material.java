@@ -442,48 +442,22 @@ public enum Material {
         this.maxStack = stack;
     }
 
-    /**
-     * Gets the item ID or block ID of this Material
-     *
-     * @return ID of this material
-     */
     public int getId() {
         return id;
     }
 
-    /**
-     * Gets the maximum amount of this material that can be held in a stack
-     *
-     * @return Maximum stack size for this material
-     */
     public int getMaxStackSize() {
         return maxStack;
     }
 
-    /**
-     * Gets the maximum durability of this material
-     *
-     * @return Maximum durability for this material
-     */
     public short getMaxDurability() {
         return durability;
     }
 
-
-    /**
-     * Checks if this Material is a placable block
-     *
-     * @return true if this material is a block
-     */
     public boolean isBlock() {
         return id < 256;
     }
 
-    /**
-     * Checks if this Material is edible.
-     *
-     * @return true if this Material is edible.
-     */
     public boolean isEdible() {
         switch (this) {
             case BREAD:
@@ -519,12 +493,6 @@ public enum Material {
         }
     }
 
-    /**
-     * Attempts to get the Material with the given ID
-     *
-     * @param id ID of the material to get
-     * @return Material if found, or null
-     */
     public static Material getMaterial(final int id) {
         if (byId.length > id && id >= 0) {
             return byId[id];
@@ -533,31 +501,10 @@ public enum Material {
         }
     }
 
-    /**
-     * Attempts to get the Material with the given name.
-     * <p>
-     * This is a normal lookup, names must be the precise name they are given
-     * in the enum.
-     *
-     * @param name Name of the material to get
-     * @return Material if found, or null
-     */
     public static Material getMaterial(final String name) {
         return BY_NAME.get(name);
     }
 
-    /**
-     * Attempts to match the Material with the given name.
-     * <p>
-     * This is a match lookup; names will be converted to uppercase, then
-     * stripped of special characters in an attempt to format it like the
-     * enum.
-     * <p>
-     * Using this for match by ID is deprecated.
-     *
-     * @param name Name of the material to get
-     * @return Material if found, or null
-     */
     public static Material matchMaterial(final String name) {
         Validate.notNull(name, "Name cannot be null");
 
@@ -565,7 +512,8 @@ public enum Material {
 
         try {
             result = getMaterial(Integer.parseInt(name));
-        } catch (NumberFormatException ex) {}
+        } catch (NumberFormatException ex) {
+        }
 
         if (result == null) {
             String filtered = name.toUpperCase();
@@ -585,23 +533,15 @@ public enum Material {
                 byId = Arrays.copyOfRange(byId, 0, material.id + 2);
                 byId[material.id] = material;
             }
+
             BY_NAME.put(material.name(), material);
         }
     }
 
-    /**
-     * @return True if this material represents a playable music disk.
-     */
     public boolean isRecord() {
         return id >= GOLD_RECORD.id && id <= RECORD_12.id;
     }
 
-    /**
-     * Check if the material is a block and solid (cannot be passed through by
-     * a player)
-     *
-     * @return True if this material is a block and solid
-     */
     public boolean isSolid() {
         if (!isBlock() || id == 0) {
             return false;
@@ -762,11 +702,6 @@ public enum Material {
         }
     }
 
-    /**
-     * Check if the material is a block and does not block any light
-     *
-     * @return True if this material is a block and does not block any light
-     */
     public boolean isTransparent() {
         if (!isBlock()) {
             return false;
@@ -822,11 +757,6 @@ public enum Material {
         }
     }
 
-    /**
-     * Check if the material is a block and can catch fire
-     *
-     * @return True if this material is a block and can catch fire
-     */
     public boolean isFlammable() {
         if (!isBlock()) {
             return false;
@@ -893,11 +823,6 @@ public enum Material {
         }
     }
 
-    /**
-     * Check if the material is a block and can burn away
-     *
-     * @return True if this material is a block and can burn away
-     */
     public boolean isBurnable() {
         if (!isBlock()) {
             return false;
@@ -944,11 +869,6 @@ public enum Material {
         }
     }
 
-    /**
-     * Check if the material is a block and completely blocks vision
-     *
-     * @return True if this material is a block and completely blocks vision
-     */
     public boolean isOccluding() {
         if (!isBlock()) {
             return false;
@@ -1030,9 +950,6 @@ public enum Material {
         }
     }
 
-    /**
-     * @return True if this material is affected by gravity.
-     */
     public boolean hasGravity() {
         if (!isBlock()) {
             return false;

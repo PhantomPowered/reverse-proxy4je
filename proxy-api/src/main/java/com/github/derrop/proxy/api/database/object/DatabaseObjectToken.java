@@ -32,17 +32,8 @@ import java.util.function.Function;
 
 public abstract class DatabaseObjectToken<T> {
 
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson(); // TODO: not thread save
 
-    /**
-     * Creates a new token to read the an object from the database.
-     *
-     * @param mapFunction The function which maps the bytes to the required object
-     * @param key         The key of the database object in the database itself
-     * @param table       The table in which the database object is located
-     * @param <T>         The type of the object which gets deserialize from the stream
-     * @return The token to deserialize an object from the database
-     */
     @NotNull
     public static <T> DatabaseObjectToken<T> newToken(@NotNull Function<byte[], T> mapFunction,
                                                       @NotNull String key, @NotNull String table) {
@@ -71,24 +62,12 @@ public abstract class DatabaseObjectToken<T> {
         return newToken(bytes -> GSON.fromJson(new String(bytes), type), key, table);
     }
 
-    /**
-     * Deserializes an object from the database.
-     *
-     * @param bytes The bytes out of the database
-     * @return The deserialize object from the given stream
-     */
     @NotNull
     public abstract T deserialize(@NotNull byte[] bytes);
 
-    /**
-     * @return The table in which the object is located
-     */
     @NotNull
     public abstract String getTable();
 
-    /**
-     * @return The key of the database object in the database
-     */
     @NotNull
     public abstract String getKey();
 }

@@ -25,8 +25,8 @@
 package com.github.derrop.proxy.item;
 
 import com.github.derrop.proxy.api.item.SkullMeta;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
-import com.github.derrop.proxy.util.GameProfileSerializer;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
+import com.github.derrop.proxy.item.util.GameProfileSerializer;
 import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

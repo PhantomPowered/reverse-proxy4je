@@ -6,8 +6,8 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Whitelist;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.player.PlayerId;
-import com.github.derrop.proxy.api.util.player.PlayerIdRepository;
+import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.player.id.PlayerIdRepository;
 import com.mojang.util.UUIDTypeAdapter;
 import org.jetbrains.annotations.NotNull;
 

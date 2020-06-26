@@ -37,7 +37,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 
 public class PlayerVelocityHandler {
 
-    private ConnectedProxyClient proxyClient;
+    private final ConnectedProxyClient proxyClient;
 
     public PlayerVelocityHandler(ConnectedProxyClient proxyClient) {
         this.proxyClient = proxyClient;

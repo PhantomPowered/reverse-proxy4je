@@ -55,7 +55,6 @@ public class JsonConfiguration implements Configuration {
             .create();
 
     private JsonObject jsonObject;
-
     private ServerPing motd;
 
     @Override
@@ -63,7 +62,7 @@ public class JsonConfiguration implements Configuration {
         if (!Files.exists(PATH)) {
             this.jsonObject = new JsonObject();
             this.jsonObject.addProperty("proxyPort", 25565);
-            this.jsonObject.addProperty("webPort", 80);
+//            this.jsonObject.addProperty("webPort", 80);
             this.motd = new ServerPing(
                     new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
                     new ServerPing.Players(0, 0, null),
@@ -122,14 +121,14 @@ public class JsonConfiguration implements Configuration {
         this.jsonObject.addProperty("proxyPort", proxyPort);
     }
 
-    @Override
-    public int getWebPort() {
-        return this.jsonObject.get("webPort").getAsInt();
-    }
+//    @Override
+//    public int getWebPort() {
+//        return this.jsonObject.get("webPort").getAsInt();
+//    }
 
     @Override
     public void setWebPort(int webPort) {
-        this.jsonObject.addProperty("webPort", webPort);
+//        this.jsonObject.addProperty("webPort", webPort);
     }
 
     @Override

@@ -26,7 +26,7 @@ package com.github.derrop.proxy.item;
 
 import com.github.derrop.proxy.api.item.ItemMeta;
 import com.github.derrop.proxy.api.item.ItemStack;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import org.jetbrains.annotations.Nullable;
 
 public class ProxyItemStack extends ItemStack {

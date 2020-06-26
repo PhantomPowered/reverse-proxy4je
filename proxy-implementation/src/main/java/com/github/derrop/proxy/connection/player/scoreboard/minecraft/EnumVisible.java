@@ -34,7 +34,7 @@ public enum EnumVisible {
     HIDE_FOR_OWN_TEAM("hideForOwnTeam", 3),
     ;
 
-    private static Map<String, EnumVisible> field_178828_g = new HashMap<>();
+    private static final Map<String, EnumVisible> field_178828_g = new HashMap<>();
     public final String field_178830_e;
     public final int field_178827_f;
 

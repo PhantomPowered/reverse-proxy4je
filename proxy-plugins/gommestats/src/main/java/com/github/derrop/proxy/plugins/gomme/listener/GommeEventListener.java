@@ -6,7 +6,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
-import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.api.network.ByteBufUtils;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.events.GommeServerSwitchEvent;

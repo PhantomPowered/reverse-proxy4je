@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerInfoAddEvent extends ServiceConnectionEvent {
 
-    private PlayerInfo playerInfo;
+    private final PlayerInfo playerInfo;
 
     public PlayerInfoAddEvent(@NotNull ServiceConnection connection, PlayerInfo playerInfo) {
         super(connection);

@@ -35,7 +35,7 @@ import java.io.IOException;
 
 public class ProxyClientLoginListener implements ChannelListener {
 
-    private ConnectedProxyClient client;
+    private final ConnectedProxyClient client;
 
     public ProxyClientLoginListener(ConnectedProxyClient client) {
         this.client = client;

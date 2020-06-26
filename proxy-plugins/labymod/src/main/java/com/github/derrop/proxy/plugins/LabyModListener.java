@@ -30,7 +30,7 @@ import com.google.gson.JsonParser;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
-import com.github.derrop.proxy.api.util.ByteBufUtils;
+import com.github.derrop.proxy.api.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;

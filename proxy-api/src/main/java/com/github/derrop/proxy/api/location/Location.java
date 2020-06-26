@@ -26,7 +26,6 @@ package com.github.derrop.proxy.api.location;
 
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.util.MathHelper;
-import com.github.derrop.proxy.api.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -34,6 +33,7 @@ import java.util.Objects;
 public class Location {
 
     public static final Location ZERO = new Location(0, 0, 0, 0, 0);
+
     private static final int NUM_X_BITS = 1 + MathHelper.calculateLogBaseTwo(MathHelper.roundUpToPowerOfTwo(30000000));
     private static final int NUM_Z_BITS = NUM_X_BITS;
     private static final int NUM_Y_BITS = 64 - NUM_X_BITS - NUM_Z_BITS;
@@ -68,15 +68,15 @@ public class Location {
     private boolean onGround;
 
     public int getBlockX() {
-        return MathHelper.floor_double(this.getX());
+        return MathHelper.floor(this.getX());
     }
 
     public int getBlockY() {
-        return MathHelper.floor_double(this.getY());
+        return MathHelper.floor(this.getY());
     }
 
     public int getBlockZ() {
-        return MathHelper.floor_double(this.getZ());
+        return MathHelper.floor(this.getZ());
     }
 
     public double getX() {
@@ -131,16 +131,10 @@ public class Location {
         return new Vector(this.getX(), this.getY(), this.getZ());
     }
 
-    /**
-     * Serialize this Location into a long value. Uses the coordinates as ints, not as doubles
-     */
     public long toLong() {
         return ((long) this.getBlockX() & X_MASK) << X_SHIFT | ((long) this.getBlockY() & Y_MASK) << Y_SHIFT | ((long) this.getBlockZ() & Z_MASK);
     }
 
-    /**
-     * Create a Location from a serialized long value (created by toLong). Uses the coordinates as ints, not as doubles
-     */
     public static Location fromLong(long serialized) {
         int x = (int) (serialized << 64 - X_SHIFT - NUM_X_BITS >> 64 - NUM_X_BITS);
         int y = (int) (serialized << 64 - Y_SHIFT - NUM_Y_BITS >> 64 - NUM_Y_BITS);
@@ -148,100 +142,58 @@ public class Location {
         return new Location(x, y, z);
     }
 
-    /**
-     * Offset this Location 1 block up
-     */
     public Location up() {
         return this.up(1);
     }
 
-    /**
-     * Offset this Location n blocks up
-     */
     public Location up(int n) {
         return this.offset(Facing.UP, n);
     }
 
-    /**
-     * Offset this Location 1 block down
-     */
     public Location down() {
         return this.down(1);
     }
 
-    /**
-     * Offset this Location n blocks down
-     */
     public Location down(int n) {
         return this.offset(Facing.DOWN, n);
     }
 
-    /**
-     * Offset this Location 1 block in northern direction
-     */
     public Location north() {
         return this.north(1);
     }
 
-    /**
-     * Offset this Location n blocks in northern direction
-     */
     public Location north(int n) {
         return this.offset(Facing.NORTH, n);
     }
 
-    /**
-     * Offset this Location 1 block in southern direction
-     */
     public Location south() {
         return this.south(1);
     }
 
-    /**
-     * Offset this Location n blocks in southern direction
-     */
     public Location south(int n) {
         return this.offset(Facing.SOUTH, n);
     }
 
-    /**
-     * Offset this Location 1 block in western direction
-     */
     public Location west() {
         return this.west(1);
     }
 
-    /**
-     * Offset this Location n blocks in western direction
-     */
     public Location west(int n) {
         return this.offset(Facing.WEST, n);
     }
 
-    /**
-     * Offset this Location 1 block in eastern direction
-     */
     public Location east() {
         return this.east(1);
     }
 
-    /**
-     * Offset this Location n blocks in eastern direction
-     */
     public Location east(int n) {
         return this.offset(Facing.EAST, n);
     }
 
-    /**
-     * Offset this Location 1 block in the given direction
-     */
     public Location offset(Facing facing) {
         return this.offset(facing, 1);
     }
 
-    /**
-     * Offsets this Location n blocks in the given direction
-     */
     public Location offset(Facing facing, int n) {
         return n == 0 ? this : new Location(this.getX() + facing.getFrontOffsetX() * n, this.getY() + facing.getFrontOffsetY() * n, this.getZ() + facing.getFrontOffsetZ() * n);
     }
@@ -302,13 +254,6 @@ public class Location {
         return (d1 * d1) + (d2 * d2) + (d3 * d3);
     }
 
-    /**
-     * Gets a unit-vector pointing in the direction that this Location is
-     * facing.
-     *
-     * @return a vector pointing the direction of this location's {@link
-     *     #getPitch() pitch} and {@link #getYaw() yaw}
-     */
     @NotNull
     public Vector getDirection() {
         Vector vector = new Vector();
@@ -326,23 +271,8 @@ public class Location {
         return vector;
     }
 
-    /**
-     * Sets the {@link #getYaw() yaw} and {@link #getPitch() pitch} to point
-     * in the direction of the vector.
-     *
-     * @param vector the direction vector
-     * @return the same location
-     */
     @NotNull
     public Location setDirection(@NotNull Vector vector) {
-        /*
-         * Sin = Opp / Hyp
-         * Cos = Adj / Hyp
-         * Tan = Opp / Adj
-         *
-         * x = -Opp
-         * z = Adj
-         */
         final double _2PI = 2 * Math.PI;
         final double x = vector.getX();
         final double z = vector.getZ();

@@ -7,6 +7,7 @@ import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.location.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -24,16 +25,16 @@ public class BlockIterator implements Iterator<Location> {
 
     private boolean end = false;
 
-    private Location[] blockQueue = new Location[3];
-    private int currentBlock = 0;
-    private int currentDistance = 0;
-    private int maxDistanceInt;
+    private final Location[] blockQueue = new Location[3];
+    private int currentBlock;
+    private int currentDistance;
+    private final int maxDistanceInt;
 
     private int secondError;
     private int thirdError;
 
-    private int secondStep;
-    private int thirdStep;
+    private final int secondStep;
+    private final int thirdStep;
 
     private Facing mainFace;
     private Facing secondFace;
@@ -123,9 +124,9 @@ public class BlockIterator implements Iterator<Location> {
         // Guarantee that the ray will pass though the start block.
         // It is possible that it would miss due to rounding
         // This should only move the ray by 1 grid position
-        secondError = MathHelper.floor_double(secondd * gridSize);
+        secondError = MathHelper.floor(secondd * gridSize);
         secondStep = MathHelper.round(secondDirection / mainDirection * gridSize);
-        thirdError = MathHelper.floor_double(thirdd * gridSize);
+        thirdError = MathHelper.floor(thirdd * gridSize);
         thirdStep = MathHelper.round(thirdDirection / mainDirection * gridSize);
 
         if (secondError + secondStep <= 0) {

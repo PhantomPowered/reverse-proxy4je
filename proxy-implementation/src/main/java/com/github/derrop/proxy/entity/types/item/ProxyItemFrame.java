@@ -27,9 +27,9 @@ package com.github.derrop.proxy.entity.types.item;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.types.item.ItemFrame;
 import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.location.EulerAngle;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.Rotations;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.entity.types.ProxyHanging;
 
@@ -46,7 +46,7 @@ public class ProxyItemFrame extends ProxyHanging implements ItemFrame {
     }
 
     @Override
-    public Rotations getRotation() {
-        return this.objectList.getRotations(9);
+    public EulerAngle getRotation() {
+        return this.objectList.getEulerAngle(9);
     }
 }

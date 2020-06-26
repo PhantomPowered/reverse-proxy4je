@@ -28,8 +28,8 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.*;
-import com.github.derrop.proxy.api.connection.player.OfflinePlayer;
-import com.github.derrop.proxy.api.connection.player.PlayerRepository;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
 import com.github.derrop.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
@@ -265,7 +265,7 @@ public class InitialHandler {
                 }
 
                 DefaultPlayer player = new DefaultPlayer(this.proxy, ((BasicServiceConnection) client).getClient(), offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
-                repository.updateOfflinePlayer(offlinePlayer);
+                repository.updateOfflinePlayer(player);
 
                 PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player));
                 if (!channel.isConnected()) {

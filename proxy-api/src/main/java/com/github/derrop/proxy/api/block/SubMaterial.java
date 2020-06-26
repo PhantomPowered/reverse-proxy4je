@@ -36,8 +36,8 @@ public enum SubMaterial {
     COARSE_DIRT(Material.DIRT, 1),
     PODZOL(Material.DIRT, 2);
 
-    private Material parent;
-    private int subId;
+    private final Material parent;
+    private final int subId;
 
     SubMaterial(Material parent, int subId) {
         this.parent = parent;

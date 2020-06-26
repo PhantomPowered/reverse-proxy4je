@@ -31,8 +31,8 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
-import com.github.derrop.proxy.util.serialize.SerializableObject;
+import com.github.derrop.proxy.data.DataWatcher;
+import com.github.derrop.proxy.data.DataWatcherEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -48,9 +48,9 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
     private byte yaw;
     private byte pitch;
     private short currentItem;
-    private Collection<SerializableObject> objects;
+    private Collection<DataWatcherEntry> objects;
 
-    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, int x, int y, int z, byte yaw, byte pitch, short currentItem, Collection<SerializableObject> objects) {
+    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, int x, int y, int z, byte yaw, byte pitch, short currentItem, Collection<DataWatcherEntry> objects) {
         this.entityId = entityId;
         this.playerId = playerId;
         this.x = x;
@@ -62,7 +62,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.objects = objects;
     }
 
-    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, Location location, short currentItem, Collection<SerializableObject> objects) {
+    public PacketPlayServerNamedEntitySpawn(int entityId, UUID playerId, Location location, short currentItem, Collection<DataWatcherEntry> objects) {
         this(entityId, playerId,
                 PlayerPositionPacketUtil.getClientLocation(location.getX()), PlayerPositionPacketUtil.getClientLocation(location.getY()), PlayerPositionPacketUtil.getClientLocation(location.getZ()),
                 PlayerPositionPacketUtil.getClientRotation(location.getYaw()), PlayerPositionPacketUtil.getClientRotation(location.getPitch()),
@@ -116,7 +116,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         return this.currentItem;
     }
 
-    public Collection<SerializableObject> getObjects() {
+    public Collection<DataWatcherEntry> getObjects() {
         return this.objects;
     }
 
@@ -158,7 +158,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.currentItem = currentItem;
     }
 
-    public void setObjects(Collection<SerializableObject> objects) {
+    public void setObjects(Collection<DataWatcherEntry> objects) {
         this.objects = objects;
     }
 
@@ -174,7 +174,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         this.pitch = protoBuf.readByte();
         this.currentItem = protoBuf.readShort();
 
-        this.objects = MinecraftSerializableObjectList.readList(protoBuf);
+        this.objects = DataWatcher.readList(protoBuf);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
         protoBuf.writeByte(this.pitch);
         protoBuf.writeShort(this.currentItem);
 
-        MinecraftSerializableObjectList.writeList(protoBuf, this.objects);
+        DataWatcher.writeList(protoBuf, this.objects);
     }
 
     @Override

@@ -25,9 +25,9 @@
 package com.github.derrop.proxy.item;
 
 import com.github.derrop.proxy.api.item.BookMeta;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
-import com.github.derrop.proxy.api.util.nbt.NBTTagList;
-import com.github.derrop.proxy.api.util.nbt.NBTTagString;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagList;
+import com.github.derrop.proxy.api.nbt.NBTTagString;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;

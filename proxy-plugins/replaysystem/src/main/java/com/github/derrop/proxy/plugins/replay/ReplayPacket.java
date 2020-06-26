@@ -26,8 +26,8 @@ package com.github.derrop.proxy.plugins.replay;
 
 public class ReplayPacket {
 
-    private byte[] data;
-    private long timestamp;
+    private final byte[] data;
+    private final long timestamp;
 
     public ReplayPacket(byte[] data, long timestamp) {
         this.data = data;

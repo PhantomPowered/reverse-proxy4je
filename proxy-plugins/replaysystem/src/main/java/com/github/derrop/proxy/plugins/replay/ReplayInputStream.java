@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ReplayInputStream extends DataInputStream {
-    private ReplayInfo replayInfo;
+    private final ReplayInfo replayInfo;
     private boolean closed = false;
 
     public ReplayInputStream(InputStream in) throws IOException {

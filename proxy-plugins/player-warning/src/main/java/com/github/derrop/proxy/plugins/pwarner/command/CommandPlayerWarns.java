@@ -6,8 +6,8 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.connection.player.inventory.EquipmentSlot;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningData;
 import com.github.derrop.proxy.plugins.pwarner.storage.PlayerWarningDatabase;
 import com.github.derrop.proxy.plugins.pwarner.storage.WarnedEquipmentSlot;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
 
-    private PlayerWarningDatabase database;
+    private final PlayerWarningDatabase database;
 
     public CommandPlayerWarns(PlayerWarningDatabase database) {
         super("command.playerwarns", null);

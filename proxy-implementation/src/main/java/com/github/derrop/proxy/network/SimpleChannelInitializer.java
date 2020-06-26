@@ -45,7 +45,7 @@ public final class SimpleChannelInitializer extends ChannelInitializer<Channel> 
 
     @Override
     public void initChannel(@NotNull Channel channel) {
-        channel.config().setOption(ChannelOption.IP_TOS, NetworkUtils.roundedPowDouble(4.899, 2));
+        channel.config().setOption(ChannelOption.IP_TOS, 0x18);
         channel.config().setWriteBufferWaterMark(NetworkUtils.WATER_MARK);
         channel.config().setAllocator(PooledByteBufAllocator.DEFAULT);
 

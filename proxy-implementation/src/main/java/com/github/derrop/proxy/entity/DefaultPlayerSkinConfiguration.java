@@ -1,13 +1,13 @@
 package com.github.derrop.proxy.entity;
 
 import com.github.derrop.proxy.api.entity.PlayerSkinConfiguration;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.data.DataWatcher;
 
 import java.util.Arrays;
 
 public abstract class DefaultPlayerSkinConfiguration implements PlayerSkinConfiguration {
 
-    protected abstract MinecraftSerializableObjectList getObjectList();
+    protected abstract DataWatcher getObjectList();
 
     private byte getFlags() {
         return this.getObjectList().getByte(10);

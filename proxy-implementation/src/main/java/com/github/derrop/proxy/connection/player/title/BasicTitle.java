@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.player.title;
 
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

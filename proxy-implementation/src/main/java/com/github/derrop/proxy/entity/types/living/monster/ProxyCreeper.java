@@ -30,7 +30,6 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 
 public class ProxyCreeper extends ProxyMonster implements Creeper {
 
@@ -45,7 +44,7 @@ public class ProxyCreeper extends ProxyMonster implements Creeper {
 
     @Override
     public State getState() {
-        return MathHelper.clampInt(this.objectList.getByte(16), -1, 1) == 1 ? State.FUSED : State.IDLE;
+        return MathHelper.clamp(this.objectList.getByte(16), -1, 1) == 1 ? State.FUSED : State.IDLE;
     }
 
     @Override

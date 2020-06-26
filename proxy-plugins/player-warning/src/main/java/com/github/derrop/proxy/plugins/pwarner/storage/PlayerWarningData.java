@@ -7,7 +7,7 @@ import java.util.*;
 public class PlayerWarningData {
 
     private UUID targetPlayerId;
-    private Map<Integer, Collection<WarnedEquipmentSlot>> equipmentSlots;
+    private final Map<Integer, Collection<WarnedEquipmentSlot>> equipmentSlots;
 
     public UUID getTargetPlayerId() {
         return targetPlayerId;

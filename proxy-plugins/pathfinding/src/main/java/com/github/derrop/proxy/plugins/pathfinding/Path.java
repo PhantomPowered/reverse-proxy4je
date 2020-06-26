@@ -26,7 +26,7 @@ package com.github.derrop.proxy.plugins.pathfinding;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.connection.player.Player;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.location.Location;
 
 import java.util.Arrays;

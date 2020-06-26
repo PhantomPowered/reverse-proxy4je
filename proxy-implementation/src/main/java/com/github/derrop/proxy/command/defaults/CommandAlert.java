@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommandAlert extends NonTabCompleteableCommandCallback {
 
-    private ServiceRegistry registry;
+    private final ServiceRegistry registry;
 
     public CommandAlert(ServiceRegistry registry) {
         super("proxy.command.alert", null);

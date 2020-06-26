@@ -24,24 +24,15 @@
  */
 package com.github.derrop.proxy.api.util;
 
-import com.google.common.base.Preconditions;
-
 public class MinecraftKey {
 
+    @Deprecated // TODO - PAIL
     public static MinecraftKey forValue(String value) {
         return new MinecraftKey("minecraft", value);
     }
 
     private final String key;
     private final String value;
-
-    public MinecraftKey(String fullName) {
-        String[] split = fullName.split(":");
-        Preconditions.checkArgument(split.length == 2);
-
-        this.key = split[0];
-        this.value = split[1];
-    }
 
     public MinecraftKey(String key, String value) {
         this.key = key;

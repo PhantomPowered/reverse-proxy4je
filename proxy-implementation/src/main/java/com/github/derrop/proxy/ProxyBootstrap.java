@@ -35,11 +35,9 @@ import com.github.derrop.proxy.console.ProxyConsole;
 import com.github.derrop.proxy.logging.ProxyLogLevels;
 import com.github.derrop.proxy.logging.ProxyLogger;
 
-import java.io.IOException;
-
 public final class ProxyBootstrap {
 
-    public static synchronized void main(String[] args) throws IOException {
+    public static synchronized void main(String[] args) {
         ProxyConsole proxyConsole = new ProxyConsole();
         ProxyLogger proxyLogger = new ProxyLogger(proxyConsole.getLineReader());
 

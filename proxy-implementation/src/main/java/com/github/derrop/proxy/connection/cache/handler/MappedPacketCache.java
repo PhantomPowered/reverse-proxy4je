@@ -37,10 +37,10 @@ import java.util.function.Predicate;
 
 public class MappedPacketCache<V extends Packet> implements PacketCacheHandler {
 
-    private int packetId;
-    private Map<Object, V> cachedPackets = new HashMap<>();
-    private Function<V, Object> keyFunction;
-    private Predicate<V> deleteTester;
+    private final int packetId;
+    private final Map<Object, V> cachedPackets = new HashMap<>();
+    private final Function<V, Object> keyFunction;
+    private final Predicate<V> deleteTester;
 
     public MappedPacketCache(int packetId, Function<V, Object> keyFunction, Predicate<V> deleteTester) {
         this.packetId = packetId;

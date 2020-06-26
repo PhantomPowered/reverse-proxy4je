@@ -36,9 +36,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class DefaultPathProvider implements PathProvider {
 
-    private AStarPathFinder aStarPathFinder = new AStarPathFinder();
-    private CirclePathFinder circlePathFinder = new CirclePathFinder();
-    private RectanglePathFinder rectanglePathFinder = new RectanglePathFinder();
+    private final AStarPathFinder aStarPathFinder = new AStarPathFinder();
+    private final CirclePathFinder circlePathFinder = new CirclePathFinder();
+    private final RectanglePathFinder rectanglePathFinder = new RectanglePathFinder();
 
     @Override
     public Path findShortestPath(@Nullable PathFindInteraction interaction, boolean canFly, @NotNull BlockAccess access, @NotNull Location start, @NotNull Location end) {

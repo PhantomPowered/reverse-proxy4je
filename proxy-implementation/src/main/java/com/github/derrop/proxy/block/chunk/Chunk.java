@@ -34,9 +34,9 @@ import java.util.List;
 
 public class Chunk {
 
-    private ExtendedBlockStorage[] storageArrays = new ExtendedBlockStorage[16];
+    private final ChunkSection[] storageArrays = new ChunkSection[16];
     private PacketPlayServerMapChunk lastChunkData;
-    private byte[] biomeArray = new byte[256];
+    private final byte[] biomeArray = new byte[256];
 
     public void fillChunk(PacketPlayServerMapChunk chunkData, int dimension) {
         this.fillChunk(chunkData.getExtracted().data, chunkData.getExtracted().dataLength, chunkData.isFullChunk(), dimension);
@@ -44,14 +44,14 @@ public class Chunk {
     }
 
     private void fillChunk(byte[] data, int chunkSize, boolean fullChunk, int dimension) { // TODO doesn't work in the end
-        boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
+        boolean hasSky = dimension == 0;
 
         int i = 0;
 
         for (int j = 0; j < this.storageArrays.length; ++j) {
             if ((chunkSize & 1 << j) != 0) {
                 if (this.storageArrays[j] == null) {
-                    this.storageArrays[j] = new ExtendedBlockStorage(j << 4);
+                    this.storageArrays[j] = new ChunkSection(j << 4);
                 }
 
                 char[] storage = this.storageArrays[j].getData();
@@ -67,9 +67,9 @@ public class Chunk {
 
         for (int j = 0; j < this.storageArrays.length; ++j) {
             if ((chunkSize & 1 << j) != 0 && this.storageArrays[j] != null) {
-                i += ExtendedBlockStorage.MAX_LIGHT_LEVEL.length; // skip block light data
+                i += ChunkSection.MAX_LIGHT_LEVEL.length; // skip block light data
                 if (hasSky) {
-                    i += ExtendedBlockStorage.MAX_LIGHT_LEVEL.length; // skip sky light data
+                    i += ChunkSection.MAX_LIGHT_LEVEL.length; // skip sky light data
                 }
             }
         }
@@ -89,12 +89,12 @@ public class Chunk {
         boolean fullChunk = true;//this.lastChunkData.isFullChunk();
         boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
 
-        ExtendedBlockStorage[] storages = this.storageArrays;
+        ChunkSection[] storages = this.storageArrays;
         PacketPlayServerMapChunk.Extracted extracted = new PacketPlayServerMapChunk.Extracted();
-        List<ExtendedBlockStorage> list = new ArrayList<>();
+        List<ChunkSection> list = new ArrayList<>();
 
         for (int i = 0; i < storages.length; ++i) {
-            ExtendedBlockStorage storage = storages[i];
+            ChunkSection storage = storages[i];
 
             if (storage != null && (maxLength & 1 << i) != 0) {
             //if (storage != null && (!fullChunk || /*!storage.isEmpty()*/ true) && (maxLength & 1 << i) != 0) {
@@ -106,7 +106,7 @@ public class Chunk {
         extracted.data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
         int j = 0;
 
-        for (ExtendedBlockStorage extendedblockstorage1 : list) {
+        for (ChunkSection extendedblockstorage1 : list) {
             char[] achar = extendedblockstorage1.getData();
 
             for (char c0 : achar) {
@@ -115,13 +115,13 @@ public class Chunk {
             }
         }
 
-        for (ExtendedBlockStorage extendedblockstorage2 : list) {
-            j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
+        for (ChunkSection extendedblockstorage2 : list) {
+            j = copyArray(ChunkSection.MAX_LIGHT_LEVEL, extracted.data, j);
         }
 
         if (hasSky) {
-            for (ExtendedBlockStorage extendedblockstorage3 : list) {
-                j = copyArray(ExtendedBlockStorage.MAX_LIGHT_LEVEL, extracted.data, j);
+            for (ChunkSection extendedblockstorage3 : list) {
+                j = copyArray(ChunkSection.MAX_LIGHT_LEVEL, extracted.data, j);
             }
         }
 
@@ -139,7 +139,7 @@ public class Chunk {
     
     public int getBlockStateAt(int x, int y, int z) {
         if (y >= 0 && y >> 4 < this.storageArrays.length) {
-            ExtendedBlockStorage extendedblockstorage = this.storageArrays[y >> 4];
+            ChunkSection extendedblockstorage = this.storageArrays[y >> 4];
 
             if (extendedblockstorage != null) {
                 return extendedblockstorage.get(x & 15, y & 15, z & 15);
@@ -152,14 +152,14 @@ public class Chunk {
     }
 
     public void setBlockStateAt(int x, int y, int z, int state) {
-        ExtendedBlockStorage storage = this.storageArrays[y >> 4];
+        ChunkSection storage = this.storageArrays[y >> 4];
 
         if (storage == null) {
             if (state == 0) { // air
                 return;
             }
 
-            storage = this.storageArrays[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4);
+            storage = this.storageArrays[y >> 4] = new ChunkSection(y >> 4 << 4);
         }
 
         storage.set(x & 15, y & 15, z & 15, state);
@@ -201,7 +201,7 @@ public class Chunk {
 
     private void forEachBlockStates(BlockConsumer consumer) {
         for (int y = 0; y < this.storageArrays.length; y++) {
-            ExtendedBlockStorage storage = this.storageArrays[y];
+            ChunkSection storage = this.storageArrays[y];
             if (storage == null) {
                 for (int x = 0; x < 16; x++) {
                     for (int cY = 0; cY < 16; cY++) {

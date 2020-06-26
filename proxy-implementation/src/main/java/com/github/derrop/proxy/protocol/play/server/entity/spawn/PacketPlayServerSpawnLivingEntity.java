@@ -29,8 +29,8 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
-import com.github.derrop.proxy.util.serialize.SerializableObject;
+import com.github.derrop.proxy.data.DataWatcher;
+import com.github.derrop.proxy.data.DataWatcherEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -48,9 +48,9 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
     private byte yaw;
     private byte pitch;
     private byte headPitch;
-    private Collection<SerializableObject> objects;
+    private Collection<DataWatcherEntry> objects;
 
-    public PacketPlayServerSpawnLivingEntity(int entityId, int x, int y, int z, int type, int velocityX, int velocityY, int velocityZ, byte yaw, byte pitch, byte headPitch, Collection<SerializableObject> objects) {
+    public PacketPlayServerSpawnLivingEntity(int entityId, int x, int y, int z, int type, int velocityX, int velocityY, int velocityZ, byte yaw, byte pitch, byte headPitch, Collection<DataWatcherEntry> objects) {
         this.entityId = entityId;
         this.x = x;
         this.y = y;
@@ -123,7 +123,7 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         return this.headPitch;
     }
 
-    public Collection<SerializableObject> getObjects() {
+    public Collection<DataWatcherEntry> getObjects() {
         return this.objects;
     }
 
@@ -177,7 +177,7 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         this.headPitch = headPitch;
     }
 
-    public void setObjects(Collection<SerializableObject> objects) {
+    public void setObjects(Collection<DataWatcherEntry> objects) {
         this.objects = objects;
     }
 
@@ -195,7 +195,7 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         this.velocityY = protoBuf.readShort();
         this.velocityZ = protoBuf.readShort();
 
-        this.objects = MinecraftSerializableObjectList.readList(protoBuf);
+        this.objects = DataWatcher.readList(protoBuf);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class PacketPlayServerSpawnLivingEntity implements PositionedPacket, Enti
         protoBuf.writeShort(this.velocityY);
         protoBuf.writeShort(this.velocityZ);
 
-        MinecraftSerializableObjectList.writeList(protoBuf, this.objects);
+        DataWatcher.writeList(protoBuf, this.objects);
     }
 
     @Override

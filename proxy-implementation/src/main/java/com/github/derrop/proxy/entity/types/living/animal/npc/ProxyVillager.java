@@ -39,7 +39,7 @@ public class ProxyVillager extends ProxyNPC implements Villager {
 
     @Override
     public Profession getProfession() {
-        return Profession.values()[MathHelper.clampInt(this.objectList.getInt(16) % 5, 0, 4)];
+        return Profession.values()[MathHelper.clamp(this.objectList.getInt(16) % 5, 0, 4)];
     }
 
     @Override

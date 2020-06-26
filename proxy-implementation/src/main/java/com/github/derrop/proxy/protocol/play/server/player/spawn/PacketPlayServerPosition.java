@@ -144,7 +144,7 @@ public class PacketPlayServerPosition implements Packet {
         Y_ROT(3),
         X_ROT(4);
 
-        private int f;
+        private final int f;
 
         private TeleportFlags(int var3) {
             this.f = var3;

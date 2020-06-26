@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.api.util.Side;
+import com.github.derrop.proxy.api.player.Side;
 
 import java.util.function.Supplier;
 

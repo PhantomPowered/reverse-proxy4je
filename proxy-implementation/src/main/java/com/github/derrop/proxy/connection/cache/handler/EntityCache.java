@@ -25,8 +25,7 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.Constants;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.entity.LivingEntityType;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -48,7 +47,7 @@ import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServe
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnEntityExperienceOrb;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerSpawnLivingEntity;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerCamera;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.data.DataWatcher;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class EntityCache implements PacketCacheHandler {
 
     private PacketCache packetCache;
 
-    private final MinecraftSerializableObjectList ownMetadata = new MinecraftSerializableObjectList();
+    private final DataWatcher ownMetadata = new DataWatcher();
 
     @Override
     public int[] getPacketIDs() {

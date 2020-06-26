@@ -30,8 +30,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class DefaultBlockState implements BlockState {
 
-    private int id;
-    private Material material;
+    private final int id;
+    private final Material material;
     private SubMaterial subMaterial;
     private boolean open;
     private boolean powered;

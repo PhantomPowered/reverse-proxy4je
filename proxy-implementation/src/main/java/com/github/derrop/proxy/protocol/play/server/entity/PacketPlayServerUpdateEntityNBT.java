@@ -3,7 +3,7 @@ package com.github.derrop.proxy.protocol.play.server.entity;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 

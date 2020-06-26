@@ -14,7 +14,7 @@ import com.github.derrop.proxy.entity.DefaultPlayerSkinConfiguration;
 import com.github.derrop.proxy.entity.types.living.ProxyEntityLiving;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import com.github.derrop.proxy.util.serialize.MinecraftSerializableObjectList;
+import com.github.derrop.proxy.data.DataWatcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
     private final PlayerInfoCache infoCache;
     private final PlayerSkinConfiguration skinConfiguration = new DefaultPlayerSkinConfiguration() {
         @Override
-        protected MinecraftSerializableObjectList getObjectList() {
+        protected DataWatcher getObjectList() {
             return ProxyPlayer.super.objectList;
         }
     };

@@ -1,8 +1,7 @@
 package com.github.derrop.proxy.api.connection;
 
 import com.github.derrop.proxy.api.Tickable;
-import com.github.derrop.proxy.api.connection.player.Player;
-import com.github.derrop.proxy.api.util.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import org.jetbrains.annotations.NotNull;

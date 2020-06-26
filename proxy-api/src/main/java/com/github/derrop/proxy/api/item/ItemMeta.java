@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.item;
 
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.google.common.collect.Multimap;
 import net.kyori.text.TranslatableComponent;
 import org.jetbrains.annotations.NonNls;

@@ -17,7 +17,7 @@ public class DefaultPathWalker implements PathWalker {
     public static final double TPS = 20; // ticks per second
     public static final double BPT = 0.215; // blocks per tick
 
-    private Map<UUID, WalkablePath> runningPaths = new ConcurrentHashMap<>();
+    private final Map<UUID, WalkablePath> runningPaths = new ConcurrentHashMap<>();
 
     {
         new Thread(() -> {

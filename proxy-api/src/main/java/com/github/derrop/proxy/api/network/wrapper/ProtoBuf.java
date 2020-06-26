@@ -26,7 +26,7 @@ package com.github.derrop.proxy.api.network.wrapper;
 
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.util.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 

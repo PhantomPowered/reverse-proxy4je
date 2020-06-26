@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.connection.player.GameMode;
+import com.github.derrop.proxy.api.player.GameMode;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.entity.PlayerInfo;

@@ -31,13 +31,13 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.regex.Pattern;
 
 public interface Constants {
 
     String MESSAGE_PREFIX = "§8┃ §6P§froxy §8× §7";
 
     ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-
     ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(4);
 
     Random RANDOM = new Random();
@@ -47,4 +47,5 @@ public interface Constants {
     int SURVIVAL_PLACE_DISTANCE = 6;
     int CREATIVE_PLACE_DISTANCE = 7;
 
+    Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 }
