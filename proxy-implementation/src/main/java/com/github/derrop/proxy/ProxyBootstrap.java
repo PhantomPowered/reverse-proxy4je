@@ -46,6 +46,7 @@ public final class ProxyBootstrap {
         long start = System.currentTimeMillis();
         MCProxy proxy = new MCProxy();
         proxy.getServiceRegistry().setProvider(null, ProxyLogger.class, proxyLogger, true);
+        proxy.getServiceRegistry().setProvider(null, ProxyConsole.class, proxyConsole, true);
         proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort(), start);
 
         CommandMap commandMap = proxy.getServiceRegistry().getProviderUnchecked(CommandMap.class);
