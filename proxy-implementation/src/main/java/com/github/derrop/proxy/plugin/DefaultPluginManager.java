@@ -219,7 +219,7 @@ public final class DefaultPluginManager implements PluginManager {
                 }
 
                 Duo<Class<?>, Plugin> mainClass = mainClassPossibilities.get(0);
-                PluginContainer container = new DefaultPluginContainer(mainClass.getRight(), this.registry, mainClass.getLeft(), classLoader, path);
+                PluginContainer container = new DefaultPluginContainer(this.pluginsDirectory, mainClass.getRight(), this.registry, mainClass.getLeft(), classLoader, path);
 
                 Object instance;
                 try {

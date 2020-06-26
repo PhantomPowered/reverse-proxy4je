@@ -56,6 +56,8 @@ public interface PluginContainer {
 
     @NotNull Path getPluginPath();
 
+    @NotNull Path getDataFolder();
+
     @NotNull Class<?> getMainClass();
 
     void setPluginState(@NotNull PluginState pluginState);
