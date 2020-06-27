@@ -25,7 +25,6 @@
 package com.github.derrop.proxy;
 
 import com.github.derrop.proxy.account.AccountBiConsumer;
-import com.github.derrop.proxy.account.AccountReader;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Constants;
@@ -45,7 +44,9 @@ import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
+import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
@@ -90,7 +91,6 @@ public class MCProxy extends Proxy {
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
 
     private final ProxyServer proxyServer = new ProxyServer(this);
-    private final AccountReader accountReader = new AccountReader();
 
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
 
@@ -194,7 +194,7 @@ public class MCProxy extends Proxy {
 
         if (!Boolean.getBoolean("proxy.do-not-read.accounts")) {
             System.out.println("Reading accounts...");
-            this.accountReader.readAccounts(this.serviceRegistry, new AccountBiConsumer(this));
+            this.readAccounts();
         } else {
             System.out.println("Reading of accounts is disabled");
         }
@@ -214,6 +214,19 @@ public class MCProxy extends Proxy {
 
         double bootTime = (System.currentTimeMillis() - start) / 1000d;
         System.out.println(String.format("Done! (%ss)", new DecimalFormat("##.###").format(bootTime)));
+    }
+
+    private void readAccounts() {
+        AccountBiConsumer consumer = new AccountBiConsumer(this);
+        MCServiceCredentialsStorage storage = this.serviceRegistry.getProviderUnchecked(MCServiceCredentialsStorage.class);
+        for (MCServiceCredentials credentials : storage.getAll()) {
+            NetworkAddress parse = NetworkAddress.parse(credentials.getDefaultServer());
+            if (parse == null) {
+                continue;
+            }
+
+            consumer.accept(credentials, parse);
+        }
     }
 
     private void handleCommands() {
