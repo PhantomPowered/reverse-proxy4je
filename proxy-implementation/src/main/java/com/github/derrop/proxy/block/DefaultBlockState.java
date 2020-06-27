@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.block;
 
 import com.github.derrop.proxy.api.block.*;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,111 +63,133 @@ public class DefaultBlockState implements BlockState {
         this.thickness = 1;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState open() {
         this.open = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState powered() {
         this.powered = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState facing(Facing facing) {
         this.facing = facing;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState triggered() {
         this.triggered = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState hinge(HingePosition position) {
         this.hingePosition = position;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState half(TrapdoorPosition position) {
         this.half = position;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState subMaterial(SubMaterial subMaterial) {
         this.subMaterial = subMaterial;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState axis(Facing.Axis axis) {
         this.axis = axis;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState decayable() {
         this.decayable = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState checkDecay() {
         this.checkDecay = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState occupied() {
         this.occupied = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState shape(BlockShape shape) {
         this.shape = shape;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState setShort() {
         this.isShort = true;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState pistonType(PistonType pistonType) {
         this.pistonType = pistonType;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState comparatorMode(ComparatorMode comparatorMode) {
         this.comparatorMode = comparatorMode;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState age(int age) {
         this.age = age;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState moisture(int moisture) {
         this.moisture = moisture;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState direction(Direction direction) {
         this.direction = direction;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState layers(int layers) {
         this.layers = layers;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState height(double height) {
         this.height = height;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState thick(double thickness) {
         this.thickness = thickness;
         return this;
     }
 
+    @CanIgnoreReturnValue
     DefaultBlockState power(int redstonePower) {
         this.redstonePower = redstonePower;
         return this;
