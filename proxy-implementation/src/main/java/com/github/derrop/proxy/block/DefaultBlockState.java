@@ -42,6 +42,17 @@ public class DefaultBlockState implements BlockState {
     private Facing facing;
     private HingePosition hingePosition;
     private TrapdoorPosition half;
+    private Facing.Axis axis;
+    private boolean decayable;
+    private boolean checkDecay;
+    private boolean triggered;
+    private boolean occupied;
+    private BlockShape shape;
+    private boolean isShort;
+    private PistonType pistonType;
+    private int age;
+    private int moisture;
+    private Direction direction;
 
     public DefaultBlockState(int id, Material material) {
         this.id = id;
@@ -65,6 +76,11 @@ public class DefaultBlockState implements BlockState {
         return this;
     }
 
+    DefaultBlockState triggered() {
+        this.triggered = true;
+        return this;
+    }
+
     DefaultBlockState hinge(HingePosition position) {
         this.hingePosition = position;
         return this;
@@ -77,6 +93,56 @@ public class DefaultBlockState implements BlockState {
 
     DefaultBlockState subMaterial(SubMaterial subMaterial) {
         this.subMaterial = subMaterial;
+        return this;
+    }
+
+    DefaultBlockState axis(Facing.Axis axis) {
+        this.axis = axis;
+        return this;
+    }
+
+    DefaultBlockState decayable() {
+        this.decayable = true;
+        return this;
+    }
+
+    DefaultBlockState checkDecay() {
+        this.checkDecay = true;
+        return this;
+    }
+
+    DefaultBlockState occupied() {
+        this.occupied = true;
+        return this;
+    }
+
+    DefaultBlockState shape(BlockShape shape) {
+        this.shape = shape;
+        return this;
+    }
+
+    DefaultBlockState setShort() {
+        this.isShort = true;
+        return this;
+    }
+
+    DefaultBlockState pistonType(PistonType pistonType) {
+        this.pistonType = pistonType;
+        return this;
+    }
+
+    DefaultBlockState age(int age) {
+        this.age = age;
+        return this;
+    }
+
+    DefaultBlockState moisture(int moisture) {
+        this.moisture = moisture;
+        return this;
+    }
+
+    DefaultBlockState direction(Direction direction) {
+        this.direction = direction;
         return this;
     }
 
@@ -149,6 +215,61 @@ public class DefaultBlockState implements BlockState {
     @Override
     public @Nullable TrapdoorPosition getHalf() {
         return this.half;
+    }
+
+    @Override
+    public @Nullable Facing.Axis getAxis() {
+        return this.axis;
+    }
+
+    @Override
+    public boolean isDecayable() {
+        return this.decayable;
+    }
+
+    @Override
+    public boolean isCheckDecay() {
+        return this.checkDecay;
+    }
+
+    @Override
+    public boolean isTriggered() {
+        return this.triggered;
+    }
+
+    @Override
+    public boolean isOccupied() {
+        return this.occupied;
+    }
+
+    @Override
+    public @Nullable BlockShape getShape() {
+        return this.shape;
+    }
+
+    @Override
+    public boolean isShort() {
+        return this.isShort;
+    }
+
+    @Override
+    public PistonType getPistonType() {
+        return this.pistonType;
+    }
+
+    @Override
+    public int getAge() {
+        return this.age;
+    }
+
+    @Override
+    public int getMoisture() {
+        return this.moisture;
+    }
+
+    @Override
+    public @Nullable Direction getDirection() {
+        return this.direction;
     }
 
     @Override

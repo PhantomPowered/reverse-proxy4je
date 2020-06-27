@@ -24,66 +24,9 @@
  */
 package com.github.derrop.proxy.api.block;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+public enum PistonType {
 
-public interface BlockState {
-
-    int getId();
-
-    @NotNull
-    Material getMaterial();
-
-    boolean isPowered();
-
-    boolean isOpen();
-
-    int getLayers();
-
-    double getHeight();
-
-    double getThickness();
-
-    boolean isPassable();
-
-    int getRedstonePower();
-
-    @Nullable
-    SubMaterial getSubMaterial();
-
-    @Nullable
-    HingePosition getHingePosition();
-
-    @Nullable
-    Facing getFacing();
-
-    @Nullable
-    TrapdoorPosition getHalf();
-
-    @Nullable
-    Facing.Axis getAxis();
-
-    boolean isDecayable();
-
-    boolean isCheckDecay();
-
-    boolean isTriggered();
-
-    boolean isOccupied();
-
-    @Nullable
-    BlockShape getShape();
-
-    boolean isShort();
-
-    @Nullable
-    PistonType getPistonType();
-
-    int getAge();
-
-    int getMoisture();
-
-    @Nullable
-    Direction getDirection();
+    NORMAL,
+    STICKY
 
 }

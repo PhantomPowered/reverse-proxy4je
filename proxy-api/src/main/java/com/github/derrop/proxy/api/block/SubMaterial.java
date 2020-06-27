@@ -51,7 +51,18 @@ public enum SubMaterial {
     COLOR_BROWN(12, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
     COLOR_GREEN(13, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
     COLOR_RED(14, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
-    COLOR_BLACK(15, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE);
+    COLOR_BLACK(15, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE),
+
+    WOOD_OAK(0, Material.WOOD, Material.LOG),
+    WOOD_SPRUCE(1, Material.WOOD, Material.LOG),
+    WOOD_BIRCH(2, Material.WOOD, Material.LOG),
+    WOOD_JUNGLE(3, Material.WOOD, Material.LOG),
+    WOOD_ACACIA(0, Material.WOOD, Material.LOG_2),
+    WOOD_DARK_OAK(1, Material.WOOD, Material.LOG_2),
+
+    SANDSTONE_NORMAL(0, Material.SANDSTONE, Material.RED_SANDSTONE),
+    SANDSTONE_CHISELED(1, Material.SANDSTONE, Material.RED_SANDSTONE),
+    SANDSTONE_SMOOTH(2, Material.SANDSTONE, Material.RED_SANDSTONE);
 
     private final Material[] parents;
     private final int subId;
