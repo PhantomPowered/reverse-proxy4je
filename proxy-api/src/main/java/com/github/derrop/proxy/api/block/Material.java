@@ -39,7 +39,7 @@ public enum Material {
     GRASS(2),
     DIRT(3),
     COBBLESTONE(4),
-    WOOD(5),
+    PLANKS(5),
     SAPLING(6),
     BEDROCK(7),
     WATER(8),
@@ -551,7 +551,7 @@ public enum Material {
             case GRASS:
             case DIRT:
             case COBBLESTONE:
-            case WOOD:
+            case PLANKS:
             case BEDROCK:
             case SAND:
             case GRAVEL:
@@ -762,7 +762,7 @@ public enum Material {
             return false;
         }
         switch (this) {
-            case WOOD:
+            case PLANKS:
             case LOG:
             case LEAVES:
             case NOTE_BLOCK:
@@ -828,7 +828,7 @@ public enum Material {
             return false;
         }
         switch (this) {
-            case WOOD:
+            case PLANKS:
             case LOG:
             case LEAVES:
             case LONG_GRASS:
@@ -878,7 +878,7 @@ public enum Material {
             case GRASS:
             case DIRT:
             case COBBLESTONE:
-            case WOOD:
+            case PLANKS:
             case BEDROCK:
             case SAND:
             case GRAVEL:

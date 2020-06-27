@@ -53,6 +53,7 @@ public class DefaultBlockState implements BlockState {
     private int age;
     private int moisture;
     private Direction direction;
+    private ComparatorMode comparatorMode;
 
     public DefaultBlockState(int id, Material material) {
         this.id = id;
@@ -128,6 +129,11 @@ public class DefaultBlockState implements BlockState {
 
     DefaultBlockState pistonType(PistonType pistonType) {
         this.pistonType = pistonType;
+        return this;
+    }
+
+    DefaultBlockState comparatorMode(ComparatorMode comparatorMode) {
+        this.comparatorMode = comparatorMode;
         return this;
     }
 
@@ -270,6 +276,11 @@ public class DefaultBlockState implements BlockState {
     @Override
     public @Nullable Direction getDirection() {
         return this.direction;
+    }
+
+    @Override
+    public @Nullable ComparatorMode getComparatorMode() {
+        return this.comparatorMode;
     }
 
     @Override
