@@ -66,12 +66,12 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     public void handleChunkLoad(ServiceConnection serviceConnection, Chunk chunk) {
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ChunkLoadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
+
         if (this.blockTrackers.isEmpty()) {
             return;
         }
-
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new ChunkLoadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
 
         this.forEachStates(chunk, (x, y, z, oldState, state) -> {
             for (BlockConsumer consumer : this.blockTrackers.values()) {
@@ -81,12 +81,12 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     public void handleChunkUnload(ServiceConnection serviceConnection, Chunk chunk) {
+        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ChunkUnloadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
+
         if (this.blockTrackers.isEmpty()) {
             return;
         }
-
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new ChunkUnloadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
 
         this.forEachStates(chunk, (x, y, z, oldState, state) -> {
             for (BlockConsumer consumer : this.blockTrackers.values()) {
