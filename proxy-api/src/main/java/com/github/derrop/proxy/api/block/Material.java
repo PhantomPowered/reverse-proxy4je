@@ -72,13 +72,13 @@ public enum Material {
     WOOL(35),
     PISTON_MOVING_PIECE(36),
     YELLOW_FLOWER(37),
-    RED_ROSE(38),
+    FLOWER(38),
     BROWN_MUSHROOM(39),
     RED_MUSHROOM(40),
     GOLD_BLOCK(41),
     IRON_BLOCK(42),
-    DOUBLE_STEP(43),
-    STEP(44),
+    DOUBLE_STONE_SLAB(43),
+    STONE_SLAB(44),
     BRICK(45),
     TNT(46),
     BOOKSHELF(47),
@@ -575,8 +575,8 @@ public enum Material {
             case PISTON_MOVING_PIECE:
             case GOLD_BLOCK:
             case IRON_BLOCK:
-            case DOUBLE_STEP:
-            case STEP:
+            case DOUBLE_STONE_SLAB:
+            case STONE_SLAB:
             case BRICK:
             case TNT:
             case BOOKSHELF:
@@ -714,7 +714,7 @@ public enum Material {
             case LONG_GRASS:
             case DEAD_BUSH:
             case YELLOW_FLOWER:
-            case RED_ROSE:
+            case FLOWER:
             case BROWN_MUSHROOM:
             case RED_MUSHROOM:
             case TORCH:
@@ -834,7 +834,7 @@ public enum Material {
             case LONG_GRASS:
             case WOOL:
             case YELLOW_FLOWER:
-            case RED_ROSE:
+            case FLOWER:
             case TNT:
             case BOOKSHELF:
             case WOOD_STAIRS:
@@ -895,7 +895,7 @@ public enum Material {
             case WOOL:
             case GOLD_BLOCK:
             case IRON_BLOCK:
-            case DOUBLE_STEP:
+            case DOUBLE_STONE_SLAB:
             case BRICK:
             case BOOKSHELF:
             case MOSSY_COBBLESTONE:

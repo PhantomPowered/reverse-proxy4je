@@ -261,7 +261,8 @@ public enum Facing {
     public enum Axis implements Predicate<Facing> {
         X("x", Facing.Plane.HORIZONTAL),
         Y("y", Facing.Plane.VERTICAL),
-        Z("z", Facing.Plane.HORIZONTAL);
+        Z("z", Facing.Plane.HORIZONTAL),
+        NONE("none", null);
 
         private static final Map<String, Facing.Axis> NAME_LOOKUP = Maps.newHashMap();
         private final String name;

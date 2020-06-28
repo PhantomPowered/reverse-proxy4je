@@ -29,6 +29,8 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 public class DefaultBlockState implements BlockState {
 
     private final int id;
@@ -56,6 +58,7 @@ public class DefaultBlockState implements BlockState {
     private int rotation;
     private ComparatorMode comparatorMode;
     private int damage;
+    private boolean seamless;
 
     public DefaultBlockState(int id, Material material) {
         this.id = id;
@@ -102,7 +105,16 @@ public class DefaultBlockState implements BlockState {
 
     @CanIgnoreReturnValue
     DefaultBlockState subMaterial(SubMaterial subMaterial) {
+        if (Arrays.stream(subMaterial.getParents()).noneMatch(this.material::equals)) {
+            throw new IllegalArgumentException("SubMaterial " + subMaterial + " doesn't match material " + this.material + " (BlockState ID " + this.id + ")");
+        }
         this.subMaterial = subMaterial;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState seamless() {
+        this.seamless = true;
         return this;
     }
 
@@ -339,5 +351,10 @@ public class DefaultBlockState implements BlockState {
     @Override
     public int getDamage() {
         return this.damage;
+    }
+
+    @Override
+    public boolean isSeamless() {
+        return this.seamless;
     }
 }

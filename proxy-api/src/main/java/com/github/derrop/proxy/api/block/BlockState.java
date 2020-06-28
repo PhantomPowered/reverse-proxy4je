@@ -90,4 +90,6 @@ public interface BlockState {
 
     int getDamage();
 
+    boolean isSeamless();
+
 }
