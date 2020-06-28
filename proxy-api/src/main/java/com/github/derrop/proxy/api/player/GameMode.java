@@ -24,6 +24,9 @@
  */
 package com.github.derrop.proxy.api.player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum GameMode {
 
     NOT_SET(-1, ""),
@@ -58,12 +61,14 @@ public enum GameMode {
     }
 
     public static GameMode getById(int id) {
-        for (GameMode value : values()) { // TODO: maybe a static
-            if (value.id == id) {
-                return value;
-            }
-        }
+        return BY_ID.getOrDefault(id, SURVIVAL);
+    }
 
-        return SURVIVAL;
+    private static final Map<Integer, GameMode> BY_ID = new HashMap<>();
+
+    static {
+        for (GameMode value : values()) {
+            BY_ID.put(value.id, value);
+        }
     }
 }
