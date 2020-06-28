@@ -26,7 +26,6 @@ package com.github.derrop.proxy.network.wrapper;
 
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.network.exception.ComponentTooLargeException;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.nbt.CompressedStreamTools;
 import com.github.derrop.proxy.api.nbt.NBTSizeTracker;
@@ -50,6 +49,7 @@ import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,7 +87,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
     @Override
     public void writeString(@NotNull String stringToWrite, short maxLength) {
         if (stringToWrite.length() > maxLength) {
-            throw new ComponentTooLargeException(String.format("String length limit of %d reached. (currently %d)", maxLength, stringToWrite.length()));
+            System.err.println("Unable to write string which is longer than the maximum allowed");
+            return;
         }
 
         byte[] bytes = stringToWrite.getBytes(StandardCharsets.UTF_8);
@@ -99,7 +100,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
     public @NotNull String readString() {
         int length = this.readVarInt();
         if (length > Short.MAX_VALUE) {
-            throw new ComponentTooLargeException(String.format("String length limit of %d reached. (Currently %d)", Short.MAX_VALUE, length));
+            System.err.println("Unable to read string which is longer than the maximum allowed");
+            return "{}";
         }
 
         byte[] bytes = new byte[length];
@@ -116,7 +118,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
     @Override
     public void writeArray(@NotNull byte[] bytes, short limit) {
         if (bytes.length > limit) {
-            throw new ComponentTooLargeException(String.format("Array length limit of %d reached. (currently %d)", limit, bytes.length));
+            System.err.println("Unable to write byte array which is longer than the maximum allowed");
+            return;
         }
 
         this.writeArray(bytes);
@@ -131,7 +134,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
     public @NotNull byte[] readArray(int limit) {
         int length = this.readVarInt();
         if (length > limit) {
-            throw new ComponentTooLargeException(String.format("Array length limit of %d reached. (Currently %d)", limit, length));
+            System.err.println("Unable to read byte array which is longer than the maximum allowed");
+            return new byte[0];
         }
 
         byte[] bytes = new byte[length];
@@ -177,7 +181,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
             result |= (value << (7 * numRead));
 
             if (numRead++ > 5) {
-                throw new ComponentTooLargeException("VarInt is too big!");
+                System.err.println("VarInt is too big");
+                throw new EmptyStackException();
             }
         } while ((read & 0b10000000) != 0);
 
@@ -208,7 +213,8 @@ public final class DefaultProtoBuf extends ProtoBuf {
             result |= (value << (7 * numRead));
 
             if (numRead++ > 10) {
-                throw new ComponentTooLargeException("VarInt is too big!");
+                System.err.println("VarLong is too big");
+                throw new EmptyStackException();
             }
         } while ((read & 0b10000000) != 0);
 
