@@ -260,7 +260,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     }
 
     @Override
-    public void chat(String message) {
+    public void sendServerMessage(String message) {
         this.connectedClient.chat(message);
     }
 

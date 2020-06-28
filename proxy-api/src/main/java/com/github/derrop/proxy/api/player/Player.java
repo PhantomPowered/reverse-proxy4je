@@ -67,7 +67,7 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
 
     void enableAutoReconnect();
 
-    void chat(String message); // todo: sends a message to the server: rename?
+    void sendServerMessage(String message);
 
     // todo: proper
 
