@@ -30,13 +30,11 @@ import com.github.derrop.proxy.api.scoreboard.Score;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScoreObjective;
 import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
-import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-@ToString
 public class BasicObjective implements Objective {
 
     private final BasicScoreboard scoreboard;
@@ -139,5 +137,10 @@ public class BasicObjective implements Objective {
     public void unregisterScore(@NotNull String entry) {
         this.scoreboard.getHandle().removeObjectiveFromEntity(entry, this.handle);
         this.scoreboard.getCache().sendScoreDestroy(entry, this.name);
+    }
+
+    @Override
+    public String toString() {
+        return "BasicObjective{" + "name='" + name + '\'' + '}';
     }
 }

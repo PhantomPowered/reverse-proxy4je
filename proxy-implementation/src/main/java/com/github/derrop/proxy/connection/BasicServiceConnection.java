@@ -67,6 +67,7 @@ import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -407,8 +408,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public @NotNull SocketAddress getSocketAddress() {
-        return this.client.getWrappedChannel().remoteAddress();
+    public @NotNull InetSocketAddress getSocketAddress() {
+        return (InetSocketAddress) this.client.getWrappedChannel().remoteAddress();
     }
 
     @Override

@@ -31,6 +31,7 @@ import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -49,7 +50,7 @@ public interface NetworkChannel extends AutoCloseable {
 
     ProtocolState getProtocolState();
 
-    @NotNull SocketAddress getAddress();
+    @NotNull InetSocketAddress getAddress();
 
     void close(@Nullable Object goodbyeMessage);
 

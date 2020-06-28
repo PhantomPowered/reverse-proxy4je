@@ -6,14 +6,13 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
+import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.player.PlayerIdRepository;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanInfo;
-import com.github.derrop.proxy.plugins.gomme.clan.ClanInfoProvider;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanMember;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanMessageRegistry;
 import com.github.derrop.proxy.plugins.gomme.messages.Language;
@@ -166,7 +165,7 @@ public class ClanParser {
         connection.removeProperty(PENDING_CLAN_REQUEST_TASK);
 
         Constants.EXECUTOR_SERVICE.execute(() -> {
-            ClanInfo clanInfo = request.toClanInfo(this.registry.getProviderUnchecked(PlayerIdRepository.class));
+            ClanInfo clanInfo = request.toClanInfo(this.registry.getProviderUnchecked(PlayerIdStorage.class));
 
             if (task != null) {
                 task.complete(clanInfo);

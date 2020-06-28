@@ -22,12 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.command.defaults;
 
-@Deprecated // TODO - PAIL
-public class OverflowPacketException extends RuntimeException {
+import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
+import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
+import com.github.derrop.proxy.api.command.result.CommandResult;
+import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.console.ProxyConsole;
+import net.kyori.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-    public OverflowPacketException(String message) {
-        super(message);
+public class CommandClear extends NonTabCompleteableCommandCallback {
+
+    public CommandClear(@NotNull ServiceRegistry registry) {
+        super("proxy.command.clear", null);
+        this.registry = registry;
+    }
+
+    private final ServiceRegistry registry;
+
+    @Override
+    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
+        registry.getProviderUnchecked(ProxyConsole.class).clearScreen();
+        return CommandResult.END;
     }
 }

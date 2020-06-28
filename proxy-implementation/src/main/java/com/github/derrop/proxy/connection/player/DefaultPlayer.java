@@ -65,6 +65,7 @@ import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Map;
@@ -321,7 +322,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     }
 
     @Override
-    public @NotNull SocketAddress getSocketAddress() {
+    public @NotNull InetSocketAddress getSocketAddress() {
         return this.channel.getAddress();
     }
 

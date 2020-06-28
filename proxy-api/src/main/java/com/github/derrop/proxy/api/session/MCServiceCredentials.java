@@ -24,12 +24,10 @@
  */
 package com.github.derrop.proxy.api.session;
 
-import lombok.EqualsAndHashCode;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
-@EqualsAndHashCode
 public class MCServiceCredentials {
 
     private String username;
@@ -94,5 +92,22 @@ public class MCServiceCredentials {
     @Override
     public String toString() {
         return this.isOffline() ? "Offline:" + this.username : "Online:" + this.email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MCServiceCredentials)) return false;
+        MCServiceCredentials that = (MCServiceCredentials) o;
+        return isExportable() == that.isExportable() &&
+                getUsername().equals(that.getUsername()) &&
+                Objects.equals(getEmail(), that.getEmail()) &&
+                Objects.equals(getPassword(), that.getPassword()) &&
+                getDefaultServer().equals(that.getDefaultServer());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getEmail(), getDefaultServer(), isExportable(), getPassword());
     }
 }

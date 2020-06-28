@@ -27,13 +27,13 @@ package com.github.derrop.proxy.network.channel;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.pipeline.compression.PacketCompressor;
 import com.github.derrop.proxy.network.pipeline.compression.PacketDeCompressor;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
-import com.github.derrop.proxy.api.task.DefaultTask;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -42,6 +42,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
 
     private final Map<String, Object> properties = new ConcurrentHashMap<>();
 
-    private SocketAddress address;
+    private InetSocketAddress address;
     private Channel channel;
 
     private boolean closing = false;
@@ -72,12 +73,12 @@ public class DefaultNetworkChannel implements NetworkChannel {
 
     public DefaultNetworkChannel(@NotNull Channel channel) {
         this.channel = channel;
-        this.address = (this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress();
+        this.address = (InetSocketAddress) ((this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress());
     }
 
     protected void setChannel(@Nullable Channel channel) {
         this.channel = channel;
-        this.address = channel == null ? null : (this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress();
+        this.address = channel == null ? null : (InetSocketAddress) ((this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress());
     }
 
     @Override
@@ -129,7 +130,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
 
     @NotNull
     @Override
-    public SocketAddress getAddress() {
+    public InetSocketAddress getAddress() {
         return this.address;
     }
 
@@ -234,7 +235,7 @@ public class DefaultNetworkChannel implements NetworkChannel {
         this.closed = this.closing = true;
     }
 
-    public void setAddress(SocketAddress address) {
+    public void setAddress(InetSocketAddress address) {
         this.address = address;
     }
 }
