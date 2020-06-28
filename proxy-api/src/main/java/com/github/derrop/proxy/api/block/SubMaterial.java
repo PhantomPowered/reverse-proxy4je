@@ -72,7 +72,11 @@ public enum SubMaterial {
     SAND_RED(1, Material.SAND),
 
     SPONGE_NORMAL(0, Material.SPONGE),
-    SPONGE_WET(1, Material.SPONGE);
+    SPONGE_WET(1, Material.SPONGE),
+
+    QUARTZ_NORMAL(0, Material.QUARTZ_BLOCK),
+    QUARTZ_CHISELED(1, Material.QUARTZ_BLOCK),
+    QUARTZ_PILLAR(2, Material.QUARTZ_BLOCK);
 
     private final Material[] parents;
     private final int subId;

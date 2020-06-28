@@ -42,7 +42,7 @@ public class DefaultBlockState implements BlockState {
     private int redstonePower;
     private Facing facing;
     private HingePosition hingePosition;
-    private TrapdoorPosition half;
+    private Half half;
     private Facing.Axis axis;
     private boolean decayable;
     private boolean checkDecay;
@@ -53,8 +53,9 @@ public class DefaultBlockState implements BlockState {
     private PistonType pistonType;
     private int age;
     private int moisture;
-    private Direction direction;
+    private int rotation;
     private ComparatorMode comparatorMode;
+    private int damage;
 
     public DefaultBlockState(int id, Material material) {
         this.id = id;
@@ -94,7 +95,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @CanIgnoreReturnValue
-    DefaultBlockState half(TrapdoorPosition position) {
+    DefaultBlockState half(Half position) {
         this.half = position;
         return this;
     }
@@ -166,8 +167,8 @@ public class DefaultBlockState implements BlockState {
     }
 
     @CanIgnoreReturnValue
-    DefaultBlockState direction(Direction direction) {
-        this.direction = direction;
+    DefaultBlockState rotation(int rotation) {
+        this.rotation = rotation;
         return this;
     }
 
@@ -192,6 +193,12 @@ public class DefaultBlockState implements BlockState {
     @CanIgnoreReturnValue
     DefaultBlockState power(int redstonePower) {
         this.redstonePower = redstonePower;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState damage(int damage) {
+        this.damage = damage;
         return this;
     }
 
@@ -242,7 +249,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @Override
-    public @Nullable TrapdoorPosition getHalf() {
+    public @Nullable Half getHalf() {
         return this.half;
     }
 
@@ -297,8 +304,8 @@ public class DefaultBlockState implements BlockState {
     }
 
     @Override
-    public @Nullable Direction getDirection() {
-        return this.direction;
+    public int getRotation() {
+        return this.rotation;
     }
 
     @Override
@@ -327,5 +334,10 @@ public class DefaultBlockState implements BlockState {
     @Override
     public int getRedstonePower() {
         return this.redstonePower;
+    }
+
+    @Override
+    public int getDamage() {
+        return this.damage;
     }
 }

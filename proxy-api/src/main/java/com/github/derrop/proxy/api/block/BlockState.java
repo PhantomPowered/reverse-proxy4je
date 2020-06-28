@@ -58,7 +58,7 @@ public interface BlockState {
     Facing getFacing();
 
     @Nullable
-    TrapdoorPosition getHalf();
+    Half getHalf();
 
     @Nullable
     Facing.Axis getAxis();
@@ -83,10 +83,11 @@ public interface BlockState {
 
     int getMoisture();
 
-    @Nullable
-    Direction getDirection();
+    int getRotation();
 
     @Nullable
     ComparatorMode getComparatorMode();
+
+    int getDamage();
 
 }
