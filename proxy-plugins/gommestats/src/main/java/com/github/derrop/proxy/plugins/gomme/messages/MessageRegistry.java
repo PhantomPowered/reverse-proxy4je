@@ -72,4 +72,11 @@ public class MessageRegistry {
     public Map<Language, Map<GommeServerType, Map<MessageType, RegisteredMessage>>> getMessages() {
         return this.messages;
     }
+
+    public void cloneMessages(GommeServerType source, GommeServerType target) {
+        for (Map.Entry<Language, Map<GommeServerType, Map<MessageType, RegisteredMessage>>> entry : this.messages.entrySet()) {
+            entry.getValue().put(target, entry.getValue().get(source));
+        }
+    }
+
 }

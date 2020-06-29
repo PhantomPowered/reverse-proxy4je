@@ -22,30 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.events.connection.service.entity;
+package com.github.derrop.proxy.plugins.gommecw.highlights;
 
-import com.github.derrop.proxy.api.entity.types.Entity;
-import com.github.derrop.proxy.api.event.Event;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
+import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
+import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
 
-public class EntityDamageEvent extends Event {
+public interface GommeCWHighlightListener {
 
-    private final Entity damaged;
-    private final Entity damager;
+    void handleDamage(RunningClanWar clanWar, ClanWarTeam damagerTeam, ClanWarTeam damagedTeam, EntityPlayer damaged, EntityPlayer damager);
 
-    public EntityDamageEvent(@NotNull Entity damaged, @Nullable Entity damager) {
-        this.damaged = damaged;
-        this.damager = damager;
-    }
+    void handleDeath(RunningClanWar clanWar, PlayerInfo playerInfo);
 
-    @NotNull
-    public Entity getDamaged() {
-        return this.damaged;
-    }
+    void handleNearBed(RunningClanWar clanWar, PlayerInfo playerInfo, ClanWarTeam team);
 
-    @Nullable
-    public Entity getDamager() {
-        return this.damager;
-    }
+    void handleAwayFromBed(RunningClanWar clanWar, PlayerInfo playerInfo, ClanWarTeam team);
+
+    void handleBowAim(RunningClanWar clanWar, EntityPlayer player);
+
+    void handleStopBowAim(RunningClanWar clanWar, EntityPlayer player);
+
 }

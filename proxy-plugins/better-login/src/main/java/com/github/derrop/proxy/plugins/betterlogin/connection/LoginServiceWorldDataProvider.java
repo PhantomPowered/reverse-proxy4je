@@ -1,15 +1,17 @@
 package com.github.derrop.proxy.plugins.betterlogin.connection;
 
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.player.GameMode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class LoginServiceWorldDataProvider implements ServiceWorldDataProvider {
     @Override
@@ -80,5 +82,15 @@ public class LoginServiceWorldDataProvider implements ServiceWorldDataProvider {
     @Override
     public Entity getEntityInWorld(int entityId) {
         return null;
+    }
+
+    @Override
+    public @NotNull Collection<Entity> getNearbyEntities(double maxDistance, @Nullable Predicate<Entity> tester) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public @NotNull Collection<EntityPlayer> getNearbyPlayers(double maxDistance) {
+        return Collections.emptyList();
     }
 }

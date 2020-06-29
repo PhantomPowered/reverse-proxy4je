@@ -24,14 +24,16 @@
  */
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.player.GameMode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public interface ServiceWorldDataProvider {
 
@@ -66,5 +68,16 @@ public interface ServiceWorldDataProvider {
     Collection<? extends Entity> getEntitiesInWorld();
 
     Entity getEntityInWorld(int entityId);
+
+    @NotNull
+    Collection<Entity> getNearbyEntities(double maxDistance, @Nullable Predicate<Entity> tester);
+
+    @NotNull
+    default Collection<Entity> getNearbyEntities(double maxDistance) {
+        return this.getNearbyEntities(maxDistance, null);
+    }
+
+    @NotNull
+    Collection<EntityPlayer> getNearbyPlayers(double maxDistance);
 
 }

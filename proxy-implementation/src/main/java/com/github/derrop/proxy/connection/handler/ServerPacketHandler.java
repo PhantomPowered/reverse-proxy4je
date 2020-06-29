@@ -95,7 +95,6 @@ public class ServerPacketHandler {
             }
 
             event = new SelfEntityStatusEvent(client.getConnection(), statusType);
-            System.out.println("Self: " + statusType);
         } else {
             Entity entity = client.getConnection().getWorldDataProvider().getEntityInWorld(packet.getEntityId());
             if (entity == null) {
@@ -108,7 +107,6 @@ public class ServerPacketHandler {
             }
 
             event = new EntityStatusEvent(client.getConnection(), entity, statusType);
-            System.out.println("Other: " + statusType);
         }
 
         client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent((Event) event);
@@ -133,6 +131,7 @@ public class ServerPacketHandler {
             if (entity == null) {
                 return;
             }
+            entity.setLocation(location);
             client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new EntityMoveEvent(client.getConnection(), entity, entity.getLocation(), location));
             return;
         }

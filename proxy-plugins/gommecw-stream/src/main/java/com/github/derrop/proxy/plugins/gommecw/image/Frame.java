@@ -370,7 +370,6 @@ public class Frame extends JFrame {
 
     @Override
     public void dispose() {
-        System.out.println("asdf");
         this.executorService.shutdown();
         super.dispose();
     }
@@ -379,6 +378,7 @@ public class Frame extends JFrame {
         Document document = Jsoup.connect("https://www.gommehd.net/clan-profile?name=" + URLEncoder.encode(clanName, "UTF-8")).get();
         Elements images = document.getElementsByClass("avatarContainer").get(0).getElementsByTag("img");
         String url = images.get(images.size() - 1).attr("src");
+        // TODO if the clan has no image, none should be displayed instead of the gomme logo (default image)
         if (!url.startsWith("http")) {
             url = url.startsWith("/") ? "https://www.gommehd.net" + url : "https://www.gommehd.net/" + url;
         }

@@ -5,15 +5,13 @@ import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gommecw.image.Frame;
-import com.github.derrop.proxy.plugins.gommecw.labyconnect.LabyConnection;
-import com.github.derrop.proxy.plugins.gommecw.labyconnect.user.UserData;
-import com.google.common.base.Preconditions;
 import com.mojang.authlib.UserAuthentication;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class RunningClanWar {
 
@@ -32,6 +30,11 @@ public class RunningClanWar {
 
     public Collection<ServiceConnection> getOurSpectators() {
         return this.ourSpectators;
+    }
+
+    @NotNull
+    public ServiceConnection getMainSpectator() {
+        return this.ourSpectators.iterator().next();
     }
 
     public Frame getFrame() {
@@ -67,6 +70,10 @@ public class RunningClanWar {
 
     public Collection<ClanWarTeam> getTeams() {
         return this.teams;
+    }
+
+    public ClanWarTeam getTeam(UUID playerId) {
+        return this.teams.stream().filter(team -> team.getMembers().stream().anyMatch(member -> member.getUniqueId().equals(playerId))).findFirst().orElse(null);
     }
 
     public RunningClanWarInfo getInfo() {

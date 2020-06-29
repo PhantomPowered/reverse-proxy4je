@@ -25,18 +25,21 @@
 package com.github.derrop.proxy.connection;
 
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.player.GameMode;
 import com.github.derrop.proxy.connection.cache.handler.*;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
 
@@ -166,4 +169,23 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
         return this.getEntityCache().getEntities().get(entityId);
     }
 
+    @Override
+    public @NotNull Collection<Entity> getNearbyEntities(double maxDistance, @Nullable Predicate<Entity> tester) {
+        return this.getNearbyEntitiesAsStream(maxDistance, tester).collect(Collectors.toList());
+    }
+
+    @NotNull
+    private Stream<? extends Entity> getNearbyEntitiesAsStream(double maxDistance, @Nullable Predicate<Entity> tester) {
+        double distanceSquared = maxDistance * maxDistance;
+        return this.getEntitiesInWorld().stream()
+                .filter(entity -> tester == null || tester.test(entity))
+                .filter(entity -> entity.getLocation().distanceSquared(this.connection.getLocation()) <= distanceSquared);
+    }
+
+    @Override
+    public @NotNull Collection<EntityPlayer> getNearbyPlayers(double maxDistance) {
+        return this.getNearbyEntitiesAsStream(maxDistance, entity -> entity instanceof EntityPlayer)
+                .map(entity -> (EntityPlayer) entity)
+                .collect(Collectors.toList());
+    }
 }

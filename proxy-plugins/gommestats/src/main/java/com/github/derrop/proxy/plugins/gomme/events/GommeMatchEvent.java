@@ -22,31 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api;
+package com.github.derrop.proxy.plugins.gomme.events;
 
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.regex.Pattern;
+import com.github.derrop.proxy.api.event.Event;
+import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import org.jetbrains.annotations.NotNull;
 
-public interface Constants {
+public class GommeMatchEvent extends Event {
 
-    String MESSAGE_PREFIX = "§8┃ §6P§froxy §8× §7";
+    private final MatchInfo matchInfo;
+    private final MatchEvent matchEvent;
 
-    ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-    ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(4);
+    public GommeMatchEvent(@NotNull MatchInfo matchInfo, @NotNull MatchEvent matchEvent) {
+        this.matchInfo = matchInfo;
+        this.matchEvent = matchEvent;
+    }
 
-    Random RANDOM = new Random();
+    @NotNull
+    public MatchInfo getMatchInfo() {
+        return this.matchInfo;
+    }
 
-    DirectoryStream.Filter<Path> JAR_FILE_FILTER = path -> !Files.isDirectory(path) && path.toString().endsWith(".jar");
-
-    int SURVIVAL_PLACE_DISTANCE = 6;
-    int CREATIVE_PLACE_DISTANCE = 7;
-    int HIT_DISTANCE = 4;
-
-    Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
+    @NotNull
+    public MatchEvent getMatchEvent() {
+        return this.matchEvent;
+    }
 }

@@ -8,11 +8,11 @@ import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanInfo;
-import com.github.derrop.proxy.plugins.gommecw.image.Frame;
 import com.google.common.base.Preconditions;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -25,8 +25,16 @@ public class RunningClanWarManager {
         this.registry = registry;
     }
 
+    public Optional<RunningClanWar> getClanWar(ServiceConnection spectator) {
+        return this.clanWars.values().stream().filter(clanWar -> clanWar.getOurSpectators().contains(spectator)).findFirst();
+    }
+
     public RunningClanWar getClanWar(String matchId) {
         return this.clanWars.get(matchId);
+    }
+
+    public Collection<RunningClanWar> getClanWars() {
+        return this.clanWars.values();
     }
 
     public boolean isRegistered(String matchId) {

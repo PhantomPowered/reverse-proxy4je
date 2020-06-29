@@ -1,19 +1,20 @@
 package com.github.derrop.proxy.plugins.gomme.match.event.cores;
 
+import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 
 public class CoreLeaveEvent extends MatchEvent {
 
-    private final String player;
+    private final PlayerInfo player;
     private final Location core;
 
-    public CoreLeaveEvent(String player, Location core) {
+    public CoreLeaveEvent(PlayerInfo player, Location core) {
         this.player = player;
         this.core = core;
     }
 
-    public String getPlayer() {
+    public PlayerInfo getPlayer() {
         return this.player;
     }
 
@@ -23,6 +24,6 @@ public class CoreLeaveEvent extends MatchEvent {
 
     @Override
     public String toPlainText() {
-        return "Player " + this.player + " is no more near the core at " + this.core.toShortString();
+        return "Player " + this.player.getUsername() + " is no more near the core at " + this.core.toShortString();
     }
 }

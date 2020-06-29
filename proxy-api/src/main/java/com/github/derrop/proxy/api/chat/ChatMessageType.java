@@ -26,7 +26,17 @@ package com.github.derrop.proxy.api.chat;
 
 public enum ChatMessageType {
 
-    CHAT,
-    SYSTEM,
-    ACTION_BAR
+    CHAT(true),
+    SYSTEM(true),
+    ACTION_BAR(false);
+
+    private final boolean chat;
+
+    ChatMessageType(boolean chat) {
+        this.chat = chat;
+    }
+
+    public boolean isChat() {
+        return this.chat;
+    }
 }

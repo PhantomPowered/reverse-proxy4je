@@ -22,6 +22,9 @@ public class GameMessageRegistry extends MessageRegistry {
         for (SpecificGameMessageRegistrar registrar : registrars) {
             registrar.init();
         }
+
+        super.cloneMessages(GommeServerType.BED_WARS, GommeServerType.CWBW);
+        super.cloneMessages(GommeServerType.CORES, GommeServerType.CWCORES);
     }
 
     public Optional<MatchEvent> createMatchEvent(Language language, GommeServerType gameMode, String message) {
