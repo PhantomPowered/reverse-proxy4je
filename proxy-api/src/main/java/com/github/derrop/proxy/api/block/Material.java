@@ -1023,4 +1023,16 @@ public enum Material {
         return false;
     }
 
+    public boolean isSword() {
+        switch (this) {
+            case STONE_SWORD:
+            case DIAMOND_SWORD:
+            case GOLD_SWORD:
+            case IRON_SWORD:
+            case WOOD_SWORD:
+                return true;
+        }
+        return false;
+    }
+
 }

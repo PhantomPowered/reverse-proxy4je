@@ -41,9 +41,21 @@ public interface Entity extends Scaleable {
 
     boolean isSprinting();
 
-    boolean isBlocking();
+    boolean isEating();
 
     boolean isInvisible();
+
+    /**
+     * Returns true if the flag is active for this entity.
+     * Flags:
+     * - 0 = is burning
+     * - 1 = is sneaking
+     * - 2 = is riding
+     * - 3 = is sprinting
+     * - 4 = is eating
+     * - 5 = is invisible
+     */
+    boolean getFlag(int flag);
 
     short getAirTicks();
 
