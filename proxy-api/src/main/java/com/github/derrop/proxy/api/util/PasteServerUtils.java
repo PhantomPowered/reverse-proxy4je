@@ -24,6 +24,7 @@ public class PasteServerUtils {
         }
     }
 
+    // TODO should return String[] to be able to upload pretty long contents in multiple documents
     public static String upload(String url, String content) throws IOException {
         if (!url.endsWith("/documents")) {
             url += (url.endsWith("/") ? "" : "/") + "documents";

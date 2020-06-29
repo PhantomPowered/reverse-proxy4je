@@ -2,12 +2,17 @@ package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.*;
+import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.event.Event;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
 import com.github.derrop.proxy.api.events.connection.PluginMessageEvent;
 import com.github.derrop.proxy.api.events.connection.service.TitleReceiveEvent;
 import com.github.derrop.proxy.api.events.connection.service.entity.EntityMoveEvent;
+import com.github.derrop.proxy.api.events.connection.service.entity.status.EntityStatusEvent;
+import com.github.derrop.proxy.api.events.connection.service.entity.status.SelfEntityStatusEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
@@ -22,6 +27,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
@@ -74,6 +80,42 @@ public class ServerPacketHandler {
         }
 
         packet.setMessage(GsonComponentSerializer.INSTANCE.serialize(TextComponent.of(original)));
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_STATUS, directions = ProtocolDirection.TO_CLIENT)
+    public void handleEntityStatus(ConnectedProxyClient client, PacketPlayServerEntityStatus packet) {
+        boolean self = packet.getEntityId() == client.getEntityId();
+        Cancelable event;
+
+        if (self) {
+            EntityStatusType statusType = EntityStatusType.ofSelfPlayer(packet.getStatus());
+            if (statusType == null) {
+                System.err.println("Unknown EntityStatusType received: " + packet.getStatus() + " for entity SELF");
+                return;
+            }
+
+            event = new SelfEntityStatusEvent(client.getConnection(), statusType);
+            System.out.println("Self: " + statusType);
+        } else {
+            Entity entity = client.getConnection().getWorldDataProvider().getEntityInWorld(packet.getEntityId());
+            if (entity == null) {
+                return;
+            }
+            EntityStatusType statusType = EntityStatusType.ofOtherEntity(entity.getClass(), packet.getStatus());
+            if (statusType == null) {
+                System.err.println("Unknown EntityStatusType received: " + packet.getStatus() + " for entity " + packet.getEntityId());
+                return;
+            }
+
+            event = new EntityStatusEvent(client.getConnection(), entity, statusType);
+            System.out.println("Other: " + statusType);
+        }
+
+        client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent((Event) event);
+
+        if (event.isCancelled()) {
+            throw CancelProceedException.INSTANCE;
+        }
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN, directions = ProtocolDirection.TO_CLIENT)

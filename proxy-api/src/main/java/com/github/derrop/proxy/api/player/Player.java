@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.location.Location;
@@ -84,5 +85,11 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
     void sendBlockChange(Location pos, Material material);
 
     PlayerInventory getInventory();
+
+    void sendEntityStatus(@Nullable Entity entity, @NotNull EntityStatusType statusType);
+
+    default void sendSelfEntityStatus(EntityStatusType statusType) {
+        this.sendEntityStatus(null, statusType);
+    }
 
 }
