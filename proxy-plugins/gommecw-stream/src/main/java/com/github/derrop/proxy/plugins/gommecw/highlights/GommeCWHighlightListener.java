@@ -32,6 +32,8 @@ import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
 
 public interface GommeCWHighlightListener {
 
+    void handleTick(RunningClanWar clanWar);
+
     void handleDamage(RunningClanWar clanWar, ClanWarTeam damagerTeam, ClanWarTeam damagedTeam, EntityPlayer damaged, EntityPlayer damager);
 
     void handleDeath(RunningClanWar clanWar, PlayerInfo playerInfo);

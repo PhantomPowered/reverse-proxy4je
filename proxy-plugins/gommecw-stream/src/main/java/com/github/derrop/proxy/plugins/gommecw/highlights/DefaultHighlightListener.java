@@ -24,31 +24,83 @@
  */
 package com.github.derrop.proxy.plugins.gommecw.highlights;
 
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.util.MathHelper;
 import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
 import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
 
+import java.util.UUID;
+
 public class DefaultHighlightListener implements GommeCWHighlightListener {
+
+    private static final double MAX_DAMAGE_DISTANCE = MathHelper.square(Constants.SURVIVAL_PLACE_DISTANCE + 5);
+
+    @Override
+    public void handleTick(RunningClanWar clanWar) {
+        if (clanWar.getFrame() == null) {
+            return;
+        }
+
+        if ("damage".equals(clanWar.getFrame().getLastSwitchReason())) {
+            EntityPlayer damager = (EntityPlayer) clanWar.getProperties().get("damager");
+            EntityPlayer damaged = (EntityPlayer) clanWar.getProperties().get("damaged");
+
+            if (damaged == null || damager == null) {
+                return;
+            }
+
+            if (clanWar.getFrame().isLastSwitchLongerThan(5000)) {
+                return;
+            }
+
+            if (damaged.getLocation().distanceSquared(damager.getLocation()) >= MAX_DAMAGE_DISTANCE) {
+                clanWar.getFrame().togglePlayerCamera(null, null, "leave_damage_range");
+            }
+
+            return;
+        }
+
+        clanWar.getProperties().remove("damager");
+        clanWar.getProperties().remove("damaged");
+    }
+
     @Override
     public void handleDamage(RunningClanWar clanWar, ClanWarTeam damagerTeam, ClanWarTeam damagedTeam, EntityPlayer damaged, EntityPlayer damager) {
         // TODO not being called correctly
-        System.out.println("Damage to " + damaged.getPlayerInfo().getUsername() + " from " + damager.getPlayerInfo().getUsername());
-        // TODO switch frame to the damager, switch back when the distance between damaged and damager is greater than Constants.SURVIVAL_PLACE_DISTANCE + 5
+        damagerTeam.getMembers().stream().filter(member -> member.getUniqueId().equals(damager.getUniqueId())).findFirst().ifPresent(member -> {
+            System.out.println("Damage to " + damaged.getPlayerInfo().getUsername() + " from " + damager.getPlayerInfo().getUsername());
+            if (clanWar.getFrame().togglePlayerCamera(damagerTeam, member, "damage")) {
+                clanWar.getProperties().put("damaged", damaged);
+                clanWar.getProperties().put("damager", damager);
+            }
+        });
     }
 
     @Override
     public void handleDeath(RunningClanWar clanWar, PlayerInfo playerInfo) {
-        // TODO close the frame of the player
+        UUID current = clanWar.getFrame().getCurrentDisplayedPlayer();
+        if (current != null && playerInfo.getUniqueId().equals(current)) {
+            clanWar.getFrame().togglePlayerCamera(null, null, "death");
+        }
     }
 
     @Override
     public void handleNearBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team) {
+        // TODO check if the bed exists
+        System.out.println("near");
         clanWar.getTeams().stream().filter(filter -> bedLocation.equals(filter.getBedLocation())).findFirst()
                 .ifPresent(bedTeam -> {
-                    System.out.println(playerInfo.getUsername() + " is near the bed of " + bedTeam.getColor());
-                    // TODO switch frame to the player, but ONLY IF the bed is not owned by the player's team
+                    if (bedTeam.getColor() == team.getColor()) {
+                        return;
+                    }
+
+                    team.getMembers().stream().filter(member -> member.getUniqueId().equals(playerInfo.getUniqueId())).findFirst().ifPresent(member -> {
+                        clanWar.getFrame().togglePlayerCamera(team, member, "near_bed");
+                        System.out.println(playerInfo.getUsername() + " is near the bed of " + bedTeam.getColor());
+                    });
                 });
     }
 
@@ -56,8 +108,15 @@ public class DefaultHighlightListener implements GommeCWHighlightListener {
     public void handleAwayFromBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team) {
         clanWar.getTeams().stream().filter(filter -> bedLocation.equals(filter.getBedLocation())).findFirst()
                 .ifPresent(bedTeam -> {
+                    if (bedTeam.getColor() == team.getColor()) {
+                        return;
+                    }
+
+                    if (playerInfo.getUniqueId().equals(clanWar.getFrame().getCurrentDisplayedPlayer()) &&
+                            "near_bed".equals(clanWar.getFrame().getLastSwitchReason())) {
+                        clanWar.getFrame().togglePlayerCamera(null, null, "away_bed");
+                    }
                     System.out.println(playerInfo.getUsername() + " is away from the bed of " + bedTeam.getColor());
-                    // TODO switch frame back if the player is dead or for more than 5 seconds away from the bed
                 });
     }
 

@@ -15,6 +15,7 @@ import com.github.derrop.proxy.plugins.gommecw.event.GommeCWRemoveEvent;
 import com.github.derrop.proxy.plugins.gommecw.image.Frame;
 import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
 import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
+import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWarInfo;
 import com.github.derrop.proxy.plugins.gommecw.web.WebClanInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -33,12 +34,12 @@ public class GommeCWMatchListener {
         // TODO on match begin
         MatchInfo matchInfo = event.getMatchInfo();
 
-        this.plugin.getWebParser().getCachedRunningInfo(matchInfo.getMatchId())
-                .ifPresent(info -> {
-                    if (!this.plugin.getCwManager().isRegistered(matchInfo.getMatchId())) {
-                        this.plugin.getCwManager().register(event.getConnection(), new RunningClanWar(info, matchInfo));
-                    }
-                });
+        /*this.plugin.getWebParser().getCachedRunningInfo(matchInfo.getMatchId()) TODO remove or fix?
+                .ifPresent(info -> {*/
+        if (!this.plugin.getCwManager().isRegistered(matchInfo.getMatchId())) {
+            this.plugin.getCwManager().register(event.getConnection(), new RunningClanWar(new RunningClanWarInfo(new WebClanInfo[]{new WebClanInfo("X"), new WebClanInfo("Y")}), matchInfo));
+        }
+        //      });
     }
 
     @Listener
@@ -129,10 +130,10 @@ public class GommeCWMatchListener {
         if (clanWar == null) {
             return;
         }
-        clanWar.getOurSpectators().remove(connection);
+        /* TODO clanWar.getOurSpectators().remove(connection);
         if (clanWar.getOurSpectators().isEmpty()) {
             this.plugin.getCwManager().unregister(matchInfo.getMatchId());
-        }
+        }*/
 
         if (clanWar.getFrame() != null) {
             clanWar.getFrame().dispose();

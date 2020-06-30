@@ -185,6 +185,7 @@ public class GommeCWHighlightCallListener implements Tickable {
                     }
                 }
             }
+            this.listener.handleTick(clanWar);
         }
     }
 }

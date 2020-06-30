@@ -10,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RunningClanWar {
@@ -23,10 +25,15 @@ public class RunningClanWar {
     private Collection<UUID> labyUsers;
     private Frame frame;
     private final transient Collection<UUID> blockStateTrackerIds = new CopyOnWriteArrayList<>();
+    private final transient Map<String, Object> properties = new ConcurrentHashMap<>();
 
     public RunningClanWar(RunningClanWarInfo info, MatchInfo matchInfo) {
         this.info = info;
         this.matchInfo = matchInfo;
+    }
+
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 
     public Collection<ServiceConnection> getOurSpectators() {
