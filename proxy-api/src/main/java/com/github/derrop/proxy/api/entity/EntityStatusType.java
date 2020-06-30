@@ -26,8 +26,8 @@ import java.util.Map;
 public enum EntityStatusType {
 
     RABBIT_JUMP(1, Rabbit.class),
-    DAMAGE(2, EntityPlayer.class),
-    DEATH(3, EntityPlayer.class),
+    DAMAGE(2, EntityLiving.class),
+    DEATH(3, EntityLiving.class),
     IRON_GOLEM_THROW(4, IronGolem.class),
     HORSE_TAME_SUCCESS(6, Horse.class),
     HORSE_TAME_FAILED(7, Horse.class),
@@ -76,7 +76,7 @@ public enum EntityStatusType {
 
     static {
         for (EntityStatusType value : values()) {
-            if (value.entityClass == null || value.entityClass.equals(EntityPlayer.class)) {
+            if (value.entityClass == null || value.entityClass.isAssignableFrom(EntityPlayer.class)) {
                 PLAYER_STATUS_BY_ID.put(value.id, value);
             }
         }
