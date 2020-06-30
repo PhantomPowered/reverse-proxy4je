@@ -141,7 +141,7 @@ public class GommeCWHighlightCallListener implements Tickable {
             return;
         }
 
-        this.listener.handleNearBed(clanWar, bedEvent.getPlayer(), team);
+        this.listener.handleNearBed(clanWar, bedEvent.getBed(), bedEvent.getPlayer(), team);
     }
 
     @Listener
@@ -160,7 +160,7 @@ public class GommeCWHighlightCallListener implements Tickable {
             return;
         }
 
-        this.listener.handleAwayFromBed(clanWar, bedEvent.getPlayer(), team);
+        this.listener.handleAwayFromBed(clanWar, bedEvent.getBed(), bedEvent.getPlayer(), team);
     }
 
     @Override

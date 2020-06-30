@@ -22,6 +22,7 @@ public class RunningClanWar {
     private final Collection<ServiceConnection> ourSpectators = new ArrayList<>();
     private Collection<UUID> labyUsers;
     private Frame frame;
+    private final transient Collection<UUID> blockStateTrackerIds = new CopyOnWriteArrayList<>();
 
     public RunningClanWar(RunningClanWarInfo info, MatchInfo matchInfo) {
         this.info = info;
@@ -30,6 +31,10 @@ public class RunningClanWar {
 
     public Collection<ServiceConnection> getOurSpectators() {
         return this.ourSpectators;
+    }
+
+    public Collection<UUID> getBlockStateTrackerIds() {
+        return this.blockStateTrackerIds;
     }
 
     @NotNull

@@ -38,7 +38,7 @@ public interface Constants {
     String MESSAGE_PREFIX = "§8┃ §6P§froxy §8× §7";
 
     ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-    ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(4);
+    ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(6);
 
     Random RANDOM = new Random();
 

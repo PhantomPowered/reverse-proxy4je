@@ -2,6 +2,7 @@ package com.github.derrop.proxy.plugins.gommecw.listener;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
+import com.github.derrop.proxy.api.events.connection.service.entity.EntityPlayerSpawnEvent;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.events.GommeMatchActionEvent;
 import com.github.derrop.proxy.plugins.gomme.events.GommeMatchDetectEvent;
@@ -41,6 +42,16 @@ public class GommeCWMatchListener {
     }
 
     @Listener
+    public void handlePlayerSpawn(EntityPlayerSpawnEvent event) {
+        this.plugin.getCwManager().getClanWar(event.getConnection()).ifPresent(clanWar -> {
+            if (clanWar.getTeams().stream().noneMatch(team -> team.getBedLocation() == null)) {
+                return;
+            }
+            this.plugin.getCwManager().loadBedLocations(event.getConnection(), clanWar);
+        });
+    }
+
+    @Listener
     public void handleCWdd(GommeCWAddEvent event) {
         WebClanInfo[] clans = event.getInfo().getClans();
 
@@ -76,6 +87,8 @@ public class GommeCWMatchListener {
             clanWar.setFrame(new Frame(clanWar));
             clanWar.getFrame().setVisible(true);
             clanWar.loadLabyUsers(event.getConnection().getProxy().getServiceRegistry());
+        } else {
+            this.plugin.getCwManager().loadBedLocations(event.getConnection(), clanWar);
         }
     }
 

@@ -26,6 +26,7 @@ package com.github.derrop.proxy.plugins.gommecw.highlights;
 
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
 import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
 
@@ -43,13 +44,21 @@ public class DefaultHighlightListener implements GommeCWHighlightListener {
     }
 
     @Override
-    public void handleNearBed(RunningClanWar clanWar, PlayerInfo playerInfo, ClanWarTeam team) {
-        // TODO switch frame to the player, but ONLY IF the bed is not owned by the player's team
+    public void handleNearBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team) {
+        clanWar.getTeams().stream().filter(filter -> bedLocation.equals(filter.getBedLocation())).findFirst()
+                .ifPresent(bedTeam -> {
+                    System.out.println(playerInfo.getUsername() + " is near the bed of " + bedTeam.getColor());
+                    // TODO switch frame to the player, but ONLY IF the bed is not owned by the player's team
+                });
     }
 
     @Override
-    public void handleAwayFromBed(RunningClanWar clanWar, PlayerInfo playerInfo, ClanWarTeam team) {
-        // TODO switch frame back if the player is dead or for more than 5 seconds away from the bed
+    public void handleAwayFromBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team) {
+        clanWar.getTeams().stream().filter(filter -> bedLocation.equals(filter.getBedLocation())).findFirst()
+                .ifPresent(bedTeam -> {
+                    System.out.println(playerInfo.getUsername() + " is away from the bed of " + bedTeam.getColor());
+                    // TODO switch frame back if the player is dead or for more than 5 seconds away from the bed
+                });
     }
 
     @Override

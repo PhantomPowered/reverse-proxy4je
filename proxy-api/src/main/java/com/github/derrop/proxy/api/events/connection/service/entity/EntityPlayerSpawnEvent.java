@@ -22,26 +22,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.plugins.gommecw.highlights;
+package com.github.derrop.proxy.api.events.connection.service.entity;
 
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
-import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
-import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
+import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.event.Event;
+import org.jetbrains.annotations.NotNull;
 
-public interface GommeCWHighlightListener {
+public class EntityPlayerSpawnEvent extends Event implements Cancelable {
 
-    void handleDamage(RunningClanWar clanWar, ClanWarTeam damagerTeam, ClanWarTeam damagedTeam, EntityPlayer damaged, EntityPlayer damager);
+    private final ServiceConnection connection;
+    private final EntityPlayer player;
+    private boolean cancel;
 
-    void handleDeath(RunningClanWar clanWar, PlayerInfo playerInfo);
+    public EntityPlayerSpawnEvent(@NotNull ServiceConnection connection, @NotNull EntityPlayer player) {
+        this.connection = connection;
+        this.player = player;
+    }
 
-    void handleNearBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team);
+    @NotNull
+    public ServiceConnection getConnection() {
+        return this.connection;
+    }
 
-    void handleAwayFromBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team);
+    @NotNull
+    public EntityPlayer getPlayer() {
+        return this.player;
+    }
 
-    void handleBowAim(RunningClanWar clanWar, EntityPlayer player);
+    @Override
+    public void cancel(boolean cancel) {
+        this.cancel = cancel;
+    }
 
-    void handleStopBowAim(RunningClanWar clanWar, EntityPlayer player);
-
+    @Override
+    public boolean isCancelled() {
+        return this.cancel;
+    }
 }
