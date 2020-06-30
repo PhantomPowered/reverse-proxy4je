@@ -48,11 +48,16 @@ public class Vector implements Cloneable, Serializable {
     }
 
     @NotNull
-    public Vector add(@NotNull Vector vec) {
-        x += vec.x;
-        y += vec.y;
-        z += vec.z;
+    public Vector add(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
         return this;
+    }
+
+    @NotNull
+    public Vector add(@NotNull Vector vec) {
+        return this.add(vec.x, vec.y, vec.z);
     }
 
     @NotNull

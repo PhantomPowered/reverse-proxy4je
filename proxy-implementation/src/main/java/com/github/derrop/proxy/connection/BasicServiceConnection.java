@@ -34,23 +34,24 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.player.PlayerAbilities;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.PlayerAbilities;
+import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
-import com.github.derrop.proxy.api.util.BlockIterator;
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.util.raytrace.BlockIterator;
+import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
@@ -68,7 +69,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -257,6 +257,31 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
             }
         }
         return null;
+    }
+
+    @Override
+    public @NotNull BlockingObject getTargetObject(int range) {
+        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this.location, 1.8, range);
+
+        while (iterator.hasNext()) {
+            Location location = iterator.next();
+
+            for (Entity entity : this.worldDataProvider.getEntitiesInWorld()) {
+                double deltaX = Math.abs(entity.getLocation().getX() - location.getX());
+                double deltaY = Math.abs(entity.getLocation().getY() - location.getY());
+                double deltaZ = Math.abs(entity.getLocation().getZ() - location.getZ());
+
+                if (deltaX <= entity.getWidth() && deltaZ <= entity.getWidth() && deltaY <= entity.getHeadHeight()) {
+                    return new BlockingObject(entity, location, BlockingObject.Type.ENTITY);
+                }
+            }
+
+            Material material = this.getBlockAccess().getMaterial(location);
+            if (material != Material.AIR) {
+                return new BlockingObject(null, location, BlockingObject.Type.BLOCK);
+            }
+        }
+        return BlockingObject.MISS;
     }
 
     @Override
