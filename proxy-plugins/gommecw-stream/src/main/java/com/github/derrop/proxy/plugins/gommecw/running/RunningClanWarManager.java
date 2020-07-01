@@ -100,7 +100,7 @@ public class RunningClanWarManager {
 
     private boolean isBed(ServiceConnection connection, int state) {
         BlockState exactState = connection.getBlockAccess().getBlockStateRegistry().getExactBlockState(state);
-        return exactState.getMaterial() == Material.BED_BLOCK && exactState.getHalf() == Half.BOTTOM; // TODO Replace with TOP, but TOP needs to be implemented in the DefaultBlockStateRegistry
+        return exactState.getMaterial() == Material.BED_BLOCK && exactState.getHalf() == Half.TOP;
     }
 
     private void updateBedLocation(ServiceConnection connection, RunningClanWar clanWar, Location bedLocation) {

@@ -92,4 +92,26 @@ public interface BlockState {
 
     boolean isSeamless();
 
+    boolean hasRecord();
+
+    int getBites(); // cake
+
+    int getDelay();
+
+    Facing[] getFacings(); // Used for vines.
+    // Vines can have multiple facings, up will be set only one time, otherwise the client will check whether a block is above.
+    //  If the facing is UP, it will ONLY be UP. It can only be placed by using commands/plugins.
+
+    BrewingStandPotion[] getFilledPotions();
+
+    boolean hasEye(); // end portal frame
+
+    boolean isSuspended();
+
+    boolean isAttached();
+
+    boolean isDisarmed();
+
+    boolean hasNoDrop();
+
 }

@@ -59,6 +59,16 @@ public class DefaultBlockState implements BlockState {
     private ComparatorMode comparatorMode;
     private int damage;
     private boolean seamless;
+    private boolean hasRecord;
+    private int bites;
+    private int delay;
+    private Facing[] facings;
+    private BrewingStandPotion[] filledPotions;
+    private boolean hasEye;
+    private boolean suspended;
+    private boolean attached;
+    private boolean disarmed;
+    private boolean noDrop;
 
     public DefaultBlockState(int id, Material material) {
         this.id = id;
@@ -82,6 +92,12 @@ public class DefaultBlockState implements BlockState {
     @CanIgnoreReturnValue
     DefaultBlockState facing(Facing facing) {
         this.facing = facing;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState facings(Facing... facings) {
+        this.facings = facings;
         return this;
     }
 
@@ -211,6 +227,60 @@ public class DefaultBlockState implements BlockState {
     @CanIgnoreReturnValue
     DefaultBlockState damage(int damage) {
         this.damage = damage;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState withRecord() {
+        this.hasRecord = true;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState bites(int bites) {
+        this.bites = bites;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState delay(int delay) {
+        this.delay = delay;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState filledPotions(BrewingStandPotion... filledPotions) {
+        this.filledPotions = filledPotions;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState withEye() {
+        this.hasEye = true;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState suspended() {
+        this.suspended = true;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState attached() {
+        this.attached = true;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState disarmed() {
+        this.disarmed = true;
+        return this;
+    }
+
+    @CanIgnoreReturnValue
+    DefaultBlockState noDrop() {
+        this.noDrop = true;
         return this;
     }
 
@@ -356,5 +426,55 @@ public class DefaultBlockState implements BlockState {
     @Override
     public boolean isSeamless() {
         return this.seamless;
+    }
+
+    @Override
+    public boolean hasRecord() {
+        return this.hasRecord;
+    }
+
+    @Override
+    public int getBites() {
+        return this.bites;
+    }
+
+    @Override
+    public int getDelay() {
+        return this.delay;
+    }
+
+    @Override
+    public Facing[] getFacings() {
+        return this.facings;
+    }
+
+    @Override
+    public BrewingStandPotion[] getFilledPotions() {
+        return this.filledPotions;
+    }
+
+    @Override
+    public boolean hasEye() {
+        return this.hasEye;
+    }
+
+    @Override
+    public boolean isSuspended() {
+        return this.suspended;
+    }
+
+    @Override
+    public boolean isAttached() {
+        return this.attached;
+    }
+
+    @Override
+    public boolean isDisarmed() {
+        return this.disarmed;
+    }
+
+    @Override
+    public boolean hasNoDrop() {
+        return this.noDrop;
     }
 }

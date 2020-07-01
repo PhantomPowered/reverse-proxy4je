@@ -104,7 +104,22 @@ public enum SubMaterial {
     FLOWER_ORANGE_TULIP(5, Material.FLOWER),
     FLOWER_WHITE_TULIP(6, Material.FLOWER),
     FLOWER_PINK_TULIP(7, Material.FLOWER),
-    FLOWER_OXEYE_DAISY(8, Material.FLOWER);
+    FLOWER_OXEYE_DAISY(8, Material.FLOWER),
+
+    STONE(0, Material.MONSTER_EGGS),
+    COBBLESTONE(1, Material.MONSTER_EGGS),
+    STONE_BRICK_EGG(2, Material.MONSTER_EGGS),
+    MOSSY_STONE_BRICK_EGG(3, Material.MONSTER_EGGS),
+    CRACKED_STONE_BRICK_EGG(4, Material.MONSTER_EGGS),
+    CHISELED_STONE_BRICK_EGG(5, Material.MONSTER_EGGS),
+
+    STONE_BRICK(0, Material.SMOOTH_BRICK),
+    MOSSY_STONE_BRICK(1, Material.SMOOTH_BRICK),
+    CRACKED_STONE_BRICK(2, Material.SMOOTH_BRICK),
+    CHISELED_STONE_BRICK(3, Material.SMOOTH_BRICK),
+
+    COBBLESTONE_WALL(0, Material.COBBLE_WALL),
+    MOSSY_COBBLESTONE_WALL(1, Material.COBBLE_WALL);
 
     private final Material[] parents;
     private final int subId;
