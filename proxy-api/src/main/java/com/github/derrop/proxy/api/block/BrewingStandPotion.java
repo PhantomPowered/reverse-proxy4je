@@ -22,21 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.chat;
+package com.github.derrop.proxy.api.block;
 
-public enum ChatMessageType {
-
-    CHAT(true),
-    SYSTEM(true),
-    ACTION_BAR(false);
-
-    private final boolean chat;
-
-    ChatMessageType(boolean chat) {
-        this.chat = chat;
-    }
-
-    public boolean isChat() {
-        return this.chat;
-    }
+public enum BrewingStandPotion {
+    POTION_0,
+    POTION_1,
+    POTION_2
 }

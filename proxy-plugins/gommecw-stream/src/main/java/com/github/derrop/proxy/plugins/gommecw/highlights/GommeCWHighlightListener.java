@@ -22,21 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.chat;
+package com.github.derrop.proxy.plugins.gommecw.highlights;
 
-public enum ChatMessageType {
+import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
+import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
+import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
 
-    CHAT(true),
-    SYSTEM(true),
-    ACTION_BAR(false);
+public interface GommeCWHighlightListener {
 
-    private final boolean chat;
+    void handleTick(RunningClanWar clanWar);
 
-    ChatMessageType(boolean chat) {
-        this.chat = chat;
-    }
+    void handleDamage(RunningClanWar clanWar, ClanWarTeam damagerTeam, ClanWarTeam damagedTeam, EntityPlayer damaged, EntityPlayer damager);
 
-    public boolean isChat() {
-        return this.chat;
-    }
+    void handleDeath(RunningClanWar clanWar, PlayerInfo playerInfo);
+
+    void handleNearBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team);
+
+    void handleAwayFromBed(RunningClanWar clanWar, Location bedLocation, PlayerInfo playerInfo, ClanWarTeam team);
+
+    void handleBowAim(RunningClanWar clanWar, EntityPlayer player);
+
+    void handleStopBowAim(RunningClanWar clanWar, EntityPlayer player);
+
 }

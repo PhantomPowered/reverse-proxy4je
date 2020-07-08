@@ -33,6 +33,7 @@ import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
@@ -52,6 +53,7 @@ import com.github.derrop.proxy.connection.*;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
+import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
@@ -297,6 +299,11 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public PlayerInventory getInventory() {
         return this.inventory;
+    }
+
+    @Override
+    public void sendEntityStatus(@Nullable Entity entity, @NotNull EntityStatusType statusType) {
+        this.sendPacket(new PacketPlayServerEntityStatus(entity == null ? this.entityId : entity.getEntityId(), statusType.getId()));
     }
 
     @Override

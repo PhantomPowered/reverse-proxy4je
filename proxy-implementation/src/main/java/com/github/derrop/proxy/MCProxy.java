@@ -122,7 +122,11 @@ public class MCProxy extends Proxy {
     private void startMainLoop() {
         Constants.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
             for (Tickable tickable : this.tickables) {
-                tickable.handleTick();
+                try {
+                    tickable.handleTick();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }, 50, 50, TimeUnit.MILLISECONDS);
     }

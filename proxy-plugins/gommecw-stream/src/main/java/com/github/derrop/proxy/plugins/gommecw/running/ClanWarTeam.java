@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.plugins.gommecw.running;
 
+import com.github.derrop.proxy.api.location.Location;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Collection;
@@ -16,12 +17,18 @@ public class ClanWarTeam {
     private final String clanTag;
     private final Collection<ClanWarMember> members;
 
+    private transient Location bedLocation;
+
     public ClanWarTeam(Color color, boolean bedAlive, String clanName, String clanTag, Collection<ClanWarMember> members) {
         this.color = color;
         this.bedAlive = bedAlive;
         this.clanName = clanName;
         this.clanTag = clanTag;
         this.members = members;
+    }
+
+    public Location getBedLocation() {
+        return bedLocation;
     }
 
     public Color getColor() {
@@ -44,6 +51,10 @@ public class ClanWarTeam {
         return members;
     }
 
+    public void setBedLocation(Location bedLocation) {
+        this.bedLocation = bedLocation;
+    }
+
     @Override
     public String toString() {
         return "ClanWarTeam{" +
@@ -52,6 +63,7 @@ public class ClanWarTeam {
                 ", clanName='" + clanName + '\'' +
                 ", clanTag='" + clanTag + '\'' +
                 ", members=" + members +
+                ", bedLocation=" + bedLocation +
                 '}';
     }
 

@@ -58,18 +58,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(83, Material.PLANKS).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
         registerState(84, Material.PLANKS).subMaterial(SubMaterial.WOOD_ACACIA); // complete
         registerState(85, Material.PLANKS).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
-        registerState(96, Material.SAPLING);
-        registerState(97, Material.SAPLING);
-        registerState(98, Material.SAPLING);
-        registerState(99, Material.SAPLING);
-        registerState(100, Material.SAPLING);
-        registerState(101, Material.SAPLING);
-        registerState(104, Material.SAPLING);
-        registerState(105, Material.SAPLING);
-        registerState(106, Material.SAPLING);
-        registerState(107, Material.SAPLING);
-        registerState(108, Material.SAPLING);
-        registerState(109, Material.SAPLING);
+        registerState(96, Material.SAPLING).age(0).subMaterial(SubMaterial.WOOD_OAK); // complete
+        registerState(97, Material.SAPLING).age(0).subMaterial(SubMaterial.WOOD_SPRUCE); // complete
+        registerState(98, Material.SAPLING).age(0).subMaterial(SubMaterial.WOOD_BIRCH); // complete
+        registerState(99, Material.SAPLING).age(0).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
+        registerState(100, Material.SAPLING).age(0).subMaterial(SubMaterial.WOOD_ACACIA); // complete
+        registerState(101, Material.SAPLING).age(0).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
+        registerState(104, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_OAK); // complete
+        registerState(105, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_SPRUCE); // complete
+        registerState(106, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_BIRCH); // complete
+        registerState(107, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
+        registerState(108, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_ACACIA); // complete
+        registerState(109, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
         registerState(112, Material.BEDROCK); // complete
         registerState(128, Material.WATER);
         registerState(129, Material.WATER);
@@ -153,10 +153,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(281, Material.LOG).subMaterial(SubMaterial.WOOD_SPRUCE).axis(Facing.Axis.Z); // complete
         registerState(282, Material.LOG).subMaterial(SubMaterial.WOOD_BIRCH).axis(Facing.Axis.Z); // complete
         registerState(283, Material.LOG).subMaterial(SubMaterial.WOOD_JUNGLE).axis(Facing.Axis.Z); // complete
-        registerState(284, Material.LOG);
-        registerState(285, Material.LOG);
-        registerState(286, Material.LOG);
-        registerState(287, Material.LOG);
+        registerState(284, Material.LOG).subMaterial(SubMaterial.WOOD_OAK).axis(Facing.Axis.NONE); // complete
+        registerState(285, Material.LOG).subMaterial(SubMaterial.WOOD_SPRUCE).axis(Facing.Axis.NONE); // complete
+        registerState(286, Material.LOG).subMaterial(SubMaterial.WOOD_BIRCH).axis(Facing.Axis.NONE); // complete
+        registerState(287, Material.LOG).subMaterial(SubMaterial.WOOD_JUNGLE).axis(Facing.Axis.NONE); // complete
         registerState(288, Material.LEAVES).subMaterial(SubMaterial.WOOD_OAK).decayable(); // complete
         registerState(289, Material.LEAVES).subMaterial(SubMaterial.WOOD_SPRUCE).decayable(); // complete
         registerState(290, Material.LEAVES).subMaterial(SubMaterial.WOOD_BIRCH).decayable(); // complete
@@ -198,14 +198,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(417, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.WEST); // complete
         registerState(418, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.NORTH); // complete
         registerState(419, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(424, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.SOUTH); // complete
-        registerState(425, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.WEST); // complete
+        registerState(424, Material.BED_BLOCK).half(Half.TOP).facing(Facing.SOUTH); // complete
+        registerState(425, Material.BED_BLOCK).half(Half.TOP).facing(Facing.WEST); // complete
         registerState(426, Material.BED_BLOCK).half(Half.TOP).facing(Facing.NORTH); // complete
         registerState(427, Material.BED_BLOCK).half(Half.TOP).facing(Facing.EAST); // complete
-        registerState(428, Material.BED_BLOCK);
-        registerState(429, Material.BED_BLOCK);
-        registerState(430, Material.BED_BLOCK);
-        registerState(431, Material.BED_BLOCK);
+        registerState(428, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.SOUTH); // complete
+        registerState(429, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.WEST); // complete
+        registerState(430, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.NORTH); // complete
+        registerState(431, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.EAST); // complete
         registerState(432, Material.POWERED_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
         registerState(433, Material.POWERED_RAIL).shape(BlockShape.EAST_WEST); // complete
         registerState(434, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
@@ -300,51 +300,51 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(588, Material.PISTON_EXTENSION);
         registerState(589, Material.PISTON_EXTENSION);
         registerState(592, Material.YELLOW_FLOWER); // complete
-        registerState(608, Material.RED_ROSE);
-        registerState(609, Material.RED_ROSE);
-        registerState(610, Material.RED_ROSE);
-        registerState(611, Material.RED_ROSE);
-        registerState(612, Material.RED_ROSE);
-        registerState(613, Material.RED_ROSE);
-        registerState(614, Material.RED_ROSE);
-        registerState(615, Material.RED_ROSE);
-        registerState(616, Material.RED_ROSE);
+        registerState(608, Material.FLOWER).subMaterial(SubMaterial.FLOWER_POPPY); // complete
+        registerState(609, Material.FLOWER).subMaterial(SubMaterial.FLOWER_BLUE_ORCHID); // complete
+        registerState(610, Material.FLOWER).subMaterial(SubMaterial.FLOWER_ALLIUM); // complete
+        registerState(611, Material.FLOWER).subMaterial(SubMaterial.FLOWER_AZURE_BLUET); // complete
+        registerState(612, Material.FLOWER).subMaterial(SubMaterial.FLOWER_RED_TULIP); // complete
+        registerState(613, Material.FLOWER).subMaterial(SubMaterial.FLOWER_ORANGE_TULIP); // complete
+        registerState(614, Material.FLOWER).subMaterial(SubMaterial.FLOWER_WHITE_TULIP); // complete
+        registerState(615, Material.FLOWER).subMaterial(SubMaterial.FLOWER_PINK_TULIP); // complete
+        registerState(616, Material.FLOWER).subMaterial(SubMaterial.FLOWER_OXEYE_DAISY); // complete
         registerState(624, Material.BROWN_MUSHROOM); // complete
         registerState(640, Material.RED_MUSHROOM); // complete
         registerState(656, Material.GOLD_BLOCK); // complete
         registerState(672, Material.IRON_BLOCK); // complete
-        registerState(688, Material.DOUBLE_STONE_SLAB2);
-        registerState(689, Material.DOUBLE_STONE_SLAB2);
-        registerState(690, Material.DOUBLE_STONE_SLAB2);
-        registerState(691, Material.DOUBLE_STONE_SLAB2);
-        registerState(692, Material.DOUBLE_STONE_SLAB2);
-        registerState(693, Material.DOUBLE_STONE_SLAB2);
-        registerState(694, Material.DOUBLE_STONE_SLAB2);
-        registerState(695, Material.DOUBLE_STONE_SLAB2);
-        registerState(696, Material.DOUBLE_STONE_SLAB2);
-        registerState(697, Material.DOUBLE_STONE_SLAB2);
-        registerState(698, Material.DOUBLE_STONE_SLAB2);
-        registerState(699, Material.DOUBLE_STONE_SLAB2);
-        registerState(700, Material.DOUBLE_STONE_SLAB2);
-        registerState(701, Material.DOUBLE_STONE_SLAB2);
-        registerState(702, Material.DOUBLE_STONE_SLAB2);
-        registerState(703, Material.DOUBLE_STONE_SLAB2);
-        registerState(704, Material.STONE_SLAB2);
-        registerState(705, Material.STONE_SLAB2);
-        registerState(706, Material.STONE_SLAB2);
-        registerState(707, Material.STONE_SLAB2);
-        registerState(708, Material.STONE_SLAB2);
-        registerState(709, Material.STONE_SLAB2);
-        registerState(710, Material.STONE_SLAB2);
-        registerState(711, Material.STONE_SLAB2);
-        registerState(712, Material.STONE_SLAB2);
-        registerState(713, Material.STONE_SLAB2);
-        registerState(714, Material.STONE_SLAB2);
-        registerState(715, Material.STONE_SLAB2);
-        registerState(716, Material.STONE_SLAB2);
-        registerState(717, Material.STONE_SLAB2);
-        registerState(718, Material.STONE_SLAB2);
-        registerState(719, Material.STONE_SLAB2);
+        registerState(688, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
+        registerState(689, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
+        registerState(690, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
+        registerState(691, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
+        registerState(692, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
+        registerState(693, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
+        registerState(694, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
+        registerState(695, Material.DOUBLE_STONE_SLAB).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
+        registerState(696, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
+        registerState(697, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
+        registerState(698, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
+        registerState(699, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
+        registerState(700, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
+        registerState(701, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
+        registerState(702, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
+        registerState(703, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
+        registerState(704, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
+        registerState(705, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
+        registerState(706, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
+        registerState(707, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
+        registerState(708, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
+        registerState(709, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
+        registerState(710, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
+        registerState(711, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
+        registerState(712, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
+        registerState(713, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
+        registerState(714, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
+        registerState(715, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
+        registerState(716, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
+        registerState(717, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
+        registerState(718, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
+        registerState(719, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
         registerState(720, Material.BRICK); // complete
         registerState(736, Material.TNT); // complete
         registerState(737, Material.TNT);
@@ -500,18 +500,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1119, Material.LEVER).powered().facing(Facing.DOWN).axis(Facing.Axis.Z); // complete
         registerState(1120, Material.STONE_PLATE); // complete
         registerState(1121, Material.STONE_PLATE).powered(); // complete
-        registerState(1136, Material.IRON_DOOR_BLOCK);
-        registerState(1137, Material.IRON_DOOR_BLOCK);
-        registerState(1138, Material.IRON_DOOR_BLOCK);
-        registerState(1139, Material.IRON_DOOR_BLOCK);
-        registerState(1140, Material.IRON_DOOR_BLOCK);
-        registerState(1141, Material.IRON_DOOR_BLOCK);
-        registerState(1142, Material.IRON_DOOR_BLOCK);
-        registerState(1143, Material.IRON_DOOR_BLOCK);
-        registerState(1144, Material.IRON_DOOR_BLOCK);
-        registerState(1145, Material.IRON_DOOR_BLOCK);
-        registerState(1146, Material.IRON_DOOR_BLOCK);
-        registerState(1147, Material.IRON_DOOR_BLOCK);
+        registerState(1136, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(1137, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.SOUTH); // complete
+        registerState(1138, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.WEST); // complete
+        registerState(1139, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.NORTH); // complete
+        registerState(1140, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.EAST); // complete
+        registerState(1141, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.SOUTH); // complete
+        registerState(1142, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.WEST); // complete
+        registerState(1143, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.NORTH); // complete
+        registerState(1144, Material.IRON_DOOR_BLOCK).half(Half.TOP).hinge(HingePosition.LEFT); // complete
+        registerState(1145, Material.IRON_DOOR_BLOCK).half(Half.TOP).hinge(HingePosition.RIGHT); // complete
+        registerState(1146, Material.IRON_DOOR_BLOCK).half(Half.TOP).powered().hinge(HingePosition.LEFT); // complete;
+        registerState(1147, Material.IRON_DOOR_BLOCK).half(Half.TOP).powered().hinge(HingePosition.RIGHT); // complete;
         registerState(1152, Material.WOOD_PLATE); // complete
         registerState(1153, Material.WOOD_PLATE).powered(); // complete
         registerState(1168, Material.REDSTONE_ORE); // complete
@@ -526,18 +526,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1219, Material.REDSTONE_TORCH_ON).facing(Facing.SOUTH); // complete
         registerState(1220, Material.REDSTONE_TORCH_ON).facing(Facing.NORTH); // complete
         registerState(1221, Material.REDSTONE_TORCH_ON).facing(Facing.UP); // complete
-        registerState(1232, Material.WOOD_BUTTON);
-        registerState(1233, Material.WOOD_BUTTON);
-        registerState(1234, Material.WOOD_BUTTON);
-        registerState(1235, Material.WOOD_BUTTON);
-        registerState(1236, Material.WOOD_BUTTON);
-        registerState(1237, Material.WOOD_BUTTON);
-        registerState(1240, Material.WOOD_BUTTON);
-        registerState(1241, Material.WOOD_BUTTON);
-        registerState(1242, Material.WOOD_BUTTON);
-        registerState(1243, Material.WOOD_BUTTON);
-        registerState(1244, Material.WOOD_BUTTON);
-        registerState(1245, Material.WOOD_BUTTON);
+        registerState(1232, Material.STONE_BUTTON).facing(Facing.DOWN); // complete
+        registerState(1233, Material.STONE_BUTTON).facing(Facing.EAST); // complete
+        registerState(1234, Material.STONE_BUTTON).facing(Facing.WEST); // complete
+        registerState(1235, Material.STONE_BUTTON).facing(Facing.SOUTH); // complete
+        registerState(1236, Material.STONE_BUTTON).facing(Facing.NORTH); // complete
+        registerState(1237, Material.STONE_BUTTON).facing(Facing.UP); // complete
+        registerState(1240, Material.STONE_BUTTON).powered().facing(Facing.DOWN); // complete
+        registerState(1241, Material.STONE_BUTTON).powered().facing(Facing.EAST); // complete
+        registerState(1242, Material.STONE_BUTTON).powered().facing(Facing.WEST); // complete
+        registerState(1243, Material.STONE_BUTTON).powered().facing(Facing.SOUTH); // complete
+        registerState(1244, Material.STONE_BUTTON).powered().facing(Facing.NORTH); // complete
+        registerState(1245, Material.STONE_BUTTON).powered().facing(Facing.UP); // complete
         registerState(1248, Material.SNOW).layers(1).height(0.125D); // complete
         registerState(1249, Material.SNOW).layers(2).height(0.25D); // complete
         registerState(1250, Material.SNOW).layers(3).height(0.325D); // complete
@@ -548,94 +548,94 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1255, Material.SNOW).layers(8); // complete
         registerState(1264, Material.ICE); // complete
         registerState(1280, Material.SNOW_BLOCK); // complete
-        registerState(1296, Material.CACTUS);
-        registerState(1297, Material.CACTUS);
-        registerState(1298, Material.CACTUS);
-        registerState(1299, Material.CACTUS);
-        registerState(1300, Material.CACTUS);
-        registerState(1301, Material.CACTUS);
-        registerState(1302, Material.CACTUS);
-        registerState(1303, Material.CACTUS);
-        registerState(1304, Material.CACTUS);
-        registerState(1305, Material.CACTUS);
-        registerState(1306, Material.CACTUS);
-        registerState(1307, Material.CACTUS);
-        registerState(1308, Material.CACTUS);
-        registerState(1309, Material.CACTUS);
-        registerState(1310, Material.CACTUS);
-        registerState(1311, Material.CACTUS);
+        registerState(1296, Material.CACTUS).age(0); // complete
+        registerState(1297, Material.CACTUS).age(1); // complete
+        registerState(1298, Material.CACTUS).age(2); // complete
+        registerState(1299, Material.CACTUS).age(3); // complete
+        registerState(1300, Material.CACTUS).age(4); // complete
+        registerState(1301, Material.CACTUS).age(5); // complete
+        registerState(1302, Material.CACTUS).age(6); // complete
+        registerState(1303, Material.CACTUS).age(7); // complete
+        registerState(1304, Material.CACTUS).age(8); // complete
+        registerState(1305, Material.CACTUS).age(9); // complete
+        registerState(1306, Material.CACTUS).age(10); // complete
+        registerState(1307, Material.CACTUS).age(11); // complete
+        registerState(1308, Material.CACTUS).age(12); // complete
+        registerState(1309, Material.CACTUS).age(13); // complete
+        registerState(1310, Material.CACTUS).age(14); // complete
+        registerState(1311, Material.CACTUS).age(15); // complete
         registerState(1312, Material.CLAY); // complete
-        registerState(1328, Material.SUGAR_CANE_BLOCK);
-        registerState(1329, Material.SUGAR_CANE_BLOCK);
-        registerState(1330, Material.SUGAR_CANE_BLOCK);
-        registerState(1331, Material.SUGAR_CANE_BLOCK);
-        registerState(1332, Material.SUGAR_CANE_BLOCK);
-        registerState(1333, Material.SUGAR_CANE_BLOCK);
-        registerState(1334, Material.SUGAR_CANE_BLOCK);
-        registerState(1335, Material.SUGAR_CANE_BLOCK);
-        registerState(1336, Material.SUGAR_CANE_BLOCK);
-        registerState(1337, Material.SUGAR_CANE_BLOCK);
-        registerState(1338, Material.SUGAR_CANE_BLOCK);
-        registerState(1339, Material.SUGAR_CANE_BLOCK);
-        registerState(1340, Material.SUGAR_CANE_BLOCK);
-        registerState(1341, Material.SUGAR_CANE_BLOCK);
-        registerState(1342, Material.SUGAR_CANE_BLOCK);
-        registerState(1343, Material.SUGAR_CANE_BLOCK);
-        registerState(1344, Material.JUKEBOX);
-        registerState(1345, Material.JUKEBOX);
+        registerState(1328, Material.SUGAR_CANE_BLOCK).age(0); // complete
+        registerState(1329, Material.SUGAR_CANE_BLOCK).age(1); // complete
+        registerState(1330, Material.SUGAR_CANE_BLOCK).age(2); // complete
+        registerState(1331, Material.SUGAR_CANE_BLOCK).age(3); // complete
+        registerState(1332, Material.SUGAR_CANE_BLOCK).age(4); // complete
+        registerState(1333, Material.SUGAR_CANE_BLOCK).age(5); // complete
+        registerState(1334, Material.SUGAR_CANE_BLOCK).age(6); // complete
+        registerState(1335, Material.SUGAR_CANE_BLOCK).age(7); // complete
+        registerState(1336, Material.SUGAR_CANE_BLOCK).age(8); // complete
+        registerState(1337, Material.SUGAR_CANE_BLOCK).age(9); // complete
+        registerState(1338, Material.SUGAR_CANE_BLOCK).age(10); // complete
+        registerState(1339, Material.SUGAR_CANE_BLOCK).age(11); // complete
+        registerState(1340, Material.SUGAR_CANE_BLOCK).age(12); // complete
+        registerState(1341, Material.SUGAR_CANE_BLOCK).age(13); // complete
+        registerState(1342, Material.SUGAR_CANE_BLOCK).age(14); // complete
+        registerState(1343, Material.SUGAR_CANE_BLOCK).age(15); // complete
+        registerState(1344, Material.JUKEBOX); // complete
+        registerState(1345, Material.JUKEBOX).withRecord(); // complete
         registerState(1360, Material.FENCE); // complete
-        registerState(1376, Material.PUMPKIN);
-        registerState(1377, Material.PUMPKIN);
-        registerState(1378, Material.PUMPKIN);
-        registerState(1379, Material.PUMPKIN);
+        registerState(1376, Material.PUMPKIN).facing(Facing.SOUTH); // complete
+        registerState(1377, Material.PUMPKIN).facing(Facing.WEST); // complete
+        registerState(1378, Material.PUMPKIN).facing(Facing.NORTH); // complete
+        registerState(1379, Material.PUMPKIN).facing(Facing.EAST); // complete
         registerState(1392, Material.NETHERRACK); // complete
         registerState(1408, Material.SOUL_SAND); // complete
         registerState(1424, Material.GLOWSTONE); // complete
-        registerState(1441, Material.PORTAL);
-        registerState(1442, Material.PORTAL);
-        registerState(1456, Material.JACK_O_LANTERN);
-        registerState(1457, Material.JACK_O_LANTERN);
-        registerState(1458, Material.JACK_O_LANTERN);
-        registerState(1459, Material.JACK_O_LANTERN);
-        registerState(1472, Material.CAKE_BLOCK);
-        registerState(1473, Material.CAKE_BLOCK);
-        registerState(1474, Material.CAKE_BLOCK);
-        registerState(1475, Material.CAKE_BLOCK);
-        registerState(1476, Material.CAKE_BLOCK);
-        registerState(1477, Material.CAKE_BLOCK);
-        registerState(1478, Material.CAKE_BLOCK);
-        registerState(1488, Material.DIODE_BLOCK_OFF);
-        registerState(1489, Material.DIODE_BLOCK_OFF);
-        registerState(1490, Material.DIODE_BLOCK_OFF);
-        registerState(1491, Material.DIODE_BLOCK_OFF);
-        registerState(1492, Material.DIODE_BLOCK_OFF);
-        registerState(1493, Material.DIODE_BLOCK_OFF);
-        registerState(1494, Material.DIODE_BLOCK_OFF);
-        registerState(1495, Material.DIODE_BLOCK_OFF);
-        registerState(1496, Material.DIODE_BLOCK_OFF);
-        registerState(1497, Material.DIODE_BLOCK_OFF);
-        registerState(1498, Material.DIODE_BLOCK_OFF);
-        registerState(1499, Material.DIODE_BLOCK_OFF);
-        registerState(1500, Material.DIODE_BLOCK_OFF);
-        registerState(1501, Material.DIODE_BLOCK_OFF);
-        registerState(1502, Material.DIODE_BLOCK_OFF);
-        registerState(1503, Material.DIODE_BLOCK_OFF);
-        registerState(1504, Material.DIODE_BLOCK_ON);
-        registerState(1505, Material.DIODE_BLOCK_ON);
-        registerState(1506, Material.DIODE_BLOCK_ON);
-        registerState(1507, Material.DIODE_BLOCK_ON);
-        registerState(1508, Material.DIODE_BLOCK_ON);
-        registerState(1509, Material.DIODE_BLOCK_ON);
-        registerState(1510, Material.DIODE_BLOCK_ON);
-        registerState(1511, Material.DIODE_BLOCK_ON);
-        registerState(1512, Material.DIODE_BLOCK_ON);
-        registerState(1513, Material.DIODE_BLOCK_ON);
-        registerState(1514, Material.DIODE_BLOCK_ON);
-        registerState(1515, Material.DIODE_BLOCK_ON);
-        registerState(1516, Material.DIODE_BLOCK_ON);
-        registerState(1517, Material.DIODE_BLOCK_ON);
-        registerState(1518, Material.DIODE_BLOCK_ON);
-        registerState(1519, Material.DIODE_BLOCK_ON);
+        registerState(1441, Material.PORTAL).axis(Facing.Axis.X); // complete
+        registerState(1442, Material.PORTAL).axis(Facing.Axis.Z); // complete
+        registerState(1456, Material.JACK_O_LANTERN).facing(Facing.SOUTH); // complete
+        registerState(1457, Material.JACK_O_LANTERN).facing(Facing.WEST); // complete
+        registerState(1458, Material.JACK_O_LANTERN).facing(Facing.NORTH); // complete
+        registerState(1459, Material.JACK_O_LANTERN).facing(Facing.NORTH); // complete
+        registerState(1472, Material.CAKE_BLOCK).bites(0); // complete
+        registerState(1473, Material.CAKE_BLOCK).bites(1); // complete
+        registerState(1474, Material.CAKE_BLOCK).bites(2); // complete
+        registerState(1475, Material.CAKE_BLOCK).bites(3); // complete
+        registerState(1476, Material.CAKE_BLOCK).bites(4); // complete
+        registerState(1477, Material.CAKE_BLOCK).bites(5); // complete
+        registerState(1478, Material.CAKE_BLOCK).bites(6); // complete
+        registerState(1488, Material.DIODE_BLOCK_OFF).delay(1).facing(Facing.SOUTH); // complete
+        registerState(1489, Material.DIODE_BLOCK_OFF).delay(1).facing(Facing.WEST); // complete
+        registerState(1490, Material.DIODE_BLOCK_OFF).delay(1).facing(Facing.NORTH); // complete
+        registerState(1491, Material.DIODE_BLOCK_OFF).delay(1).facing(Facing.EAST); // complete
+        registerState(1492, Material.DIODE_BLOCK_OFF).delay(2).facing(Facing.SOUTH); // complete
+        registerState(1493, Material.DIODE_BLOCK_OFF).delay(2).facing(Facing.WEST); // complete
+        registerState(1494, Material.DIODE_BLOCK_OFF).delay(2).facing(Facing.NORTH); // complete
+        registerState(1495, Material.DIODE_BLOCK_OFF).delay(2).facing(Facing.EAST); // complete
+        registerState(1496, Material.DIODE_BLOCK_OFF).delay(3).facing(Facing.SOUTH); // complete
+        registerState(1497, Material.DIODE_BLOCK_OFF).delay(3).facing(Facing.WEST); // complete
+        registerState(1498, Material.DIODE_BLOCK_OFF).delay(3).facing(Facing.NORTH); // complete
+        registerState(1499, Material.DIODE_BLOCK_OFF).delay(3).facing(Facing.EAST); // complete
+        registerState(1500, Material.DIODE_BLOCK_OFF).delay(4).facing(Facing.SOUTH); // complete
+        registerState(1501, Material.DIODE_BLOCK_OFF).delay(4).facing(Facing.WEST); // complete
+        registerState(1502, Material.DIODE_BLOCK_OFF).delay(4).facing(Facing.NORTH); // complete
+        registerState(1503, Material.DIODE_BLOCK_OFF).delay(4).facing(Facing.EAST); // complete
+        registerState(1504, Material.DIODE_BLOCK_ON).delay(1).facing(Facing.SOUTH); // complete
+        registerState(1505, Material.DIODE_BLOCK_ON).delay(1).facing(Facing.WEST); // complete
+        registerState(1506, Material.DIODE_BLOCK_ON).delay(1).facing(Facing.NORTH); // complete
+        registerState(1507, Material.DIODE_BLOCK_ON).delay(1).facing(Facing.EAST); // complete
+        registerState(1508, Material.DIODE_BLOCK_ON).delay(2).facing(Facing.SOUTH); // complete
+        registerState(1509, Material.DIODE_BLOCK_ON).delay(2).facing(Facing.WEST); // complete
+        registerState(1510, Material.DIODE_BLOCK_ON).delay(2).facing(Facing.NORTH); // complete
+        registerState(1511, Material.DIODE_BLOCK_ON).delay(2).facing(Facing.EAST); // complete
+        registerState(1512, Material.DIODE_BLOCK_ON).delay(3).facing(Facing.SOUTH); // complete
+        registerState(1513, Material.DIODE_BLOCK_ON).delay(3).facing(Facing.WEST); // complete
+        registerState(1514, Material.DIODE_BLOCK_ON).delay(3).facing(Facing.NORTH); // complete
+        registerState(1515, Material.DIODE_BLOCK_ON).delay(3).facing(Facing.EAST); // complete
+        registerState(1516, Material.DIODE_BLOCK_ON).delay(4).facing(Facing.SOUTH); // complete
+        registerState(1517, Material.DIODE_BLOCK_ON).delay(4).facing(Facing.WEST); // complete
+        registerState(1518, Material.DIODE_BLOCK_ON).delay(4).facing(Facing.NORTH); // complete
+        registerState(1519, Material.DIODE_BLOCK_ON).delay(4).facing(Facing.EAST); // complete
         registerState(1520, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_WHITE); // complete
         registerState(1521, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_ORANGE); // complete
         registerState(1522, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_MAGENTA); // complete
@@ -668,16 +668,16 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1549, Material.TRAP_DOOR).facing(Facing.NORTH).half(Half.TOP).open().thick(0.3D); // complete
         registerState(1550, Material.TRAP_DOOR).facing(Facing.EAST).half(Half.TOP).open().thick(0.3D); // complete
         registerState(1551, Material.TRAP_DOOR).facing(Facing.WEST).half(Half.TOP).open().thick(0.3D); // complete
-        registerState(1552, Material.MONSTER_EGGS);
-        registerState(1553, Material.MONSTER_EGGS);
-        registerState(1554, Material.MONSTER_EGGS);
-        registerState(1555, Material.MONSTER_EGGS);
-        registerState(1556, Material.MONSTER_EGGS);
-        registerState(1557, Material.MONSTER_EGGS);
-        registerState(1568, Material.SMOOTH_BRICK);
-        registerState(1569, Material.SMOOTH_BRICK);
-        registerState(1570, Material.SMOOTH_BRICK);
-        registerState(1571, Material.SMOOTH_BRICK);
+        registerState(1552, Material.MONSTER_EGGS).subMaterial(SubMaterial.STONE); // complete
+        registerState(1553, Material.MONSTER_EGGS).subMaterial(SubMaterial.COBBLESTONE); // complete
+        registerState(1554, Material.MONSTER_EGGS).subMaterial(SubMaterial.STONE_BRICK_EGG); // complete
+        registerState(1555, Material.MONSTER_EGGS).subMaterial(SubMaterial.MOSSY_STONE_BRICK_EGG); // complete
+        registerState(1556, Material.MONSTER_EGGS).subMaterial(SubMaterial.CRACKED_STONE_BRICK_EGG); // complete
+        registerState(1557, Material.MONSTER_EGGS).subMaterial(SubMaterial.CHISELED_STONE_BRICK_EGG); // complete
+        registerState(1568, Material.SMOOTH_BRICK).subMaterial(SubMaterial.STONE_BRICK); // complete
+        registerState(1569, Material.SMOOTH_BRICK).subMaterial(SubMaterial.MOSSY_STONE_BRICK); // complete
+        registerState(1570, Material.SMOOTH_BRICK).subMaterial(SubMaterial.CRACKED_STONE_BRICK); // complete
+        registerState(1571, Material.SMOOTH_BRICK).subMaterial(SubMaterial.CRACKED_STONE_BRICK); // complete
         registerState(1584, Material.HUGE_MUSHROOM_1);
         registerState(1585, Material.HUGE_MUSHROOM_1);
         registerState(1586, Material.HUGE_MUSHROOM_1);
@@ -707,38 +707,38 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1616, Material.IRON_FENCE); // complete
         registerState(1632, Material.THIN_GLASS); // complete
         registerState(1648, Material.MELON_BLOCK); // complete
-        registerState(1664, Material.PUMPKIN_STEM);
-        registerState(1665, Material.PUMPKIN_STEM);
-        registerState(1666, Material.PUMPKIN_STEM);
-        registerState(1667, Material.PUMPKIN_STEM);
-        registerState(1668, Material.PUMPKIN_STEM);
-        registerState(1669, Material.PUMPKIN_STEM);
-        registerState(1670, Material.PUMPKIN_STEM);
-        registerState(1671, Material.PUMPKIN_STEM);
-        registerState(1680, Material.MELON_STEM);
-        registerState(1681, Material.MELON_STEM);
-        registerState(1682, Material.MELON_STEM);
-        registerState(1683, Material.MELON_STEM);
-        registerState(1684, Material.MELON_STEM);
-        registerState(1685, Material.MELON_STEM);
-        registerState(1686, Material.MELON_STEM);
-        registerState(1687, Material.MELON_STEM);
-        registerState(1696, Material.VINE);
-        registerState(1697, Material.VINE);
-        registerState(1698, Material.VINE);
-        registerState(1699, Material.VINE);
-        registerState(1700, Material.VINE);
-        registerState(1701, Material.VINE);
-        registerState(1702, Material.VINE);
-        registerState(1703, Material.VINE);
-        registerState(1704, Material.VINE);
-        registerState(1705, Material.VINE);
-        registerState(1706, Material.VINE);
-        registerState(1707, Material.VINE);
-        registerState(1708, Material.VINE);
-        registerState(1709, Material.VINE);
-        registerState(1710, Material.VINE);
-        registerState(1711, Material.VINE);
+        registerState(1664, Material.PUMPKIN_STEM).age(0); // complete
+        registerState(1665, Material.PUMPKIN_STEM).age(1); // complete
+        registerState(1666, Material.PUMPKIN_STEM).age(2); // complete
+        registerState(1667, Material.PUMPKIN_STEM).age(3); // complete
+        registerState(1668, Material.PUMPKIN_STEM).age(4); // complete
+        registerState(1669, Material.PUMPKIN_STEM).age(5); // complete
+        registerState(1670, Material.PUMPKIN_STEM).age(6); // complete
+        registerState(1671, Material.PUMPKIN_STEM).age(7); // complete
+        registerState(1680, Material.MELON_STEM).age(0); // complete
+        registerState(1681, Material.MELON_STEM).age(1); // complete
+        registerState(1682, Material.MELON_STEM).age(2); // complete
+        registerState(1683, Material.MELON_STEM).age(3); // complete
+        registerState(1684, Material.MELON_STEM).age(4); // complete
+        registerState(1685, Material.MELON_STEM).age(5); // complete
+        registerState(1686, Material.MELON_STEM).age(6); // complete
+        registerState(1687, Material.MELON_STEM).age(7); // complete
+        registerState(1696, Material.VINE).facings(Facing.UP); // complete
+        registerState(1697, Material.VINE).facings(Facing.SOUTH); // complete
+        registerState(1698, Material.VINE).facings(Facing.WEST); // complete
+        registerState(1699, Material.VINE).facings(Facing.SOUTH, Facing.WEST); // complete
+        registerState(1700, Material.VINE).facings(Facing.NORTH); // complete
+        registerState(1701, Material.VINE).facings(Facing.NORTH, Facing.SOUTH); // complete
+        registerState(1702, Material.VINE).facings(Facing.NORTH, Facing.WEST); // complete
+        registerState(1703, Material.VINE).facings(Facing.NORTH, Facing.SOUTH, Facing.WEST); // complete
+        registerState(1704, Material.VINE).facing(Facing.EAST); // complete
+        registerState(1705, Material.VINE).facings(Facing.EAST, Facing.SOUTH); // complete
+        registerState(1706, Material.VINE).facings(Facing.EAST, Facing.WEST); // complete
+        registerState(1707, Material.VINE).facings(Facing.EAST, Facing.SOUTH, Facing.WEST); // complete
+        registerState(1708, Material.VINE).facings(Facing.EAST, Facing.NORTH); // complete
+        registerState(1709, Material.VINE).facings(Facing.EAST, Facing.NORTH, Facing.SOUTH); // complete
+        registerState(1710, Material.VINE).facings(Facing.EAST, Facing.NORTH, Facing.WEST); // complete
+        registerState(1711, Material.VINE).facings(Facing.EAST, Facing.NORTH, Facing.SOUTH, Facing.WEST); // complete
         registerState(1712, Material.FENCE_GATE).facing(Facing.SOUTH); // complete
         registerState(1713, Material.FENCE_GATE).facing(Facing.WEST); // complete
         registerState(1714, Material.FENCE_GATE).facing(Facing.NORTH); // complete
@@ -755,7 +755,6 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1725, Material.FENCE_GATE).facing(Facing.WEST).open().powered(); // complete
         registerState(1726, Material.FENCE_GATE).facing(Facing.NORTH).open().powered(); // complete
         registerState(1727, Material.FENCE_GATE).facing(Facing.EAST).open().powered(); // complete
-
         registerState(1728, Material.BRICK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
         registerState(1729, Material.BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(1730, Material.BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
@@ -764,7 +763,6 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1733, Material.BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(1734, Material.BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
         registerState(1735, Material.BRICK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-
         registerState(1744, Material.SMOOTH_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
         registerState(1745, Material.SMOOTH_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(1746, Material.SMOOTH_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
@@ -777,7 +775,6 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1776, Material.WATER_LILY); // complete
         registerState(1792, Material.NETHER_BRICK); // complete
         registerState(1808, Material.NETHER_FENCE); // complete
-
         registerState(1824, Material.NETHER_BRICK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
         registerState(1825, Material.NETHER_BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(1826, Material.NETHER_BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
@@ -786,32 +783,32 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1829, Material.NETHER_BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(1830, Material.NETHER_BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
         registerState(1831, Material.NETHER_BRICK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(1840, Material.NETHER_WARTS);
-        registerState(1841, Material.NETHER_WARTS);
-        registerState(1842, Material.NETHER_WARTS);
-        registerState(1843, Material.NETHER_WARTS);
+        registerState(1840, Material.NETHER_WARTS).age(0); // complete
+        registerState(1841, Material.NETHER_WARTS).age(1); // complete
+        registerState(1842, Material.NETHER_WARTS).age(2); // complete
+        registerState(1843, Material.NETHER_WARTS).age(3); // complete
         registerState(1856, Material.ENCHANTMENT_TABLE); // complete
-        registerState(1872, Material.BREWING_STAND);
-        registerState(1873, Material.BREWING_STAND);
-        registerState(1874, Material.BREWING_STAND);
-        registerState(1875, Material.BREWING_STAND);
-        registerState(1876, Material.BREWING_STAND);
-        registerState(1877, Material.BREWING_STAND);
-        registerState(1878, Material.BREWING_STAND);
-        registerState(1879, Material.BREWING_STAND);
-        registerState(1888, Material.CAULDRON);
-        registerState(1889, Material.CAULDRON);
-        registerState(1890, Material.CAULDRON);
-        registerState(1891, Material.CAULDRON);
+        registerState(1872, Material.BREWING_STAND).filledPotions(); // complete
+        registerState(1873, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_0); // complete
+        registerState(1874, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_1); // complete
+        registerState(1875, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_0, BrewingStandPotion.POTION_1); // complete
+        registerState(1876, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_2); // complete
+        registerState(1877, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_0, BrewingStandPotion.POTION_2); // complete
+        registerState(1878, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_1, BrewingStandPotion.POTION_2); // complete
+        registerState(1879, Material.BREWING_STAND).filledPotions(BrewingStandPotion.POTION_0, BrewingStandPotion.POTION_1, BrewingStandPotion.POTION_2); // complete
+        registerState(1888, Material.CAULDRON).layers(0); // complete
+        registerState(1889, Material.CAULDRON).layers(1); // complete
+        registerState(1890, Material.CAULDRON).layers(2); // complete
+        registerState(1891, Material.CAULDRON).layers(3); // complete
         registerState(1904, Material.ENDER_PORTAL); // complete
-        registerState(1920, Material.ENDER_PORTAL_FRAME);
-        registerState(1921, Material.ENDER_PORTAL_FRAME);
-        registerState(1922, Material.ENDER_PORTAL_FRAME);
-        registerState(1923, Material.ENDER_PORTAL_FRAME);
-        registerState(1924, Material.ENDER_PORTAL_FRAME);
-        registerState(1925, Material.ENDER_PORTAL_FRAME);
-        registerState(1926, Material.ENDER_PORTAL_FRAME);
-        registerState(1927, Material.ENDER_PORTAL_FRAME);
+        registerState(1920, Material.ENDER_PORTAL_FRAME).facing(Facing.SOUTH); // complete
+        registerState(1921, Material.ENDER_PORTAL_FRAME).facing(Facing.WEST); // complete
+        registerState(1922, Material.ENDER_PORTAL_FRAME).facing(Facing.NORTH); // complete
+        registerState(1923, Material.ENDER_PORTAL_FRAME).facing(Facing.EAST); // complete
+        registerState(1924, Material.ENDER_PORTAL_FRAME).withEye().facing(Facing.SOUTH); // complete
+        registerState(1925, Material.ENDER_PORTAL_FRAME).withEye().facing(Facing.WEST); // complete
+        registerState(1926, Material.ENDER_PORTAL_FRAME).withEye().facing(Facing.NORTH); // complete
+        registerState(1927, Material.ENDER_PORTAL_FRAME).withEye().facing(Facing.EAST); // complete
         registerState(1936, Material.ENDER_STONE); // complete
         registerState(1952, Material.DRAGON_EGG); // complete
         registerState(1968, Material.REDSTONE_LAMP_OFF); // complete
@@ -855,45 +852,44 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2053, Material.SANDSTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(2054, Material.SANDSTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
         registerState(2055, Material.SANDSTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2064, Material.EMERALD_ORE);
-        registerState(2082, Material.ENDER_CHEST);
-        registerState(2083, Material.ENDER_CHEST);
-        registerState(2084, Material.ENDER_CHEST);
-        registerState(2085, Material.ENDER_CHEST);
-        registerState(2096, Material.TRIPWIRE_HOOK);
-        registerState(2097, Material.TRIPWIRE_HOOK);
-        registerState(2098, Material.TRIPWIRE_HOOK);
-        registerState(2099, Material.TRIPWIRE_HOOK);
-        registerState(2100, Material.TRIPWIRE_HOOK);
-        registerState(2101, Material.TRIPWIRE_HOOK);
-        registerState(2102, Material.TRIPWIRE_HOOK);
-        registerState(2103, Material.TRIPWIRE_HOOK);
-        registerState(2104, Material.TRIPWIRE_HOOK);
-        registerState(2105, Material.TRIPWIRE_HOOK);
-        registerState(2106, Material.TRIPWIRE_HOOK);
-        registerState(2107, Material.TRIPWIRE_HOOK);
-        registerState(2108, Material.TRIPWIRE_HOOK);
-        registerState(2109, Material.TRIPWIRE_HOOK);
-        registerState(2110, Material.TRIPWIRE_HOOK);
-        registerState(2111, Material.TRIPWIRE_HOOK);
-        registerState(2112, Material.TRIPWIRE);
-        registerState(2113, Material.TRIPWIRE);
-        registerState(2114, Material.TRIPWIRE);
-        registerState(2115, Material.TRIPWIRE);
-        registerState(2116, Material.TRIPWIRE);
-        registerState(2117, Material.TRIPWIRE);
-        registerState(2118, Material.TRIPWIRE);
-        registerState(2119, Material.TRIPWIRE);
-        registerState(2120, Material.TRIPWIRE);
-        registerState(2121, Material.TRIPWIRE);
-        registerState(2122, Material.TRIPWIRE);
-        registerState(2123, Material.TRIPWIRE);
-        registerState(2124, Material.TRIPWIRE);
-        registerState(2125, Material.TRIPWIRE);
-        registerState(2126, Material.TRIPWIRE);
-        registerState(2127, Material.TRIPWIRE);
+        registerState(2064, Material.EMERALD_ORE); // complete
+        registerState(2082, Material.ENDER_CHEST).facing(Facing.NORTH); // complete
+        registerState(2083, Material.ENDER_CHEST).facing(Facing.SOUTH); // complete
+        registerState(2084, Material.ENDER_CHEST).facing(Facing.WEST); // complete
+        registerState(2085, Material.ENDER_CHEST).facing(Facing.EAST); // complete
+        registerState(2096, Material.TRIPWIRE_HOOK).facing(Facing.SOUTH); // complete
+        registerState(2097, Material.TRIPWIRE_HOOK).facing(Facing.WEST); // complete
+        registerState(2098, Material.TRIPWIRE_HOOK).facing(Facing.NORTH); // complete
+        registerState(2099, Material.TRIPWIRE_HOOK).facing(Facing.EAST); // complete
+        registerState(2100, Material.TRIPWIRE_HOOK).attached().facing(Facing.SOUTH); // complete
+        registerState(2101, Material.TRIPWIRE_HOOK).attached().facing(Facing.WEST); // complete
+        registerState(2102, Material.TRIPWIRE_HOOK).attached().facing(Facing.NORTH); // complete
+        registerState(2103, Material.TRIPWIRE_HOOK).attached().facing(Facing.EAST); // complete
+        registerState(2104, Material.TRIPWIRE_HOOK).powered().facing(Facing.SOUTH); // complete
+        registerState(2105, Material.TRIPWIRE_HOOK).powered().facing(Facing.WEST); // complete
+        registerState(2106, Material.TRIPWIRE_HOOK).powered().facing(Facing.NORTH); // complete
+        registerState(2107, Material.TRIPWIRE_HOOK).powered().facing(Facing.EAST); // complete
+        registerState(2108, Material.TRIPWIRE_HOOK).attached().powered().facing(Facing.SOUTH); // complete
+        registerState(2109, Material.TRIPWIRE_HOOK).attached().powered().facing(Facing.WEST); // complete
+        registerState(2110, Material.TRIPWIRE_HOOK).attached().powered().facing(Facing.NORTH); // complete
+        registerState(2111, Material.TRIPWIRE_HOOK).attached().powered().facing(Facing.EAST); // complete
+        registerState(2112, Material.TRIPWIRE); // complete
+        registerState(2113, Material.TRIPWIRE).powered(); // complete
+        registerState(2114, Material.TRIPWIRE).suspended(); // complete
+        registerState(2115, Material.TRIPWIRE).suspended().powered(); // complete
+        registerState(2116, Material.TRIPWIRE).attached(); // complete
+        registerState(2117, Material.TRIPWIRE).attached().powered(); // complete
+        registerState(2118, Material.TRIPWIRE).attached().suspended(); // complete
+        registerState(2119, Material.TRIPWIRE).attached().suspended().powered(); // complete
+        registerState(2120, Material.TRIPWIRE).disarmed(); // complete
+        registerState(2121, Material.TRIPWIRE).disarmed().powered(); // complete
+        registerState(2122, Material.TRIPWIRE).disarmed().suspended(); // complete
+        registerState(2123, Material.TRIPWIRE).disarmed().suspended().powered(); // complete
+        registerState(2124, Material.TRIPWIRE).disarmed().attached(); // complete
+        registerState(2125, Material.TRIPWIRE).disarmed().attached().powered(); // complete
+        registerState(2126, Material.TRIPWIRE).disarmed().attached().suspended(); // complete
+        registerState(2127, Material.TRIPWIRE).disarmed().attached().suspended().powered(); // complete
         registerState(2128, Material.EMERALD_BLOCK); // complete
-
         registerState(2144, Material.SPRUCE_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
         registerState(2145, Material.SPRUCE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(2146, Material.SPRUCE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
@@ -911,7 +907,6 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2165, Material.BIRCH_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(2166, Material.BIRCH_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
         registerState(2167, Material.BIRCH_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-
         registerState(2176, Material.JUNGLE_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
         registerState(2177, Material.JUNGLE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(2178, Material.JUNGLE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
@@ -920,11 +915,11 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2181, Material.JUNGLE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(2182, Material.JUNGLE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
         registerState(2183, Material.JUNGLE_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2192, Material.COMMAND);
-        registerState(2193, Material.COMMAND);
+        registerState(2192, Material.COMMAND); // complete
+        registerState(2193, Material.COMMAND).triggered(); // complete
         registerState(2208, Material.BEACON); // complete
-        registerState(2224, Material.COBBLE_WALL);
-        registerState(2225, Material.COBBLE_WALL);
+        registerState(2224, Material.COBBLE_WALL).subMaterial(SubMaterial.COBBLESTONE_WALL); // complete
+        registerState(2225, Material.COBBLE_WALL).subMaterial(SubMaterial.MOSSY_COBBLESTONE_WALL); // complete
         registerState(2240, Material.FLOWER_POT);
         registerState(2241, Material.FLOWER_POT);
         registerState(2242, Material.FLOWER_POT);
@@ -957,30 +952,30 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2277, Material.POTATO).age(5); // complete
         registerState(2278, Material.POTATO).age(6); // complete
         registerState(2279, Material.POTATO).age(7); // complete
-        registerState(2288, Material.WOOD_BUTTON);
-        registerState(2289, Material.WOOD_BUTTON);
-        registerState(2290, Material.WOOD_BUTTON);
-        registerState(2291, Material.WOOD_BUTTON);
-        registerState(2292, Material.WOOD_BUTTON);
-        registerState(2293, Material.WOOD_BUTTON);
-        registerState(2296, Material.WOOD_BUTTON);
-        registerState(2297, Material.WOOD_BUTTON);
-        registerState(2298, Material.WOOD_BUTTON);
-        registerState(2299, Material.WOOD_BUTTON);
-        registerState(2300, Material.WOOD_BUTTON);
-        registerState(2301, Material.WOOD_BUTTON);
-        registerState(2304, Material.SKULL);
-        registerState(2305, Material.SKULL);
-        registerState(2306, Material.SKULL);
-        registerState(2307, Material.SKULL);
-        registerState(2308, Material.SKULL);
-        registerState(2309, Material.SKULL);
-        registerState(2312, Material.SKULL);
-        registerState(2313, Material.SKULL);
-        registerState(2314, Material.SKULL);
-        registerState(2315, Material.SKULL);
-        registerState(2316, Material.SKULL);
-        registerState(2317, Material.SKULL);
+        registerState(2288, Material.WOOD_BUTTON).facing(Facing.DOWN); // complete
+        registerState(2289, Material.WOOD_BUTTON).facing(Facing.EAST); // complete
+        registerState(2290, Material.WOOD_BUTTON).facing(Facing.WEST); // complete
+        registerState(2291, Material.WOOD_BUTTON).facing(Facing.SOUTH); // complete
+        registerState(2292, Material.WOOD_BUTTON).facing(Facing.NORTH); // complete
+        registerState(2293, Material.WOOD_BUTTON).facing(Facing.UP); // complete
+        registerState(2296, Material.WOOD_BUTTON).powered().facing(Facing.DOWN); // complete
+        registerState(2297, Material.WOOD_BUTTON).powered().facing(Facing.EAST); // complete
+        registerState(2298, Material.WOOD_BUTTON).powered().facing(Facing.WEST); // complete
+        registerState(2299, Material.WOOD_BUTTON).powered().facing(Facing.SOUTH); // complete
+        registerState(2300, Material.WOOD_BUTTON).powered().facing(Facing.NORTH); // complete
+        registerState(2301, Material.WOOD_BUTTON).powered().facing(Facing.UP); // complete
+        registerState(2304, Material.SKULL).facing(Facing.DOWN); // complete
+        registerState(2305, Material.SKULL).facing(Facing.UP); // complete
+        registerState(2306, Material.SKULL).facing(Facing.NORTH); // complete
+        registerState(2307, Material.SKULL).facing(Facing.SOUTH); // complete
+        registerState(2308, Material.SKULL).facing(Facing.WEST); // complete
+        registerState(2309, Material.SKULL).facing(Facing.EAST); // complete
+        registerState(2312, Material.SKULL).noDrop().facing(Facing.DOWN); // complete
+        registerState(2313, Material.SKULL).noDrop().facing(Facing.UP); // complete
+        registerState(2314, Material.SKULL).noDrop().facing(Facing.NORTH); // complete
+        registerState(2315, Material.SKULL).noDrop().facing(Facing.SOUTH); // complete
+        registerState(2316, Material.SKULL).noDrop().facing(Facing.WEST); // complete
+        registerState(2317, Material.SKULL).noDrop().facing(Facing.EAST); // complete
         registerState(2320, Material.ANVIL).damage(0).facing(Facing.SOUTH); // complete
         registerState(2321, Material.ANVIL).damage(0).facing(Facing.WEST); // complete
         registerState(2322, Material.ANVIL).damage(0).facing(Facing.NORTH); // complete
@@ -1102,18 +1097,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2501, Material.QUARTZ_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
         registerState(2502, Material.QUARTZ_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
         registerState(2503, Material.QUARTZ_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2512, Material.ACTIVATOR_RAIL);
-        registerState(2513, Material.ACTIVATOR_RAIL);
-        registerState(2514, Material.ACTIVATOR_RAIL);
-        registerState(2515, Material.ACTIVATOR_RAIL);
-        registerState(2516, Material.ACTIVATOR_RAIL);
-        registerState(2517, Material.ACTIVATOR_RAIL);
-        registerState(2520, Material.ACTIVATOR_RAIL);
-        registerState(2521, Material.ACTIVATOR_RAIL);
-        registerState(2522, Material.ACTIVATOR_RAIL);
-        registerState(2523, Material.ACTIVATOR_RAIL);
-        registerState(2524, Material.ACTIVATOR_RAIL);
-        registerState(2525, Material.ACTIVATOR_RAIL);
+        registerState(2512, Material.ACTIVATOR_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
+        registerState(2513, Material.ACTIVATOR_RAIL).shape(BlockShape.EAST_WEST); // complete
+        registerState(2514, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
+        registerState(2515, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_WEST); // complete
+        registerState(2516, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_NORTH); // complete
+        registerState(2517, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_SOUTH); // complete
+        registerState(2520, Material.ACTIVATOR_RAIL).shape(BlockShape.NORTH_SOUTH).powered(); // complete
+        registerState(2521, Material.ACTIVATOR_RAIL).shape(BlockShape.EAST_WEST).powered(); // complete
+        registerState(2522, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_EAST).powered(); // complete
+        registerState(2523, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_WEST).powered(); // complete
+        registerState(2524, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_NORTH).powered(); // complete
+        registerState(2525, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_SOUTH).powered(); // complete
         registerState(2528, Material.DROPPER).facing(Facing.DOWN); // complete
         registerState(2529, Material.DROPPER).facing(Facing.UP); // complete
         registerState(2530, Material.DROPPER).facing(Facing.NORTH); // complete
@@ -1234,15 +1229,15 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2752, Material.HARD_CLAY); // complete
         registerState(2768, Material.COAL_BLOCK); // complete
         registerState(2784, Material.PACKED_ICE); // complete
-        registerState(2800, Material.DOUBLE_PLANT);
-        registerState(2801, Material.DOUBLE_PLANT);
-        registerState(2802, Material.DOUBLE_PLANT);
-        registerState(2803, Material.DOUBLE_PLANT);
-        registerState(2804, Material.DOUBLE_PLANT);
-        registerState(2805, Material.DOUBLE_PLANT);
+        registerState(2800, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_SUN_FLOWER).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2801, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LILAC).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2802, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_TALL_GRASS).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2803, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LARGE_FERN).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2804, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_RED_ROSE).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2805, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_PEONY).half(Half.BOTTOM).facing(Facing.EAST); // complete
         registerState(2808, Material.DOUBLE_PLANT);
         registerState(2809, Material.DOUBLE_PLANT);
-        registerState(2810, Material.DOUBLE_PLANT);
+        registerState(2810, Material.DOUBLE_PLANT).half(Half.TOP).facing(Facing.NORTH); // complete
         registerState(2811, Material.DOUBLE_PLANT);
         registerState(2816, Material.STANDING_BANNER).rotation(0); // complete
         registerState(2817, Material.STANDING_BANNER).rotation(1); // complete

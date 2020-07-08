@@ -71,6 +71,10 @@ public class ClanParser {
 
         ServiceConnection connection = (ServiceConnection) event.getConnection();
 
+        if (!this.hasPendingRequest(connection)) {
+            return;
+        }
+
         Language language = connection.getProperty(GommeConstants.SELECTED_LANGUAGE);
         if (language == null) {
             return;
@@ -78,11 +82,9 @@ public class ClanParser {
 
         String input = LegacyComponentSerializer.legacy().serialize(event.getMessage());
 
-        if (this.hasPendingRequest(connection)) {
-            event.cancel(true);
-        }
-
         this.messageRegistry.getMessage(language, GommeServerType.LOBBY, input).ifPresent(message -> {
+            event.cancel(true);
+
             Map<String, String> data = message.getVariablesMapper() == null ? null : message.getVariablesMapper().apply(input);
             PendingClanRequest request = connection.getProperty(PENDING_CLAN_REQUEST);
 

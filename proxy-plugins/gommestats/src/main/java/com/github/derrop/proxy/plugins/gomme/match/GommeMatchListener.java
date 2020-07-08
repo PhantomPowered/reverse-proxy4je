@@ -26,10 +26,8 @@ package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatColor;
-import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.event.annotation.Listener;
@@ -43,6 +41,8 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.events.GommeServerSwitchEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.bedwars.BedJoinEvent;
+import com.github.derrop.proxy.plugins.gomme.match.event.bedwars.BedLeaveEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndDisconnectedEvent;
@@ -126,43 +126,58 @@ public class GommeMatchListener {
             return;
         }
 
-        this.handleMove(event.getConnection(), playerInfo.getUsername(), event.getFrom(), event.getTo());
+        this.handleMove(event.getConnection(), playerInfo, event.getFrom(), event.getTo());
     }
 
     @Listener
     public void handleMove(PlayerMoveEvent event) {
-        if (event.getConnection() instanceof Player) {
-            this.handleMove(((Player) event.getConnection()).getConnectedClient(), event.getPlayer().getName(), event.getFrom(), event.getTo());
+        ServiceConnection connection = event.getPlayer().getConnectedClient();
+        if (connection == null) {
+            return;
         }
+        PlayerInfo playerInfo = connection.getWorldDataProvider().getOnlinePlayer(event.getPlayer().getUniqueId());
+        if (playerInfo == null) {
+            return;
+        }
+
+        this.handleMove(connection, playerInfo, event.getFrom(), event.getTo());
     }
 
-    private void handleMove(ServiceConnection connection, String playerName, Location from, Location to) {
+    private void handleMove(ServiceConnection connection, PlayerInfo playerInfo, Location from, Location to) {
         MatchInfo match = this.matchManager.getMatch(connection);
-        if (match == null || match.getGameMode() != GommeServerType.CORES) {
+        if (match == null) {
+            return;
+        }
+        GommeServerType mode = match.getGameMode();
+
+        if (mode != GommeServerType.CORES && mode != GommeServerType.CWCORES && mode != GommeServerType.BED_WARS && mode != GommeServerType.CWBW) {
+            return;
+        }
+        boolean cores = mode == GommeServerType.CORES || mode == GommeServerType.CWCORES;
+
+        Collection<Location> locations = connection.getBlockAccess().getPositions(cores ? Material.BEACON : Material.BED_BLOCK);
+        // TODO for Bed this is called twice, so we should only use the bottom OR top bed block
+
+        if (locations.isEmpty()) {
             return;
         }
 
-        Collection<Location> cores = connection.getBlockAccess().getPositions(Material.BEACON);
-
-        if (cores.isEmpty()) {
-            return;
-        }
-
-        for (Location core : cores) {
-            boolean toNearby = core.distanceSquared(to) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
-            boolean fromNearby = core.distanceSquared(from) < GommeConstants.CORE_NEARBY_DISTANCE_SQ;
+        double maxDistanceSq = cores ? GommeConstants.CORE_NEARBY_DISTANCE_SQ : GommeConstants.BED_NEARBY_DISTANCE_SQ;
+        for (Location loc : locations) {
+            boolean toNearby = loc.distanceSquared(to) < maxDistanceSq;
+            boolean fromNearby = loc.distanceSquared(from) < maxDistanceSq;
 
             if (fromNearby && !toNearby) {
-                match.callEvent(new CoreLeaveEvent(playerName, core));
+                match.callEvent(cores ? new CoreLeaveEvent(playerInfo, loc) : new BedLeaveEvent(playerInfo, loc));
             } else if (toNearby && !fromNearby) {
-                match.callEvent(new CoreJoinEvent(playerName, core));
+                match.callEvent(cores ? new CoreJoinEvent(playerInfo, loc) : new BedJoinEvent(playerInfo, loc));
             }
         }
     }
 
     @Listener
     public void handleChat(ChatEvent event) {
-        if (event.getDirection() != ProtocolDirection.TO_CLIENT || event.getType() != ChatMessageType.CHAT) {
+        if (event.getDirection() != ProtocolDirection.TO_CLIENT || !event.getType().isChat()) {
             return;
         }
 

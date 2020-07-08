@@ -22,21 +22,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.chat;
+package com.github.derrop.proxy.api.util.raytrace;
 
-public enum ChatMessageType {
+import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.location.Location;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-    CHAT(true),
-    SYSTEM(true),
-    ACTION_BAR(false);
+public class BlockingObject {
 
-    private final boolean chat;
+    public static final BlockingObject MISS = new BlockingObject(null, null, Type.MISS);
 
-    ChatMessageType(boolean chat) {
-        this.chat = chat;
+    private final Entity entity;
+    private final Location location;
+    private final Type type;
+
+    public BlockingObject(@Nullable Entity entity, @Nullable Location location, @NotNull Type type) {
+        this.entity = entity;
+        this.location = location;
+        this.type = type;
     }
 
-    public boolean isChat() {
-        return this.chat;
+    @Nullable
+    public Entity getEntity() {
+        return this.entity;
     }
+
+    @Nullable
+    public Location getLocation() {
+        return this.location;
+    }
+
+    @NotNull
+    public Type getType() {
+        return this.type;
+    }
+
+    public enum Type {
+        MISS,
+        ENTITY,
+        BLOCK
+    }
+
 }

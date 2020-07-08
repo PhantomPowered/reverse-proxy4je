@@ -1,22 +1,26 @@
 package com.github.derrop.proxy.plugins.gommecw.running;
 
 import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.block.BlockState;
+import com.github.derrop.proxy.api.block.Half;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanInfo;
-import com.github.derrop.proxy.plugins.gommecw.image.Frame;
 import com.google.common.base.Preconditions;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class RunningClanWarManager {
+
+    private static final double MAX_BED_DISTANCE_SQ = 15 * 15;
 
     private final ServiceRegistry registry;
     private final Map<String, RunningClanWar> clanWars = new ConcurrentHashMap<>();
@@ -25,8 +29,16 @@ public class RunningClanWarManager {
         this.registry = registry;
     }
 
+    public Optional<RunningClanWar> getClanWar(ServiceConnection spectator) {
+        return this.clanWars.values().stream().filter(clanWar -> clanWar.getOurSpectators().contains(spectator)).findFirst();
+    }
+
     public RunningClanWar getClanWar(String matchId) {
         return this.clanWars.get(matchId);
+    }
+
+    public Collection<RunningClanWar> getClanWars() {
+        return this.clanWars.values();
     }
 
     public boolean isRegistered(String matchId) {
@@ -57,6 +69,63 @@ public class RunningClanWarManager {
             this.jump(spectator, clanWar.getInfo());
             this.initSpectator(spectator, clanWar, i + 1);
             clanWar.getOurSpectators().add(spectator);
+        }
+    }
+
+    public void loadBedLocations(ServiceConnection connection, RunningClanWar clanWar) {
+        if (clanWar.getTeams().stream().noneMatch(ClanWarTeam::isBedAlive)) {
+            return;
+        }
+        // TODO don't use only one ServiceConnection to get the bed locations but use all
+
+        Collection<Location> beds = connection.getBlockAccess().getPositions(Material.BED_BLOCK);
+        if (beds.size() != 4) {
+            UUID trackerId = UUID.randomUUID();
+            clanWar.getBlockStateTrackerIds().add(trackerId);
+            connection.getBlockAccess().trackBlockUpdates(trackerId, Material.BED_BLOCK, (x, y, z, oldState, state) -> {
+                if (this.isBed(connection, state)) {
+                    this.updateBedLocation(connection, clanWar, new Location(x, y, z));
+                }
+            });
+            return;
+        }
+
+        for (Location bed : beds) {
+            int state = connection.getBlockAccess().getBlockState(bed);
+            if (this.isBed(connection, state)) {
+                this.updateBedLocation(connection, clanWar, bed);
+            }
+        }
+    }
+
+    private boolean isBed(ServiceConnection connection, int state) {
+        BlockState exactState = connection.getBlockAccess().getBlockStateRegistry().getExactBlockState(state);
+        return exactState.getMaterial() == Material.BED_BLOCK && exactState.getHalf() == Half.TOP;
+    }
+
+    private void updateBedLocation(ServiceConnection connection, RunningClanWar clanWar, Location bedLocation) {
+        if (clanWar.getTeams().stream().anyMatch(team -> bedLocation.equals(team.getBedLocation()))) {
+            return;
+        }
+
+        connection.getWorldDataProvider().getPlayersInWorld().stream()
+                .filter(player -> {
+                    ClanWarTeam team = clanWar.getTeam(player.getUniqueId());
+                    return team != null && team.getBedLocation() == null;
+                })
+                .filter(player -> player.getLocation().distanceSquared(bedLocation) < MAX_BED_DISTANCE_SQ)
+                .min(Comparator.comparingDouble(player -> player.getLocation().distanceSquared(bedLocation)))
+                .ifPresent(player -> {
+                    ClanWarTeam team = clanWar.getTeam(player.getUniqueId());
+                    if (team != null) {
+                        team.setBedLocation(bedLocation);
+                    }
+                });
+
+        if (clanWar.getTeams().stream().noneMatch(team -> team.getBedLocation() == null)) {
+            for (UUID trackerId : clanWar.getBlockStateTrackerIds()) {
+                connection.getBlockAccess().untrackBlockUpdates(trackerId);
+            }
         }
     }
 

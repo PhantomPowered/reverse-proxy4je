@@ -22,21 +22,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.chat;
+package com.github.derrop.proxy.api.events.connection.service.entity.status;
 
-public enum ChatMessageType {
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.EntityStatusType;
+import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.event.Event;
+import org.jetbrains.annotations.NotNull;
 
-    CHAT(true),
-    SYSTEM(true),
-    ACTION_BAR(false);
+public class SelfEntityStatusEvent extends Event implements Cancelable {
 
-    private final boolean chat;
+    private boolean cancel;
 
-    ChatMessageType(boolean chat) {
-        this.chat = chat;
+    private final ServiceConnection connection;
+    private final EntityStatusType statusType;
+
+    public SelfEntityStatusEvent(@NotNull ServiceConnection connection, @NotNull EntityStatusType statusType) {
+        this.connection = connection;
+        this.statusType = statusType;
     }
 
-    public boolean isChat() {
-        return this.chat;
+    @NotNull
+    public ServiceConnection getConnection() {
+        return this.connection;
+    }
+    
+    @NotNull
+    public EntityStatusType getStatusType() {
+        return this.statusType;
+    }
+
+    @Override
+    public void cancel(boolean cancel) {
+        this.cancel = cancel;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.cancel;
     }
 }

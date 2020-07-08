@@ -28,10 +28,12 @@ import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
-import com.github.derrop.proxy.api.scoreboard.Team;
+import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
+import com.github.derrop.proxy.plugins.gomme.events.GommeMatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchBeginEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndFinishedEvent;
@@ -139,6 +141,9 @@ public class MatchInfo {
         }
 
         this.events.add(event);
+
+        this.invoker.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new GommeMatchEvent(this, event));
     }
 
     public Language getSelectedLanguage() {

@@ -25,6 +25,8 @@
 package com.github.derrop.proxy.connection.cache.handler;
 
 import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.service.entity.EntityPlayerSpawnEvent;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
@@ -93,6 +95,7 @@ public class EntityCache implements PacketCacheHandler {
     public void cachePacket(PacketCache packetCache, Packet newPacket) {
         this.packetCache = packetCache;
         ServiceRegistry registry = packetCache.getTargetProxyClient().getProxy().getServiceRegistry();
+        EventManager eventManager = registry.getProviderUnchecked(EventManager.class);
 
         if (newPacket instanceof PacketPlayServerRespawn) {
             this.entities.clear();
@@ -110,7 +113,14 @@ public class EntityCache implements PacketCacheHandler {
             this.entities.put(spawn.getEntityId(), new ProxyExperienceOrb(registry, packetCache.getTargetProxyClient(), spawn, spawn.getXpValue()));
         } else if (newPacket instanceof PacketPlayServerNamedEntitySpawn) {
             PacketPlayServerNamedEntitySpawn spawn = (PacketPlayServerNamedEntitySpawn) newPacket;
-            this.entities.put(spawn.getEntityId(), new ProxyPlayer(registry, packetCache.getTargetProxyClient(), spawn));
+
+            ProxyPlayer player = new ProxyPlayer(registry, packetCache.getTargetProxyClient(), spawn);
+
+            if (eventManager.callEvent(new EntityPlayerSpawnEvent(packetCache.getTargetProxyClient().getConnection(), player)).isCancelled()) {
+                throw CancelProceedException.INSTANCE;
+            }
+
+            this.entities.put(spawn.getEntityId(), player);
         } else if (newPacket instanceof PacketPlayServerEntityMetadata) {
             PacketPlayServerEntityMetadata metadata = (PacketPlayServerEntityMetadata) newPacket;
             if (this.entities.containsKey(metadata.getEntityId())) {

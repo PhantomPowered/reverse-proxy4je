@@ -53,12 +53,12 @@ public enum SubMaterial {
     COLOR_RED(14, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE, Material.CARPET),
     COLOR_BLACK(15, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE, Material.CARPET),
 
-    WOOD_OAK(0, Material.PLANKS, Material.LOG),
-    WOOD_SPRUCE(1, Material.PLANKS, Material.LOG),
-    WOOD_BIRCH(2, Material.PLANKS, Material.LOG),
-    WOOD_JUNGLE(3, Material.PLANKS, Material.LOG),
-    WOOD_ACACIA(0, Material.PLANKS, Material.LOG_2),
-    WOOD_DARK_OAK(1, Material.PLANKS, Material.LOG_2),
+    WOOD_OAK(0, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
+    WOOD_SPRUCE(1, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
+    WOOD_BIRCH(2, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
+    WOOD_JUNGLE(3, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
+    WOOD_ACACIA(0, Material.PLANKS, Material.LOG_2, Material.SAPLING, Material.LEAVES_2),
+    WOOD_DARK_OAK(1, Material.PLANKS, Material.LOG_2, Material.SAPLING, Material.LEAVES_2),
 
     SANDSTONE_NORMAL(0, Material.SANDSTONE, Material.RED_SANDSTONE),
     SANDSTONE_CHISELED(1, Material.SANDSTONE, Material.RED_SANDSTONE),
@@ -76,7 +76,50 @@ public enum SubMaterial {
 
     QUARTZ_NORMAL(0, Material.QUARTZ_BLOCK),
     QUARTZ_CHISELED(1, Material.QUARTZ_BLOCK),
-    QUARTZ_PILLAR(2, Material.QUARTZ_BLOCK);
+    QUARTZ_PILLAR(2, Material.QUARTZ_BLOCK),
+
+    PLANT_SUN_FLOWER(0, Material.DOUBLE_PLANT),
+    PLANT_LILAC(1, Material.DOUBLE_PLANT),
+    PLANT_TALL_GRASS(2, Material.DOUBLE_PLANT),
+    PLANT_LARGE_FERN(3, Material.DOUBLE_PLANT),
+    PLANT_RED_ROSE(4, Material.DOUBLE_PLANT),
+    PLANT_PEONY(5, Material.DOUBLE_PLANT),
+
+    STONE_SLAB_STONE(0, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_SANDSTONE(1, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_WOOD_OLD(2, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_COBBLESTONE(3, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_BRICKS(4, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_STONE_BRICKS(5, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_NETHER_BRICKS(6, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+    STONE_SLAB_QUARTZ(7, Material.STONE_SLAB, Material.DOUBLE_STONE_SLAB),
+
+    STONE_SLAB_RED_SANDSTONE(0, Material.STONE_SLAB2, Material.DOUBLE_STONE_SLAB2),
+
+    FLOWER_POPPY(0, Material.FLOWER),
+    FLOWER_BLUE_ORCHID(1, Material.FLOWER),
+    FLOWER_ALLIUM(2, Material.FLOWER),
+    FLOWER_AZURE_BLUET(3, Material.FLOWER),
+    FLOWER_RED_TULIP(4, Material.FLOWER),
+    FLOWER_ORANGE_TULIP(5, Material.FLOWER),
+    FLOWER_WHITE_TULIP(6, Material.FLOWER),
+    FLOWER_PINK_TULIP(7, Material.FLOWER),
+    FLOWER_OXEYE_DAISY(8, Material.FLOWER),
+
+    STONE(0, Material.MONSTER_EGGS),
+    COBBLESTONE(1, Material.MONSTER_EGGS),
+    STONE_BRICK_EGG(2, Material.MONSTER_EGGS),
+    MOSSY_STONE_BRICK_EGG(3, Material.MONSTER_EGGS),
+    CRACKED_STONE_BRICK_EGG(4, Material.MONSTER_EGGS),
+    CHISELED_STONE_BRICK_EGG(5, Material.MONSTER_EGGS),
+
+    STONE_BRICK(0, Material.SMOOTH_BRICK),
+    MOSSY_STONE_BRICK(1, Material.SMOOTH_BRICK),
+    CRACKED_STONE_BRICK(2, Material.SMOOTH_BRICK),
+    CHISELED_STONE_BRICK(3, Material.SMOOTH_BRICK),
+
+    COBBLESTONE_WALL(0, Material.COBBLE_WALL),
+    MOSSY_COBBLESTONE_WALL(1, Material.COBBLE_WALL);
 
     private final Material[] parents;
     private final int subId;

@@ -30,11 +30,11 @@ import java.util.Objects;
 
 public class MCServiceCredentials {
 
-    private String username;
+    private final String username;
     private String email;
     private byte[] password;
     private String defaultServer;
-    private boolean exportable;
+    private final boolean exportable;
 
     public MCServiceCredentials(String username, String email, byte[] password, String defaultServer, boolean exportable) {
         this.username = username;
@@ -100,7 +100,7 @@ public class MCServiceCredentials {
         if (!(o instanceof MCServiceCredentials)) return false;
         MCServiceCredentials that = (MCServiceCredentials) o;
         return isExportable() == that.isExportable() &&
-                getUsername().equals(that.getUsername()) &&
+                Objects.equals(getUsername(), that.getUsername()) &&
                 Objects.equals(getEmail(), that.getEmail()) &&
                 Objects.equals(getPassword(), that.getPassword()) &&
                 getDefaultServer().equals(that.getDefaultServer());

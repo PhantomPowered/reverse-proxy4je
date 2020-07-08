@@ -7,19 +7,20 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
-import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.player.PlayerAbilities;
-import com.github.derrop.proxy.api.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.PlayerAbilities;
+import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
@@ -37,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -380,6 +380,11 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     @Override
     public Location getTargetBlock(int range) {
         return null;
+    }
+
+    @Override
+    public @NotNull BlockingObject getTargetObject(int range) {
+        return BlockingObject.MISS;
     }
 
     @Override

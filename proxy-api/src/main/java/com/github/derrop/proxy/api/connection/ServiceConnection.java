@@ -28,15 +28,16 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.PlayerAbilities;
-import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
 import com.mojang.authlib.UserAuthentication;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -151,5 +152,8 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     @Nullable
     Location getTargetBlock(int range);
+
+    @NotNull
+    BlockingObject getTargetObject(int range);
 
 }

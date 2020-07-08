@@ -22,21 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.chat;
+package com.github.derrop.proxy.plugins.gomme.events;
 
-public enum ChatMessageType {
+import com.github.derrop.proxy.api.event.Event;
+import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
+import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
+import org.jetbrains.annotations.NotNull;
 
-    CHAT(true),
-    SYSTEM(true),
-    ACTION_BAR(false);
+public class GommeMatchEvent extends Event {
 
-    private final boolean chat;
+    private final MatchInfo matchInfo;
+    private final MatchEvent matchEvent;
 
-    ChatMessageType(boolean chat) {
-        this.chat = chat;
+    public GommeMatchEvent(@NotNull MatchInfo matchInfo, @NotNull MatchEvent matchEvent) {
+        this.matchInfo = matchInfo;
+        this.matchEvent = matchEvent;
     }
 
-    public boolean isChat() {
-        return this.chat;
+    @NotNull
+    public MatchInfo getMatchInfo() {
+        return this.matchInfo;
+    }
+
+    @NotNull
+    public MatchEvent getMatchEvent() {
+        return this.matchEvent;
     }
 }

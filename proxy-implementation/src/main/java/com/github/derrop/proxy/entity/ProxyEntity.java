@@ -257,32 +257,37 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
 
     @Override
     public boolean isBurning() {
-        return (this.objectList.getByte(0) & 1) != 0;
+        return this.getFlag(0);
     }
 
     @Override
     public boolean isSneaking() {
-        return (this.objectList.getByte(0) & 2) != 0;
+        return this.getFlag(1);
     }
 
     @Override
     public boolean isRiding() {
-        return (this.objectList.getByte(0) & 4) != 0;
+        return this.getFlag(2);
     }
 
     @Override
     public boolean isSprinting() {
-        return (this.objectList.getByte(0) & 8) != 0;
+        return this.getFlag(3);
     }
 
     @Override
-    public boolean isBlocking() {
-        return (this.objectList.getByte(0) & 16) != 0;
+    public boolean isEating() {
+        return this.getFlag(4);
     }
 
     @Override
     public boolean isInvisible() {
-        return (this.objectList.getByte(0) & 32) != 0;
+        return this.getFlag(5);
+    }
+
+    @Override
+    public boolean getFlag(int flag) {
+        return (this.objectList.getByte(0) & 1 << flag) != 0;
     }
 
     @Override

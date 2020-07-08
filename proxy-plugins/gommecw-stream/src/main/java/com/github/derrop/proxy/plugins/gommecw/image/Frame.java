@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
+// TODO Names with 16 Chars are too long for the GUI
 public class Frame extends JFrame {
 
     private static final int WIDTH = 1920, HEIGHT = 1080;
@@ -68,6 +69,10 @@ public class Frame extends JFrame {
     private final Collection<Container> playerCamera = new ArrayList<>(); // TODO add multiple elements to this and don't use the full screen for the camera but display two cameras at once (maybe damager and damaged when receiving damage)?
     private final Collection<Container> generalInformation = new ArrayList<>();
 
+    private UUID currentDisplayedPlayer;
+    private long lastSwitch = -1;
+    private String lastSwitchReason;
+
     private final RunningClanWar clanWar;
 
     public Frame(RunningClanWar clanWar) {
@@ -93,25 +98,29 @@ public class Frame extends JFrame {
         this.init();
 
         super.setVisible(true);
-
-        new Thread(() -> {
-            boolean state = false;
-            while (!Thread.interrupted()) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                }
-                this.togglePlayerCamera(
-                        new ClanWarTeam(ClanWarTeam.Color.RED, true, "", "", Collections.emptyList()),
-                        new ClanWarMember(UUID.fromString("fdef0011-1c58-40c8-bfef-0bdcb1495938"), "juliarn", true, false)
-                );
-                state = !state;
-            }
-        }).start();
     }
 
-    public void togglePlayerCamera(ClanWarTeam team, ClanWarMember member) {
+    public UUID getCurrentDisplayedPlayer() {
+        return this.currentDisplayedPlayer;
+    }
+
+    public long getLastSwitch() {
+        return this.lastSwitch;
+    }
+
+    public String getLastSwitchReason() {
+        return this.lastSwitchReason;
+    }
+
+    public boolean isLastSwitchLongerThan(long distance) {
+        return this.lastSwitch != -1 && System.currentTimeMillis() - this.lastSwitch < distance;
+    }
+
+    public boolean togglePlayerCamera(ClanWarTeam team, ClanWarMember member, String reason) {
+        if (member != null && !this.isLastSwitchLongerThan(10000)) {
+            return false;
+        }
+
         boolean visible = team != null && member != null;
         if (visible) {
             try {
@@ -130,7 +139,13 @@ public class Frame extends JFrame {
             container.setVisible(visible);
         }
 
+        this.currentDisplayedPlayer = member == null ? null : member.getUniqueId();
+        this.lastSwitch = System.currentTimeMillis();
+        this.lastSwitchReason = reason;
+
         super.invalidate();
+
+        return true;
     }
 
     private void init() {
@@ -370,7 +385,6 @@ public class Frame extends JFrame {
 
     @Override
     public void dispose() {
-        System.out.println("asdf");
         this.executorService.shutdown();
         super.dispose();
     }
@@ -379,6 +393,7 @@ public class Frame extends JFrame {
         Document document = Jsoup.connect("https://www.gommehd.net/clan-profile?name=" + URLEncoder.encode(clanName, "UTF-8")).get();
         Elements images = document.getElementsByClass("avatarContainer").get(0).getElementsByTag("img");
         String url = images.get(images.size() - 1).attr("src");
+        // TODO if the clan has no image, none should be displayed instead of the gomme logo (default image)
         if (!url.startsWith("http")) {
             url = url.startsWith("/") ? "https://www.gommehd.net" + url : "https://www.gommehd.net/" + url;
         }

@@ -38,7 +38,7 @@ public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOffline
 
     public OfflinePlayerStorage(ServiceRegistry registry) {
         super(registry, "player_storage", DefaultOfflinePlayer.class);
-        this.uuidNameStorage = new UUIDNameStorage(registry, "name_uuid_map");
+        this.uuidNameStorage = new UUIDNameStorage(registry, "name_uuid_map"); // TODO remove, this is already provided with the PlayerIdStorage
     }
 
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {

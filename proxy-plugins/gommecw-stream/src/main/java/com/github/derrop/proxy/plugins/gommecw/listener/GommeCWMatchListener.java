@@ -2,6 +2,7 @@ package com.github.derrop.proxy.plugins.gommecw.listener;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.annotation.Listener;
+import com.github.derrop.proxy.api.events.connection.service.entity.EntityPlayerSpawnEvent;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.events.GommeMatchActionEvent;
 import com.github.derrop.proxy.plugins.gomme.events.GommeMatchDetectEvent;
@@ -14,6 +15,7 @@ import com.github.derrop.proxy.plugins.gommecw.event.GommeCWRemoveEvent;
 import com.github.derrop.proxy.plugins.gommecw.image.Frame;
 import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
 import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
+import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWarInfo;
 import com.github.derrop.proxy.plugins.gommecw.web.WebClanInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -32,12 +34,22 @@ public class GommeCWMatchListener {
         // TODO on match begin
         MatchInfo matchInfo = event.getMatchInfo();
 
-        this.plugin.getWebParser().getCachedRunningInfo(matchInfo.getMatchId())
-                .ifPresent(info -> {
-                    if (!this.plugin.getCwManager().isRegistered(matchInfo.getMatchId())) {
-                        this.plugin.getCwManager().register(event.getConnection(), new RunningClanWar(info, matchInfo));
-                    }
-                });
+        /*this.plugin.getWebParser().getCachedRunningInfo(matchInfo.getMatchId()) TODO remove or fix?
+                .ifPresent(info -> {*/
+        if (!this.plugin.getCwManager().isRegistered(matchInfo.getMatchId())) {
+            this.plugin.getCwManager().register(event.getConnection(), new RunningClanWar(new RunningClanWarInfo(new WebClanInfo[]{new WebClanInfo("X"), new WebClanInfo("Y")}), matchInfo));
+        }
+        //      });
+    }
+
+    @Listener
+    public void handlePlayerSpawn(EntityPlayerSpawnEvent event) {
+        this.plugin.getCwManager().getClanWar(event.getConnection()).ifPresent(clanWar -> {
+            if (clanWar.getTeams().stream().noneMatch(team -> team.getBedLocation() == null)) {
+                return;
+            }
+            this.plugin.getCwManager().loadBedLocations(event.getConnection(), clanWar);
+        });
     }
 
     @Listener
@@ -76,6 +88,8 @@ public class GommeCWMatchListener {
             clanWar.setFrame(new Frame(clanWar));
             clanWar.getFrame().setVisible(true);
             clanWar.loadLabyUsers(event.getConnection().getProxy().getServiceRegistry());
+        } else {
+            this.plugin.getCwManager().loadBedLocations(event.getConnection(), clanWar);
         }
     }
 
@@ -116,10 +130,10 @@ public class GommeCWMatchListener {
         if (clanWar == null) {
             return;
         }
-        clanWar.getOurSpectators().remove(connection);
+        /* TODO clanWar.getOurSpectators().remove(connection);
         if (clanWar.getOurSpectators().isEmpty()) {
             this.plugin.getCwManager().unregister(matchInfo.getMatchId());
-        }
+        }*/
 
         if (clanWar.getFrame() != null) {
             clanWar.getFrame().dispose();

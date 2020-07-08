@@ -22,62 +22,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.connection;
+package com.github.derrop.proxy.api.events.connection.service.entity.status;
 
-import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
-import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
-import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.event.Cancelable;
+import com.github.derrop.proxy.api.event.Event;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.UUID;
-import java.util.function.Predicate;
+public class EntityStatusEvent extends Event implements Cancelable {
 
-public interface ServiceWorldDataProvider {
+    private boolean cancel;
 
-    long getWorldTime();
+    private final ServiceConnection connection;
+    private final Entity entity;
+    private final EntityStatusType statusType;
 
-    long getTotalWorldTime();
-
-    boolean isRaining();
-
-    boolean isThundering();
-
-    float getRainStrength();
-
-    float getThunderStrength();
-
-    @NotNull
-    GameMode getOwnGameMode();
-
-    @NotNull
-    PlayerInfo[] getOnlinePlayers();
-
-    PlayerInfo getOnlinePlayer(@NotNull UUID uniqueId);
-
-    PlayerInfo getOnlinePlayer(@NotNull String name);
-
-    @NotNull
-    Collection<EntityPlayer> getPlayersInWorld();
-
-    EntityPlayer getPlayerInWorld(@NotNull UUID uniqueId);
-
-    @NotNull
-    Collection<? extends Entity> getEntitiesInWorld();
-
-    Entity getEntityInWorld(int entityId);
-
-    @NotNull
-    Collection<Entity> getNearbyEntities(double maxDistance, @Nullable Predicate<Entity> tester);
-
-    @NotNull
-    default Collection<Entity> getNearbyEntities(double maxDistance) {
-        return this.getNearbyEntities(maxDistance, null);
+    public EntityStatusEvent(@NotNull ServiceConnection connection, @NotNull Entity entity, @NotNull EntityStatusType statusType) {
+        this.connection = connection;
+        this.entity = entity;
+        this.statusType = statusType;
     }
 
     @NotNull
-    Collection<EntityPlayer> getNearbyPlayers(double maxDistance);
+    public ServiceConnection getConnection() {
+        return this.connection;
+    }
 
+    @NotNull
+    public Entity getEntity() {
+        return this.entity;
+    }
+
+    @NotNull
+    public EntityStatusType getStatusType() {
+        return this.statusType;
+    }
+
+    @Override
+    public void cancel(boolean cancel) {
+        this.cancel = cancel;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.cancel;
+    }
 }

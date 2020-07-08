@@ -1,12 +1,15 @@
 package com.github.derrop.proxy.entity.types.living.human;
 
 import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.PlayerSkinConfiguration;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.handler.PlayerInfoCache;
@@ -46,6 +49,41 @@ public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
     @Override
     public @Nullable PlayerInfo getPlayerInfo() {
         return super.client.getConnection().getWorldDataProvider().getOnlinePlayer(this.uniqueId);
+    }
+
+    @Override
+    public boolean isEating() {
+        if (super.isEating()) {
+            Material material = this.getMaterialInEquipmentSlot(EquipmentSlot.HAND);
+            return material != null && material.isEdible();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isShootingWithBow() {
+        if (super.isEating()) {
+            Material material = this.getMaterialInEquipmentSlot(EquipmentSlot.HAND);
+            return material == Material.BOW;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isBlocking() {
+        Material material = this.getMaterialInEquipmentSlot(EquipmentSlot.HAND);
+        return material != null && material.isSword();
+    }
+
+    @Override
+    public Material getMaterialInEquipmentSlot(@NotNull EquipmentSlot slot) {
+        ItemStack item = this.getEquipmentSlot(EquipmentSlot.HAND);
+        return item == null ? null : Material.getMaterial(item.getItemId());
+    }
+
+    @Override
+    public ItemStack getEquipmentSlot(@NotNull EquipmentSlot slot) {
+        return this.equipment.get(slot.ordinal());
     }
 
     @Override

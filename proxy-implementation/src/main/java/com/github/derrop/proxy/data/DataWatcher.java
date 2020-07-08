@@ -1,8 +1,8 @@
 package com.github.derrop.proxy.data;
 
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.EulerAngle;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.item.ItemStack;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -54,7 +54,8 @@ public class DataWatcher {
     }
 
     public byte getByte(int id) {
-        return (byte) this.getObjectValue(id).orElse(-1);
+        Object val = this.getObjectValue(id).orElse(-1);
+        return val instanceof Number ? ((Number) val).byteValue() : -1;
     }
 
     public void updateByte(int id, int value) {
@@ -70,7 +71,8 @@ public class DataWatcher {
     }
 
     public short getShort(int id) {
-        return (short) this.getObjectValue(id).orElse(-1);
+        Object val = this.getObjectValue(id).orElse(-1);
+        return val instanceof Number ? ((Number) val).shortValue() : -1;
     }
 
     public void updateShort(int id, int value) {
@@ -78,7 +80,8 @@ public class DataWatcher {
     }
 
     public int getInt(int id) {
-        return (int) this.getObjectValue(id).orElse(-1);
+        Object val = this.getObjectValue(id).orElse(-1);
+        return val instanceof Number ? ((Number) val).intValue() : -1;
     }
 
     public void updateInt(int id, int value) {
@@ -86,7 +89,8 @@ public class DataWatcher {
     }
 
     public float getFloat(int id) {
-        return (float) this.getObjectValue(id).orElse(-1);
+        Object val = this.getObjectValue(id).orElse(-1);
+        return val instanceof Number ? ((Number) val).floatValue() : -1;
     }
 
     public void updateFloat(int id, double value) {
