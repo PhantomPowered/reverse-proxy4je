@@ -63,7 +63,7 @@ public class CommandForEach extends NonTabCompleteableCommandCallback {
             ServiceConnection selfClient = ((Player) commandSender).getConnectedClient();
             for (ServiceConnection onlineClient : this.registry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                 if (selfClient == null || (onlineClient.getUniqueId() != null && !onlineClient.getUniqueId().equals(selfClient.getUniqueId()))) {
-                    ((Player) commandSender).chat(message.replace("{name}", onlineClient.getName() == null ? "null" : onlineClient.getName()));
+                    ((Player) commandSender).sendServerMessage(message.replace("{name}", onlineClient.getName() == null ? "null" : onlineClient.getName()));
                 }
             }
         }
