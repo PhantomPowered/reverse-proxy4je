@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
+import com.github.derrop.proxy.api.block.BlockState;
+import com.github.derrop.proxy.api.block.Half;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
@@ -55,6 +57,9 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class GommeMatchListener {
+
+    private int[] beaconStates;
+    private int[] bedStates;
 
     private final MatchManager matchManager;
 
@@ -155,8 +160,16 @@ public class GommeMatchListener {
         }
         boolean cores = mode == GommeServerType.CORES || mode == GommeServerType.CWCORES;
 
-        Collection<Location> locations = connection.getBlockAccess().getPositions(cores ? Material.BEACON : Material.BED_BLOCK);
-        // TODO for Bed this is called twice, so we should only use the bottom OR top bed block
+        if (cores && this.beaconStates == null) {
+            this.beaconStates = connection.getBlockAccess().getBlockStateRegistry().getValidBlockStateIDs(Material.BEACON);
+        } else if (!cores && this.bedStates == null) {
+            this.bedStates = Arrays.stream(connection.getBlockAccess().getBlockStateRegistry().getValidStates(Material.BED_BLOCK))
+                    .filter(blockState -> blockState.getHalf() == Half.TOP)
+                    .mapToInt(BlockState::getId)
+                    .toArray();
+        }
+
+        Collection<Location> locations = connection.getBlockAccess().getPositions(cores ? this.beaconStates : this.bedStates);
 
         if (locations.isEmpty()) {
             return;
@@ -166,6 +179,8 @@ public class GommeMatchListener {
         for (Location loc : locations) {
             boolean toNearby = loc.distanceSquared(to) < maxDistanceSq;
             boolean fromNearby = loc.distanceSquared(from) < maxDistanceSq;
+
+            // TODO this is not being called for other players
 
             if (fromNearby && !toNearby) {
                 match.callEvent(cores ? new CoreLeaveEvent(playerInfo, loc) : new BedLeaveEvent(playerInfo, loc));
