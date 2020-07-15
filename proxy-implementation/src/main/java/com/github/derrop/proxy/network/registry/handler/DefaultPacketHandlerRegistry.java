@@ -33,7 +33,6 @@ import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistryEntry;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
-import com.github.derrop.proxy.api.util.Identifiable;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
 import com.google.common.collect.ImmutableBiMap;
 import org.jetbrains.annotations.NotNull;
@@ -49,17 +48,21 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
     private final SortedMap<Byte, Collection<PacketHandlerRegistryEntry>> entries = new TreeMap<>(Byte::compare);
 
     @Override
-    public <T extends Identifiable> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolDirection direction, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
+    public <T> @Nullable T handlePacketReceive(@NotNull T packet, @NotNull ProtocolDirection direction, @NotNull ProtocolState protocolState, @NotNull NetworkChannel channel) {
         for (Map.Entry<Byte, Collection<PacketHandlerRegistryEntry>> entry : ImmutableBiMap.copyOf(this.entries).entrySet()) {
             for (PacketHandlerRegistryEntry registryEntry : entry.getValue()) {
                 for (PacketHandlerRegistryEntry.RegisteredEntry entryEntry : registryEntry.getEntries()) {
                     if (!(packet instanceof DecodedPacket)) {
+                        if (!(packet instanceof Packet)) {
+                            return null;
+                        }
+
                         if (entryEntry.getHandledPackets().length == 0) {
                             continue;
                         }
                         boolean found = false;
                         for (int packetId : entryEntry.getHandledPackets()) {
-                            if (packetId == packet.getId()) {
+                            if (packetId == ((Packet) packet).getId()) {
                                 found = true;
                                 break;
                             }

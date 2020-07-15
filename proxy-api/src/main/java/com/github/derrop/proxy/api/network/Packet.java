@@ -26,10 +26,9 @@ package com.github.derrop.proxy.api.network;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.Identifiable;
 import org.jetbrains.annotations.NotNull;
 
-public interface Packet extends Identifiable {
+public interface Packet {
 
     void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion);
 
@@ -37,4 +36,7 @@ public interface Packet extends Identifiable {
 
     @Override
     String toString();
+
+    int getId();
+
 }
