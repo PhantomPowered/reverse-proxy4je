@@ -34,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Deprecated // TODO - PAIL
+// Rop secret
 public class HttpHelper {
 
     private HttpHelper() {
