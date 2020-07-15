@@ -38,7 +38,7 @@ public class CommandMatch extends NonTabCompleteableCommandCallback {
                     sender.sendMessage(" - " + connection.getName() + ": No match found");
                     continue;
                 }
-                sender.sendMessage(" - " + connection.getName() + ": " + this.matchManager.createPaste(matchInfo));
+                sender.sendMessage(" - " + connection.getName() + ": " + String.join(", ", this.matchManager.createPaste(matchInfo)));
             }
 
             return CommandResult.SUCCESS;

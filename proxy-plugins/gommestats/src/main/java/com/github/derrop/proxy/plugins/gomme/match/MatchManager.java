@@ -24,21 +24,23 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
+import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.util.PasteServerUtils;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.Side;
+import com.github.derrop.proxy.api.util.PasteServerProvider;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.events.GommeMatchDetectEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.MatchEvent;
-import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.TeamRegistry;
 import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.GameMessageRegistry;
+import com.github.derrop.proxy.plugins.gomme.messages.defaults.game.TeamRegistry;
 import com.google.gson.JsonObject;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -46,7 +48,6 @@ import java.util.stream.Stream;
 
 public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
-    private static final String PASTE_URL = "https://just-paste.it/";
     private static final String PROPERTY_KEY = "GommePlugin-CurrentMatch";
     private static final long BED_WARS_GOLD_SPAWN_DELAY = 30_000;
     private static final long BED_WARS_IRON_SPAWN_DELAY = 10_000;
@@ -162,25 +163,28 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        String url = this.createPaste(matchInfo);
+        Constants.EXECUTOR_SERVICE.execute(() -> {
+            String[] urls = this.createPaste(matchInfo);
 
-        if (url != null) {
-            System.out.println("The MatchLog of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " has been uploaded to " + url);
+            if (urls != null) {
+                System.out.println("The MatchLog of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " by " + matchInfo.getInvoker().getName() + " has been uploaded to " + String.join(", ", urls));
 
-            Player player = matchInfo.getInvoker().getPlayer();
-            if (player != null) {
-                player.sendMessage("MatchLog: " + url);
+                Player player = matchInfo.getInvoker().getPlayer();
+                if (player != null) {
+                    player.sendMessage("MatchLog: " + Arrays.toString(urls));
+                }
+            } else {
+                System.err.println("An error occurred while trying to upload the match log of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode());
             }
-        } else {
-            System.err.println("An error occurred while trying to upload the match log of " + matchInfo.getMatchId() + "#" + matchInfo.getGameMode() + " to " + PASTE_URL);
-        }
+        });
 
         super.insert(matchInfo.getMatchId(), MatchInfo.GSON.toJsonTree(matchInfo).getAsJsonObject());
     }
 
-    public String createPaste(MatchInfo matchInfo) {
-        String key = PasteServerUtils.uploadCatched(PASTE_URL, matchInfo.toReadableText());
-        return key == null ? null : PASTE_URL + key;
+    public String[] createPaste(MatchInfo matchInfo) {
+        PasteServerProvider paste = matchInfo.getInvoker().getProxy().getServiceRegistry().getProviderUnchecked(PasteServerProvider.class);
+        String[] keys = paste.uploadDocumentCaught(matchInfo.toReadableText());
+        return paste.mapAsURLs(keys);
     }
 
     public long countMatches() {

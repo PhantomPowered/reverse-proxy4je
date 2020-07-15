@@ -47,6 +47,7 @@ import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.util.PasteServerProvider;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
@@ -76,6 +77,7 @@ import com.github.derrop.proxy.storage.DefaultPlayerIdStorage;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
+import com.github.derrop.proxy.util.DefaultPasteServerProvider;
 import net.kyori.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,6 +108,7 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
+        this.serviceRegistry.setProvider(null, PasteServerProvider.class, new DefaultPasteServerProvider());
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
