@@ -26,6 +26,8 @@ package com.github.derrop.proxy.storage;
 
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.player.DefaultOfflinePlayer;
 
@@ -34,11 +36,8 @@ import java.util.UUID;
 
 public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOfflinePlayer> {
 
-    private final UUIDNameStorage uuidNameStorage;
-
     public OfflinePlayerStorage(ServiceRegistry registry) {
         super(registry, "player_storage", DefaultOfflinePlayer.class);
-        this.uuidNameStorage = new UUIDNameStorage(registry, "name_uuid_map"); // TODO remove, this is already provided with the PlayerIdStorage
     }
 
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
@@ -50,13 +49,7 @@ public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOffline
     }
 
     public void updateOfflinePlayer(OfflinePlayer player) {
-        OfflinePlayer oldPlayer = super.get(player.getUniqueId().toString());
-        if (oldPlayer != null) {
-            this.uuidNameStorage.remove(oldPlayer.getName());
-        }
-
-        this.uuidNameStorage.put(player.getName(), player.getUniqueId());
-
+        this.registry.getProviderUnchecked(PlayerIdStorage.class).getPlayerId(player.getName(), player.getUniqueId());
         super.update(player.getUniqueId().toString(), (DefaultOfflinePlayer) player);
     }
 
@@ -65,8 +58,7 @@ public class OfflinePlayerStorage extends DatabaseProvidedStorage<DefaultOffline
     }
 
     public OfflinePlayer getOfflinePlayer(String name) {
-        UUID uniqueId = this.uuidNameStorage.getUUID(name);
-        return uniqueId != null ? this.getOfflinePlayer(uniqueId) : null;
+        PlayerId id = this.registry.getProviderUnchecked(PlayerIdStorage.class).getPlayerId(name);
+        return id != null ? this.getOfflinePlayer(id.getUniqueId()) : null;
     }
-
 }

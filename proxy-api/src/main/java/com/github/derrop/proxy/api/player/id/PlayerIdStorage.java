@@ -10,6 +10,8 @@ public interface PlayerIdStorage {
 
     PlayerId getPlayerId(@NotNull UUID uniqueId);
 
+    PlayerId getPlayerId(@NotNull String name, @NotNull UUID uniqueId);
+
     boolean isCached(@NotNull UUID uniqueId);
 
     boolean isCached(@NotNull String name);

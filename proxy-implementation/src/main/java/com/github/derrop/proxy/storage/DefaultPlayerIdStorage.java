@@ -1,10 +1,10 @@
 package com.github.derrop.proxy.storage;
 
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
-import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.api.player.id.PlayerRepositoryGetException;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.util.HttpHelper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -121,6 +121,43 @@ public class DefaultPlayerIdStorage extends DatabaseProvidedStorage<PlayerId> im
         HttpHelper.getHTTPSync(String.format(UUID_TO_NAME, uniqueIdString.replace("-", "")), (result, error) -> this.set(reference, result, error, isCached));
 
         return reference.get();
+    }
+
+    @Override
+    public PlayerId getPlayerId(@NotNull String name, @NotNull UUID uniqueId) {
+        {
+            String uniqueIdString = uniqueId.toString();
+            PlayerId cached = this.uuidCache.getIfPresent(uniqueId);
+            if (this.isValid(cached)) {
+                return cached;
+            }
+
+            cached = super.get(uniqueIdString);
+            if (this.isValid(cached)) {
+                this.put(cached);
+                return cached;
+            }
+        }
+
+        {
+            if (name.length() < 3) {
+                return null;
+            }
+
+            String lowerName = name.toLowerCase();
+            PlayerId cached = this.nameCache.getIfPresent(lowerName);
+            if (this.isValid(cached)) {
+                return cached;
+            }
+
+            cached = super.get(lowerName);
+            if (this.isValid(cached)) {
+                this.put(cached);
+                return cached;
+            }
+        }
+
+        return null;
     }
 
     @Override
