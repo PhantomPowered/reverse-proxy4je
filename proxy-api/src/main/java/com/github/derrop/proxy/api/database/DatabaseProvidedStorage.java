@@ -34,7 +34,7 @@ import java.util.Collection;
 
 public class DatabaseProvidedStorage<T> {
 
-    private final ServiceRegistry registry;
+    protected final ServiceRegistry registry;
     private final String table;
     private final Type type;
 
