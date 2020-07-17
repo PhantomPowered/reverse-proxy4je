@@ -25,12 +25,12 @@
 package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.player.Side;
 import com.github.derrop.proxy.api.util.PasteServerProvider;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
@@ -115,7 +115,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     public void showMatchData(Player player, MatchInfo matchInfo) {
-        player.appendActionBar(Side.RIGHT, () -> {
+        player.appendActionBar(HorizontalHalf.RIGHT, () -> {
             if (!matchInfo.isRunning() || !player.equals(matchInfo.getInvoker().getPlayer())) {
                 return null;
             }
@@ -130,7 +130,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
             return " §8× §7Time §8» §e" + minutesString + ":" + secondsString;
         });
         if (matchInfo.getGameMode() == GommeServerType.BED_WARS) {
-            player.appendActionBar(Side.LEFT, () -> {
+            player.appendActionBar(HorizontalHalf.LEFT, () -> {
                 if (!matchInfo.isRunning() || !player.equals(matchInfo.getInvoker().getPlayer())) {
                     return null;
                 }

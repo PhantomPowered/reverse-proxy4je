@@ -24,6 +24,8 @@
  */
 package com.github.derrop.proxy.api.block;
 
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
+import com.github.derrop.proxy.api.block.half.VerticalHalf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,13 +54,13 @@ public interface BlockState {
     SubMaterial getSubMaterial();
 
     @Nullable
-    HingePosition getHingePosition();
+    HorizontalHalf getHingePosition();
 
     @Nullable
     Facing getFacing();
 
     @Nullable
-    Half getHalf();
+    VerticalHalf getHalf();
 
     @Nullable
     Facing.Axis getAxis();

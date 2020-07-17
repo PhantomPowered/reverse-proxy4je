@@ -1,5 +1,6 @@
 package com.github.derrop.proxy.connection.handler;
 
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.EntityStatusType;
@@ -16,7 +17,6 @@ import com.github.derrop.proxy.api.events.connection.service.entity.status.SelfE
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
-import com.github.derrop.proxy.api.player.Side;
 import com.github.derrop.proxy.connection.AppendedActionBar;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
@@ -75,8 +75,8 @@ public class ServerPacketHandler {
                 player.getActionBars().remove(actionBar);
                 continue;
             }
-            Side side = actionBar.getSide();
-            original = side == Side.LEFT ? message + original : original + message;
+            HorizontalHalf side = actionBar.getSide();
+            original = side == HorizontalHalf.LEFT ? message + original : original + message;
         }
 
         packet.setMessage(GsonComponentSerializer.INSTANCE.serialize(TextComponent.of(original)));

@@ -1,20 +1,20 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.api.player.Side;
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 
 import java.util.function.Supplier;
 
 public class AppendedActionBar {
 
-    private final Side side;
+    private final HorizontalHalf side;
     private final Supplier<String> message;
 
-    public AppendedActionBar(Side side, Supplier<String> message) {
+    public AppendedActionBar(HorizontalHalf side, Supplier<String> message) {
         this.side = side;
         this.message = message;
     }
 
-    public Side getSide() {
+    public HorizontalHalf getSide() {
         return this.side;
     }
 

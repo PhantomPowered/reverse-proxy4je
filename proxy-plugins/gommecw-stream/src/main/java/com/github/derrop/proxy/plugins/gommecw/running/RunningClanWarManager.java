@@ -2,8 +2,8 @@ package com.github.derrop.proxy.plugins.gommecw.running;
 
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.block.BlockState;
-import com.github.derrop.proxy.api.block.Half;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.block.half.VerticalHalf;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.location.Location;
@@ -100,7 +100,7 @@ public class RunningClanWarManager {
 
     private boolean isBed(ServiceConnection connection, int state) {
         BlockState exactState = connection.getBlockAccess().getBlockStateRegistry().getExactBlockState(state);
-        return exactState.getMaterial() == Material.BED_BLOCK && exactState.getHalf() == Half.TOP;
+        return exactState.getMaterial() == Material.BED_BLOCK && exactState.getHalf() == VerticalHalf.TOP;
     }
 
     private void updateBedLocation(ServiceConnection connection, RunningClanWar clanWar, Location bedLocation) {

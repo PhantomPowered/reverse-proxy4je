@@ -25,8 +25,8 @@
 package com.github.derrop.proxy.plugins.gomme.match;
 
 import com.github.derrop.proxy.api.block.BlockState;
-import com.github.derrop.proxy.api.block.Half;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.block.half.VerticalHalf;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -164,7 +164,7 @@ public class GommeMatchListener {
             this.beaconStates = connection.getBlockAccess().getBlockStateRegistry().getValidBlockStateIDs(Material.BEACON);
         } else if (!cores && this.bedStates == null) {
             this.bedStates = Arrays.stream(connection.getBlockAccess().getBlockStateRegistry().getValidStates(Material.BED_BLOCK))
-                    .filter(blockState -> blockState.getHalf() == Half.TOP)
+                    .filter(blockState -> blockState.getHalf() == VerticalHalf.TOP)
                     .mapToInt(BlockState::getId)
                     .toArray();
         }

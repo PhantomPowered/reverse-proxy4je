@@ -30,13 +30,11 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.entity.EntityStatusType;
-import com.github.derrop.proxy.api.player.OfflinePlayer;
-import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.Entity;
@@ -47,8 +45,10 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
-import com.github.derrop.proxy.api.player.Side;
 import com.github.derrop.proxy.connection.*;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -68,7 +68,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -103,7 +102,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     private ServiceConnection connectedClient;
     private boolean connected = false;
     private boolean autoReconnect = true;
-    private String displayName;
+    private final String displayName;
     private String lastCommandCompleteRequest;
     private final PlayerInventory inventory = new DefaultPlayerInventory(this);
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
@@ -174,7 +173,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     }
 
     @Override
-    public void appendActionBar(@NotNull Side side, @NotNull Supplier<String> message) {
+    public void appendActionBar(@NotNull HorizontalHalf side, @NotNull Supplier<String> message) {
         this.actionBars.add(new AppendedActionBar(side, message));
     }
 

@@ -25,6 +25,8 @@
 package com.github.derrop.proxy.block;
 
 import com.github.derrop.proxy.api.block.*;
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
+import com.github.derrop.proxy.api.block.half.VerticalHalf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -194,18 +196,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(385, Material.SANDSTONE).subMaterial(SubMaterial.SANDSTONE_CHISELED); // complete
         registerState(386, Material.SANDSTONE).subMaterial(SubMaterial.SANDSTONE_SMOOTH); // complete
         registerState(400, Material.NOTE_BLOCK); // complete
-        registerState(416, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.SOUTH); // complete
-        registerState(417, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.WEST); // complete
-        registerState(418, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.NORTH); // complete
-        registerState(419, Material.BED_BLOCK).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(424, Material.BED_BLOCK).half(Half.TOP).facing(Facing.SOUTH); // complete
-        registerState(425, Material.BED_BLOCK).half(Half.TOP).facing(Facing.WEST); // complete
-        registerState(426, Material.BED_BLOCK).half(Half.TOP).facing(Facing.NORTH); // complete
-        registerState(427, Material.BED_BLOCK).half(Half.TOP).facing(Facing.EAST); // complete
-        registerState(428, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.SOUTH); // complete
-        registerState(429, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.WEST); // complete
-        registerState(430, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.NORTH); // complete
-        registerState(431, Material.BED_BLOCK).occupied().half(Half.TOP).facing(Facing.EAST); // complete
+        registerState(416, Material.BED_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.SOUTH); // complete
+        registerState(417, Material.BED_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.WEST); // complete
+        registerState(418, Material.BED_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.NORTH); // complete
+        registerState(419, Material.BED_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(424, Material.BED_BLOCK).half(VerticalHalf.TOP).facing(Facing.SOUTH); // complete
+        registerState(425, Material.BED_BLOCK).half(VerticalHalf.TOP).facing(Facing.WEST); // complete
+        registerState(426, Material.BED_BLOCK).half(VerticalHalf.TOP).facing(Facing.NORTH); // complete
+        registerState(427, Material.BED_BLOCK).half(VerticalHalf.TOP).facing(Facing.EAST); // complete
+        registerState(428, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.SOUTH); // complete
+        registerState(429, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.WEST); // complete
+        registerState(430, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.NORTH); // complete
+        registerState(431, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.EAST); // complete
         registerState(432, Material.POWERED_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
         registerState(433, Material.POWERED_RAIL).shape(BlockShape.EAST_WEST); // complete
         registerState(434, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
@@ -243,34 +245,37 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(476, Material.PISTON_STICKY_BASE).facing(Facing.WEST).powered(); // complete
         registerState(477, Material.PISTON_STICKY_BASE).facing(Facing.EAST).powered(); // complete
         registerState(480, Material.WEB); // complete
-        /* type = ?: */ registerState(496, Material.LONG_GRASS);
-        /* type = tall grass: */ registerState(497, Material.LONG_GRASS);
-        /* type = fern: */ registerState(498, Material.LONG_GRASS);
+        /* type = ?: */
+        registerState(496, Material.LONG_GRASS);
+        /* type = tall grass: */
+        registerState(497, Material.LONG_GRASS);
+        /* type = fern: */
+        registerState(498, Material.LONG_GRASS);
         registerState(512, Material.DEAD_BUSH); // complete
-        registerState(528, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.DOWN); // complete
-        registerState(529, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.UP); // complete
-        registerState(530, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.NORTH); // complete
-        registerState(531, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.SOUTH); // complete
-        registerState(532, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.WEST); // complete
-        registerState(533, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(536, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.DOWN).powered(); // complete
-        registerState(537, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.UP).powered(); // complete
-        registerState(538, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.NORTH).powered(); // complete
-        registerState(539, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.SOUTH).powered(); // complete
-        registerState(540, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.WEST).powered(); // complete
-        registerState(541, Material.PISTON_BASE).half(Half.BOTTOM).facing(Facing.EAST).powered(); // complete
-        registerState(544, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(Half.TOP).setShort().facing(Facing.DOWN); // complete
-        registerState(545, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(Half.TOP).setShort().facing(Facing.UP); // complete
-        registerState(546, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(Half.TOP).setShort().facing(Facing.NORTH); // complete
-        registerState(547, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(Half.TOP).setShort().facing(Facing.SOUTH); // complete
-        registerState(548, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(Half.TOP).setShort().facing(Facing.WEST); // complete
-        registerState(549, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(Half.TOP).setShort().facing(Facing.EAST); // complete
-        registerState(552, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(Half.TOP).setShort().facing(Facing.DOWN); // complete
-        registerState(553, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(Half.TOP).setShort().facing(Facing.UP); // complete
-        registerState(554, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(Half.TOP).setShort().facing(Facing.NORTH); // complete
-        registerState(555, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(Half.TOP).setShort().facing(Facing.SOUTH); // complete
-        registerState(556, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(Half.TOP).setShort().facing(Facing.WEST); // complete
-        registerState(557, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(Half.TOP).setShort().facing(Facing.EAST); // complete
+        registerState(528, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.DOWN); // complete
+        registerState(529, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.UP); // complete
+        registerState(530, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.NORTH); // complete
+        registerState(531, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.SOUTH); // complete
+        registerState(532, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.WEST); // complete
+        registerState(533, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(536, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.DOWN).powered(); // complete
+        registerState(537, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.UP).powered(); // complete
+        registerState(538, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.NORTH).powered(); // complete
+        registerState(539, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.SOUTH).powered(); // complete
+        registerState(540, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.WEST).powered(); // complete
+        registerState(541, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.EAST).powered(); // complete
+        registerState(544, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(VerticalHalf.TOP).setShort().facing(Facing.DOWN); // complete
+        registerState(545, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(VerticalHalf.TOP).setShort().facing(Facing.UP); // complete
+        registerState(546, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(VerticalHalf.TOP).setShort().facing(Facing.NORTH); // complete
+        registerState(547, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(VerticalHalf.TOP).setShort().facing(Facing.SOUTH); // complete
+        registerState(548, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(VerticalHalf.TOP).setShort().facing(Facing.WEST); // complete
+        registerState(549, Material.PISTON_BASE).pistonType(PistonType.NORMAL).half(VerticalHalf.TOP).setShort().facing(Facing.EAST); // complete
+        registerState(552, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(VerticalHalf.TOP).setShort().facing(Facing.DOWN); // complete
+        registerState(553, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(VerticalHalf.TOP).setShort().facing(Facing.UP); // complete
+        registerState(554, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(VerticalHalf.TOP).setShort().facing(Facing.NORTH); // complete
+        registerState(555, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(VerticalHalf.TOP).setShort().facing(Facing.SOUTH); // complete
+        registerState(556, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(VerticalHalf.TOP).setShort().facing(Facing.WEST); // complete
+        registerState(557, Material.PISTON_BASE).pistonType(PistonType.STICKY).half(VerticalHalf.TOP).setShort().facing(Facing.EAST); // complete
         registerState(560, Material.WOOL).subMaterial(SubMaterial.COLOR_WHITE); // complete;
         registerState(561, Material.WOOL).subMaterial(SubMaterial.COLOR_ORANGE); // complete
         registerState(562, Material.WOOL).subMaterial(SubMaterial.COLOR_MAGENTA); // complete
@@ -329,22 +334,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(701, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
         registerState(702, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
         registerState(703, Material.DOUBLE_STONE_SLAB).seamless().subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
-        registerState(704, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
-        registerState(705, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
-        registerState(706, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
-        registerState(707, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
-        registerState(708, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
-        registerState(709, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
-        registerState(710, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
-        registerState(711, Material.STONE_SLAB).half(Half.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
-        registerState(712, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
-        registerState(713, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
-        registerState(714, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
-        registerState(715, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
-        registerState(716, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
-        registerState(717, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
-        registerState(718, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
-        registerState(719, Material.STONE_SLAB).half(Half.TOP).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
+        registerState(704, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
+        registerState(705, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
+        registerState(706, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
+        registerState(707, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
+        registerState(708, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
+        registerState(709, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
+        registerState(710, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
+        registerState(711, Material.STONE_SLAB).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
+        registerState(712, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_STONE); // complete
+        registerState(713, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_SANDSTONE); // complete
+        registerState(714, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_WOOD_OLD); // complete
+        registerState(715, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_COBBLESTONE); // complete
+        registerState(716, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_BRICKS); // complete
+        registerState(717, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_STONE_BRICKS); // complete
+        registerState(718, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_NETHER_BRICKS); // complete
+        registerState(719, Material.STONE_SLAB).half(VerticalHalf.TOP).subMaterial(SubMaterial.STONE_SLAB_QUARTZ); // complete
         registerState(720, Material.BRICK); // complete
         registerState(736, Material.TNT); // complete
         registerState(737, Material.TNT);
@@ -373,14 +378,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(830, Material.FIRE);
         registerState(831, Material.FIRE);
         registerState(832, Material.MOB_SPAWNER); // complete
-        registerState(848, Material.WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(849, Material.WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(850, Material.WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(851, Material.WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(852, Material.WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(853, Material.WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(854, Material.WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(855, Material.WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(848, Material.WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(849, Material.WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(850, Material.WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(851, Material.WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(852, Material.WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(853, Material.WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(854, Material.WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(855, Material.WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(866, Material.CHEST).facing(Facing.NORTH); // complete
         registerState(867, Material.CHEST).facing(Facing.SOUTH); // complete
         registerState(868, Material.CHEST).facing(Facing.WEST); // complete
@@ -452,10 +457,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1029, Material.WOODEN_DOOR).facing(Facing.SOUTH).open(); // complete
         registerState(1030, Material.WOODEN_DOOR).facing(Facing.WEST).open(); // complete
         registerState(1031, Material.WOODEN_DOOR).facing(Facing.NORTH).open(); // complete
-        registerState(1032, Material.WOODEN_DOOR).hinge(HingePosition.LEFT); // complete
-        registerState(1033, Material.WOODEN_DOOR).hinge(HingePosition.RIGHT); // complete
-        registerState(1034, Material.WOODEN_DOOR).hinge(HingePosition.LEFT).powered(); // complete
-        registerState(1035, Material.WOODEN_DOOR).hinge(HingePosition.RIGHT).powered(); // complete
+        registerState(1032, Material.WOODEN_DOOR).hinge(HorizontalHalf.LEFT); // complete
+        registerState(1033, Material.WOODEN_DOOR).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(1034, Material.WOODEN_DOOR).hinge(HorizontalHalf.LEFT).powered(); // complete
+        registerState(1035, Material.WOODEN_DOOR).hinge(HorizontalHalf.RIGHT).powered(); // complete
         registerState(1042, Material.LADDER).facing(Facing.NORTH); // complete
         registerState(1043, Material.LADDER).facing(Facing.SOUTH); // complete
         registerState(1044, Material.LADDER).facing(Facing.WEST); // complete
@@ -470,14 +475,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1063, Material.RAILS).shape(BlockShape.SOUTH_WEST); // complete
         registerState(1064, Material.RAILS).shape(BlockShape.NORTH_WEST); // complete
         registerState(1065, Material.RAILS).shape(BlockShape.NORTH_EAST); // complete
-        registerState(1072, Material.COBBLESTONE_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1073, Material.COBBLESTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1074, Material.COBBLESTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1075, Material.COBBLESTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(1076, Material.COBBLESTONE_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1077, Material.COBBLESTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1078, Material.COBBLESTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1079, Material.COBBLESTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(1072, Material.COBBLESTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1073, Material.COBBLESTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1074, Material.COBBLESTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1075, Material.COBBLESTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1076, Material.COBBLESTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1077, Material.COBBLESTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1078, Material.COBBLESTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1079, Material.COBBLESTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(1090, Material.WALL_SIGN).facing(Facing.NORTH); // complete
         registerState(1091, Material.WALL_SIGN).facing(Facing.SOUTH); // complete
         registerState(1092, Material.WALL_SIGN).facing(Facing.WEST); // complete
@@ -500,18 +505,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1119, Material.LEVER).powered().facing(Facing.DOWN).axis(Facing.Axis.Z); // complete
         registerState(1120, Material.STONE_PLATE); // complete
         registerState(1121, Material.STONE_PLATE).powered(); // complete
-        registerState(1136, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(1137, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.SOUTH); // complete
-        registerState(1138, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.WEST); // complete
-        registerState(1139, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).facing(Facing.NORTH); // complete
-        registerState(1140, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.EAST); // complete
-        registerState(1141, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.SOUTH); // complete
-        registerState(1142, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.WEST); // complete
-        registerState(1143, Material.IRON_DOOR_BLOCK).half(Half.BOTTOM).open().facing(Facing.NORTH); // complete
-        registerState(1144, Material.IRON_DOOR_BLOCK).half(Half.TOP).hinge(HingePosition.LEFT); // complete
-        registerState(1145, Material.IRON_DOOR_BLOCK).half(Half.TOP).hinge(HingePosition.RIGHT); // complete
-        registerState(1146, Material.IRON_DOOR_BLOCK).half(Half.TOP).powered().hinge(HingePosition.LEFT); // complete;
-        registerState(1147, Material.IRON_DOOR_BLOCK).half(Half.TOP).powered().hinge(HingePosition.RIGHT); // complete;
+        registerState(1136, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(1137, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.SOUTH); // complete
+        registerState(1138, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.WEST); // complete
+        registerState(1139, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).facing(Facing.NORTH); // complete
+        registerState(1140, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).open().facing(Facing.EAST); // complete
+        registerState(1141, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).open().facing(Facing.SOUTH); // complete
+        registerState(1142, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).open().facing(Facing.WEST); // complete
+        registerState(1143, Material.IRON_DOOR_BLOCK).half(VerticalHalf.BOTTOM).open().facing(Facing.NORTH); // complete
+        registerState(1144, Material.IRON_DOOR_BLOCK).half(VerticalHalf.TOP).hinge(HorizontalHalf.LEFT); // complete
+        registerState(1145, Material.IRON_DOOR_BLOCK).half(VerticalHalf.TOP).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(1146, Material.IRON_DOOR_BLOCK).half(VerticalHalf.TOP).powered().hinge(HorizontalHalf.LEFT); // complete;
+        registerState(1147, Material.IRON_DOOR_BLOCK).half(VerticalHalf.TOP).powered().hinge(HorizontalHalf.RIGHT); // complete;
         registerState(1152, Material.WOOD_PLATE); // complete
         registerState(1153, Material.WOOD_PLATE).powered(); // complete
         registerState(1168, Material.REDSTONE_ORE); // complete
@@ -652,22 +657,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1533, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_GREEN); // complete
         registerState(1534, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_RED); // complete
         registerState(1535, Material.STAINED_GLASS).subMaterial(SubMaterial.COLOR_BLACK); // complete
-        registerState(1536, Material.TRAP_DOOR).facing(Facing.SOUTH).half(Half.BOTTOM).height(0.3D); // complete
-        registerState(1537, Material.TRAP_DOOR).facing(Facing.NORTH).half(Half.BOTTOM).height(0.3D); // complete
-        registerState(1538, Material.TRAP_DOOR).facing(Facing.EAST).half(Half.BOTTOM).height(0.3D); // complete
-        registerState(1539, Material.TRAP_DOOR).facing(Facing.WEST).half(Half.BOTTOM).height(0.3D); // complete
-        registerState(1540, Material.TRAP_DOOR).facing(Facing.SOUTH).half(Half.BOTTOM).open().thick(0.3D); // complete
-        registerState(1541, Material.TRAP_DOOR).facing(Facing.NORTH).half(Half.BOTTOM).open().thick(0.3D); // complete
-        registerState(1542, Material.TRAP_DOOR).facing(Facing.EAST).half(Half.BOTTOM).open().thick(0.3D); // complete
-        registerState(1543, Material.TRAP_DOOR).facing(Facing.WEST).half(Half.BOTTOM).open().thick(0.3D); // complete
-        registerState(1544, Material.TRAP_DOOR).facing(Facing.SOUTH).half(Half.TOP).height(0.3D); // complete
-        registerState(1545, Material.TRAP_DOOR).facing(Facing.NORTH).half(Half.TOP).height(0.3D); // complete
-        registerState(1546, Material.TRAP_DOOR).facing(Facing.EAST).half(Half.TOP).height(0.3D); // complete
-        registerState(1547, Material.TRAP_DOOR).facing(Facing.WEST).half(Half.TOP).height(0.3D); // complete
-        registerState(1548, Material.TRAP_DOOR).facing(Facing.SOUTH).half(Half.TOP).open().thick(0.3D); // complete
-        registerState(1549, Material.TRAP_DOOR).facing(Facing.NORTH).half(Half.TOP).open().thick(0.3D); // complete
-        registerState(1550, Material.TRAP_DOOR).facing(Facing.EAST).half(Half.TOP).open().thick(0.3D); // complete
-        registerState(1551, Material.TRAP_DOOR).facing(Facing.WEST).half(Half.TOP).open().thick(0.3D); // complete
+        registerState(1536, Material.TRAP_DOOR).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM).height(0.3D); // complete
+        registerState(1537, Material.TRAP_DOOR).facing(Facing.NORTH).half(VerticalHalf.BOTTOM).height(0.3D); // complete
+        registerState(1538, Material.TRAP_DOOR).facing(Facing.EAST).half(VerticalHalf.BOTTOM).height(0.3D); // complete
+        registerState(1539, Material.TRAP_DOOR).facing(Facing.WEST).half(VerticalHalf.BOTTOM).height(0.3D); // complete
+        registerState(1540, Material.TRAP_DOOR).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM).open().thick(0.3D); // complete
+        registerState(1541, Material.TRAP_DOOR).facing(Facing.NORTH).half(VerticalHalf.BOTTOM).open().thick(0.3D); // complete
+        registerState(1542, Material.TRAP_DOOR).facing(Facing.EAST).half(VerticalHalf.BOTTOM).open().thick(0.3D); // complete
+        registerState(1543, Material.TRAP_DOOR).facing(Facing.WEST).half(VerticalHalf.BOTTOM).open().thick(0.3D); // complete
+        registerState(1544, Material.TRAP_DOOR).facing(Facing.SOUTH).half(VerticalHalf.TOP).height(0.3D); // complete
+        registerState(1545, Material.TRAP_DOOR).facing(Facing.NORTH).half(VerticalHalf.TOP).height(0.3D); // complete
+        registerState(1546, Material.TRAP_DOOR).facing(Facing.EAST).half(VerticalHalf.TOP).height(0.3D); // complete
+        registerState(1547, Material.TRAP_DOOR).facing(Facing.WEST).half(VerticalHalf.TOP).height(0.3D); // complete
+        registerState(1548, Material.TRAP_DOOR).facing(Facing.SOUTH).half(VerticalHalf.TOP).open().thick(0.3D); // complete
+        registerState(1549, Material.TRAP_DOOR).facing(Facing.NORTH).half(VerticalHalf.TOP).open().thick(0.3D); // complete
+        registerState(1550, Material.TRAP_DOOR).facing(Facing.EAST).half(VerticalHalf.TOP).open().thick(0.3D); // complete
+        registerState(1551, Material.TRAP_DOOR).facing(Facing.WEST).half(VerticalHalf.TOP).open().thick(0.3D); // complete
         registerState(1552, Material.MONSTER_EGGS).subMaterial(SubMaterial.STONE); // complete
         registerState(1553, Material.MONSTER_EGGS).subMaterial(SubMaterial.COBBLESTONE); // complete
         registerState(1554, Material.MONSTER_EGGS).subMaterial(SubMaterial.STONE_BRICK_EGG); // complete
@@ -755,34 +760,34 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1725, Material.FENCE_GATE).facing(Facing.WEST).open().powered(); // complete
         registerState(1726, Material.FENCE_GATE).facing(Facing.NORTH).open().powered(); // complete
         registerState(1727, Material.FENCE_GATE).facing(Facing.EAST).open().powered(); // complete
-        registerState(1728, Material.BRICK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1729, Material.BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1730, Material.BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1731, Material.BRICK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(1732, Material.BRICK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1733, Material.BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1734, Material.BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1735, Material.BRICK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(1744, Material.SMOOTH_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1745, Material.SMOOTH_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1746, Material.SMOOTH_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1747, Material.SMOOTH_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(1748, Material.SMOOTH_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1749, Material.SMOOTH_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1750, Material.SMOOTH_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1751, Material.SMOOTH_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(1728, Material.BRICK_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1729, Material.BRICK_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1730, Material.BRICK_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1731, Material.BRICK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1732, Material.BRICK_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1733, Material.BRICK_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1734, Material.BRICK_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1735, Material.BRICK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1744, Material.SMOOTH_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1745, Material.SMOOTH_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1746, Material.SMOOTH_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1747, Material.SMOOTH_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1748, Material.SMOOTH_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1749, Material.SMOOTH_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1750, Material.SMOOTH_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1751, Material.SMOOTH_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(1760, Material.MYCEL); // complete
         registerState(1776, Material.WATER_LILY); // complete
         registerState(1792, Material.NETHER_BRICK); // complete
         registerState(1808, Material.NETHER_FENCE); // complete
-        registerState(1824, Material.NETHER_BRICK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1825, Material.NETHER_BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1826, Material.NETHER_BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1827, Material.NETHER_BRICK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(1828, Material.NETHER_BRICK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(1829, Material.NETHER_BRICK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(1830, Material.NETHER_BRICK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(1831, Material.NETHER_BRICK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(1824, Material.NETHER_BRICK_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1825, Material.NETHER_BRICK_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1826, Material.NETHER_BRICK_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1827, Material.NETHER_BRICK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1828, Material.NETHER_BRICK_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1829, Material.NETHER_BRICK_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(1830, Material.NETHER_BRICK_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(1831, Material.NETHER_BRICK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(1840, Material.NETHER_WARTS).age(0); // complete
         registerState(1841, Material.NETHER_WARTS).age(1); // complete
         registerState(1842, Material.NETHER_WARTS).age(2); // complete
@@ -844,14 +849,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2042, Material.COCOA).age(2).facing(Facing.NORTH); // complete
         registerState(2043, Material.COCOA).age(2).facing(Facing.EAST); // complete
 
-        registerState(2048, Material.SANDSTONE_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2049, Material.SANDSTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2050, Material.SANDSTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2051, Material.SANDSTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2052, Material.SANDSTONE_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2053, Material.SANDSTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2054, Material.SANDSTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2055, Material.SANDSTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(2048, Material.SANDSTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2049, Material.SANDSTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2050, Material.SANDSTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2051, Material.SANDSTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2052, Material.SANDSTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2053, Material.SANDSTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2054, Material.SANDSTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2055, Material.SANDSTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2064, Material.EMERALD_ORE); // complete
         registerState(2082, Material.ENDER_CHEST).facing(Facing.NORTH); // complete
         registerState(2083, Material.ENDER_CHEST).facing(Facing.SOUTH); // complete
@@ -890,31 +895,31 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2126, Material.TRIPWIRE).disarmed().attached().suspended(); // complete
         registerState(2127, Material.TRIPWIRE).disarmed().attached().suspended().powered(); // complete
         registerState(2128, Material.EMERALD_BLOCK); // complete
-        registerState(2144, Material.SPRUCE_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2145, Material.SPRUCE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2146, Material.SPRUCE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2147, Material.SPRUCE_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2148, Material.SPRUCE_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2149, Material.SPRUCE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2150, Material.SPRUCE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2151, Material.SPRUCE_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(2144, Material.SPRUCE_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2145, Material.SPRUCE_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2146, Material.SPRUCE_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2147, Material.SPRUCE_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2148, Material.SPRUCE_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2149, Material.SPRUCE_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2150, Material.SPRUCE_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2151, Material.SPRUCE_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
 
-        registerState(2160, Material.BIRCH_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2161, Material.BIRCH_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2162, Material.BIRCH_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2163, Material.BIRCH_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2164, Material.BIRCH_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2165, Material.BIRCH_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2166, Material.BIRCH_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2167, Material.BIRCH_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2176, Material.JUNGLE_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2177, Material.JUNGLE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2178, Material.JUNGLE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2179, Material.JUNGLE_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2180, Material.JUNGLE_WOOD_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2181, Material.JUNGLE_WOOD_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2182, Material.JUNGLE_WOOD_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2183, Material.JUNGLE_WOOD_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(2160, Material.BIRCH_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2161, Material.BIRCH_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2162, Material.BIRCH_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2163, Material.BIRCH_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2164, Material.BIRCH_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2165, Material.BIRCH_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2166, Material.BIRCH_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2167, Material.BIRCH_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2176, Material.JUNGLE_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2177, Material.JUNGLE_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2178, Material.JUNGLE_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2179, Material.JUNGLE_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2180, Material.JUNGLE_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2181, Material.JUNGLE_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2182, Material.JUNGLE_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2183, Material.JUNGLE_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2192, Material.COMMAND); // complete
         registerState(2193, Material.COMMAND).triggered(); // complete
         registerState(2208, Material.BEACON); // complete
@@ -1089,14 +1094,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2482, Material.QUARTZ_BLOCK).subMaterial(SubMaterial.QUARTZ_PILLAR).axis(Facing.Axis.Y); // complete
         registerState(2483, Material.QUARTZ_BLOCK).subMaterial(SubMaterial.QUARTZ_PILLAR).axis(Facing.Axis.X); // complete
         registerState(2484, Material.QUARTZ_BLOCK).subMaterial(SubMaterial.QUARTZ_PILLAR).axis(Facing.Axis.Z); // complete
-        registerState(2496, Material.QUARTZ_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2497, Material.QUARTZ_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2498, Material.QUARTZ_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2499, Material.QUARTZ_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2500, Material.QUARTZ_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2501, Material.QUARTZ_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2502, Material.QUARTZ_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2503, Material.QUARTZ_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(2496, Material.QUARTZ_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2497, Material.QUARTZ_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2498, Material.QUARTZ_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2499, Material.QUARTZ_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2500, Material.QUARTZ_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2501, Material.QUARTZ_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2502, Material.QUARTZ_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2503, Material.QUARTZ_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2512, Material.ACTIVATOR_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
         registerState(2513, Material.ACTIVATOR_RAIL).shape(BlockShape.EAST_WEST); // complete
         registerState(2514, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
@@ -1169,22 +1174,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2601, Material.LOG);
         registerState(2604, Material.LOG);
         registerState(2605, Material.LOG);
-        registerState(2608, Material.ACACIA_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2609, Material.ACACIA_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2610, Material.ACACIA_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2611, Material.ACACIA_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2612, Material.ACACIA_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2613, Material.ACACIA_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2614, Material.ACACIA_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2615, Material.ACACIA_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2624, Material.DARK_OAK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2625, Material.DARK_OAK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2626, Material.DARK_OAK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2627, Material.DARK_OAK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2628, Material.DARK_OAK_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2629, Material.DARK_OAK_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2630, Material.DARK_OAK_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2631, Material.DARK_OAK_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(2608, Material.ACACIA_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2609, Material.ACACIA_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2610, Material.ACACIA_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2611, Material.ACACIA_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2612, Material.ACACIA_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2613, Material.ACACIA_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2614, Material.ACACIA_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2615, Material.ACACIA_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2624, Material.DARK_OAK_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2625, Material.DARK_OAK_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2626, Material.DARK_OAK_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2627, Material.DARK_OAK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2628, Material.DARK_OAK_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2629, Material.DARK_OAK_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2630, Material.DARK_OAK_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2631, Material.DARK_OAK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2640, Material.SLIME_BLOCK); // complete
         registerState(2656, Material.BARRIER); // complete
         registerState(2672, Material.IRON_TRAPDOOR);
@@ -1229,15 +1234,15 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2752, Material.HARD_CLAY); // complete
         registerState(2768, Material.COAL_BLOCK); // complete
         registerState(2784, Material.PACKED_ICE); // complete
-        registerState(2800, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_SUN_FLOWER).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(2801, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LILAC).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(2802, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_TALL_GRASS).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(2803, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LARGE_FERN).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(2804, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_RED_ROSE).half(Half.BOTTOM).facing(Facing.EAST); // complete
-        registerState(2805, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_PEONY).half(Half.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2800, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_SUN_FLOWER).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2801, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LILAC).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2802, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_TALL_GRASS).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2803, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LARGE_FERN).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2804, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_RED_ROSE).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2805, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_PEONY).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
         registerState(2808, Material.DOUBLE_PLANT);
         registerState(2809, Material.DOUBLE_PLANT);
-        registerState(2810, Material.DOUBLE_PLANT).half(Half.TOP).facing(Facing.NORTH); // complete
+        registerState(2810, Material.DOUBLE_PLANT).half(VerticalHalf.TOP).facing(Facing.NORTH); // complete
         registerState(2811, Material.DOUBLE_PLANT);
         registerState(2816, Material.STANDING_BANNER).rotation(0); // complete
         registerState(2817, Material.STANDING_BANNER).rotation(1); // complete
@@ -1278,14 +1283,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2864, Material.RED_SANDSTONE).subMaterial(SubMaterial.SANDSTONE_NORMAL); // complete
         registerState(2865, Material.RED_SANDSTONE).subMaterial(SubMaterial.SANDSTONE_CHISELED); // complete
         registerState(2866, Material.RED_SANDSTONE).subMaterial(SubMaterial.SANDSTONE_SMOOTH); // complete
-        registerState(2880, Material.RED_SANDSTONE_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2881, Material.RED_SANDSTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2882, Material.RED_SANDSTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2883, Material.RED_SANDSTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
-        registerState(2884, Material.RED_SANDSTONE_STAIRS).facing(Facing.EAST).half(Half.BOTTOM); // complete
-        registerState(2885, Material.RED_SANDSTONE_STAIRS).facing(Facing.WEST).half(Half.BOTTOM); // complete
-        registerState(2886, Material.RED_SANDSTONE_STAIRS).facing(Facing.SOUTH).half(Half.BOTTOM); // complete
-        registerState(2887, Material.RED_SANDSTONE_STAIRS).facing(Facing.NORTH).half(Half.BOTTOM); // complete
+        registerState(2880, Material.RED_SANDSTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2881, Material.RED_SANDSTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2882, Material.RED_SANDSTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2883, Material.RED_SANDSTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2884, Material.RED_SANDSTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2885, Material.RED_SANDSTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
+        registerState(2886, Material.RED_SANDSTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
+        registerState(2887, Material.RED_SANDSTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2896, Material.DOUBLE_STONE_SLAB2);
         registerState(2904, Material.DOUBLE_STONE_SLAB2);
         registerState(2912, Material.STONE_SLAB2);
@@ -1383,10 +1388,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(3093, Material.SPRUCE_DOOR).facing(Facing.SOUTH).open(); // complete
         registerState(3094, Material.SPRUCE_DOOR).facing(Facing.WEST).open(); // complete
         registerState(3095, Material.SPRUCE_DOOR).facing(Facing.NORTH).open(); // complete
-        registerState(3096, Material.SPRUCE_DOOR).hinge(HingePosition.LEFT); // complete
-        registerState(3097, Material.SPRUCE_DOOR).hinge(HingePosition.RIGHT); // complete
-        registerState(3098, Material.SPRUCE_DOOR).hinge(HingePosition.LEFT).powered(); // complete
-        registerState(3099, Material.SPRUCE_DOOR).hinge(HingePosition.RIGHT).powered(); // complete
+        registerState(3096, Material.SPRUCE_DOOR).hinge(HorizontalHalf.LEFT); // complete
+        registerState(3097, Material.SPRUCE_DOOR).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(3098, Material.SPRUCE_DOOR).hinge(HorizontalHalf.LEFT).powered(); // complete
+        registerState(3099, Material.SPRUCE_DOOR).hinge(HorizontalHalf.RIGHT).powered(); // complete
         registerState(3104, Material.BIRCH_DOOR).facing(Facing.EAST); // complete
         registerState(3105, Material.BIRCH_DOOR).facing(Facing.SOUTH); // complete
         registerState(3106, Material.BIRCH_DOOR).facing(Facing.WEST); // complete
@@ -1395,10 +1400,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(3109, Material.BIRCH_DOOR).facing(Facing.SOUTH).open(); // complete
         registerState(3110, Material.BIRCH_DOOR).facing(Facing.WEST).open(); // complete
         registerState(3111, Material.BIRCH_DOOR).facing(Facing.NORTH).open(); // complete
-        registerState(3112, Material.BIRCH_DOOR).hinge(HingePosition.LEFT); // complete
-        registerState(3113, Material.BIRCH_DOOR).hinge(HingePosition.RIGHT); // complete
-        registerState(3114, Material.BIRCH_DOOR).hinge(HingePosition.LEFT).powered(); // complete
-        registerState(3115, Material.BIRCH_DOOR).hinge(HingePosition.RIGHT).powered(); // complete
+        registerState(3112, Material.BIRCH_DOOR).hinge(HorizontalHalf.LEFT); // complete
+        registerState(3113, Material.BIRCH_DOOR).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(3114, Material.BIRCH_DOOR).hinge(HorizontalHalf.LEFT).powered(); // complete
+        registerState(3115, Material.BIRCH_DOOR).hinge(HorizontalHalf.RIGHT).powered(); // complete
         registerState(3120, Material.JUNGLE_DOOR).facing(Facing.EAST); // complete
         registerState(3121, Material.JUNGLE_DOOR).facing(Facing.SOUTH); // complete
         registerState(3122, Material.JUNGLE_DOOR).facing(Facing.WEST); // complete
@@ -1407,10 +1412,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(3125, Material.JUNGLE_DOOR).facing(Facing.SOUTH).open(); // complete
         registerState(3126, Material.JUNGLE_DOOR).facing(Facing.WEST).open(); // complete
         registerState(3127, Material.JUNGLE_DOOR).facing(Facing.NORTH).open(); // complete
-        registerState(3128, Material.JUNGLE_DOOR).hinge(HingePosition.LEFT); // complete
-        registerState(3129, Material.JUNGLE_DOOR).hinge(HingePosition.RIGHT); // complete
-        registerState(3130, Material.JUNGLE_DOOR).hinge(HingePosition.LEFT).powered(); // complete
-        registerState(3131, Material.JUNGLE_DOOR).hinge(HingePosition.RIGHT).powered(); // complete
+        registerState(3128, Material.JUNGLE_DOOR).hinge(HorizontalHalf.LEFT); // complete
+        registerState(3129, Material.JUNGLE_DOOR).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(3130, Material.JUNGLE_DOOR).hinge(HorizontalHalf.LEFT).powered(); // complete
+        registerState(3131, Material.JUNGLE_DOOR).hinge(HorizontalHalf.RIGHT).powered(); // complete
         registerState(3136, Material.ACACIA_DOOR).facing(Facing.EAST); // complete
         registerState(3137, Material.ACACIA_DOOR).facing(Facing.SOUTH); // complete
         registerState(3138, Material.ACACIA_DOOR).facing(Facing.WEST); // complete
@@ -1419,10 +1424,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(3141, Material.ACACIA_DOOR).facing(Facing.SOUTH).open(); // complete
         registerState(3142, Material.ACACIA_DOOR).facing(Facing.WEST).open(); // complete
         registerState(3143, Material.ACACIA_DOOR).facing(Facing.NORTH).open(); // complete
-        registerState(3144, Material.ACACIA_DOOR).hinge(HingePosition.LEFT); // complete
-        registerState(3145, Material.ACACIA_DOOR).hinge(HingePosition.RIGHT); // complete
-        registerState(3146, Material.ACACIA_DOOR).hinge(HingePosition.LEFT).powered(); // complete
-        registerState(3147, Material.ACACIA_DOOR).hinge(HingePosition.RIGHT).powered(); // complete
+        registerState(3144, Material.ACACIA_DOOR).hinge(HorizontalHalf.LEFT); // complete
+        registerState(3145, Material.ACACIA_DOOR).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(3146, Material.ACACIA_DOOR).hinge(HorizontalHalf.LEFT).powered(); // complete
+        registerState(3147, Material.ACACIA_DOOR).hinge(HorizontalHalf.RIGHT).powered(); // complete
         registerState(3152, Material.DARK_OAK_DOOR).facing(Facing.EAST); // complete
         registerState(3153, Material.DARK_OAK_DOOR).facing(Facing.SOUTH); // complete
         registerState(3154, Material.DARK_OAK_DOOR).facing(Facing.WEST); // complete
@@ -1431,10 +1436,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(3157, Material.DARK_OAK_DOOR).facing(Facing.SOUTH).open(); // complete
         registerState(3158, Material.DARK_OAK_DOOR).facing(Facing.WEST).open(); // complete
         registerState(3159, Material.DARK_OAK_DOOR).facing(Facing.NORTH).open(); // complete
-        registerState(3160, Material.DARK_OAK_DOOR).hinge(HingePosition.LEFT); // complete
-        registerState(3161, Material.DARK_OAK_DOOR).hinge(HingePosition.RIGHT); // complete
-        registerState(3162, Material.DARK_OAK_DOOR).hinge(HingePosition.LEFT).powered(); // complete
-        registerState(3163, Material.DARK_OAK_DOOR).hinge(HingePosition.RIGHT).powered(); // complete
+        registerState(3160, Material.DARK_OAK_DOOR).hinge(HorizontalHalf.LEFT); // complete
+        registerState(3161, Material.DARK_OAK_DOOR).hinge(HorizontalHalf.RIGHT); // complete
+        registerState(3162, Material.DARK_OAK_DOOR).hinge(HorizontalHalf.LEFT).powered(); // complete
+        registerState(3163, Material.DARK_OAK_DOOR).hinge(HorizontalHalf.RIGHT).powered(); // complete
     }
 
     private static DefaultBlockState registerState(int id, Material material) {

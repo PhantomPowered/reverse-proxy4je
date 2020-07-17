@@ -26,14 +26,15 @@ package com.github.derrop.proxy.api.player;
 
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
-import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.util.ProvidedTitle;
 import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +52,7 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
 
     void sendActionBar(int units, Component... message);
 
-    void appendActionBar(@NotNull Side side, @NotNull Supplier<String> message);
+    void appendActionBar(@NotNull HorizontalHalf side, @NotNull Supplier<String> message);
 
     void sendData(String channel, byte[] data);
 

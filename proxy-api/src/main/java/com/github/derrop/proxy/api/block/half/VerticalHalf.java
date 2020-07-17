@@ -22,9 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.block;
+package com.github.derrop.proxy.api.block.half;
 
-public enum Half {
+public enum VerticalHalf {
 
     TOP,
     BOTTOM

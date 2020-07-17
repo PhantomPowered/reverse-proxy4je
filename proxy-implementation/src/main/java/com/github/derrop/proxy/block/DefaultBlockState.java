@@ -25,6 +25,8 @@
 package com.github.derrop.proxy.block;
 
 import com.github.derrop.proxy.api.block.*;
+import com.github.derrop.proxy.api.block.half.HorizontalHalf;
+import com.github.derrop.proxy.api.block.half.VerticalHalf;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,8 +45,8 @@ public class DefaultBlockState implements BlockState {
     private double thickness;
     private int redstonePower;
     private Facing facing;
-    private HingePosition hingePosition;
-    private Half half;
+    private HorizontalHalf hingePosition;
+    private VerticalHalf half;
     private Facing.Axis axis;
     private boolean decayable;
     private boolean checkDecay;
@@ -108,13 +110,13 @@ public class DefaultBlockState implements BlockState {
     }
 
     @CanIgnoreReturnValue
-    DefaultBlockState hinge(HingePosition position) {
+    DefaultBlockState hinge(HorizontalHalf position) {
         this.hingePosition = position;
         return this;
     }
 
     @CanIgnoreReturnValue
-    DefaultBlockState half(Half position) {
+    DefaultBlockState half(VerticalHalf position) {
         this.half = position;
         return this;
     }
@@ -331,7 +333,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @Override
-    public @Nullable Half getHalf() {
+    public @Nullable VerticalHalf getHalf() {
         return this.half;
     }
 
@@ -396,7 +398,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @Override
-    public HingePosition getHingePosition() {
+    public HorizontalHalf getHingePosition() {
         return this.hingePosition;
     }
 
