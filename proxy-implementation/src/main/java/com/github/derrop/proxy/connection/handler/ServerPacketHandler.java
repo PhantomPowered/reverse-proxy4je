@@ -102,7 +102,7 @@ public class ServerPacketHandler {
             }
             EntityStatusType statusType = EntityStatusType.ofOtherEntity(entity.getClass(), packet.getStatus());
             if (statusType == null) {
-                System.err.println("Unknown EntityStatusType received: " + packet.getStatus() + " for entity " + packet.getEntityId());
+                System.err.printf("Unknown EntityStatusType received: %s for entity %d (type: %s)", packet.getStatus(), packet.getEntityId(), entity.getType() == null ? entity.getLivingType() : entity.getType());
                 return;
             }
 
