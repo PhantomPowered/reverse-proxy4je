@@ -33,7 +33,8 @@ public class LanguageDetector extends MessageRegistry {
         this.registerRankMessage(Language.NORWAY, "Din rang:");
         this.registerRankMessage(Language.AUSTRIA, "Dei Rong:");
         this.registerRankMessage(Language.SPANISH, "Tu rango:");
-        this.registerRankMessage(Language.PORTUGUESE, "A tua posição:");
+        this.registerRankMessage(Language.PORTUGAL, "A tua posição:");
+        this.registerRankMessage(Language.BRAZIL, "Tempo de jogo:");
         this.registerRankMessage(Language.CZECH, "Tvůj rank:");
         this.registerRankMessage(Language.SWEDISH, "Din rank:");
         this.registerRankMessage(Language.HUNGARIAN, "Rangod:");
@@ -52,7 +53,8 @@ public class LanguageDetector extends MessageRegistry {
         this.registerSelectMessage(Language.NORWAY, "Språket ditt er nå norsk (Norge)");
         this.registerSelectMessage(Language.AUSTRIA, "Dei Sproch is jetz Deutsch (Österreich)");
         this.registerSelectMessage(Language.SPANISH, "Se ha ajustado el idioma a español (España)");
-        this.registerSelectMessage(Language.PORTUGUESE, "Your language is now português (Portugal)");
+        this.registerSelectMessage(Language.PORTUGAL, "Your language is now português (Portugal)");
+        this.registerSelectMessage(Language.BRAZIL, "Your language is now português (Brasil)");
         this.registerSelectMessage(Language.CZECH, "Změnil sis jazyk na čeština (Česká republika)");
         this.registerSelectMessage(Language.SWEDISH, "Ditt språk är nu svenska (Sverige)");
         this.registerSelectMessage(Language.HUNGARIAN, "Your language is now magyar (Magyarország)");
