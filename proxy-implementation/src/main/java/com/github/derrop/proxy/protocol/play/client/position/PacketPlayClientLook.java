@@ -78,4 +78,12 @@ public class PacketPlayClientLook extends PacketPlayClientPlayerPosition {
                 new Location(before.getX(), before.getY(), before.getZ(), this.yaw, this.pitch, super.isOnGround()) :
                 new Location(-1, -1, -1, this.yaw, this.pitch, super.isOnGround());
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayClientLook{" +
+                "yaw=" + yaw +
+                ", pitch=" + pitch +
+                "} " + super.toString();
+    }
 }

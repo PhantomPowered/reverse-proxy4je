@@ -40,10 +40,17 @@ public class PacketPlayClientCommand implements Packet {
         return ProtocolIds.FromClient.Play.CLIENT_COMMAND;
     }
 
+    @Override
+    public String toString() {
+        return "PacketPlayClientCommand{" +
+                "action=" + action +
+                '}';
+    }
+
     public enum Action {
         PERFORM_RESPAWN,
         REQUEST_STATS,
-        OPEN_INVENTORY_ACHIEVEMENT,
+        OPEN_INVENTORY,
         ;
     }
 

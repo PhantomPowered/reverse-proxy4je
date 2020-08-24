@@ -64,4 +64,9 @@ public class PacketPlayClientPlayerPosition implements Packet {
     public int getId() {
         return ProtocolIds.FromClient.Play.FLYING;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayClientPlayerPosition{" + "onGround=" + onGround + '}';
+    }
 }

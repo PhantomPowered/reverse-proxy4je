@@ -84,4 +84,13 @@ public class PacketPlayClientPosition extends PacketPlayClientPlayerPosition {
     public Location getLocation(@Nullable Location before) {
         return new Location(this.x, this.y, this.z, before != null ? before.getYaw() : -1, before != null ? before.getPitch() : -1, super.isOnGround());
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayClientPosition{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                "} " + super.toString();
+    }
 }

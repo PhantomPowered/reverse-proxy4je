@@ -511,7 +511,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
-        if (this.client == null || this.client.getRedirector() == null) {
+        if (this.client == null) {
             return;
         }
 
@@ -520,7 +520,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void sendPacket(@NotNull ByteBuf byteBuf) {
-        if (this.client == null || this.client.getRedirector() == null) {
+        if (this.client == null) {
             return;
         }
 
