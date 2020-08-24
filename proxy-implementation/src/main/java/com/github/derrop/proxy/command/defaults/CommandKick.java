@@ -32,7 +32,7 @@ import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -40,7 +40,7 @@ import java.util.Arrays;
 public class CommandKick extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
-    
+
     public CommandKick(ServiceRegistry registry) {
         super("proxy.command.kick", null);
         this.registry = registry;

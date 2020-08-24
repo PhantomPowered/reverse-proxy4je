@@ -29,8 +29,8 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientUpdateSign implements Packet {
@@ -68,7 +68,7 @@ public class PacketPlayClientUpdateSign implements Packet {
         this.lines = new Component[4];
 
         for (int i = 0; i < 4; i++) {
-            this.lines[i] = GsonComponentSerializer.INSTANCE.deserialize(protoBuf.readString());
+            this.lines[i] = GsonComponentSerializer.gson().deserialize(protoBuf.readString());
         }
     }
 
@@ -77,7 +77,7 @@ public class PacketPlayClientUpdateSign implements Packet {
         protoBuf.writeLocation(this.location);
 
         for (int i = 0; i < 4; i++) {
-            protoBuf.writeString(GsonComponentSerializer.INSTANCE.serialize(this.lines[i]));
+            protoBuf.writeString(GsonComponentSerializer.gson().serialize(this.lines[i]));
         }
     }
 

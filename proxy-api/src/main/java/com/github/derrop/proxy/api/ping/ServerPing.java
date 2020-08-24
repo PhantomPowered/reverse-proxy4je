@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.ping;
 
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 

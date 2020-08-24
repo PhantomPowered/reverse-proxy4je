@@ -6,7 +6,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.util.Utils;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

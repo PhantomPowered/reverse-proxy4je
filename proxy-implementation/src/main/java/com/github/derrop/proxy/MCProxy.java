@@ -48,7 +48,6 @@ import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.PasteServerProvider;
-import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
@@ -61,7 +60,6 @@ import com.github.derrop.proxy.connection.handler.PingPacketHandler;
 import com.github.derrop.proxy.connection.handler.ServerPacketHandler;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.derrop.proxy.connection.player.DefaultPlayerRepository;
-import com.github.derrop.proxy.connection.player.title.BasicTitle;
 import com.github.derrop.proxy.connection.whitelist.DefaultWhitelist;
 import com.github.derrop.proxy.entity.EntityTickHandler;
 import com.github.derrop.proxy.event.DefaultEventManager;
@@ -78,7 +76,7 @@ import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
 import com.github.derrop.proxy.util.DefaultPasteServerProvider;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -91,11 +89,8 @@ import java.util.concurrent.TimeUnit;
 public class MCProxy extends Proxy {
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
-
     private final ProxyServer proxyServer = new ProxyServer(this);
-
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
-
     private final Collection<Tickable> tickables = new CopyOnWriteArrayList<>();
 
     protected MCProxy() {
@@ -167,11 +162,6 @@ public class MCProxy extends Proxy {
         this.tickables.add(tickable);
     }
 
-    @Override
-    public @NotNull ProvidedTitle createTitle() {
-        return new BasicTitle();
-    }
-
     public SimpleChannelInitializer getBaseChannelInitializer() {
         return this.baseChannelInitializer;
     }
@@ -220,7 +210,7 @@ public class MCProxy extends Proxy {
         this.startMainLoop();
 
         double bootTime = (System.currentTimeMillis() - start) / 1000d;
-        System.out.println(String.format("Done! (%ss)", new DecimalFormat("##.###").format(bootTime)));
+        System.out.printf("Done! (%ss)%n", new DecimalFormat("##.###").format(bootTime));
     }
 
     private void readAccounts() {

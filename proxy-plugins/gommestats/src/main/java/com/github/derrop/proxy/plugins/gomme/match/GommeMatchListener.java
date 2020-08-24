@@ -49,7 +49,7 @@ import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreJoinEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.cores.CoreLeaveEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndDisconnectedEvent;
 import com.github.derrop.proxy.plugins.gomme.match.event.global.match.MatchEndLeftEvent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -201,9 +201,7 @@ public class GommeMatchListener {
             return;
         }
 
-        String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
-
+        String message = ChatColor.stripColor(LegacyComponentSerializer.legacySection().serialize(event.getMessage()));
         this.matchManager.getMessageRegistry().createMatchEvent(match.getSelectedLanguage(), match.getGameMode(), message).ifPresent(match::callEvent);
     }
-
 }

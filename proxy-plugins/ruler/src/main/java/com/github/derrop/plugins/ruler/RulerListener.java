@@ -9,7 +9,7 @@ import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerInteractEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 
 public class RulerListener {
 
@@ -64,5 +64,4 @@ public class RulerListener {
 
         event.getPlayer().sendActionBar(1, TextComponent.of(text));
     }
-
 }

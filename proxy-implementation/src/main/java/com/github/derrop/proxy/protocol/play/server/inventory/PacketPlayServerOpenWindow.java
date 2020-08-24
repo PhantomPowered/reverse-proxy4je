@@ -5,8 +5,8 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerOpenWindow implements Packet, EntityPacket {
@@ -74,7 +74,7 @@ public class PacketPlayServerOpenWindow implements Packet, EntityPacket {
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.windowId = protoBuf.readUnsignedByte();
         this.inventoryType = protoBuf.readString();
-        this.windowTitle = GsonComponentSerializer.INSTANCE.deserialize(protoBuf.readString());
+        this.windowTitle = GsonComponentSerializer.gson().deserialize(protoBuf.readString());
         this.slotCount = protoBuf.readUnsignedByte();
 
         if (this.inventoryType.equals("EntityHorse")) {
@@ -86,7 +86,7 @@ public class PacketPlayServerOpenWindow implements Packet, EntityPacket {
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeByte(this.windowId);
         protoBuf.writeString(this.inventoryType);
-        protoBuf.writeString(GsonComponentSerializer.INSTANCE.serialize(this.windowTitle));
+        protoBuf.writeString(GsonComponentSerializer.gson().serialize(this.windowTitle));
         protoBuf.writeByte(this.slotCount);
 
         if (this.inventoryType.equals("EntityHorse")) {

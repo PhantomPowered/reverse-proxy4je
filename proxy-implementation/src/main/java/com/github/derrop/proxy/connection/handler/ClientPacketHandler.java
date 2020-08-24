@@ -9,8 +9,6 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.player.GameMode;
-import com.github.derrop.proxy.api.player.inventory.ClickType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.event.Event;
@@ -25,6 +23,8 @@ import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInter
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
+import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.player.inventory.ClickType;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.item.ProxyItemStack;
@@ -43,7 +43,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteR
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
 
@@ -280,12 +280,12 @@ public class ClientPacketHandler {
             return;
         }
 
-        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, ChatMessageType.CHAT, LegacyComponentSerializer.legacy().deserialize(chat.getMessage()));
+        ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, ChatMessageType.CHAT, LegacyComponentSerializer.legacySection().deserialize(chat.getMessage()));
         if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
-        chat.setMessage(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
+        chat.setMessage(LegacyComponentSerializer.legacySection().serialize(event.getMessage()));
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)

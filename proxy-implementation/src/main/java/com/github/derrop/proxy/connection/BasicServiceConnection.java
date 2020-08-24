@@ -63,8 +63,8 @@ import com.github.derrop.proxy.protocol.rewrite.EntityRewrite_1_8;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -319,12 +319,12 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void chat(@NotNull Component component) {
-        this.chat(GsonComponentSerializer.INSTANCE.serialize(component));
+        this.chat(GsonComponentSerializer.gson().serialize(component));
     }
 
     @Override
     public void displayMessage(@NotNull ChatMessageType type, @NotNull Component component) {
-        this.displayMessage(type, GsonComponentSerializer.INSTANCE.serialize(component));
+        this.displayMessage(type, GsonComponentSerializer.gson().serialize(component));
     }
 
     @Override

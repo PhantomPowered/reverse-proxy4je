@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.account;
 
-import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
@@ -32,7 +31,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,13 +51,10 @@ public class BanTester {
 
     private static final Path DATA_PATH = Paths.get("proxy_info.txt");
 
-    private final MCProxy proxy;
-    
     private NetworkAddress[] proxies;
     private int currentProxyIndex = 0;
 
-    public BanTester(MCProxy proxy) {
-        this.proxy = proxy;
+    public BanTester() {
         try {
             this.init();
         } catch (IOException exception) {
@@ -121,7 +117,7 @@ public class BanTester {
                     return false;
                 }
 
-                kickReason = proxyClient.getLastKickReason() == null ? null : GsonComponentSerializer.INSTANCE.serialize(proxyClient.getLastKickReason());
+                kickReason = proxyClient.getLastKickReason() == null ? null : GsonComponentSerializer.gson().serialize(proxyClient.getLastKickReason());
             } catch (Exception exception) {
                 if (exception.getCause() instanceof KickedException) {
                     kickReason = ChatColor.stripColor(exception.getMessage());

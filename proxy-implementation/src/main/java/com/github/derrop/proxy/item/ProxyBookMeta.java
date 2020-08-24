@@ -28,8 +28,8 @@ import com.github.derrop.proxy.api.item.BookMeta;
 import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.api.nbt.NBTTagList;
 import com.github.derrop.proxy.api.nbt.NBTTagString;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,7 +75,7 @@ public class ProxyBookMeta extends ProxyItemMeta implements BookMeta {
                 String page = pages.getStringTagAt(i);
                 if (resolved) {
                     try {
-                        this.pages.add((TextComponent) GsonComponentSerializer.INSTANCE.deserialize(page));
+                        this.pages.add((TextComponent) GsonComponentSerializer.gson().deserialize(page));
                     } catch (Throwable ignored) {
                     }
                 } else {
@@ -191,7 +191,7 @@ public class ProxyBookMeta extends ProxyItemMeta implements BookMeta {
         if (this.hasPages()) {
             compound.setTag(BookMetaKeys.PAGES, new NBTTagList());
             for (TextComponent page : this.pages) {
-                compound.getTagList(BookMetaKeys.PAGES, NbtTagNumbers.TAG_STRING).appendTag(new NBTTagString(GsonComponentSerializer.INSTANCE.serialize(page)));
+                compound.getTagList(BookMetaKeys.PAGES, NbtTagNumbers.TAG_STRING).appendTag(new NBTTagString(GsonComponentSerializer.gson().serialize(page)));
             }
 
             compound.setBoolean(BookMetaKeys.RESOLVED, true);

@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.item;
 
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

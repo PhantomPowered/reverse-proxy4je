@@ -39,7 +39,7 @@ import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
 import com.mojang.authlib.UserAuthentication;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,16 +51,20 @@ import java.util.UUID;
 public interface ServiceConnection extends Connection, AutoCloseable {
 
     @NotNull
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     Proxy getProxy();
 
     @Nullable
     Player getPlayer();
 
-    Location getLocation(); // klaro - pail
+    @ApiStatus.Experimental
+    Location getLocation();
 
-    void setLocation(Location location); // klaro - pail
+    @ApiStatus.Experimental
+    void setLocation(Location location);
 
-    int getDimension(); // klaro - pail
+    int getDimension();
 
     long getLastDisconnectionTimestamp();
 

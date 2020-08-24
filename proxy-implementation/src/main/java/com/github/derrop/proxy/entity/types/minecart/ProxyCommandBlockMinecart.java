@@ -24,13 +24,13 @@
  */
 package com.github.derrop.proxy.entity.types.minecart;
 
-import com.github.derrop.proxy.api.entity.types.minecart.CommandBlockMinecart;
 import com.github.derrop.proxy.api.entity.EntityType;
+import com.github.derrop.proxy.api.entity.types.minecart.CommandBlockMinecart;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 public class ProxyCommandBlockMinecart extends ProxyMinecart implements CommandBlockMinecart {
 
@@ -46,6 +46,6 @@ public class ProxyCommandBlockMinecart extends ProxyMinecart implements CommandB
     @Override
     public String getLastOutput() {
         String data = this.objectList.getString(24);
-        return data == null ? null : ((TextComponent) GsonComponentSerializer.INSTANCE.deserialize(data)).content();
+        return data == null ? null : ((TextComponent) GsonComponentSerializer.gson().deserialize(data)).content();
     }
 }

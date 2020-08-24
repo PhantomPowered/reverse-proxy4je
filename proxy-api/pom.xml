@@ -17,24 +17,32 @@
     <dependencies>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-api</artifactId>
-            <version>3.0.4</version>
+            <artifactId>adventure-api</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-serializer-gson</artifactId>
-            <version>3.0.4</version>
+            <artifactId>adventure-text-serializer-gson</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-serializer-legacy</artifactId>
-            <version>3.0.4</version>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>text-serializer-plain</artifactId>
-            <version>3.0.4</version>
+            <artifactId>adventure-text-serializer-plain</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
@@ -42,12 +50,18 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-buffer</artifactId>
+            <version>4.1.51.Final</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
+            <artifactId>netty-transport</artifactId>
             <version>4.1.51.Final</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -65,33 +79,10 @@
         </dependency>
 
         <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>brigadier</artifactId>
-            <version>1.0.16-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.trove4j</groupId>
-            <artifactId>core</artifactId>
-            <version>3.1.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
             <version>1.5.21</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>jline</groupId>
-            <artifactId>jline</artifactId>
-            <version>2.14.6</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
-
-
 </project>

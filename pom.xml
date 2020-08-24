@@ -25,6 +25,7 @@
             <id>minecraft</id>
             <url>https://libraries.minecraft.net/</url>
         </repository>
+
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -36,7 +37,7 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>20.0.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -53,5 +54,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -29,8 +29,6 @@ import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
@@ -38,14 +36,18 @@ import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
-import com.github.derrop.proxy.api.session.ProvidedSessionService;
-import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
+import com.github.derrop.proxy.api.session.ProvidedSessionService;
+import com.github.derrop.proxy.api.task.DefaultTask;
+import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
+import com.github.derrop.proxy.connection.player.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
@@ -61,8 +63,6 @@ import com.github.derrop.proxy.protocol.play.client.inventory.PacketPlayClientHe
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.connection.player.scoreboard.BasicScoreboard;
-import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
 import com.github.derrop.proxy.util.NettyUtils;
@@ -75,9 +75,9 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -169,12 +169,13 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
 
         if (this.connectionHandler != null) {
             if (this.lastKickReason != null) {
-                this.connectionHandler.completeExceptionally(new KickedException(LegacyComponentSerializer.legacy().serialize(this.lastKickReason)));
+                this.connectionHandler.completeExceptionally(new KickedException(LegacyComponentSerializer.legacySection().serialize(this.lastKickReason)));
             } else {
                 this.connectionHandler.complete(false);
             }
             this.connectionHandler = null;
         }
+
         this.lastKickReason = null;
         this.lastAlivePacket = -1;
         this.velocityHandler = new PlayerVelocityHandler(this);
@@ -197,7 +198,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
 
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
-            protected void initChannel(Channel ch) throws Exception {
+            protected void initChannel(Channel ch) {
                 ConnectedProxyClient.this.proxy.getBaseChannelInitializer().initChannel(ch);
 
                 if (proxy != null) {
@@ -497,7 +498,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
 
     public void connectionFailed() {
         if (this.connectionHandler != null) {
-            this.connectionHandler.completeExceptionally(new KickedException(GsonComponentSerializer.INSTANCE.serialize(this.lastKickReason)));
+            this.connectionHandler.completeExceptionally(new KickedException(GsonComponentSerializer.gson().serialize(this.lastKickReason)));
             this.connectionHandler = null;
         }
     }
@@ -511,7 +512,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         this.receivedServerDisconnect = true;
 
         System.out.println("Disconnected " + this.getCredentials() + " (" + this.getAccountName() + "#" + this.getAccountUUID() + ") with "
-                + LegacyComponentSerializer.legacy().serialize(reason));
+                + LegacyComponentSerializer.legacySection().serialize(reason));
 
         if (this.getRedirector() != null) {
             Player con = this.getRedirector();

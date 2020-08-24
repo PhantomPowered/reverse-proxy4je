@@ -29,8 +29,8 @@ import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.logging.ProxyLogLevels;
 import com.github.derrop.proxy.logging.ProxyLogger;
-import net.kyori.text.Component;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class ConsoleCommandSender implements CommandSender {
 
     @Override
     public void sendMessage(@NotNull Component component) {
-        this.sendMessage(LegacyComponentSerializer.legacy().serialize(component));
+        this.sendMessage(LegacyComponentSerializer.legacySection().serialize(component));
     }
 
     @Override

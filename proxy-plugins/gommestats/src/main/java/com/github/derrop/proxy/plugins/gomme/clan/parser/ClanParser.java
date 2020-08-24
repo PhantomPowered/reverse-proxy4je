@@ -17,7 +17,7 @@ import com.github.derrop.proxy.plugins.gomme.clan.ClanMember;
 import com.github.derrop.proxy.plugins.gomme.clan.ClanMessageRegistry;
 import com.github.derrop.proxy.plugins.gomme.messages.Language;
 import com.google.common.base.Preconditions;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -80,7 +80,7 @@ public class ClanParser {
             return;
         }
 
-        String input = LegacyComponentSerializer.legacy().serialize(event.getMessage());
+        String input = LegacyComponentSerializer.legacySection().serialize(event.getMessage());
 
         this.messageRegistry.getMessage(language, GommeServerType.LOBBY, input).ifPresent(message -> {
             event.cancel(true);

@@ -35,10 +35,10 @@ import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPlug
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class ServerPacketHandler {
 
@@ -66,8 +66,8 @@ public class ServerPacketHandler {
             return;
         }
 
-        Component component = GsonComponentSerializer.INSTANCE.deserialize(packet.getMessage());
-        String original = LegacyComponentSerializer.legacy().serialize(component);
+        Component component = GsonComponentSerializer.gson().deserialize(packet.getMessage());
+        String original = LegacyComponentSerializer.legacySection().serialize(component);
 
         for (AppendedActionBar actionBar : player.getActionBars()) {
             String message = actionBar.getMessage().get();
@@ -79,7 +79,7 @@ public class ServerPacketHandler {
             original = side == HorizontalHalf.LEFT ? message + original : original + message;
         }
 
-        packet.setMessage(GsonComponentSerializer.INSTANCE.serialize(TextComponent.of(original)));
+        packet.setMessage(GsonComponentSerializer.gson().serialize(TextComponent.of(original)));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_STATUS, directions = ProtocolDirection.TO_CLIENT)
@@ -193,7 +193,7 @@ public class ServerPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.KICK_DISCONNECT, directions = ProtocolDirection.TO_CLIENT)
     public void handleKick(ConnectedProxyClient client, PacketPlayServerKickPlayer kick) throws Exception {
-        Component reason = GsonComponentSerializer.INSTANCE.deserialize(kick.getMessage());
+        Component reason = GsonComponentSerializer.gson().deserialize(kick.getMessage());
 
         client.handleDisconnect(reason);
         client.setLastKickReason(reason);
@@ -207,12 +207,12 @@ public class ServerPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerChatMessage chat) throws Exception {
-        ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], GsonComponentSerializer.INSTANCE.deserialize(chat.getMessage()));
+        ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], GsonComponentSerializer.gson().deserialize(chat.getMessage()));
         if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
-        chat.setMessage(GsonComponentSerializer.INSTANCE.serialize(event.getMessage()));
+        chat.setMessage(GsonComponentSerializer.gson().serialize(event.getMessage()));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.TAB_COMPLETE, directions = ProtocolDirection.TO_CLIENT)

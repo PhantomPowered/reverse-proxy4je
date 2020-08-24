@@ -48,26 +48,24 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
-import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.github.derrop.proxy.connection.*;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.message.*;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import io.netty.buffer.ByteBuf;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -75,6 +73,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
 public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
+
+    private static final long ONE_TICK_IN_MILLISECONDS = 50;
 
     public DefaultPlayer(MCProxy proxy, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
         super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
@@ -147,7 +147,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendMessage(ChatMessageType position, Component message) {
-        this.sendMessage(position, GsonComponentSerializer.INSTANCE.serialize(message));
+        this.sendMessage(position, GsonComponentSerializer.gson().serialize(message));
     }
 
     @Override
@@ -265,24 +265,55 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         this.connectedClient.chat(message);
     }
 
-    // TODO: replace all tablist method
-
     @Override
-    public void setTabHeader(Component header, Component footer) {
+    public void setTabHeaderAndFooter(Component header, Component footer) {
         this.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
-                GsonComponentSerializer.INSTANCE.serialize(header),
-                GsonComponentSerializer.INSTANCE.serialize(footer)
+                GsonComponentSerializer.gson().serialize(header),
+                GsonComponentSerializer.gson().serialize(footer)
         ));
     }
 
     @Override
     public void resetTabHeader() {
-        this.setTabHeader(TextComponent.empty(), TextComponent.empty());
+        this.setTabHeaderAndFooter(TextComponent.empty(), TextComponent.empty());
     }
 
     @Override
-    public void sendTitle(ProvidedTitle providedTitle) {
-        providedTitle.send(this);
+    public void sendTitle(Title title) {
+        PacketPlayServerTitle titlePacket = new PacketPlayServerTitle();
+        titlePacket.setAction(PacketPlayServerTitle.Action.TITLE);
+        titlePacket.setText(GsonComponentSerializer.gson().serialize(title.title()));
+        this.sendPacket(titlePacket);
+
+        PacketPlayServerTitle subTitlePacket = new PacketPlayServerTitle();
+        titlePacket.setAction(PacketPlayServerTitle.Action.SUBTITLE);
+        titlePacket.setText(GsonComponentSerializer.gson().serialize(title.subtitle()));
+        this.sendPacket(subTitlePacket);
+
+        PacketPlayServerTitle timesPacket = new PacketPlayServerTitle();
+        timesPacket.setAction(PacketPlayServerTitle.Action.TIMES);
+        Title.Times times = title.times();
+        if (times != null) {
+            timesPacket.setFadeIn((int) (times.fadeIn().toMillis() / ONE_TICK_IN_MILLISECONDS));
+            timesPacket.setStay((int) (times.stay().toMillis() / ONE_TICK_IN_MILLISECONDS));
+            timesPacket.setFadeOut((int) (times.fadeOut().toMillis() / ONE_TICK_IN_MILLISECONDS));
+        }
+
+        this.sendPacket(timesPacket);
+    }
+
+    @Override
+    public void clearTitle() {
+        PacketPlayServerTitle packetPlayServerTitle = new PacketPlayServerTitle();
+        packetPlayServerTitle.setAction(PacketPlayServerTitle.Action.CLEAR);
+        this.sendPacket(packetPlayServerTitle);
+    }
+
+    @Override
+    public void resetTitle() {
+        PacketPlayServerTitle packetPlayServerTitle = new PacketPlayServerTitle();
+        packetPlayServerTitle.setAction(PacketPlayServerTitle.Action.RESET);
+        this.sendPacket(packetPlayServerTitle);
     }
 
     @Override
@@ -307,7 +338,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendMessage(@NotNull String message) {
-        this.sendMessage(ChatMessageType.CHAT, LegacyComponentSerializer.legacyLinking().deserialize(Constants.MESSAGE_PREFIX + message));
+        this.sendMessage(ChatMessageType.CHAT, LegacyComponentSerializer.legacySection().deserialize(Constants.MESSAGE_PREFIX + message));
     }
 
     @Override
@@ -365,21 +396,20 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
         ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
-            this.disconnect(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
-                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacy().serialize(reason));
+            this.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
+                    + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacySection().serialize(reason)));
             return;
         }
 
-        Component actionBar = LegacyComponentSerializer.legacyLinking().deserialize(LegacyComponentSerializer.legacy().serialize(reason).replace('\n', ' '));
+        Component actionBar = LegacyComponentSerializer.legacySection().deserialize(LegacyComponentSerializer.legacySection().serialize(reason).replace('\n', ' '));
         this.sendMessage(ChatMessageType.CHAT, reason);
         this.sendActionBar(200, actionBar);
 
-        ProvidedTitle title = this.proxy
-                .createTitle()
-                .title("§cDisconnected")
-                .fadeIn(20)
-                .stay(100)
-                .fadeOut(20);
+        Title title = Title.of(
+                TextComponent.of("§cDisconnected"),
+                TextComponent.empty(),
+                Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(5), Duration.ofSeconds(1))
+        );
         this.sendTitle(title);
         this.useClient(nextClient);
     }
@@ -395,6 +425,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         if (connection instanceof BasicServiceConnection) {
             ((BasicServiceConnection) connection).getEntityRewrite().updatePacketToClient(packet, connection.getEntityId(), this.entityId);
         }
+
         this.channel.write(packet);
     }
 
@@ -478,7 +509,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
             reason = event.getReason();
         }
 
-        this.channel.close(new PacketPlayServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
+        this.channel.close(new PacketPlayServerKickPlayer(GsonComponentSerializer.gson().serialize(reason)));
         if (this.connectedClient != null && this.connectedClient instanceof BasicServiceConnection) {
             ((BasicServiceConnection) this.connectedClient).getClient().free();
         }

@@ -29,10 +29,6 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.kqueue.KQueue;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
-import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
@@ -57,17 +53,15 @@ public final class NettyUtils {
     public static EventLoopGroup newEventLoopGroup() {
         return Epoll.isAvailable() ?
                 new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory()) :
-                KQueue.isAvailable() ?
-                        new KQueueEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory()) :
-                        new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory());
+                new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory());
     }
 
     public static Class<? extends SocketChannel> getSocketChannelClass() {
-        return Epoll.isAvailable() ? EpollSocketChannel.class : KQueue.isAvailable() ? KQueueSocketChannel.class : NioSocketChannel.class;
+        return Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class;
     }
 
     public static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
-        return Epoll.isAvailable() ? EpollServerSocketChannel.class : KQueue.isAvailable() ? KQueueServerSocketChannel.class : NioServerSocketChannel.class;
+        return Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
     }
 
     @NotNull

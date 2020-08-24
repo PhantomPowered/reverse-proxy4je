@@ -4,10 +4,10 @@ import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.ChatEvent;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import com.github.derrop.proxy.api.player.id.PlayerId;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,11 +17,8 @@ import java.util.regex.Pattern;
 public class AutoMsgListener {
 
     private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss:SSS");
-
     private static final Pattern MSG_PATTERN = Pattern.compile("\\[Freunde] (\\S+) » (\\S+): (.*)");
-
     private static final Pattern PARTY_RECEIVE_PATTERN = Pattern.compile("\\[Party] (\\S+) hat dich in eine Party eingeladen");
-
     private final AutoMsgDatabase database;
 
     public AutoMsgListener(AutoMsgDatabase database) {
@@ -39,7 +36,7 @@ public class AutoMsgListener {
             return;
         }
 
-        String message = ChatColor.stripColor(LegacyComponentSerializer.legacy().serialize(event.getMessage()));
+        String message = ChatColor.stripColor(LegacyComponentSerializer.legacySection().serialize(event.getMessage()));
 
         this.testPartyReceive(connection, message);
         this.testMsg(connection, message);

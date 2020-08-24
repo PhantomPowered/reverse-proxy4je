@@ -25,14 +25,12 @@
 package com.github.derrop.proxy.api;
 
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.ProvidedTitle;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated // TODO: replace this shit of stupid code - it's completely unused at all
+@ApiStatus.ScheduledForRemoval
 public abstract class Proxy {
-
-    @NotNull
-    public abstract ProvidedTitle createTitle();
 
     @NotNull
     public abstract ServiceRegistry getServiceRegistry();

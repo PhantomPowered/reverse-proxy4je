@@ -26,7 +26,6 @@ package com.github.derrop.proxy.api.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.xbill.DNS.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -72,7 +71,7 @@ public class NetworkAddress {
 
         String host = null;
         if (hostAndPort[0].split("\\.").length != 4) {
-            SRVRecord record = lookupMinecraftSRVRecord(rawHost);
+            org.xbill.DNS.SRVRecord record = lookupMinecraftSRVRecord(rawHost);
             if (record != null) {
                 host = record.getTarget().toString(true);
                 port = record.getPort();
@@ -104,19 +103,19 @@ public class NetworkAddress {
         return new NetworkAddress(rawHost, host, port);
     }
 
-    public static SRVRecord lookupMinecraftSRVRecord(String host) {
+    public static org.xbill.DNS.SRVRecord lookupMinecraftSRVRecord(String host) {
         try {
-            Record[] records = new Lookup("_minecraft._tcp." + host, Type.SRV).run();
+            org.xbill.DNS.Record[] records = new org.xbill.DNS.Lookup("_minecraft._tcp." + host, org.xbill.DNS.Type.SRV).run();
             if (records == null) {
                 return null;
             }
 
-            for (Record record : records) {
-                return (SRVRecord) record;
+            for (org.xbill.DNS.Record record : records) {
+                return (org.xbill.DNS.SRVRecord) record;
             }
 
             return null;
-        } catch (TextParseException exception) {
+        } catch (org.xbill.DNS.TextParseException exception) {
             exception.printStackTrace();
             return null;
         }

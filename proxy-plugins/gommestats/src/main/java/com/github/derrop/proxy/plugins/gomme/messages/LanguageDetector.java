@@ -11,7 +11,7 @@ import com.github.derrop.proxy.plugins.gomme.GommeConstants;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Map;
 
@@ -107,7 +107,7 @@ public class LanguageDetector extends MessageRegistry {
             return;
         }
 
-        String input = LegacyComponentSerializer.legacy().serialize(event.getMessage());
+        String input = LegacyComponentSerializer.legacySection().serialize(event.getMessage());
         int breakIndex = input.indexOf('\n');
         if (breakIndex == -1) {
             return;

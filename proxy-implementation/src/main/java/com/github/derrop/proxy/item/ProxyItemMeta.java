@@ -24,19 +24,19 @@
  */
 package com.github.derrop.proxy.item;
 
-import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.item.*;
 import com.github.derrop.proxy.api.nbt.NBTBase;
 import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.api.nbt.NBTTagList;
 import com.github.derrop.proxy.api.nbt.NBTTagString;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Enums;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import net.kyori.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 

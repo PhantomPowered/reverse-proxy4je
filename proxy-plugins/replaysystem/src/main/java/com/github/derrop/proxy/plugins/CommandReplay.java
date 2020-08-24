@@ -30,8 +30,8 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.plugins.replay.ReplayInfo;
@@ -39,7 +39,7 @@ import com.github.derrop.proxy.plugins.replay.ReplayOutputStream;
 import com.github.derrop.proxy.plugins.replay.ReplaySystem;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

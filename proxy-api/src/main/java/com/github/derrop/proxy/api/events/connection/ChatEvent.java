@@ -28,16 +28,16 @@ import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.Connection;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.event.Cancelable;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class ChatEvent extends ConnectionEvent implements Cancelable {
 
     private boolean cancel;
+    private Component message;
+
     private final ProtocolDirection direction;
     private final ChatMessageType type;
-
-    private Component message;
 
     public ChatEvent(@NotNull Connection connection, @NotNull ProtocolDirection direction, @NotNull ChatMessageType type, @NotNull Component message) {
         super(connection);

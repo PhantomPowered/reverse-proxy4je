@@ -30,9 +30,7 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.console.ProxyConsole;
-import net.kyori.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CommandClear extends NonTabCompleteableCommandCallback {
 

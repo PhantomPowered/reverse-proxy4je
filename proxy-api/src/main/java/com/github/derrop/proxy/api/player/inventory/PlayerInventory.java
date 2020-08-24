@@ -1,8 +1,8 @@
 package com.github.derrop.proxy.api.player.inventory;
 
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.item.ItemStack;
-import net.kyori.text.Component;
+import com.github.derrop.proxy.api.player.Player;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 public interface PlayerInventory {

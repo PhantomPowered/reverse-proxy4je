@@ -1,16 +1,16 @@
 package com.github.derrop.proxy.connection.player;
 
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.inventory.InventoryType;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
-import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerCloseWindow;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.derrop.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: https://github.com/Exceptionflug/protocolize/

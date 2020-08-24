@@ -32,8 +32,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -62,7 +62,7 @@ public class JsonConfiguration implements Configuration {
         if (!Files.exists(PATH)) {
             this.jsonObject = new JsonObject();
             this.jsonObject.addProperty("proxyPort", 25565);
-//            this.jsonObject.addProperty("webPort", 80);
+            this.jsonObject.addProperty("webPort", 80);
             this.motd = new ServerPing(
                     new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
                     new ServerPing.Players(0, 0, null),

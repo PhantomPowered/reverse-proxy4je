@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.command.defaults;
 
 import com.github.derrop.proxy.api.Constants;
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -35,11 +34,12 @@ import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.util.ProvidedTitle;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 public class CommandConnect extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
-    
+
     public CommandConnect(ServiceRegistry registry) {
         super("proxy.command.connect", null);
         this.registry = registry;
@@ -59,16 +59,15 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         }
 
         Player player = connection.getPlayer();
-
         if (player != null) {
             player.disableAutoReconnect();
             player.useClient(null);
 
-            ProvidedTitle title = this.registry.getProviderUnchecked(Proxy.class)
-                    .createTitle()
-                    .title("§7Connecting to")
-                    .subTitle("§e" + address + "§7...")
-                    .stay(200);
+            Title title = Title.of(
+                    TextComponent.of("§7Connecting to"),
+                    TextComponent.of("§e" + address + "§7..."),
+                    Title.Times.of(Duration.ZERO, Duration.ofSeconds(20), Duration.ZERO)
+            );
             player.sendTitle(title);
         }
 
@@ -83,7 +82,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
 
             return newClient.connect().thenAccept(success -> {
                 if (player != null) {
-                    player.sendTitle(this.registry.getProviderUnchecked(Proxy.class).createTitle().reset());
+                    player.resetTitle();
                     player.enableAutoReconnect();
                     if (success) {
                         player.useClientSafe(newClient);
@@ -93,7 +92,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
                 }
             }).exceptionally(throwable -> {
                 if (player != null) {
-                    player.sendTitle(this.registry.getProviderUnchecked(Proxy.class).createTitle().reset());
+                    player.resetTitle();
                     player.sendActionBar(200, TextComponent.of(throwable.getMessage().replace('\n', ' ')));
                     this.fallback(player, connection, throwable);
                 }
@@ -109,15 +108,15 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
     private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
         ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player.getUniqueId());
         if (nextClient == null || nextClient.equals(oldClient)) {
-            player.disconnect(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason"));
+            player.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason")));
             return;
         }
 
-        player.getProxy().createTitle()
-                .title(TextComponent.of("§cFailed to connect"))
-                .subTitle(TextComponent.of(reason != null ? reason.getClass().getSimpleName() : "Unknown reason"))
-                .send(player);
-
+        Title title = Title.of(
+                TextComponent.of("§cFailed to connect"),
+                TextComponent.of(reason != null ? reason.getClass().getSimpleName() : "Unknown reason")
+        );
+        player.sendTitle(title);
         player.useClient(nextClient);
     }
 

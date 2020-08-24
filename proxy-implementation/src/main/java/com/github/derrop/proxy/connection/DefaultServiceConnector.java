@@ -9,7 +9,7 @@ import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,7 +75,7 @@ public class DefaultServiceConnector implements ServiceConnector {
     @Override
     public Optional<? extends ServiceConnection> getClientByName(String name) {
         return this.onlineClients.stream()
-                .filter(connection -> connection.getName().equals(name))
+                .filter(connection -> connection.getName() != null && connection.getName().equals(name))
                 .findFirst();
     }
 
@@ -104,7 +104,7 @@ public class DefaultServiceConnector implements ServiceConnector {
         this.setReconnectTarget(player.getUniqueId(), proxyClient.getUniqueId());
     }
 
-    public void unregisterConnection(ServiceConnection proxyClient) {
+    public void unregisterConnection(BasicServiceConnection proxyClient) {
         this.onlineClients.remove(proxyClient);
         proxyClient.close();
     }

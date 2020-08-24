@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.api.events.connection.player;
 
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.event.Cancelable;
-import net.kyori.text.Component;
+import com.github.derrop.proxy.api.player.Player;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

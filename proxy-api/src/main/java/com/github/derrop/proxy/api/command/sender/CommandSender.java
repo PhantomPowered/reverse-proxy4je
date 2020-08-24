@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.command.sender;
 
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

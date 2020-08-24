@@ -26,8 +26,8 @@ package com.github.derrop.proxy.api.command.basic;
 
 import com.github.derrop.proxy.api.command.CommandCallback;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

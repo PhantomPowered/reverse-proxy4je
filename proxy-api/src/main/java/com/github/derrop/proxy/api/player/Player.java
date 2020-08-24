@@ -35,8 +35,9 @@ import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
-import com.github.derrop.proxy.api.util.ProvidedTitle;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +45,8 @@ import java.util.function.Supplier;
 
 public interface Player extends OfflinePlayer, Connection, CommandSender, Entity {
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval
     Proxy getProxy();
 
     void sendMessage(ChatMessageType position, Component... messages);
@@ -71,15 +74,15 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
 
     void sendServerMessage(String message);
 
-    // todo: proper
-
-    void setTabHeader(Component header, Component footer);
+    void setTabHeaderAndFooter(Component header, Component footer);
 
     void resetTabHeader();
 
-    // end
+    void sendTitle(Title title);
 
-    void sendTitle(ProvidedTitle providedTitle);
+    void clearTitle();
+
+    void resetTitle();
 
     void sendBlockChange(Location pos, int blockState);
 

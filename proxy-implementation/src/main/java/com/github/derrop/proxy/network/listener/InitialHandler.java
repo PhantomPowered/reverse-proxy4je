@@ -28,8 +28,6 @@ import com.github.derrop.proxy.MCProxy;
 import com.github.derrop.proxy.api.Configuration;
 import com.github.derrop.proxy.api.Constants;
 import com.github.derrop.proxy.api.connection.*;
-import com.github.derrop.proxy.api.player.OfflinePlayer;
-import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
 import com.github.derrop.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
@@ -37,6 +35,8 @@ import com.github.derrop.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
+import com.github.derrop.proxy.api.player.OfflinePlayer;
+import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.util.Callback;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.LoginResult;
@@ -63,10 +63,10 @@ import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
 import com.github.derrop.proxy.util.HttpHelper;
 import com.github.derrop.proxy.util.Utils;
 import com.google.common.base.Preconditions;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
@@ -79,16 +79,11 @@ import java.util.UUID;
 
 public class InitialHandler {
 
-    static final String INIT_STATE = "initialState";
-
+    protected static final String INIT_STATE = "initialState";
     private final MCProxy proxy;
 
     public InitialHandler(MCProxy proxy) {
         this.proxy = proxy;
-    }
-
-    enum State {
-        HANDSHAKE, STATUS, PING, USERNAME, ENCRYPT, FINISHED
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
@@ -98,7 +93,7 @@ public class InitialHandler {
         ServerPing response = this.proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getMotd();
         ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
 
-        response.setDescription(TextComponent.of(LegacyComponentSerializer.legacy().serialize(response.getDescription())
+        response.setDescription(TextComponent.of(LegacyComponentSerializer.legacySection().serialize(response.getDescription())
                 .replace("$free", String.valueOf(connector.getFreeClients().size()))
                 .replace("$online", String.valueOf(connector.getOnlineClients().size()))
         ));
@@ -304,13 +299,22 @@ public class InitialHandler {
     static void disconnect(NetworkChannel channel, final Component reason) {
         if (canSendKickMessage(channel)) {
             if (channel.getProtocolState() == ProtocolState.PLAY) {
-                channel.delayedClose(new PacketPlayServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
+                channel.delayedClose(new PacketPlayServerKickPlayer(GsonComponentSerializer.gson().serialize(reason)));
             } else {
-                channel.delayedClose(new PacketLoginOutServerKickPlayer(GsonComponentSerializer.INSTANCE.serialize(reason)));
+                channel.delayedClose(new PacketLoginOutServerKickPlayer(GsonComponentSerializer.gson().serialize(reason)));
             }
         } else {
             channel.close();
         }
     }
 
+    enum State {
+
+        HANDSHAKE,
+        STATUS,
+        PING,
+        USERNAME,
+        ENCRYPT,
+        FINISHED
+    }
 }

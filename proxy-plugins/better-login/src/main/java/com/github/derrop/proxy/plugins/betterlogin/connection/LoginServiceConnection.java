@@ -32,8 +32,8 @@ import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlaySer
 import com.mojang.authlib.UserAuthentication;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -397,7 +397,8 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
 
     @Override
     public @NotNull NetworkUnsafe networkUnsafe() {
-        return packet -> {};
+        return packet -> {
+        };
     }
 
     @Override

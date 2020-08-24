@@ -10,9 +10,9 @@ import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import com.github.derrop.proxy.plugins.gomme.match.MatchManager;
-import net.kyori.text.TextComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -58,7 +58,6 @@ public class CommandMatch extends NonTabCompleteableCommandCallback {
                         .clickEvent(ClickEvent.runCommand("/proxy match createLog " + connection.getName()))
                         .hoverEvent(HoverEvent.showText(TextComponent.of("§7Click to create the log for this match")));
                 sender.sendMessage(component);
-
             }
 
             return CommandResult.SUCCESS;
@@ -84,5 +83,4 @@ public class CommandMatch extends NonTabCompleteableCommandCallback {
         sender.sendMessage("match info <ALL|name>");
         // TODO add commands to get/count matches in the past
     }
-
 }
