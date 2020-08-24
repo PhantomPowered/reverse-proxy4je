@@ -70,9 +70,7 @@ public enum Enchantment {
 
     static {
         for (Enchantment value : values()) {
-            if (value.getId() > 0) {
-                BY_ID.put(value.getId(), value);
-            }
+            BY_ID.put(value.getId(), value);
         }
     }
 
