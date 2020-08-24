@@ -210,7 +210,7 @@ public class MCProxy extends Proxy {
         this.startMainLoop();
 
         double bootTime = (System.currentTimeMillis() - start) / 1000d;
-        System.out.printf("Done! (%ss)%n", new DecimalFormat("##.###").format(bootTime));
+        System.out.println("Done! (" + new DecimalFormat("##.###").format(bootTime) + "s)");
     }
 
     private void readAccounts() {
