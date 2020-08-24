@@ -33,7 +33,7 @@ public final class Utils {
     @SuppressWarnings("unchecked")
     private static GsonBuilder populate(GsonBuilder gsonBuilder, GsonComponentSerializer instance) {
         try {
-            Field field = instance.getClass().getField("populator");
+            Field field = instance.getClass().getDeclaredField("populator");
             field.setAccessible(true);
             return ((UnaryOperator<GsonBuilder>) field.get(instance)).apply(gsonBuilder);
         } catch (NoSuchFieldException | IllegalAccessException exception) {
