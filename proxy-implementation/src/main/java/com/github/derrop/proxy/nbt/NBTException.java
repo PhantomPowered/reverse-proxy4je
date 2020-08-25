@@ -22,25 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api;
+package com.github.derrop.proxy.nbt;
 
-import com.github.derrop.proxy.api.ping.ServerPing;
+import java.io.IOException;
 
-public interface Configuration {
+public class NBTException extends IOException {
 
-    void load();
+    private static final long serialVersionUID = 2346883049850433257L;
 
-    void save();
+    public NBTException(String message, String json, int cursor) {
+        super(message + " at: " + slice(json, cursor));
+    }
 
-    int getProxyPort();
+    private static String slice(String json, int cursor) {
+        StringBuilder stringbuilder = new StringBuilder();
+        int i = Math.min(json.length(), cursor);
+        if (i > 35) {
+            stringbuilder.append("...");
+        }
 
-    void setProxyPort(int proxyPort);
-
-    int getWebPort();
-
-    void setWebPort(int webPort);
-
-    ServerPing getMotd();
-
-    void setMotd(ServerPing motd);
+        stringbuilder.append(json, Math.max(0, i - 35), i);
+        stringbuilder.append("<--[HERE]");
+        return stringbuilder.toString();
+    }
 }

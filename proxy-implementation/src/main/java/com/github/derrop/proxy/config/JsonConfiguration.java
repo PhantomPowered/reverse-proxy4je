@@ -121,14 +121,14 @@ public class JsonConfiguration implements Configuration {
         this.jsonObject.addProperty("proxyPort", proxyPort);
     }
 
-//    @Override
-//    public int getWebPort() {
-//        return this.jsonObject.get("webPort").getAsInt();
-//    }
+    @Override
+    public int getWebPort() {
+        return this.jsonObject.get("webPort").getAsInt();
+    }
 
     @Override
     public void setWebPort(int webPort) {
-//        this.jsonObject.addProperty("webPort", webPort);
+        this.jsonObject.addProperty("webPort", webPort);
     }
 
     @Override

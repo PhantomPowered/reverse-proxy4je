@@ -30,6 +30,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class NBTTagByteArray extends NBTBase {
 
@@ -82,5 +83,15 @@ public class NBTTagByteArray extends NBTBase {
 
     public byte[] getByteArray() {
         return this.data;
+    }
+
+    public static byte[] toArray(List<Byte> bytes) {
+        byte[] result = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); ++i) {
+            Byte b = bytes.get(i);
+            result[i] = b == null ? 0 : b;
+        }
+
+        return result;
     }
 }

@@ -33,20 +33,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 
-public interface Constants {
+public final class Constants {
 
-    String MESSAGE_PREFIX = "§8┃ §6P§froxy §8× §7";
+    private Constants() {
+        throw new UnsupportedOperationException();
+    }
 
-    ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
-    ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(6);
+    public static final String MESSAGE_PREFIX = "§8┃ §6P§froxy §8× §7";
 
-    Random RANDOM = new Random();
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(6);
 
-    DirectoryStream.Filter<Path> JAR_FILE_FILTER = path -> !Files.isDirectory(path) && path.toString().endsWith(".jar");
+    public static final Random RANDOM = new Random();
 
-    int SURVIVAL_PLACE_DISTANCE = 6;
-    int CREATIVE_PLACE_DISTANCE = 7;
-    int HIT_DISTANCE = 4;
+    public static final DirectoryStream.Filter<Path> JAR_FILE_FILTER = path -> !Files.isDirectory(path) && path.toString().endsWith(".jar");
 
-    Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
+    public static final int SURVIVAL_PLACE_DISTANCE = 6;
+    public static final int CREATIVE_PLACE_DISTANCE = 7;
+    public static final int HIT_DISTANCE = 4;
+
+    public static final Pattern UUID_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 }

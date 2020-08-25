@@ -6,9 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
-import java.util.function.UnaryOperator;
 
 public final class Utils {
 
@@ -16,9 +14,7 @@ public final class Utils {
         throw new UnsupportedOperationException();
     }
 
-    public static final Gson GSON = populate(new GsonBuilder(), GsonComponentSerializer.gson())
-            .registerTypeAdapter(Favicon.class, Favicon.FAVICON_TYPE_ADAPTER)
-            .create();
+    public static final Gson GSON = GsonComponentSerializer.gson().populator().apply(new GsonBuilder().registerTypeAdapter(Favicon.class, Favicon.FAVICON_TYPE_ADAPTER)).create();
 
     public static String stringifyException(Throwable t) {
         StackTraceElement[] trace = t.getStackTrace();
@@ -28,16 +24,5 @@ public final class Utils {
 
     public static UUID parseUUID(String uuid) {
         return UUID.fromString(Constants.UUID_PATTERN.matcher(uuid).replaceAll("$1-$2-$3-$4-$5"));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static GsonBuilder populate(GsonBuilder gsonBuilder, GsonComponentSerializer instance) {
-        try {
-            Field field = instance.getClass().getDeclaredField("populator");
-            field.setAccessible(true);
-            return ((UnaryOperator<GsonBuilder>) field.get(instance)).apply(gsonBuilder);
-        } catch (NoSuchFieldException | IllegalAccessException exception) {
-            throw new RuntimeException(exception);
-        }
     }
 }

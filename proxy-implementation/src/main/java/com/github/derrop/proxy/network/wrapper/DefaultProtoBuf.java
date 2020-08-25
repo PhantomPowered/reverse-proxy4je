@@ -27,7 +27,7 @@ package com.github.derrop.proxy.network.wrapper;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.nbt.CompressedStreamTools;
+import com.github.derrop.proxy.nbt.CompressedStreamTools;
 import com.github.derrop.proxy.api.nbt.NBTSizeTracker;
 import com.github.derrop.proxy.api.nbt.NBTTagCompound;
 import com.github.derrop.proxy.item.ProxyItemStack;

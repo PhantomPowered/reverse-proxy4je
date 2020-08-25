@@ -35,12 +35,18 @@ import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPlug
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
+import com.github.derrop.proxy.text.ProxyLegacyHoverEventSerializer;
+import com.google.gson.JsonParseException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class ServerPacketHandler {
+
+    private static final GsonComponentSerializer SERIALIZER = GsonComponentSerializer.builder()
+            .legacyHoverEventSerializer(ProxyLegacyHoverEventSerializer.INSTANCE)
+            .build();
 
     @PacketHandler(directions = ProtocolDirection.TO_CLIENT)
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
@@ -207,12 +213,20 @@ public class ServerPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerChatMessage chat) throws Exception {
-        ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], GsonComponentSerializer.gson().deserialize(chat.getMessage()));
-        if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
-            throw CancelProceedException.INSTANCE;
-        }
+        this.handleChatToClient(client, chat);
+    }
 
-        chat.setMessage(GsonComponentSerializer.gson().serialize(event.getMessage()));
+    private void handleChatToClient(ConnectedProxyClient client, PacketPlayServerChatMessage chat) {
+        try {
+            ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], SERIALIZER.deserialize(chat.getMessage()));
+            if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+                throw CancelProceedException.INSTANCE;
+            }
+
+            chat.setMessage(SERIALIZER.serialize(event.getMessage()));
+        } catch (JsonParseException ignored) {
+            // hack
+        }
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.TAB_COMPLETE, directions = ProtocolDirection.TO_CLIENT)

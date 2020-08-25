@@ -22,13 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.nbt;
+package com.github.derrop.proxy.nbt;
+
+import com.github.derrop.proxy.api.nbt.NBTBase;
+import com.github.derrop.proxy.api.nbt.NBTSizeTracker;
+import com.github.derrop.proxy.api.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.nbt.NBTTagEnd;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class CompressedStreamTools {
+public final class CompressedStreamTools {
+
+    private CompressedStreamTools() {
+        throw new UnsupportedOperationException();
+    }
 
     public static NBTTagCompound read(DataInput dataInput, NBTSizeTracker nbtSizeTracker) throws IOException {
         NBTBase nbtbase = readNbtBase(dataInput, nbtSizeTracker);

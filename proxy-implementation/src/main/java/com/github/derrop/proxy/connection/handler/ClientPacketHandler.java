@@ -299,17 +299,21 @@ public class ClientPacketHandler {
         pluginMessage.setData(event.getData());
     }
 
+    // FIXME: https://just-paste.it/vjjaj9Ksjg
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.TAB_COMPLETE, directions = ProtocolDirection.TO_SERVER)
     public void handle(DefaultPlayer player, PacketPlayClientTabCompleteRequest request) {
         if (!request.getCursor().startsWith("/")) {
             return;
         }
+
         if (!request.getCursor().startsWith("/proxy")) {
             if (!request.getCursor().contains(" ")) {
                 player.setLastCommandCompleteRequest(request.getCursor());
             }
+
             return;
         }
+
         List<String> suggestions = player.getProxy().getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring("/proxy ".length()));
         if (!suggestions.isEmpty()) {
             player.sendPacket(new PacketPlayServerTabCompleteResponse(suggestions));
