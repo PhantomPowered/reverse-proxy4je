@@ -8,6 +8,7 @@ import com.github.derrop.proxy.api.plugin.annotation.Dependency;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.tick.TickHandlerProvider;
 import com.github.derrop.proxy.plugins.gommecw.command.CommandCW;
 import com.github.derrop.proxy.plugins.gommecw.highlights.DefaultHighlightListener;
 import com.github.derrop.proxy.plugins.gommecw.listener.GommeCWHighlightCallListener;
@@ -33,10 +34,10 @@ public class GommeCWPlugin {
         this.cwManager = new RunningClanWarManager(registry);
 
         this.webParser = new WebCWParser(registry);
-        // TODO: proxy.registerTickable(this.webParser);
+        registry.getProviderUnchecked(TickHandlerProvider.class).registerHandler(this.webParser);
 
         GommeCWHighlightCallListener callListener = new GommeCWHighlightCallListener(this, new DefaultHighlightListener());
-        //TODO: proxy.registerTickable(callListener);
+        registry.getProviderUnchecked(TickHandlerProvider.class).registerHandler(callListener);
 
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeCWMatchListener(this));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, callListener);

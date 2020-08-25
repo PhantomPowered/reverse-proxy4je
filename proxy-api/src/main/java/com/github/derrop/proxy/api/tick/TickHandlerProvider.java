@@ -24,5 +24,12 @@
  */
 package com.github.derrop.proxy.api.tick;
 
-public interface TickHandlerProvider { // TODO
+public interface TickHandlerProvider {
+
+    void registerHandler(TickHandler handler);
+
+    void unregisterHandler(TickHandler handler);
+
+    void runTick();
+
 }

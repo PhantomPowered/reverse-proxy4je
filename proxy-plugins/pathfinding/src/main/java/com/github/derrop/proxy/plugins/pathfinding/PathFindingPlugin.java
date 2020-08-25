@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.plugin.PluginState;
 import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.tick.TickHandlerProvider;
 import com.github.derrop.proxy.plugins.pathfinding.command.CommandPath;
 import com.github.derrop.proxy.plugins.pathfinding.provider.DefaultPathProvider;
 import com.github.derrop.proxy.plugins.pathfinding.provider.PathProvider;
@@ -51,7 +52,7 @@ public class PathFindingPlugin {
 
         DefaultPathWalker pathWalker = new DefaultPathWalker();
         registry.setProvider(plugin, PathWalker.class, pathWalker);
-        //TODO: proxy.registerTickable(pathWalker);
+        registry.getProviderUnchecked(TickHandlerProvider.class).registerHandler(pathWalker);
 
         registry.getProviderUnchecked(CommandMap.class).registerCommand(plugin, new CommandPath(registry), "path");
     }

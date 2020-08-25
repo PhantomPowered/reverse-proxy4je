@@ -46,7 +46,7 @@ import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
-import com.github.derrop.proxy.api.tick.TickHandler;
+import com.github.derrop.proxy.api.tick.TickHandlerProvider;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
@@ -75,22 +75,19 @@ import com.github.derrop.proxy.storage.DefaultPlayerIdStorage;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
+import com.github.derrop.proxy.tick.DefaultTickHandlerProvider;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class MCProxy {
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
     private final ProxyServer proxyServer = new ProxyServer(this.serviceRegistry);
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
-    private final Collection<TickHandler> tickHandlers = new CopyOnWriteArrayList<>();
 
     protected MCProxy() {
         System.out.println("Registering default services...");
@@ -103,6 +100,7 @@ public class MCProxy {
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this.serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, TickHandlerProvider.class, new DefaultTickHandlerProvider(), true);
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
@@ -114,18 +112,6 @@ public class MCProxy {
         System.out.println("Loading configuration...");
         this.serviceRegistry.getProviderUnchecked(Configuration.class).load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown Thread"));
-    }
-
-    private void startMainLoop() {
-        APIUtil.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-            for (TickHandler tickHandler : this.tickHandlers) {
-                try {
-                    tickHandler.handleTick();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-            }
-        }, 50, 50, TimeUnit.MILLISECONDS);
     }
 
     protected @NotNull ServiceRegistry getServiceRegistry() {
@@ -196,10 +182,11 @@ public class MCProxy {
 
         System.out.println("Starting proxy listener on " + port + "...");
         this.proxyServer.start(new InetSocketAddress(port));
-        // TODO: this.registerTickable(this.serviceRegistry.getProviderUnchecked(ServiceConnector.class));
+
+        this.serviceRegistry.getProviderUnchecked(TickHandlerProvider.class).registerHandler(this.serviceRegistry.getProviderUnchecked(ServiceConnector.class));
 
         System.out.println("Starting main loop...");
-        this.startMainLoop();
+        ((DefaultTickHandlerProvider) this.serviceRegistry.getProviderUnchecked(TickHandlerProvider.class)).startMainLoop();
 
         double bootTime = (System.currentTimeMillis() - start) / 1000d;
         System.out.println("Done! (" + new DecimalFormat("##.###").format(bootTime) + "s)");
