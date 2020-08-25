@@ -35,7 +35,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 public class LengthFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, ByteBuf byteBuf2) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, ByteBuf byteBuf2) {
         int readable = byteBuf.readableBytes();
         int length = NetworkUtils.varIntSize(readable);
         byteBuf2.ensureWritable(readable + length);
