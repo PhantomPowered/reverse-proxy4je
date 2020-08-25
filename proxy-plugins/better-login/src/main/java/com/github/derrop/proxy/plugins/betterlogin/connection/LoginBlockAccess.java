@@ -23,7 +23,7 @@ public class LoginBlockAccess implements BlockAccess {
     private final BlockStateRegistry registry;
 
     public LoginBlockAccess(DefaultPlayer player) {
-        this.registry = player.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class);
+        this.registry = player.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class);
         this.state = this.registry.getDefaultBlockState(MATERIAL);
 
         Location origin = LoginPrepareListener.SPAWN;

@@ -27,7 +27,6 @@ package com.github.derrop.proxy.api.connection;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -36,11 +35,6 @@ public interface Connection extends PacketSender, NetworkChannel {
 
     @NotNull
     InetSocketAddress getSocketAddress();
-
-    @Deprecated
-    default void disconnect(@NotNull String reason) {
-        this.disconnect(LegacyComponentSerializer.legacySection().deserialize(reason));
-    }
 
     void disconnect(@NotNull Component reason);
 

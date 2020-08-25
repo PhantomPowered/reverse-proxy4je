@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.api.player;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
@@ -35,9 +34,9 @@ import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,9 +44,8 @@ import java.util.function.Supplier;
 
 public interface Player extends OfflinePlayer, Connection, CommandSender, Entity {
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    Proxy getProxy();
+    @NotNull
+    ServiceRegistry getServiceRegistry();
 
     void sendMessage(ChatMessageType position, Component... messages);
 

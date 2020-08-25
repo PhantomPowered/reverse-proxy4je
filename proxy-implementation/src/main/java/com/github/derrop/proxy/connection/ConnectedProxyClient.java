@@ -24,8 +24,6 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.launcher.MCProxy;
-import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
@@ -40,16 +38,19 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
 import com.github.derrop.proxy.connection.player.scoreboard.BasicScoreboard;
 import com.github.derrop.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.derrop.proxy.network.NetworkUtils;
+import com.github.derrop.proxy.network.SimpleChannelInitializer;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.pipeline.handler.HandlerEndpoint;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;
@@ -90,7 +91,6 @@ import java.util.function.Predicate;
 
 public class ConnectedProxyClient extends DefaultNetworkChannel implements TickHandler {
 
-    private final MCProxy proxy;
     private final BasicServiceConnection connection;
 
     private NetworkAddress address;
@@ -109,31 +109,26 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     private int dimension;
 
     private PacketPlayServerEntityMetadata entityMetadata;
-
     private Consumer<Packet> clientPacketHandler;
-
     private Runnable disconnectionHandler;
 
     private boolean globalAccount = true;
-
     private final Map<Predicate<Packet>, Long> blockedPackets = new ConcurrentHashMap<>();
 
     private Component lastKickReason;
-
     private PlayerVelocityHandler velocityHandler = new PlayerVelocityHandler(this);
 
     private long lastAlivePacket = -1;
+    private long lastDisconnectionTimestamp = System.currentTimeMillis();
 
     private CompletableFuture<Boolean> connectionHandler;
-
-    private long lastDisconnectionTimestamp = System.currentTimeMillis();
     private PlayerId lastConnectedPlayer;
 
-    public ConnectedProxyClient(MCProxy proxy, BasicServiceConnection connection) {
-        this.proxy = proxy;
+    public ConnectedProxyClient(ServiceRegistry serviceRegistry, BasicServiceConnection connection) {
+        super(serviceRegistry);
         this.connection = connection;
 
-        this.sessionService = proxy.getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).createSessionService();
+        this.sessionService = serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).createSessionService();
 
         this.packetCache = new PacketCache(this);
         this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
@@ -146,7 +141,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         }
 
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = this.proxy.getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
+        this.authentication = this.serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
         this.credentials = credentials;
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
         return true;
@@ -181,8 +176,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         this.entityId = -1;
         this.dimension = -1;
 
-        if (this.proxy != null && this.globalAccount) {
-            this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this.connection);
+        if (this.serviceRegistry != null && this.globalAccount) {
+            this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this.connection);
         }
 
         if (this.disconnectionHandler != null) {
@@ -198,14 +193,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) {
-                ConnectedProxyClient.this.proxy.getBaseChannelInitializer().initChannel(ch);
+                ConnectedProxyClient.this.serviceRegistry.getProviderUnchecked(SimpleChannelInitializer.class).initChannel(ch);
 
                 if (proxy != null) {
                     ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
                 }
 
                 ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER,
-                        new MinecraftDecoder(ConnectedProxyClient.this.proxy.getServiceRegistry(), ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
+                        new MinecraftDecoder(ConnectedProxyClient.this.serviceRegistry, ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
                 ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
                 ch.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ConnectedProxyClient.this);
                 ch.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));
@@ -261,10 +256,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public void disableGlobal() {
         this.globalAccount = false;
-    }
-
-    public MCProxy getProxy() {
-        return proxy;
     }
 
     public BasicServiceConnection getConnection() {
@@ -423,8 +414,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public void handlePacketRedirected(Packet packet) {
         if (this.redirector != null) {
-            this.proxy.getServiceRegistry().getProviderUnchecked(PacketHandlerRegistry.class)
-                    .handlePacketReceive(packet, ProtocolDirection.TO_CLIENT, ProtocolState.REDIRECTING, this.connection);
+            this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).handlePacketReceive(packet, ProtocolDirection.TO_CLIENT, ProtocolState.REDIRECTING, this.connection);
         }
     }
 
@@ -491,7 +481,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
             this.connectionHandler.complete(true);
             this.connectionHandler = null;
 
-            this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectEvent(this.connection));
+            this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectEvent(this.connection));
         }
     }
 
@@ -522,8 +512,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         this.connection.getClient().setLastKickReason(reason);
         this.connection.getClient().connectionFailed();
 
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new ServiceDisconnectEvent(this.connection, reason));
+        this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceDisconnectEvent(this.connection, reason));
     }
-
 }

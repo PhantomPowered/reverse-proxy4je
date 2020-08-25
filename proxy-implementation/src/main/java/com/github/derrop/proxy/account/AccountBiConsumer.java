@@ -24,12 +24,12 @@
  */
 package com.github.derrop.proxy.account;
 
-import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.network.NetworkAddress;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
-import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import org.jetbrains.annotations.NotNull;
@@ -38,16 +38,16 @@ import java.util.function.BiConsumer;
 
 public class AccountBiConsumer implements BiConsumer<MCServiceCredentials, NetworkAddress> {
 
-    private final MCProxy proxy;
+    private final ServiceRegistry serviceRegistry;
 
-    public AccountBiConsumer(MCProxy proxy) {
-        this.proxy = proxy;
+    public AccountBiConsumer(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
     @Override
     public void accept(MCServiceCredentials mcServiceCredentials, NetworkAddress networkAddress) {
         try {
-            ServiceConnection connection = new BasicServiceConnection(this.proxy, mcServiceCredentials, networkAddress);
+            ServiceConnection connection = new BasicServiceConnection(this.serviceRegistry, mcServiceCredentials, networkAddress);
             connection.setReScheduleOnFailure(true);
 
             connection.connect(new TaskFutureListener<Boolean>() {

@@ -1,12 +1,12 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.network.NetworkAddress;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
@@ -23,13 +23,12 @@ import java.util.stream.Collectors;
 
 public class DefaultServiceConnector implements ServiceConnector {
 
-    private final MCProxy proxy;
-
+    private final ServiceRegistry serviceRegistry;
     private final Collection<BasicServiceConnection> onlineClients = new CopyOnWriteArrayList<>();
     private final Map<UUID, ReconnectProfile> reconnectProfiles = new ConcurrentHashMap<>();
 
-    public DefaultServiceConnector(MCProxy proxy) {
-        this.proxy = proxy;
+    public DefaultServiceConnector(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class DefaultServiceConnector implements ServiceConnector {
 
     @Override
     public @NotNull ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
-        return new BasicServiceConnection(this.proxy, credentials, serverAddress);
+        return new BasicServiceConnection(this.serviceRegistry, credentials, serverAddress);
     }
 
     public void setReconnectTarget(UUID uniqueId, UUID targetUniqueId) {

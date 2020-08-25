@@ -141,9 +141,7 @@ public class MatchInfo {
         }
 
         this.events.add(event);
-
-        this.invoker.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new GommeMatchEvent(this, event));
+        this.invoker.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new GommeMatchEvent(this, event));
     }
 
     public Language getSelectedLanguage() {

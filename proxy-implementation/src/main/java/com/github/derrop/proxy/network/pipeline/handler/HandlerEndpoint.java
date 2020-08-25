@@ -47,9 +47,7 @@ import java.net.InetSocketAddress;
 public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
 
     private final ServiceRegistry registry;
-
     private NetworkChannel networkChannel;
-
     private ChannelListener channelListener;
 
     public HandlerEndpoint(@NotNull ServiceRegistry registry, @Nullable ChannelListener channelListener) {
@@ -68,7 +66,7 @@ public final class HandlerEndpoint extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         if (this.networkChannel == null) {
-            this.networkChannel = new DefaultNetworkChannel(ctx);
+            this.networkChannel = new DefaultNetworkChannel(ctx, this.registry);
         }
 
         if (this.channelListener != null) {

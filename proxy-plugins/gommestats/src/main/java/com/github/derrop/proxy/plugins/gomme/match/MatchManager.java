@@ -183,7 +183,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     public String[] createPaste(MatchInfo matchInfo) {
-        PasteServerProvider paste = matchInfo.getInvoker().getProxy().getServiceRegistry().getProviderUnchecked(PasteServerProvider.class);
+        PasteServerProvider paste = matchInfo.getInvoker().getServiceRegistry().getProviderUnchecked(PasteServerProvider.class);
         PasteServerUploadResult[] keys = paste.getPasteServerForUrl("https://just-paste.it/").uploadDocumentSafely(matchInfo.toReadableText());
         return paste.getUrlsFromResults(keys);
     }

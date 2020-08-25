@@ -24,20 +24,20 @@
  */
 package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.PlayerAbilities;
 import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
-import com.github.derrop.proxy.api.network.NetworkAddress;
-import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.mojang.authlib.UserAuthentication;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -51,9 +51,7 @@ import java.util.UUID;
 public interface ServiceConnection extends Connection, AutoCloseable {
 
     @NotNull
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval
-    Proxy getProxy();
+    ServiceRegistry getServiceRegistry();
 
     @Nullable
     Player getPlayer();

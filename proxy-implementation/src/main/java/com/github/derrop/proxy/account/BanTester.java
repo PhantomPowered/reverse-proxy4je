@@ -25,8 +25,9 @@
 package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.api.chat.ChatColor;
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.network.NetworkAddress;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -46,12 +47,12 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-// TODO as plugin (since 1998)
+// TODO: as plugin
 public class BanTester {
 
     private static final Path DATA_PATH = Paths.get("proxy_info.txt");
 
-    private NetworkAddress[] proxies;
+    private NetworkAddress[] proxies = new NetworkAddress[0]; // TODO
     private int currentProxyIndex = 0;
 
     public BanTester() {
@@ -63,18 +64,6 @@ public class BanTester {
     }
 
     public void init() throws IOException {
-        Collection<NetworkAddress> proxies = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(BanTester.class.getClassLoader().getResourceAsStream("proxies.txt"), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                NetworkAddress address = NetworkAddress.parse(line);
-                if (address != null) {
-                    proxies.add(address);
-                }
-            }
-        }
-        this.proxies = proxies.toArray(new NetworkAddress[0]);
-
         if (Files.exists(DATA_PATH)) {
             byte[] data = Files.readAllBytes(DATA_PATH);
             this.currentProxyIndex = ByteBuffer.wrap(data).getInt();
@@ -89,10 +78,10 @@ public class BanTester {
         }
     }
 
-    public boolean isBanned(MCServiceCredentials credentials, NetworkAddress address) throws AuthenticationException {
+    public boolean isBanned(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress address) throws AuthenticationException {
         System.out.println("Testing if the account " + credentials.getEmail() + " is banned on " + address + "...");
 
-        ConnectedProxyClient proxyClient = new ConnectedProxyClient(null, null);
+        ConnectedProxyClient proxyClient = new ConnectedProxyClient(serviceRegistry, null);
         if (!proxyClient.performMojangLogin(credentials)) {
             throw new InvalidCredentialsException("Invalid credentials");
         }

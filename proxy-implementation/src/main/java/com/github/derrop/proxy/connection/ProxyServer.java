@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.launcher.MCProxy;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.ServerConnectionChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
@@ -36,10 +36,10 @@ import java.net.SocketAddress;
 // TODO: ...
 public class ProxyServer {
 
-    private final MCProxy proxy;
+    private final ServiceRegistry serviceRegistry;
 
-    public ProxyServer(MCProxy proxy) {
-        this.proxy = proxy;
+    public ProxyServer(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
     private final EventLoopGroup bossGroup = NetworkUtils.newEventLoopGroup();
@@ -49,7 +49,7 @@ public class ProxyServer {
         new ServerBootstrap()
                 .channel(NetworkUtils.getServerSocketChannelClass())
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .childHandler(new ServerConnectionChannelInitializer(this.proxy))
+                .childHandler(new ServerConnectionChannelInitializer(this.serviceRegistry))
                 .group(this.bossGroup, this.workerGroup)
                 .bind(address)
                 .syncUninterruptibly();

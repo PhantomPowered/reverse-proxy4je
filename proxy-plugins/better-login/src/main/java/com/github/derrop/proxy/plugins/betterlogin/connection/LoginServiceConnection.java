@@ -1,24 +1,24 @@
 package com.github.derrop.proxy.plugins.betterlogin.connection;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.PlayerAbilities;
 import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.player.inventory.InventoryType;
+import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
-import com.github.derrop.proxy.api.network.NetworkAddress;
-import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.plugins.betterlogin.LoginPrepareListener;
 import com.github.derrop.proxy.protocol.play.server.PacketPlayServerLogin;
@@ -43,7 +43,6 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
 
     private static final ServiceWorldDataProvider WORLD_DATA_PROVIDER = new LoginServiceWorldDataProvider();
 
-    private final Proxy proxy;
     private final Player player;
 
     private boolean connected = false;
@@ -52,8 +51,7 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     private final PlayerAbilities abilities = new LoginPlayerAbilities();
     private final long connectionTimestamp = System.currentTimeMillis();
 
-    public LoginServiceConnection(Proxy proxy, Player player) {
-        this.proxy = proxy;
+    public LoginServiceConnection(Player player) {
         this.player = player;
     }
 
@@ -62,8 +60,8 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
-    public @NotNull Proxy getProxy() {
-        return this.proxy;
+    public @NotNull ServiceRegistry getServiceRegistry() {
+        return this.player.getServiceRegistry();
     }
 
     @Override

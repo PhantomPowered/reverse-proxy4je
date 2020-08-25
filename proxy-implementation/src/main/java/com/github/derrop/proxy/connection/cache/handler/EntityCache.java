@@ -94,7 +94,7 @@ public class EntityCache implements PacketCacheHandler {
     @Override
     public void cachePacket(PacketCache packetCache, Packet newPacket) {
         this.packetCache = packetCache;
-        ServiceRegistry registry = packetCache.getTargetProxyClient().getProxy().getServiceRegistry();
+        ServiceRegistry registry = packetCache.getTargetProxyClient().getServiceRegistry();
         EventManager eventManager = registry.getProviderUnchecked(EventManager.class);
 
         if (newPacket instanceof PacketPlayServerRespawn) {

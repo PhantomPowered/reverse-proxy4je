@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.plugins.gommecw;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
@@ -30,14 +29,14 @@ public class GommeCWPlugin {
     private WebCWParser webParser;
 
     @Inject(state = PluginState.ENABLED)
-    public void enable(Proxy proxy, ServiceRegistry registry, PluginContainer container) {
+    public void enable(ServiceRegistry registry, PluginContainer container) {
         this.cwManager = new RunningClanWarManager(registry);
 
         this.webParser = new WebCWParser(registry);
-        proxy.registerTickable(this.webParser);
+        // TODO: proxy.registerTickable(this.webParser);
 
         GommeCWHighlightCallListener callListener = new GommeCWHighlightCallListener(this, new DefaultHighlightListener());
-        proxy.registerTickable(callListener);
+        //TODO: proxy.registerTickable(callListener);
 
         registry.getProviderUnchecked(EventManager.class).registerListener(container, new GommeCWMatchListener(this));
         registry.getProviderUnchecked(EventManager.class).registerListener(container, callListener);

@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.plugins.betterlogin;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginState;
@@ -21,8 +20,8 @@ public class BetterLoginPlugin {
     // TODO add the possibility that users have to type into the chat when logging in
 
     @Inject(state = PluginState.ENABLED)
-    public void enable(PluginContainer container, ServiceRegistry registry, Proxy proxy) {
-        registry.getProviderUnchecked(EventManager.class).registerListener(container, new LoginPrepareListener(proxy));
+    public void enable(PluginContainer container, ServiceRegistry registry) {
+        registry.getProviderUnchecked(EventManager.class).registerListener(container, new LoginPrepareListener(registry));
     }
 
 }

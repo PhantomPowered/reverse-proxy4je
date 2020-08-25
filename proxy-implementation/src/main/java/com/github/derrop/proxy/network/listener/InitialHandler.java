@@ -24,9 +24,10 @@
  */
 package com.github.derrop.proxy.network.listener;
 
-import com.github.derrop.proxy.launcher.MCProxy;
-import com.github.derrop.proxy.api.configuration.Configuration;
+import com.github.derrop.proxy.ImplementationUtil;
 import com.github.derrop.proxy.api.APIUtil;
+import com.github.derrop.proxy.api.concurrent.Callback;
+import com.github.derrop.proxy.api.configuration.Configuration;
 import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
@@ -37,12 +38,13 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.PlayerRepository;
-import com.github.derrop.proxy.api.concurrent.Callback;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientChannelListener;
 import com.github.derrop.proxy.connection.player.DefaultOfflinePlayer;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
+import com.github.derrop.proxy.http.HttpUtil;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.pipeline.cipher.PacketCipherDecoder;
 import com.github.derrop.proxy.network.pipeline.cipher.PacketCipherEncoder;
@@ -60,8 +62,6 @@ import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
-import com.github.derrop.proxy.http.HttpUtil;
-import com.github.derrop.proxy.ImplementationUtil;
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -80,25 +80,25 @@ import java.util.UUID;
 public class InitialHandler {
 
     protected static final String INIT_STATE = "initialState";
-    private final MCProxy proxy;
+    private final ServiceRegistry serviceRegistry;
 
-    public InitialHandler(MCProxy proxy) {
-        this.proxy = proxy;
+    public InitialHandler(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
     public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) throws Exception {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
-        ServerPing response = this.proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getMotd();
-        ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServerPing response = this.serviceRegistry.getProviderUnchecked(Configuration.class).getMotd();
+        ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
 
         response.setDescription(TextComponent.of(LegacyComponentSerializer.legacySection().serialize(response.getDescription())
                 .replace("$free", String.valueOf(connector.getFreeClients().size()))
                 .replace("$online", String.valueOf(connector.getOnlineClients().size()))
         ));
 
-        PingEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PingEvent(channel, response));
+        PingEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PingEvent(channel, response));
         if (event.getResponse() == null) {
             channel.close();
             return;
@@ -231,12 +231,12 @@ public class InitialHandler {
     }
 
     private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
-        if (this.proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class).getOnlinePlayer(uniqueId) != null) {
+        if (this.serviceRegistry.getProviderUnchecked(PlayerRepository.class).getOnlinePlayer(uniqueId) != null) {
             disconnect(channel, "Already connected");
             return;
         }
 
-        Optional<Whitelist> whitelist = this.proxy.getServiceRegistry().getProvider(Whitelist.class);
+        Optional<Whitelist> whitelist = this.serviceRegistry.getProvider(Whitelist.class);
         if (whitelist.isPresent() && whitelist.get().isEnabled() && !whitelist.get().isWhitelisted(uniqueId)) {
             disconnect(channel, "The whitelist is enabled and you're not whitelisted");
             return;
@@ -244,25 +244,25 @@ public class InitialHandler {
 
         channel.getWrappedChannel().eventLoop().execute(() -> {
             if (!channel.isClosing()) {
-                PlayerRepository repository = this.proxy.getServiceRegistry().getProviderUnchecked(PlayerRepository.class);
+                PlayerRepository repository = this.serviceRegistry.getProviderUnchecked(PlayerRepository.class);
                 OfflinePlayer offlinePlayer = repository.getOfflinePlayer(uniqueId);
                 if (offlinePlayer == null) {
                     offlinePlayer = new DefaultOfflinePlayer(uniqueId, result.getName(), -1, -1);
                     repository.insertOfflinePlayer(offlinePlayer);
                 }
 
-                ServiceConnection client = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(offlinePlayer.getUniqueId());
-                ServiceConnectorChooseClientEvent clientEvent = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectorChooseClientEvent(uniqueId, client));
+                ServiceConnection client = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).findBestConnection(offlinePlayer.getUniqueId());
+                ServiceConnectorChooseClientEvent clientEvent = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectorChooseClientEvent(uniqueId, client));
                 client = clientEvent.getConnection();
                 if (client == null || clientEvent.isCancelled()) {
                     disconnect(channel, TextComponent.of("§7No client found"));
                     return;
                 }
 
-                DefaultPlayer player = new DefaultPlayer(this.proxy, ((BasicServiceConnection) client).getClient(), offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
+                DefaultPlayer player = new DefaultPlayer(this.serviceRegistry, ((BasicServiceConnection) client).getClient(), offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
                 repository.updateOfflinePlayer(player);
 
-                PlayerLoginEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player));
+                PlayerLoginEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player));
                 if (!channel.isConnected()) {
                     return;
                 }

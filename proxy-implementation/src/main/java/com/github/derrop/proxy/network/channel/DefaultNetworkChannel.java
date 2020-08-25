@@ -27,6 +27,7 @@ package com.github.derrop.proxy.network.channel;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.network.NetworkUtils;
@@ -43,8 +44,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,25 +53,26 @@ import java.util.function.Consumer;
 public class DefaultNetworkChannel implements NetworkChannel {
 
     private final Map<String, Object> properties = new ConcurrentHashMap<>();
+    private final Map<UUID, Consumer<Packet>> outgoingPacketListeners = new ConcurrentHashMap<>();
+    protected final ServiceRegistry serviceRegistry;
 
     private InetSocketAddress address;
     private Channel channel;
 
     private boolean closing = false;
-
     private boolean closed = false;
 
-    private final Map<UUID, Consumer<Packet>> outgoingPacketListeners = new HashMap<>();
-
-    public DefaultNetworkChannel() {
+    public DefaultNetworkChannel(@Nullable ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
-    public DefaultNetworkChannel(@NotNull ChannelHandlerContext channelHandlerContext) {
-        this(channelHandlerContext.channel());
+    public DefaultNetworkChannel(@NotNull ChannelHandlerContext channelHandlerContext, @NotNull ServiceRegistry serviceRegistry) {
+        this(channelHandlerContext.channel(), serviceRegistry);
     }
 
-    public DefaultNetworkChannel(@NotNull Channel channel) {
+    public DefaultNetworkChannel(@NotNull Channel channel, @NotNull ServiceRegistry serviceRegistry) {
         this.channel = channel;
+        this.serviceRegistry = serviceRegistry;
         this.address = (InetSocketAddress) ((this.channel.remoteAddress() == null) ? this.channel.parent().localAddress() : this.channel.remoteAddress());
     }
 
@@ -223,6 +223,11 @@ public class DefaultNetworkChannel implements NetworkChannel {
     @Override
     public void removeOutgoingPacketListener(UUID key) {
         this.outgoingPacketListeners.remove(key);
+    }
+
+    @Override
+    public @NotNull ServiceRegistry getServiceRegistry() {
+        return this.serviceRegistry;
     }
 
     public void addBefore(String baseName, String name, ChannelHandler handler) {

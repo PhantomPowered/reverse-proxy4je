@@ -1,14 +1,15 @@
 package com.github.derrop.proxy.connection.handler;
 
-import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.network.NetworkUtils;
+import com.github.derrop.proxy.network.SimpleChannelInitializer;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
 import com.github.derrop.proxy.network.pipeline.handler.HandlerEndpoint;
@@ -24,6 +25,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.ProxyHandler;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 
@@ -34,7 +36,11 @@ public class ServerPinger extends DefaultNetworkChannel implements ChannelListen
     private int protocol = 47;
     private ProxyHandler proxyHandler;
 
-    public Task<ServerPing> ping(MCProxy proxy, NetworkAddress address) {
+    public ServerPinger(@Nullable ServiceRegistry serviceRegistry) {
+        super(serviceRegistry);
+    }
+
+    public Task<ServerPing> ping(NetworkAddress address) {
         if (this.task != null) {
             throw new IllegalStateException("This pinger is already used");
         }
@@ -44,13 +50,13 @@ public class ServerPinger extends DefaultNetworkChannel implements ChannelListen
         ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
-                proxy.getBaseChannelInitializer().initChannel(ch);
+                ServerPinger.this.getServiceRegistry().getProviderUnchecked(SimpleChannelInitializer.class).initChannel(ch);
 
                 if (proxyHandler != null) {
                     ch.pipeline().addFirst(proxyHandler);
                 }
 
-                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(proxy.getServiceRegistry(), ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
+                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ServerPinger.this.getServiceRegistry(), ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
                 ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
                 ch.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ServerPinger.this);
                 ch.pipeline().get(HandlerEndpoint.class).setChannelListener(ServerPinger.this);

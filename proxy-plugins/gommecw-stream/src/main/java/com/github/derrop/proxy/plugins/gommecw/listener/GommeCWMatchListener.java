@@ -87,7 +87,7 @@ public class GommeCWMatchListener {
         if (first) {
             clanWar.setFrame(new Frame(clanWar));
             clanWar.getFrame().setVisible(true);
-            clanWar.loadLabyUsers(event.getConnection().getProxy().getServiceRegistry());
+            clanWar.loadLabyUsers(event.getConnection().getServiceRegistry());
         } else {
             this.plugin.getCwManager().loadBedLocations(event.getConnection(), clanWar);
         }
@@ -122,7 +122,7 @@ public class GommeCWMatchListener {
     public void handleServerSwitch(GommeServerSwitchEvent event) {
         ServiceConnection connection = event.getConnection();
 
-        MatchInfo matchInfo = connection.getProxy().getServiceRegistry().getProviderUnchecked(GommeStatsCore.class).getMatchManager().getMatch(connection);
+        MatchInfo matchInfo = connection.getServiceRegistry().getProviderUnchecked(GommeStatsCore.class).getMatchManager().getMatch(connection);
         if (matchInfo == null) {
             return;
         }

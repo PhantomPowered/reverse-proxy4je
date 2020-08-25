@@ -1,13 +1,13 @@
 package com.github.derrop.proxy.plugins.betterlogin;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.*;
-import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.item.ItemStack;
+import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.plugins.betterlogin.connection.LoginServiceConnection;
 
@@ -19,16 +19,16 @@ public class LoginPrepareListener {
     static {
         PARENT_INVENTORY[1] = new ProxyItemStack(Material.BARRIER.getId(), 1, 0, new NBTTagCompound());
         //PARENT_INVENTORY[3] = new ItemStack(Material.COMPASS.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cWatch replay")));
-       // PARENT_INVENTORY[5] = new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cConnect with client")));
+        // PARENT_INVENTORY[5] = new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cConnect with client")));
         //   PARENT_INVENTORY[7] = new ItemStack(Material.SKULL_ITEM.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§7Spectate player")));
         //   PARENT_INVENTORY[8] = new ItemStack(Material.BARRIER.getId(), 1, 0, new NBTTagCompound().setTag("display", new NBTTagCompound().setString("Name", "§cExit")));
         // TODO items are not added
     }
 
-    private final Proxy proxy;
+    private final ServiceRegistry serviceRegistry;
 
-    public LoginPrepareListener(Proxy proxy) {
-        this.proxy = proxy;
+    public LoginPrepareListener(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
     @Listener

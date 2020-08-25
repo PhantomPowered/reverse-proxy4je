@@ -38,7 +38,7 @@ public class ServerChannelListener implements ChannelListener {
     }
 
     private void unregister() {
-        ServiceConnector connector = this.client.getProxy().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = this.client.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
         if (connector instanceof DefaultServiceConnector) {
             ((DefaultServiceConnector) connector).unregisterConnection(this.client.getConnection());
         }

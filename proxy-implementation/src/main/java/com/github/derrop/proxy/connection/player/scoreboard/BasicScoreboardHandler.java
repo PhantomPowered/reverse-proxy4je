@@ -32,7 +32,7 @@ public class BasicScoreboardHandler implements ScoreboardHandler {
     }
 
     private void callEvent(Event event) {
-        this.connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        this.connection.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
     }
 
     @Override
@@ -90,5 +90,5 @@ public class BasicScoreboardHandler implements ScoreboardHandler {
     public void handleTeamUnregistered(ScorePlayerTeam team) {
         this.callEvent(new ScoreboardTeamUnregisterEvent(this.connection, new BasicTeam(this.scoreboard, team.getRegisteredName(), team)));
     }
-    
+
 }

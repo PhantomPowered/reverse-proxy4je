@@ -115,7 +115,7 @@ public class ServerPacketHandler {
             event = new EntityStatusEvent(client.getConnection(), entity, statusType);
         }
 
-        client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent((Event) event);
+        client.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent((Event) event);
 
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
@@ -138,7 +138,7 @@ public class ServerPacketHandler {
                 return;
             }
             entity.teleport(location);
-            client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new EntityMoveEvent(client.getConnection(), entity, entity.getLocation(), location));
+            client.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new EntityMoveEvent(client.getConnection(), entity, entity.getLocation(), location));
             return;
         }
 
@@ -181,7 +181,7 @@ public class ServerPacketHandler {
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_CLIENT)
     public void handlePluginMessage(ConnectedProxyClient client, PacketPlayServerPluginMessage pluginMessage) {
         PluginMessageEvent event = new PluginMessageEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, pluginMessage.getTag(), pluginMessage.getData());
-        if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+        if (client.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
@@ -204,7 +204,7 @@ public class ServerPacketHandler {
         client.handleDisconnect(reason);
         client.setLastKickReason(reason);
 
-        ServiceConnector connector = client.getProxy().getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = client.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
         if (connector instanceof DefaultServiceConnector) {
             ((DefaultServiceConnector) connector).unregisterConnection(client.getConnection());
         }
@@ -219,7 +219,7 @@ public class ServerPacketHandler {
     private void handleChatToClient(ConnectedProxyClient client, PacketPlayServerChatMessage chat) {
         try {
             ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], SERIALIZER.deserialize(chat.getMessage()));
-            if (client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+            if (client.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
                 throw CancelProceedException.INSTANCE;
             }
 
@@ -269,9 +269,8 @@ public class ServerPacketHandler {
             return;
         }
 
-        if (connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+        if (connection.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
     }
-
 }

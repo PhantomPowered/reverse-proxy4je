@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.network;
 
-import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftEncoder;
 import io.netty.channel.Channel;
@@ -34,18 +34,18 @@ import io.netty.channel.ChannelInitializer;
 
 public final class ServerConnectionChannelInitializer extends ChannelInitializer<Channel> {
 
-    private final MCProxy proxy;
+    private final ServiceRegistry serviceRegistry;
 
-    public ServerConnectionChannelInitializer(MCProxy proxy) {
-        this.proxy = proxy;
+    public ServerConnectionChannelInitializer(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 
     @Override
     protected void initChannel(Channel channel) {
-        this.proxy.getBaseChannelInitializer().initChannel(channel);
+        this.serviceRegistry.getProviderUnchecked(SimpleChannelInitializer.class).initChannel(channel);
 
         channel.pipeline()
-                .addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(this.proxy.getServiceRegistry(), ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING))
+                .addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(this.serviceRegistry, ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING))
                 .addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_CLIENT));
     }
 }

@@ -26,6 +26,7 @@ package com.github.derrop.proxy.api.network.channel;
 
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.task.Task;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
@@ -80,4 +81,5 @@ public interface NetworkChannel extends AutoCloseable {
 
     void removeOutgoingPacketListener(UUID key);
 
+    @NotNull ServiceRegistry getServiceRegistry();
 }

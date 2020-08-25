@@ -24,7 +24,6 @@
  */
 package com.github.derrop.proxy.block;
 
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.BlockConsumer;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
@@ -34,6 +33,7 @@ import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.player.chunk.ChunkLoadEvent;
 import com.github.derrop.proxy.api.events.connection.player.chunk.ChunkUnloadEvent;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.block.chunk.Chunk;
 import com.github.derrop.proxy.connection.cache.handler.ChunkCache;
 import org.jetbrains.annotations.NotNull;
@@ -44,15 +44,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultBlockAccess implements BlockAccess {
 
-    private final Proxy proxy;
+    private final ServiceRegistry serviceRegistry;
     private final BlockStateRegistry registry;
     private final ChunkCache chunkCache;
 
     private final Map<UUID, BlockConsumer> blockTrackers = new ConcurrentHashMap<>();
 
-    public DefaultBlockAccess(Proxy proxy, ChunkCache chunkCache) {
-        this.proxy = proxy;
-        this.registry = proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class);
+    public DefaultBlockAccess(ServiceRegistry serviceRegistry, ChunkCache chunkCache) {
+        this.serviceRegistry = serviceRegistry;
+        this.registry = serviceRegistry.getProviderUnchecked(BlockStateRegistry.class);
         this.chunkCache = chunkCache;
         chunkCache.setBlockAccess(this);
     }
@@ -66,9 +66,7 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     public void handleChunkLoad(ServiceConnection serviceConnection, Chunk chunk) {
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new ChunkLoadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
-
+        this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ChunkLoadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
         if (this.blockTrackers.isEmpty()) {
             return;
         }
@@ -81,9 +79,7 @@ public class DefaultBlockAccess implements BlockAccess {
     }
 
     public void handleChunkUnload(ServiceConnection serviceConnection, Chunk chunk) {
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new ChunkUnloadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
-
+        this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ChunkUnloadEvent(serviceConnection, chunk.getX(), chunk.getZ()));
         if (this.blockTrackers.isEmpty()) {
             return;
         }

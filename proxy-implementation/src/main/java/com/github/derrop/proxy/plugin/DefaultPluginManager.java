@@ -26,7 +26,6 @@ package com.github.derrop.proxy.plugin;
 
 import com.github.derrop.proxy.ImplementationUtil;
 import com.github.derrop.proxy.api.APIUtil;
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.plugin.PluginState;
@@ -382,11 +381,6 @@ public final class DefaultPluginManager implements PluginManager {
         Object[] parameters = new Object[method.getParameters().length];
         for (int i = 0; i < method.getParameters().length; i++) {
             Class<?> type = method.getParameters()[i].getType();
-            if (Proxy.class.isAssignableFrom(type)) {
-                parameters[i] = this.registry.getProviderUnchecked(Proxy.class);
-                continue;
-            }
-
             if (ServiceRegistry.class.isAssignableFrom(type)) {
                 parameters[i] = this.registry;
                 continue;
@@ -397,7 +391,7 @@ public final class DefaultPluginManager implements PluginManager {
                 continue;
             }
 
-            throw new IllegalStateException("Expecting type plugin container, service registry or proxy, not " + type.getName());
+            throw new IllegalStateException("Expecting type plugin container or service registry, not " + type.getName());
         }
 
         method.invoke(instance, parameters);

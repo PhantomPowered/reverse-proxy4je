@@ -115,7 +115,7 @@ public class PacketCache {
 
     public Material getMaterialAt(Location pos) {
         int state = this.getBlockStateAt(pos);
-        return this.targetProxyClient.getProxy().getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getMaterial(state);
+        return this.targetProxyClient.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getMaterial(state);
     }
 
     public ConnectedProxyClient getTargetProxyClient() {
@@ -162,7 +162,6 @@ public class PacketCache {
                 new GameStateCache()
         ));
 
-        this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getProxy(), chunkCache);
+        this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getServiceRegistry(), chunkCache);
     }
-
 }

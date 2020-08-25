@@ -29,7 +29,7 @@ public class ClientChannelListener implements ChannelListener {
 
     @Override
     public void handleChannelInactive(@NotNull NetworkChannel channel) {
-        this.player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(player));
+        this.player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(player));
         this.player.setConnected(false);
         if (this.player.getConnectedClient() != null && this.player.getConnectedClient() instanceof BasicServiceConnection) {
             ((BasicServiceConnection) this.player.getConnectedClient()).getClient().free();

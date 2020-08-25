@@ -24,22 +24,24 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.account.BanTester;
 import com.github.derrop.proxy.api.APIUtil;
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.PlayerAbilities;
 import com.github.derrop.proxy.api.player.id.PlayerId;
+import com.github.derrop.proxy.api.raytrace.BlockIterator;
+import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.DefaultTask;
@@ -47,9 +49,6 @@ import com.github.derrop.proxy.api.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
-import com.github.derrop.proxy.api.network.NetworkAddress;
-import com.github.derrop.proxy.api.raytrace.BlockIterator;
-import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
@@ -77,12 +76,12 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private static final Set<NetworkAddress> BANNED_ADDRESSES = new HashSet<>();
 
-    public BasicServiceConnection(MCProxy proxy, MCServiceCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
-        this(proxy, credentials, networkAddress, true);
+    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
+        this(serviceRegistry, credentials, networkAddress, true);
     }
 
-    public BasicServiceConnection(MCProxy proxy, MCServiceCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
-        this.proxy = proxy;
+    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
+        this.serviceRegistry = serviceRegistry;
         this.credentials = credentials;
         this.networkAddress = networkAddress;
         this.reScheduleOnFailure = reScheduleOnFailure;
@@ -93,11 +92,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         }
 
         System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = proxy.getServiceRegistry().getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
+        this.authentication = this.serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
         System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
     }
 
-    private final MCProxy proxy;
+    private final ServiceRegistry serviceRegistry;
 
     private final MCServiceCredentials credentials;
     private final UserAuthentication authentication;
@@ -134,8 +133,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public @NotNull Proxy getProxy() {
-        return this.proxy;
+    public @NotNull ServiceRegistry getServiceRegistry() {
+        return this.serviceRegistry;
     }
 
     @Override
@@ -377,14 +376,14 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         }
 
         APIUtil.EXECUTOR_SERVICE.execute(() -> {
-            this.client = new ConnectedProxyClient(this.proxy, this);
+            this.client = new ConnectedProxyClient(this.serviceRegistry, this);
 
             try {
                 this.client.setAuthentication(this.authentication, this.credentials);
 
                 Boolean result = this.client.connect(this.networkAddress, null).get(5, TimeUnit.SECONDS);
                 if (result != null && result) {
-                    ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+                    ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
                     if (connector instanceof DefaultServiceConnector) {
                         ((DefaultServiceConnector) connector).addOnlineClient(this);
                     }
@@ -451,11 +450,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
-    public void disconnect(@NotNull String reason) {
-        this.close();
-    }
-
-    @Override
     public void disconnect(@NotNull Component reason) {
         this.close();
     }
@@ -477,7 +471,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public void unregister() {
-        ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
         if (connector instanceof DefaultServiceConnector) {
             ((DefaultServiceConnector) connector).addOnlineClient(this);
         }

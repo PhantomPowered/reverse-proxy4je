@@ -99,7 +99,7 @@ public class ClientPacketHandler {
         }
 
         PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.LEFT_CLICK_BLOCK);
-        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
@@ -127,7 +127,7 @@ public class ClientPacketHandler {
                 throw new IllegalStateException("Received unknown action " + packet.getAction());
         }
 
-        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (((Cancelable) event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
@@ -154,7 +154,7 @@ public class ClientPacketHandler {
         }
 
         PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.LEFT_CLICK_AIR);
-        player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+        player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
         if (event.isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
@@ -168,14 +168,14 @@ public class ClientPacketHandler {
         if (packet.getPlacedBlockDirection() == 255) {
             boolean block = this.isTargetingBlock(player.getConnectedClient());
             PlayerInteractEvent event = new PlayerInteractEvent(player, block ? PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK : PlayerInteractEvent.Action.RIGHT_CLICK_AIR);
-            player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+            player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
             if (event.isCancelled()) {
                 throw CancelProceedException.INSTANCE;
             }
             return;
         }
 
-        PlayerBlockPlaceEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+        PlayerBlockPlaceEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerBlockPlaceEvent(player, packet.getLocation(), packet.getStack()));
         if (event.isCancelled()) {
             // player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos()))); TODO should we send this?
@@ -190,7 +190,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        PlayerInventoryClickEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+        PlayerInventoryClickEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerInventoryClickEvent(player, packet.getSlot(), click));
         if (event.isCancelled()) {
             player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ProxyItemStack.AIR));
@@ -201,7 +201,7 @@ public class ClientPacketHandler {
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CLOSE_WINDOW, directions = ProtocolDirection.TO_SERVER)
     public void handleWindowClose(DefaultPlayer player, PacketPlayClientCloseWindow packet) {
-        PlayerInventoryCloseEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+        PlayerInventoryCloseEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerInventoryCloseEvent(player));
         if (event.isCancelled() && packet.getWindowId() == player.getInventory().getWindowId()) {
             player.getInventory().open();
@@ -236,7 +236,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        PlayerMoveEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+        PlayerMoveEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerMoveEvent(player, connection.getLocation(), newLocation));
         if (event.isCancelled()) {
             player.sendPacket(new PacketPlayServerPosition(event.getTo()));
@@ -251,7 +251,7 @@ public class ClientPacketHandler {
         if (player.getConnectedClient() == null) {
             return;
         }
-        PlayerBlockBreakEvent event = player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
+        PlayerBlockBreakEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerBlockBreakEvent(player, packet.getLocation(), PlayerBlockBreakEvent.Action.values()[packet.getAction().ordinal()]));
         if (event.isCancelled()) {
             player.sendPacket(new PacketPlayServerBlockChange(packet.getLocation(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getLocation())));
@@ -268,7 +268,7 @@ public class ClientPacketHandler {
 
         if (chat.getMessage().startsWith("/proxy ")) {
             try {
-                CommandMap commandMap = player.getProxy().getServiceRegistry().getProviderUnchecked(CommandMap.class);
+                CommandMap commandMap = player.getServiceRegistry().getProviderUnchecked(CommandMap.class);
                 if (commandMap.process(player, chat.getMessage().replaceFirst("/proxy ", "")) != CommandResult.NOT_FOUND) {
                     throw CancelProceedException.INSTANCE;
                 }
@@ -281,7 +281,7 @@ public class ClientPacketHandler {
         }
 
         ChatEvent event = new ChatEvent(player, ProtocolDirection.TO_SERVER, ChatMessageType.CHAT, LegacyComponentSerializer.legacySection().deserialize(chat.getMessage()));
-        if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+        if (player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
@@ -291,7 +291,7 @@ public class ClientPacketHandler {
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)
     private void handlePluginMessage(DefaultPlayer player, PacketPlayClientCustomPayload pluginMessage) throws Exception {
         PluginMessageEvent event = new PluginMessageEvent(player, ProtocolDirection.TO_SERVER, pluginMessage.getTag(), pluginMessage.getData());
-        if (player.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+        if (player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
             throw CancelProceedException.INSTANCE;
         }
 
@@ -314,7 +314,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        List<String> suggestions = player.getProxy().getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring("/proxy ".length()));
+        List<String> suggestions = player.getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring("/proxy ".length()));
         if (!suggestions.isEmpty()) {
             player.sendPacket(new PacketPlayServerTabCompleteResponse(suggestions));
             throw CancelProceedException.INSTANCE;

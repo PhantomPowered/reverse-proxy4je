@@ -24,10 +24,7 @@
  */
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.APIUtil;
-import com.github.derrop.proxy.api.Proxy;
-import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.block.half.HorizontalHalf;
@@ -48,6 +45,8 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
+import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.connection.*;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
@@ -76,9 +75,9 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     private static final long ONE_TICK_IN_MILLISECONDS = 50;
 
-    public DefaultPlayer(MCProxy proxy, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
-        super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
-        this.proxy = proxy;
+    public DefaultPlayer(ServiceRegistry serviceRegistry, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
+        super(serviceRegistry, client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
+        this.serviceRegistry = serviceRegistry;
         this.offlinePlayer = offlinePlayer;
 
         this.channel = channel;
@@ -90,7 +89,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         }
     }
 
-    private final MCProxy proxy;
+    private final ServiceRegistry serviceRegistry;
     private final OfflinePlayer offlinePlayer;
     private final long lastLogin = System.currentTimeMillis();
     private final NetworkChannel channel;
@@ -123,17 +122,17 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         return this.actionBars;
     }
 
-    @Override
-    public Proxy getProxy() {
-        return this.proxy;
-    }
-
     public String getLastCommandCompleteRequest() {
         return this.lastCommandCompleteRequest;
     }
 
     public void setLastCommandCompleteRequest(String lastCommandCompleteRequest) {
         this.lastCommandCompleteRequest = lastCommandCompleteRequest;
+    }
+
+    @Override
+    public @NotNull ServiceRegistry getServiceRegistry() {
+        return this.serviceRegistry;
     }
 
     @Override
@@ -187,7 +186,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
             return;
         }
 
-        ServiceConnector connector = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
+        ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
         if (connector instanceof DefaultServiceConnector) {
             ((DefaultServiceConnector) connector).switchClientSafe(this, connection);
         } else {
@@ -233,7 +232,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
         this.connectingClient = null;
 
-        this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerServiceSelectedEvent(this, connection));
+        this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PlayerServiceSelectedEvent(this, connection));
 
         //this.sendMessage("§7Your name: §e" + connection.getName());
     }
@@ -321,7 +320,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendBlockChange(Location pos, Material material) {
-        this.sendBlockChange(pos, this.proxy.getServiceRegistry().getProviderUnchecked(BlockStateRegistry.class).getDefaultBlockState(material));
+        this.sendBlockChange(pos, this.serviceRegistry.getProviderUnchecked(BlockStateRegistry.class).getDefaultBlockState(material));
     }
 
     @Override
@@ -392,7 +391,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
             return;
         }
 
-        ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
+        ServiceConnection nextClient = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
             this.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
                     + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacySection().serialize(reason)));
@@ -498,7 +497,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
             return;
         }
 
-        PlayerKickEvent event = this.proxy.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerKickEvent(this, reason));
+        PlayerKickEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PlayerKickEvent(this, reason));
         if (event.isCancelled()) {
             return;
         }

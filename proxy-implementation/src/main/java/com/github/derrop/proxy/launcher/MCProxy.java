@@ -27,7 +27,6 @@ package com.github.derrop.proxy.launcher;
 import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
 import com.github.derrop.proxy.api.APIUtil;
-import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.configuration.Configuration;
@@ -86,29 +85,29 @@ import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class MCProxy extends Proxy {
+public class MCProxy {
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
-    private final ProxyServer proxyServer = new ProxyServer(this);
+    private final ProxyServer proxyServer = new ProxyServer(this.serviceRegistry);
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
     private final Collection<TickHandler> tickHandlers = new CopyOnWriteArrayList<>();
 
     protected MCProxy() {
         System.out.println("Registering default services...");
-        this.serviceRegistry.setProvider(null, Proxy.class, this, true);
+        this.serviceRegistry.setProvider(null, SimpleChannelInitializer.class, this.baseChannelInitializer, false, true);
         this.serviceRegistry.setProvider(null, PasteServerProvider.class, new DefaultPasteServerProvider(), false, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketRegistry.class, new DefaultPacketRegistry(), false, true);
         this.serviceRegistry.setProvider(null, Configuration.class, new JsonConfiguration(), true);
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
-        this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
-        this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
+        this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this.serviceRegistry), false, true);
+        this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this.serviceRegistry), false, true);
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ProxyClientLoginHandler());
-        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this));
+        this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new InitialHandler(this.serviceRegistry));
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ClientPacketHandler());
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new ServerPacketHandler());
 
@@ -129,13 +128,11 @@ public class MCProxy extends Proxy {
         }, 50, 50, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public @NotNull ServiceRegistry getServiceRegistry() {
+    protected @NotNull ServiceRegistry getServiceRegistry() {
         return this.serviceRegistry;
     }
 
-    @Override
-    public void shutdown() {
+    private void shutdown() {
         if (!Thread.currentThread().getName().equals("Shutdown Thread")) {
             System.exit(0);
         } else {
@@ -155,11 +152,6 @@ public class MCProxy extends Proxy {
 
             this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).close();
         }
-    }
-
-    @Override
-    public void registerTickable(@NotNull TickHandler tickHandler) {
-        this.tickHandlers.add(tickHandler);
     }
 
     public SimpleChannelInitializer getBaseChannelInitializer() {
@@ -204,7 +196,7 @@ public class MCProxy extends Proxy {
 
         System.out.println("Starting proxy listener on " + port + "...");
         this.proxyServer.start(new InetSocketAddress(port));
-        this.registerTickable(this.serviceRegistry.getProviderUnchecked(ServiceConnector.class));
+        // TODO: this.registerTickable(this.serviceRegistry.getProviderUnchecked(ServiceConnector.class));
 
         System.out.println("Starting main loop...");
         this.startMainLoop();
@@ -214,7 +206,7 @@ public class MCProxy extends Proxy {
     }
 
     private void readAccounts() {
-        AccountBiConsumer consumer = new AccountBiConsumer(this);
+        AccountBiConsumer consumer = new AccountBiConsumer(this.serviceRegistry);
         MCServiceCredentialsStorage storage = this.serviceRegistry.getProviderUnchecked(MCServiceCredentialsStorage.class);
         for (MCServiceCredentials credentials : storage.getAll()) {
             NetworkAddress parse = NetworkAddress.parse(credentials.getDefaultServer());

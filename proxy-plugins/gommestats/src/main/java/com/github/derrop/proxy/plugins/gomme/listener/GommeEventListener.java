@@ -53,9 +53,7 @@ public class GommeEventListener {
                 return;
             }
 
-            connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                    .callEvent(new GommeServerSwitchEvent(connection, matchId, type));
-
+            connection.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new GommeServerSwitchEvent(connection, matchId, type));
             connection.setProperty(GommeConstants.CURRENT_SERVER_PROPERTY, type);
         } else {
             MatchInfo matchInfo = this.matchManager.getMatch(connection);
@@ -65,9 +63,9 @@ public class GommeEventListener {
 
             try {
                 MatchAction parsedAction = MatchAction.valueOf(action);
-                connection.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class)
-                        .callEvent(new GommeMatchActionEvent(connection, matchInfo, parsedAction, data));
-            } catch (IllegalArgumentException exception) {
+                connection.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new GommeMatchActionEvent(connection, matchInfo, parsedAction, data));
+            } catch (IllegalArgumentException ignored) {
+                // hack
             }
         }
     }
