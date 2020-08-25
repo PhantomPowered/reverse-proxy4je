@@ -29,8 +29,10 @@ import com.github.derrop.proxy.api.concurrent.Callback;
 import com.github.derrop.proxy.util.LeftRightHolder;
 import com.google.common.io.CharStreams;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -62,7 +64,13 @@ public final class HttpUtil {
             );
             connection.connect();
 
-            try (InputStreamReader reader = new InputStreamReader(connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream())) {
+            InputStream inputStream = getCorrectInputStream(connection);
+            if (inputStream == null) {
+                connection.disconnect();
+                return LeftRightHolder.left(null);
+            }
+
+            try (InputStreamReader reader = new InputStreamReader(inputStream)) {
                 return LeftRightHolder.left(CharStreams.toString(reader));
             } finally {
                 connection.disconnect();
@@ -96,7 +104,13 @@ public final class HttpUtil {
                 consumer.accept(outputStream);
             }
 
-            try (InputStreamReader reader = new InputStreamReader(connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream())) {
+            InputStream inputStream = getCorrectInputStream(connection);
+            if (inputStream == null) {
+                connection.disconnect();
+                return LeftRightHolder.left(null);
+            }
+
+            try (InputStreamReader reader = new InputStreamReader(inputStream)) {
                 return LeftRightHolder.left(CharStreams.toString(reader));
             } finally {
                 connection.disconnect();
@@ -104,5 +118,9 @@ public final class HttpUtil {
         } catch (IOException exception) {
             return LeftRightHolder.right(exception);
         }
+    }
+
+    private static @Nullable InputStream getCorrectInputStream(@NotNull HttpURLConnection connection) throws IOException {
+        return connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
     }
 }

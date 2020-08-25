@@ -210,17 +210,20 @@ public class InitialHandler {
         String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash;// + preventProxy;
 
         Callback<String> handler = (result, error) -> {
-            if (error == null) {
+            if (result != null && error == null) {
                 GameProfile profile = ImplementationUtil.GAME_PROFILE_GSON.fromJson(result, GameProfile.class);
                 if (profile != null && profile.getId() != null) {
                     finish(channel, profile.getId(), profile);
                     return;
                 }
-                disconnect(channel, "offline mode not supported");
-            } else {
-                disconnect(channel, "failed to authenticate with mojang");
+
+                disconnect(channel, "Magic: " + result);
+                return;
+            } else if (error != null) {
                 error.printStackTrace();
             }
+
+            disconnect(channel, "Failed to authenticate with mojang. Please try again.");
         };
 
         HttpUtil.get(authURL, handler);
