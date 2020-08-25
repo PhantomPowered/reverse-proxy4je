@@ -32,9 +32,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayKeepAlive implements Packet {
 
-    private long randomId;
+    private int randomId;
 
-    public PacketPlayKeepAlive(long randomId) {
+    public PacketPlayKeepAlive(int randomId) {
         this.randomId = randomId;
     }
 
@@ -53,7 +53,7 @@ public class PacketPlayKeepAlive implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeVarInt(Math.toIntExact(this.randomId));
+        protoBuf.writeVarInt(this.randomId);
     }
 
     public long getRandomId() {

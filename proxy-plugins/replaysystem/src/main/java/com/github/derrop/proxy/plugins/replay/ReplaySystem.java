@@ -25,19 +25,19 @@
 package com.github.derrop.proxy.plugins.replay;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
-import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.network.ByteBufUtils;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
-import com.github.derrop.proxy.api.network.ByteBufUtils;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
+import com.github.derrop.proxy.data.DataWatcherEntry;
 import com.github.derrop.proxy.network.wrapper.DefaultProtoBuf;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
-import com.github.derrop.proxy.data.DataWatcherEntry;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -155,7 +155,7 @@ public class ReplaySystem { // TODO
 
         this.executorService.execute(() -> {
             while (!replayInputStream.isClosed()) {
-                player.sendPacket(new PacketPlayKeepAlive(System.nanoTime()));
+                player.sendPacket(new PacketPlayKeepAlive(Math.toIntExact(System.nanoTime() / 1000000L)));
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException exception) {

@@ -45,7 +45,7 @@ public final class EntityTickHandler {
             ServiceConnector connector = registry.getProviderUnchecked(ServiceConnector.class);
             for (ServiceConnection onlineClient : connector.getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {
-                    onlineClient.getPlayer().sendPacket(new PacketPlayKeepAlive(System.nanoTime()));
+                    onlineClient.getPlayer().sendPacket(new PacketPlayKeepAlive(Math.toIntExact(System.nanoTime() / 1000000L)));
                 }
             }
 
