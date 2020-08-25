@@ -24,23 +24,20 @@
  */
 package com.github.derrop.proxy.connection.player.scoreboard.minecraft;
 
-import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.ScoreObjectiveCriteria;
 
 public class ScoreObjective {
-    private final Scoreboard theScoreboard;
+
+    private final ScoreObjectiveCriteria objectiveCriteria;
+    private final Scoreboard scoreboard;
     private final String name;
 
+    private ScoreObjectiveCriteria.RenderType renderType;
     private int displaySlot;
-
-    /**
-     * The ScoreObjectiveCriteria for this objetive.
-     */
-    private final IScoreObjectiveCriteria objectiveCriteria;
-    private IScoreObjectiveCriteria.EnumRenderType renderType;
     private String displayName;
 
-    public ScoreObjective(Scoreboard theScoreboardIn, String nameIn, IScoreObjectiveCriteria objectiveCriteriaIn) {
-        this.theScoreboard = theScoreboardIn;
+    public ScoreObjective(Scoreboard theScoreboardIn, String nameIn, ScoreObjectiveCriteria objectiveCriteriaIn) {
+        this.scoreboard = theScoreboardIn;
         this.name = nameIn;
         this.objectiveCriteria = objectiveCriteriaIn;
         this.displayName = nameIn;
@@ -48,14 +45,14 @@ public class ScoreObjective {
     }
 
     public Scoreboard getScoreboard() {
-        return this.theScoreboard;
+        return this.scoreboard;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public IScoreObjectiveCriteria getCriteria() {
+    public ScoreObjectiveCriteria getCriteria() {
         return this.objectiveCriteria;
     }
 
@@ -73,15 +70,13 @@ public class ScoreObjective {
 
     public void setDisplayName(String nameIn) {
         this.displayName = nameIn;
-        this.theScoreboard.func_96532_b(this);
     }
 
-    public IScoreObjectiveCriteria.EnumRenderType getRenderType() {
+    public ScoreObjectiveCriteria.RenderType getRenderType() {
         return this.renderType;
     }
 
-    public void setRenderType(IScoreObjectiveCriteria.EnumRenderType type) {
+    public void setRenderType(ScoreObjectiveCriteria.RenderType type) {
         this.renderType = type;
-        this.theScoreboard.func_96532_b(this);
     }
 }

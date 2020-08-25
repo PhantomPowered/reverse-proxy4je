@@ -29,7 +29,7 @@ import com.github.derrop.proxy.api.scoreboard.Objective;
 import com.github.derrop.proxy.api.scoreboard.Score;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScoreObjective;
-import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.ScoreObjectiveCriteria;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +62,7 @@ public class BasicObjective implements Objective {
                 }
 
             } else {
-                ScoreObjective newObjective = this.scoreboard.getHandle().addScoreObjective(this.name, IScoreObjectiveCriteria.DUMMY);
+                ScoreObjective newObjective = this.scoreboard.getHandle().addScoreObjective(this.name, ScoreObjectiveCriteria.DUMMY);
 
                 this.scoreboard.getHandle().setObjectiveInDisplaySlot(this.handle != null ? this.handle.getDisplaySlot() : DisplaySlot.SIDEBAR.ordinal(), newObjective);
                 this.handle = newObjective;

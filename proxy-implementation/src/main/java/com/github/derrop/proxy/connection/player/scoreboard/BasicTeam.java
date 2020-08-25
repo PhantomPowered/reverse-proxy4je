@@ -100,6 +100,7 @@ public class BasicTeam implements Team {
         if (!this.handle.getMembershipCollection().contains(entry)) {
             return;
         }
+
         this.scoreboard.getHandle().removePlayerFromTeam(entry, this.handle);
         this.scoreboard.getCache().sendTeamUpdate(new PacketPlayServerScoreboardTeam(
                 this.name, (byte) 4, null, null, null, null, null, 0, (byte) 0,
@@ -127,7 +128,7 @@ public class BasicTeam implements Team {
     @Override
     public NameTagVisibility getNameTagVisibility() {
         this.ensureRegistered();
-        return NameTagVisibility.values()[this.handle.getNameTagVisibility().field_178827_f];
+        return NameTagVisibility.values()[this.handle.getNameTagVisibility().id];
     }
 
     @Override
@@ -150,6 +151,7 @@ public class BasicTeam implements Team {
         if (this.handle.getAllowFriendlyFire() == allowFriendlyFire) {
             return;
         }
+
         this.handle.setAllowFriendlyFire(allowFriendlyFire);
         this.scoreboard.getCache().sendTeamUpdate((byte) 2, this.handle);
     }
@@ -166,6 +168,7 @@ public class BasicTeam implements Team {
         if (this.handle.getSeeFriendlyInvisiblesEnabled() == canSeeFriendlyInvisibles) {
             return;
         }
+
         this.handle.setSeeFriendlyInvisiblesEnabled(canSeeFriendlyInvisibles);
         this.scoreboard.getCache().sendTeamUpdate((byte) 2, this.handle);
     }
@@ -182,6 +185,7 @@ public class BasicTeam implements Team {
         if (this.handle.getColorPrefix().equals(prefix)) {
             return;
         }
+
         this.handle.setNamePrefix(prefix);
         this.scoreboard.getCache().sendTeamUpdate((byte) 2, this.handle);
     }
@@ -198,6 +202,7 @@ public class BasicTeam implements Team {
         if (this.handle.getColorSuffix().equals(suffix)) {
             return;
         }
+
         this.handle.setNameSuffix(suffix);
         this.scoreboard.getCache().sendTeamUpdate((byte) 2, this.handle);
     }

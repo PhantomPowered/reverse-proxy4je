@@ -83,6 +83,7 @@ public class BasicScoreboard implements Scoreboard {
         if (objective == null) {
             return;
         }
+
         this.getHandle().setObjectiveInDisplaySlot(displaySlot.ordinal(), null);
         this.getCache().sendDeletedObjective(objective.getName());
     }
@@ -134,7 +135,7 @@ public class BasicScoreboard implements Scoreboard {
         if (this.getHandle().getTeam(name) != null) {
             throw new IllegalArgumentException("A team with the name \"" + name + "\" already exists");
         }
+
         return new BasicTeam(this, name, null);
     }
-
 }
