@@ -55,7 +55,10 @@ import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
-import com.github.derrop.proxy.protocol.play.server.message.*;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import io.netty.buffer.ByteBuf;
 import net.kyori.adventure.text.Component;
@@ -263,19 +266,6 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public void sendServerMessage(String message) {
         this.connectedClient.chat(message);
-    }
-
-    @Override
-    public void setTabHeaderAndFooter(Component header, Component footer) {
-        this.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
-                GsonComponentSerializer.gson().serialize(header),
-                GsonComponentSerializer.gson().serialize(footer)
-        ));
-    }
-
-    @Override
-    public void resetTabHeader() {
-        this.setTabHeaderAndFooter(TextComponent.empty(), TextComponent.empty());
     }
 
     @Override

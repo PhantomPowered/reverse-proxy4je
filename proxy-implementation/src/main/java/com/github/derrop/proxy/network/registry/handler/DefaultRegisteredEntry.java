@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 
 public class DefaultRegisteredEntry implements PacketHandlerRegistryEntry.RegisteredEntry {
 
-    DefaultRegisteredEntry(int[] handledPackets, Method method, ProtocolState protocolState, ProtocolDirection[] directions) {
+    protected DefaultRegisteredEntry(int[] handledPackets, Method method, ProtocolState protocolState, ProtocolDirection[] directions) {
         this.handledPackets = handledPackets;
         this.method = method;
         this.protocolState = protocolState;
@@ -42,11 +42,8 @@ public class DefaultRegisteredEntry implements PacketHandlerRegistryEntry.Regist
     }
 
     private final int[] handledPackets;
-
     private final Method method;
-
     private final ProtocolState protocolState;
-
     private final ProtocolDirection[] directions;
 
     @Override

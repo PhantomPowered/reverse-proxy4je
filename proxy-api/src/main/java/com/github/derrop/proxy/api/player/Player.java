@@ -72,10 +72,6 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
 
     void sendServerMessage(String message);
 
-    void setTabHeaderAndFooter(Component header, Component footer);
-
-    void resetTabHeader();
-
     void sendTitle(Title title);
 
     void clearTitle();
@@ -93,5 +89,4 @@ public interface Player extends OfflinePlayer, Connection, CommandSender, Entity
     default void sendSelfEntityStatus(EntityStatusType statusType) {
         this.sendEntityStatus(null, statusType);
     }
-
 }

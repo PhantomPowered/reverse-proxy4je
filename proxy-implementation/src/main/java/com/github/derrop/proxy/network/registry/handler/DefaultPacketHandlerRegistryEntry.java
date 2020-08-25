@@ -33,16 +33,14 @@ import java.util.Collection;
 
 public class DefaultPacketHandlerRegistryEntry implements PacketHandlerRegistryEntry {
 
-    DefaultPacketHandlerRegistryEntry(PluginContainer pluginContainer, Object source, Collection<RegisteredEntry> entries) {
+    protected DefaultPacketHandlerRegistryEntry(PluginContainer pluginContainer, Object source, Collection<RegisteredEntry> entries) {
         this.pluginContainer = pluginContainer;
         this.source = source;
         this.entries = entries;
     }
 
     private final PluginContainer pluginContainer;
-
     private final Object source;
-
     private final Collection<RegisteredEntry> entries;
 
     @Override

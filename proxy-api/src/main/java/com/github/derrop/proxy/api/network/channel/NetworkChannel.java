@@ -71,7 +71,7 @@ public interface NetworkChannel extends AutoCloseable {
 
     Channel getWrappedChannel();
 
-    @Nullable <T> T getProperty(String key);
+    <T> T getProperty(String key);
 
     <T> void setProperty(String key, T value);
 

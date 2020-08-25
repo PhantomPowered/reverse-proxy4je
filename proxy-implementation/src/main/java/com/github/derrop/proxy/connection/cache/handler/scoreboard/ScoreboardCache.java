@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.connection.cache.handler.scoreboard;
 
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -137,10 +137,10 @@ public class ScoreboardCache implements PacketCacheHandler {
                 scoreplayerteam.setNameSuffix(team.getSuffix());
                 scoreplayerteam.setChatFormat(team.getColor());
                 scoreplayerteam.read(team.getFriendlyFire());
-                Visibility team$enumvisible = Visibility.getVisibilityByKey(team.getNameTagVisibility());
+                Visibility visibility = Visibility.getVisibilityByKey(team.getNameTagVisibility());
 
-                if (team$enumvisible != null) {
-                    scoreplayerteam.setNameTagVisibility(team$enumvisible);
+                if (visibility != null) {
+                    scoreplayerteam.setNameTagVisibility(visibility);
                 }
             }
 

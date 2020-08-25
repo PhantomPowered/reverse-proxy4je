@@ -29,10 +29,7 @@ import com.github.derrop.proxy.protocol.play.server.PacketPlayServerTabCompleteR
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
-import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerTitle;
+import com.github.derrop.proxy.protocol.play.server.message.*;
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.derrop.proxy.text.ProxyLegacyHoverEventSerializer;
@@ -47,6 +44,16 @@ public class ServerPacketHandler {
     private static final GsonComponentSerializer SERIALIZER = GsonComponentSerializer.builder()
             .legacyHoverEventSerializer(ProxyLegacyHoverEventSerializer.INSTANCE)
             .build();
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.PLAYER_LIST_HEADER_FOOTER, directions = ProtocolDirection.TO_CLIENT)
+    public void handleTabUpdate(ConnectedProxyClient client, PacketPlayServerPlayerListHeaderFooter packet) {
+        Component header = GsonComponentSerializer.gson().deserialize(packet.getHeader());
+        Component footer = GsonComponentSerializer.gson().deserialize(packet.getFooter());
+
+        if (client.getConnection().setTabHeaderAndFooter(header, footer)) {
+            throw CancelProceedException.INSTANCE;
+        }
+    }
 
     @PacketHandler(directions = ProtocolDirection.TO_CLIENT)
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
@@ -67,6 +74,7 @@ public class ServerPacketHandler {
         if (client.getRedirector() == null) {
             return;
         }
+
         DefaultPlayer player = (DefaultPlayer) client.getRedirector();
         if (packet.getPosition() != ChatMessageType.ACTION_BAR.ordinal()) {
             return;
@@ -81,6 +89,7 @@ public class ServerPacketHandler {
                 player.getActionBars().remove(actionBar);
                 continue;
             }
+
             HorizontalHalf side = actionBar.getSide();
             original = side == HorizontalHalf.LEFT ? message + original : original + message;
         }
@@ -106,6 +115,7 @@ public class ServerPacketHandler {
             if (entity == null) {
                 return;
             }
+
             EntityStatusType statusType = EntityStatusType.ofOtherEntity(entity.getClass(), packet.getStatus());
             if (statusType == null) {
                 System.err.printf("Unknown EntityStatusType received: %s for entity %d (type: %s)", packet.getStatus(), packet.getEntityId(), entity.getType() == null ? entity.getLivingType() : entity.getType());
@@ -137,6 +147,7 @@ public class ServerPacketHandler {
             if (entity == null) {
                 return;
             }
+
             entity.teleport(location);
             client.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new EntityMoveEvent(client.getConnection(), entity, entity.getLocation(), location));
             return;
@@ -208,6 +219,7 @@ public class ServerPacketHandler {
         if (connector instanceof DefaultServiceConnector) {
             ((DefaultServiceConnector) connector).unregisterConnection(client.getConnection());
         }
+
         throw CancelProceedException.INSTANCE;
     }
 

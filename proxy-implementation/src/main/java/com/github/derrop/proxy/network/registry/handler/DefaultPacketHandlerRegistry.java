@@ -60,6 +60,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                         if (entryEntry.getHandledPackets().length == 0) {
                             continue;
                         }
+
                         boolean found = false;
                         for (int packetId : entryEntry.getHandledPackets()) {
                             if (packetId == ((Packet) packet).getId()) {
@@ -67,6 +68,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                                 break;
                             }
                         }
+
                         if (!found) {
                             continue;
                         }
@@ -91,6 +93,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                             break;
                         }
                     }
+
                     if (entryEntry.getDirections().length != 0 && !found) {
                         continue;
                     }

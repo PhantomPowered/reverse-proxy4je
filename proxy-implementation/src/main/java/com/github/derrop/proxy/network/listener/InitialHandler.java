@@ -87,7 +87,7 @@ public class InitialHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Status.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
-    public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) throws Exception {
+    public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
         ServerPing response = this.serviceRegistry.getProviderUnchecked(Configuration.class).getMotd();
@@ -110,36 +110,29 @@ public class InitialHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Status.PING, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.STATUS)
-    public void handle(NetworkChannel channel, PacketStatusInPing ping) throws Exception {
+    public void handle(NetworkChannel channel, PacketStatusInPing ping) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.PING, "Not expecting PING");
         channel.write(new PacketStatusOutPong(ping.getTime()));
         disconnect(channel, "");
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Handshaking.SET_PROTOCOL, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.HANDSHAKING)
-    public void handle(NetworkChannel channel, PacketHandshakingClientSetProtocol packetHandshakingClientSetProtocol) throws Exception {
+    public void handle(NetworkChannel channel, PacketHandshakingClientSetProtocol packet) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.HANDSHAKE, "Not expecting HANDSHAKE");
-        channel.setProperty("sentProtocol", packetHandshakingClientSetProtocol.getProtocolVersion());
 
-        // Starting with FML 1.8, a "\0FML\0" token is appended to the handshake. This interferes
-        // with Bungee's IP forwarding, so we detect it, and remove it from the host string, for now.
-        // We know FML appends \00FML\00. However, we need to also consider that other systems might
-        // add their own data to the end of the string. So, we just take everything from the \0 character
-        // and save it for later.
-        if (packetHandshakingClientSetProtocol.getHost().contains("\0")) {
-            String[] split = packetHandshakingClientSetProtocol.getHost().split("\0", 2);
-            packetHandshakingClientSetProtocol.setHost(split[0]);
+        channel.setProperty("sentProtocol", packet.getProtocolVersion());
+        if (packet.getHost().contains("\0")) {
+            String[] split = packet.getHost().split("\0", 2);
+            packet.setHost(split[0]);
             channel.setProperty("extraDataInHandshake", "\0" + split[1]);
         }
 
-        // SRV records can end with a . depending on DNS / client.
-        if (packetHandshakingClientSetProtocol.getHost().endsWith(".")) {
-            packetHandshakingClientSetProtocol.setHost(packetHandshakingClientSetProtocol.getHost().substring(0, packetHandshakingClientSetProtocol.getHost().length() - 1));
+        if (packet.getHost().endsWith(".")) {
+            packet.setHost(packet.getHost().substring(0, packet.getHost().length() - 1));
         }
 
-        channel.setProperty("virtualHost", InetSocketAddress.createUnresolved(packetHandshakingClientSetProtocol.getHost(), packetHandshakingClientSetProtocol.getPort()));
-
-        switch (packetHandshakingClientSetProtocol.getRequestedProtocol()) {
+        channel.setProperty("virtualHost", InetSocketAddress.createUnresolved(packet.getHost(), packet.getPort()));
+        switch (packet.getRequestedProtocol()) {
             case 1:
                 channel.setProperty(INIT_STATE, State.STATUS);
                 channel.setProtocolState(ProtocolState.STATUS);
@@ -148,19 +141,19 @@ public class InitialHandler {
             case 2:
                 channel.setProperty(INIT_STATE, State.USERNAME);
                 channel.setProtocolState(ProtocolState.LOGIN);
-                if (packetHandshakingClientSetProtocol.getProtocolVersion() != ProtocolIds.Versions.MINECRAFT_1_8) {
+                if (packet.getProtocolVersion() != ProtocolIds.Versions.MINECRAFT_1_8) {
                     disconnect(channel, "We only support 1.8");
                     return;
                 }
                 break;
 
             default:
-                disconnect(channel, "Cannot request protocol " + packetHandshakingClientSetProtocol.getRequestedProtocol());
+                disconnect(channel, "Cannot request protocol " + packet.getRequestedProtocol());
         }
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Login.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.LOGIN)
-    public void handle(NetworkChannel channel, PacketLoginInLoginRequest loginRequest) throws Exception {
+    public void handle(NetworkChannel channel, PacketLoginInLoginRequest loginRequest) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.USERNAME, "Not expecting USERNAME");
         channel.setProperty("requestedName", loginRequest.getData());
 
@@ -204,13 +197,12 @@ public class InitialHandler {
         }) {
             sha.update(bit);
         }
+
         String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16), "UTF-8");
+        String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash;
 
-        //String preventProxy = (getSocketAddress() instanceof InetSocketAddress) ? "&ip=" + URLEncoder.encode(getAddress().getAddress().getHostAddress(), "UTF-8") : "";
-        String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash;// + preventProxy;
-
-        Callback<String> handler = (result, error) -> {
-            if (result != null && error == null) {
+        Callback<String> handler = (result, exception) -> {
+            if (exception == null && result != null) {
                 GameProfile profile = ImplementationUtil.GAME_PROFILE_GSON.fromJson(result, GameProfile.class);
                 if (profile != null && profile.getId() != null) {
                     finish(channel, profile.getId(), profile);
@@ -219,8 +211,8 @@ public class InitialHandler {
 
                 disconnect(channel, "Magic: " + result);
                 return;
-            } else if (error != null) {
-                error.printStackTrace();
+            } else if (exception != null) {
+                exception.printStackTrace();
             }
 
             disconnect(channel, "Failed to authenticate with mojang. Please try again.");
