@@ -1,6 +1,7 @@
 package com.github.derrop.proxy.connection.handler;
 
 import com.github.derrop.proxy.api.APIUtil;
+import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
@@ -9,6 +10,7 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
+import com.github.derrop.proxy.api.connection.ServiceInventory;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.event.Event;
@@ -20,12 +22,15 @@ import com.github.derrop.proxy.api.events.connection.player.*;
 import com.github.derrop.proxy.api.events.connection.player.interact.PlayerAttackEntityEvent;
 import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInteractAtEntityEvent;
 import com.github.derrop.proxy.api.events.connection.player.interact.PlayerInteractEntityEvent;
+import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.location.Vector;
 import com.github.derrop.proxy.api.network.PacketHandler;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.player.GameMode;
 import com.github.derrop.proxy.api.player.inventory.ClickType;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.DefaultServiceInventory;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
 import com.github.derrop.proxy.item.ProxyItemStack;
 import com.github.derrop.proxy.network.wrapper.DecodedPacket;
@@ -178,10 +183,21 @@ public class ClientPacketHandler {
             return;
         }
 
+        Facing facing = Facing.getFront(packet.getPlacedBlockDirection());
+        Location blockLocation = packet.getLocation().offset(facing);
         PlayerBlockPlaceEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
-                .callEvent(new PlayerBlockPlaceEvent(player, packet.getLocation(), packet.getStack()));
+                .callEvent(new PlayerBlockPlaceEvent(player, packet.getLocation(), blockLocation, packet.getStack(), facing, new Vector(packet.getFacingX(), packet.getFacingY(), packet.getFacingZ())));
+
         if (event.isCancelled()) {
-            // player.sendPacket(new PacketPlayServerBlockChange(packet.getPos(), player.getConnectedClient().getBlockAccess().getBlockState(packet.getPos()))); TODO should we send this?
+            player.sendPacket(new PacketPlayServerBlockChange(blockLocation, player.getConnectedClient().getBlockAccess().getBlockState(blockLocation)));
+            if (player.getConnectedClient() != null) {
+                ServiceInventory inventory = player.getConnectedClient().getInventory();
+                int slot = inventory.getHeldItemSlot();
+                ItemStack item = inventory.getHotBarItem(slot);
+                if (item != null) {
+                    player.sendPacket(new PacketPlayServerSetSlot((byte) 0, slot + DefaultServiceInventory.HOTBAR_OFFSET, item));
+                }
+            }
             throw CancelProceedException.INSTANCE;
         }
     }
@@ -196,8 +212,11 @@ public class ClientPacketHandler {
         PlayerInventoryClickEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerInventoryClickEvent(player, packet.getSlot(), click));
         if (event.isCancelled()) {
-            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ProxyItemStack.AIR));
-            player.sendPacket(new PacketPlayServerSetSlot(player.getInventory().getWindowId(), packet.getSlot(), player.getInventory().getItem(packet.getSlot())));
+            // TODO this works when clicking with the cursor, but not with the hotkeys
+            player.sendPacket(new PacketPlayServerSetSlot((byte) -1, -1, ProxyItemStack.AIR)); // window -1, slot -1 = item on cursor
+            if (player.getConnectedClient() != null) {
+                player.sendPacket(new PacketPlayServerSetSlot((byte) 0, packet.getSlot(), player.getConnectedClient().getInventory().getItem(packet.getSlot())));
+            }
             throw CancelProceedException.INSTANCE;
         }
     }

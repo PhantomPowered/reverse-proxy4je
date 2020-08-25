@@ -27,6 +27,7 @@ package com.github.derrop.proxy.api.connection;
 import com.github.derrop.proxy.api.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Map;
 
@@ -34,6 +35,11 @@ public interface ServiceInventory {
 
     @NotNull
     Map<Integer, ItemStack> getContent();
+
+    int getHeldItemSlot();
+
+    @Nullable
+    ItemStack getHotBarItem(@Range(from = 0, to = 8) int slot);
 
     @Nullable
     ItemStack getItemInHand();

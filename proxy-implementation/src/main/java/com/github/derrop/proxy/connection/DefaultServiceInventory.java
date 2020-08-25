@@ -30,10 +30,13 @@ import com.github.derrop.proxy.connection.cache.handler.HeldItemSlotCache;
 import com.github.derrop.proxy.connection.cache.handler.PlayerInventoryCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Map;
 
 public class DefaultServiceInventory implements ServiceInventory {
+
+    public static final int HOTBAR_OFFSET = 36;
 
     private final BasicServiceConnection connection;
 
@@ -51,9 +54,19 @@ public class DefaultServiceInventory implements ServiceInventory {
     }
 
     @Override
-    public @Nullable ItemStack getItemInHand() {
+    public int getHeldItemSlot() {
         HeldItemSlotCache cache = (HeldItemSlotCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof HeldItemSlotCache);
-        return this.getItem(cache.getSlot());
+        return cache.getSlot();
+    }
+
+    @Override
+    public @Nullable ItemStack getHotBarItem(@Range(from = 0, to = 8) int slot) {
+        return this.getItem(slot + HOTBAR_OFFSET);
+    }
+
+    @Override
+    public @Nullable ItemStack getItemInHand() {
+        return this.getHotBarItem(this.getHeldItemSlot());
     }
 
     @Override
