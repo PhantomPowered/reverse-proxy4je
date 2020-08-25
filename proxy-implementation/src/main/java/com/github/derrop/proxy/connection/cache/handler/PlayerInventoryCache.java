@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
+import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -87,6 +87,10 @@ public class PlayerInventoryCache implements PacketCacheHandler {
                 this.itemsBySlot.remove(setSlot.getSlot());
             }
         }
+    }
+
+    public Map<Integer, ItemStack> getItemsBySlot() {
+        return this.itemsBySlot;
     }
 
     @Override

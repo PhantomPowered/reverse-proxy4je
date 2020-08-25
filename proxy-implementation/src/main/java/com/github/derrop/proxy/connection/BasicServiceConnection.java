@@ -31,9 +31,7 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.ServiceConnector;
-import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
+import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
@@ -65,6 +63,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -117,6 +116,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private boolean sprinting;
     private Location location = new Location(0, 0, 0, 0, 0);
 
+    private final ServiceInventory inventory = new DefaultServiceInventory(this);
+
+    private final InteractiveServiceConnection interactive = new BasicInteractiveServiceConnection(this);
+
     private void handleLocationUpdate(Location newLocation) {
         Packet clientPacket = PacketPlayClientPlayerPosition.create(this.location, newLocation);
         if (clientPacket == null) {
@@ -146,6 +149,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     }
 
     @Override
+    public InteractiveServiceConnection interactive() {
+        return this.interactive;
+    }
+
+    @ApiStatus.Internal
     public void setLocation(Location location) {
         this.handleLocationUpdate(location);
         this.location = location;
@@ -235,6 +243,11 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     @Override
     public boolean isSprinting() {
         return this.sprinting;
+    }
+
+    @Override
+    public ServiceInventory getInventory() {
+        return this.inventory;
     }
 
     public void setSprinting(boolean sprinting) {

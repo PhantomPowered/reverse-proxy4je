@@ -26,6 +26,7 @@ package com.github.derrop.proxy.plugins.gomme;
 
 /**
  * Commented lines cannot be detected easily because Gomme doesn't send them on the 'GoMod' channel.
+ * TODO maybe we could just parse it out of the tablist header?
  */
 public enum GommeServerType {
     LOBBY("Lobby", "LOBBY", "compass"),

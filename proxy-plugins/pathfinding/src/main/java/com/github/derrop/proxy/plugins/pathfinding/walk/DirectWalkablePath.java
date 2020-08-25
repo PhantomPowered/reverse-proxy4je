@@ -63,6 +63,6 @@ public class DirectWalkablePath extends WalkablePath {
             location.setZ(location.getZ() + (this.getWalkDistance() * (z > 0 ? -1 : 1)));
         }
 
-        this.getConnection().setLocation(location);
+        this.getConnection().interactive().teleport(location);
     }
 }

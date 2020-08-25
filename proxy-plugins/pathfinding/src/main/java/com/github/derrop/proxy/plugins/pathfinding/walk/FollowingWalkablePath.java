@@ -85,7 +85,7 @@ public class FollowingWalkablePath extends WalkablePath {
                 System.err.println("FAILED");
                 continue;
             }*/
-        this.getConnection().setLocation(location);
+        this.getConnection().interactive().teleport(location);
     }
 
     private Queue<PathPoint> smoothWay(PathPoint previousPoint, PathPoint currentPoint) {

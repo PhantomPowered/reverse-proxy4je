@@ -22,30 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.command.defaults;
+package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
-import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
-import com.github.derrop.proxy.api.command.result.CommandResult;
-import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandAdf extends NonTabCompleteableCommandCallback {
+import java.util.Map;
 
-    public CommandAdf() {
-        super("proxy.command.adf", null);
-    }
+public interface ServiceInventory {
 
-    @Override
-    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
-        Player player = (Player) commandSender;
+    @NotNull
+    Map<Integer, ItemStack> getContent();
 
-        Location current = player.getLocation().clone();
-        Location newLoc = new Location(current.getX() + 1, current.getY() + 1, current.getZ(), current.getYaw(), current.getPitch());
+    @Nullable
+    ItemStack getItemInHand();
 
-        player.teleport(newLoc);
-        return CommandResult.END;
-    }
+    @Nullable
+    ItemStack getItem(int slot);
+
 }

@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.Packet;
+import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -35,7 +35,7 @@ import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerHeldI
 
 public class HeldItemSlotCache implements PacketCacheHandler {
 
-    private int slot;
+    private int slot = 0;
 
     @Override
     public int[] getPacketIDs() {
@@ -54,6 +54,10 @@ public class HeldItemSlotCache implements PacketCacheHandler {
         if (newPacket instanceof PacketPlayClientHeldItemSlot) {
             this.slot = ((PacketPlayClientHeldItemSlot) newPacket).getSlot();
         }
+    }
+
+    public int getSlot() {
+        return this.slot;
     }
 
     @Override

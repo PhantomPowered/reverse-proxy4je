@@ -1,9 +1,9 @@
 package com.github.derrop.proxy.protocol.play.client.entity;
 
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
+import com.github.derrop.proxy.api.location.Vector;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.location.Vector;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +74,15 @@ public class PacketPlayClientUseEntity implements Packet, EntityPacket {
     @Override
     public int getId() {
         return ProtocolIds.FromClient.Play.USE_ENTITY;
+    }
+
+    @Override
+    public String toString() {
+        return "PacketPlayClientUseEntity{" +
+                "entityId=" + entityId +
+                ", action=" + action +
+                ", hitVector=" + hitVector +
+                '}';
     }
 
     public enum Action {

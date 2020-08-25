@@ -4,9 +4,7 @@ import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
-import com.github.derrop.proxy.api.connection.ProtocolState;
-import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.connection.ServiceWorldDataProvider;
+import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
@@ -89,6 +87,11 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
+    public ServiceInventory getInventory() {
+        return null;
+    }
+
+    @Override
     public @NotNull MCServiceCredentials getCredentials() {
         return MCServiceCredentials.offline(this.player.getName(), null, false);
     }
@@ -124,12 +127,13 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
-    public void setLocation(Location location) {
+    public InteractiveServiceConnection interactive() {
+        return null;
     }
 
     @Override
     public boolean isOnGround() {
-        return false;
+        return true;
     }
 
     @Override

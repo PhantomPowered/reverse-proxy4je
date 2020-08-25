@@ -137,7 +137,7 @@ public class ServerPacketHandler {
             if (entity == null) {
                 return;
             }
-            entity.setLocation(location);
+            entity.teleport(location);
             client.getProxy().getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new EntityMoveEvent(client.getConnection(), entity, entity.getLocation(), location));
             return;
         }

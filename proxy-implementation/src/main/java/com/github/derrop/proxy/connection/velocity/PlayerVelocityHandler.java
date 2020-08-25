@@ -134,7 +134,7 @@ public class PlayerVelocityHandler {
                     boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || velocityHandler.positionUpdateTicks >= 20;
                     boolean flag3 = d3 != 0.0D || d4 != 0.0D;*/
 
-                    onlineClient.setLocation(new Location(
+                    onlineClient.interactive().teleport(new Location(
                             //pos.getX() + diffX, pos.getY() + diffY, pos.getZ() + diffZ,
                             pos.getX() + (velocityHandler.motionX / 20),
                             pos.getY() + (velocityHandler.motionY / 20),

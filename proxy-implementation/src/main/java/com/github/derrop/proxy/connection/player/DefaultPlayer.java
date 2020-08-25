@@ -80,7 +80,6 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         super(proxy.getServiceRegistry(), client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
         this.proxy = proxy;
         this.offlinePlayer = offlinePlayer;
-        this.displayName = loginResult.getName();
 
         this.channel = channel;
         this.version = version;
@@ -102,7 +101,6 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     private ServiceConnection connectedClient;
     private boolean connected = false;
     private boolean autoReconnect = true;
-    private final String displayName;
     private String lastCommandCompleteRequest;
     private final PlayerInventory inventory = new DefaultPlayerInventory(this);
     private final PacketSender.NetworkUnsafe packetSenderUnsafe = new PacketSenderUnsafe();
@@ -460,9 +458,9 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     }
 
     @Override
-    public void setLocation(@NotNull Location location) {
+    public void teleport(@NotNull Location location) {
         if (this.connectedClient != null) {
-            this.connectedClient.setLocation(location);
+            this.connectedClient.interactive().teleport(location);
         }
     }
 
