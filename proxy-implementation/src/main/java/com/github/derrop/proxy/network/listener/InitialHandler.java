@@ -40,7 +40,6 @@ import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
-import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientChannelListener;
 import com.github.derrop.proxy.connection.player.DefaultOfflinePlayer;
 import com.github.derrop.proxy.connection.player.DefaultPlayer;
@@ -63,6 +62,7 @@ import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
 import com.google.common.base.Preconditions;
+import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -211,13 +211,9 @@ public class InitialHandler {
 
         Callback<String> handler = (result, error) -> {
             if (error == null) {
-                LoginResult obj = ImplementationUtil.GSON.fromJson(result, LoginResult.class);
-                if (obj != null && obj.getId() != null) {
-                    UUID uniqueId = ImplementationUtil.parseUUID(obj.getId());
-                    /*if (uniqueId == null) {
-                        uniqueId = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
-                    }*/
-                    finish(channel, uniqueId, obj);
+                GameProfile profile = ImplementationUtil.GAME_PROFILE_GSON.fromJson(result, GameProfile.class);
+                if (profile != null && profile.getId() != null) {
+                    finish(channel, profile.getId(), profile);
                     return;
                 }
                 disconnect(channel, "offline mode not supported");
@@ -230,7 +226,7 @@ public class InitialHandler {
         HttpUtil.get(authURL, handler);
     }
 
-    private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
+    private void finish(NetworkChannel channel, UUID uniqueId, GameProfile profile) {
         if (this.serviceRegistry.getProviderUnchecked(PlayerRepository.class).getOnlinePlayer(uniqueId) != null) {
             disconnect(channel, "Already connected");
             return;
@@ -247,7 +243,7 @@ public class InitialHandler {
                 PlayerRepository repository = this.serviceRegistry.getProviderUnchecked(PlayerRepository.class);
                 OfflinePlayer offlinePlayer = repository.getOfflinePlayer(uniqueId);
                 if (offlinePlayer == null) {
-                    offlinePlayer = new DefaultOfflinePlayer(uniqueId, result.getName(), -1, -1);
+                    offlinePlayer = new DefaultOfflinePlayer(uniqueId, profile.getName(), -1, -1);
                     repository.insertOfflinePlayer(offlinePlayer);
                 }
 
@@ -259,7 +255,7 @@ public class InitialHandler {
                     return;
                 }
 
-                DefaultPlayer player = new DefaultPlayer(this.serviceRegistry, ((BasicServiceConnection) client).getClient(), offlinePlayer, result, channel, channel.getProperty("sentProtocol"), 256);
+                DefaultPlayer player = new DefaultPlayer(this.serviceRegistry, ((BasicServiceConnection) client).getClient(), offlinePlayer, channel, channel.getProperty("sentProtocol"), 256);
                 repository.updateOfflinePlayer(player);
 
                 PlayerLoginEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player));
@@ -272,7 +268,7 @@ public class InitialHandler {
                     return;
                 }
 
-                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), result.getName())); // With dashes in between
+                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), profile.getName())); // With dashes in between
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientChannelListener(player));

@@ -4,6 +4,8 @@ import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.ping.Favicon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.util.UUIDTypeAdapter;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,11 @@ public final class ImplementationUtil {
     }
 
     public static final Gson GSON = GsonComponentSerializer.gson().populator().apply(new GsonBuilder().registerTypeAdapter(Favicon.class, Favicon.FAVICON_TYPE_ADAPTER)).create();
+
+    public static final Gson GAME_PROFILE_GSON = new GsonBuilder()
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer())
+            .create();
 
     public static String stringifyException(Throwable t) {
         StackTraceElement[] trace = t.getStackTrace();

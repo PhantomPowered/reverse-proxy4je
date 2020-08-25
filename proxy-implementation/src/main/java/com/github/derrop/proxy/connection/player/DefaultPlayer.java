@@ -47,7 +47,10 @@ import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.player.inventory.PlayerInventory;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.tick.TickHandler;
-import com.github.derrop.proxy.connection.*;
+import com.github.derrop.proxy.connection.AppendedActionBar;
+import com.github.derrop.proxy.connection.BasicServiceConnection;
+import com.github.derrop.proxy.connection.ConnectedProxyClient;
+import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.entity.ProxyEntity;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutSetCompression;
@@ -75,7 +78,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     private static final long ONE_TICK_IN_MILLISECONDS = 50;
 
-    public DefaultPlayer(ServiceRegistry serviceRegistry, ConnectedProxyClient client, OfflinePlayer offlinePlayer, LoginResult loginResult, NetworkChannel channel, int version, int compressionThreshold) {
+    public DefaultPlayer(ServiceRegistry serviceRegistry, ConnectedProxyClient client, OfflinePlayer offlinePlayer, NetworkChannel channel, int version, int compressionThreshold) {
         super(serviceRegistry, client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
         this.serviceRegistry = serviceRegistry;
         this.offlinePlayer = offlinePlayer;
