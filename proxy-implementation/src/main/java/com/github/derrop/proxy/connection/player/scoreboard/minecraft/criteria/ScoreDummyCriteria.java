@@ -27,12 +27,13 @@ package com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria;
 import java.util.List;
 import java.util.UUID;
 
-public class ScoreDummyCriteria implements IScoreObjectiveCriteria {
+public class ScoreDummyCriteria implements ScoreObjectiveCriteria {
+
     private final String dummyName;
 
     public ScoreDummyCriteria(String name) {
         this.dummyName = name;
-        IScoreObjectiveCriteria.INSTANCES.put(name, this);
+        ScoreObjectiveCriteria.INSTANCES.put(name, this);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ScoreDummyCriteria implements IScoreObjectiveCriteria {
     }
 
     @Override
-    public int getScoreForPlayers(List<UUID> p_96635_1_) {
+    public int getScoreForPlayers(List<UUID> players) {
         return 0;
     }
 
@@ -51,7 +52,7 @@ public class ScoreDummyCriteria implements IScoreObjectiveCriteria {
     }
 
     @Override
-    public IScoreObjectiveCriteria.EnumRenderType getRenderType() {
-        return IScoreObjectiveCriteria.EnumRenderType.INTEGER;
+    public RenderType getRenderType() {
+        return RenderType.INTEGER;
     }
 }

@@ -31,7 +31,7 @@ import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
 import com.github.derrop.proxy.connection.player.scoreboard.minecraft.*;
-import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.ScoreObjectiveCriteria;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
 import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
@@ -64,7 +64,7 @@ public class ScoreboardCache implements PacketCacheHandler {
             PacketPlayServerScoreboardObjective objective = (PacketPlayServerScoreboardObjective) newPacket;
 
             if (objective.getAction() == 0) {
-                ScoreObjective scoreobjective = scoreboard.addScoreObjective(objective.getName(), IScoreObjectiveCriteria.DUMMY);
+                ScoreObjective scoreobjective = scoreboard.addScoreObjective(objective.getName(), ScoreObjectiveCriteria.DUMMY);
                 scoreobjective.setDisplayName(objective.getValue());
                 scoreobjective.setRenderType(objective.getType());
 
@@ -136,8 +136,8 @@ public class ScoreboardCache implements PacketCacheHandler {
                 scoreplayerteam.setNamePrefix(team.getPrefix());
                 scoreplayerteam.setNameSuffix(team.getSuffix());
                 scoreplayerteam.setChatFormat(team.getColor());
-                scoreplayerteam.func_98298_a(team.getFriendlyFire());
-                EnumVisible team$enumvisible = EnumVisible.func_178824_a(team.getNameTagVisibility());
+                scoreplayerteam.read(team.getFriendlyFire());
+                Visibility team$enumvisible = Visibility.getVisibilityByKey(team.getNameTagVisibility());
 
                 if (team$enumvisible != null) {
                     scoreplayerteam.setNameTagVisibility(team$enumvisible);

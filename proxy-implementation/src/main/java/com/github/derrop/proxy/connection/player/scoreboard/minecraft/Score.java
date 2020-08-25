@@ -29,22 +29,22 @@ import java.util.List;
 import java.util.UUID;
 
 public class Score {
-    public static final Comparator<Score> scoreComparator = (l, r) -> l.getScorePoints() > r.getScorePoints() ? 1 : (l.getScorePoints() < r.getScorePoints() ? -1 : r.getPlayerName().compareToIgnoreCase(l.getPlayerName()));
+
+    protected static final Comparator<Score> SCORE_COMPARATOR = (l, r) -> l.getScorePoints() > r.getScorePoints() ? 1 : (l.getScorePoints() < r.getScorePoints() ? -1 : r.getPlayerName().compareToIgnoreCase(l.getPlayerName()));
+
     private final Scoreboard theScoreboard;
     private final ScoreObjective theScoreObjective;
     private final String scorePlayerName;
     private int scorePoints;
     private boolean locked;
-    private boolean field_178818_g;
 
     public Score(Scoreboard theScoreboardIn, ScoreObjective theScoreObjectiveIn, String scorePlayerNameIn) {
         this.theScoreboard = theScoreboardIn;
         this.theScoreObjective = theScoreObjectiveIn;
         this.scorePlayerName = scorePlayerNameIn;
-        this.field_178818_g = true;
     }
 
-    public void increseScore(int amount) {
+    public void increaseScore(int amount) {
         if (this.theScoreObjective.getCriteria().isReadOnly()) {
             throw new IllegalStateException("Cannot modify read-only score");
         } else {
@@ -60,14 +60,6 @@ public class Score {
         }
     }
 
-    public void func_96648_a() {
-        if (this.theScoreObjective.getCriteria().isReadOnly()) {
-            throw new IllegalStateException("Cannot modify read-only score");
-        } else {
-            this.increseScore(1);
-        }
-    }
-
     public int getScorePoints() {
         return this.scorePoints;
     }
@@ -75,20 +67,12 @@ public class Score {
     public void setScorePoints(int points) {
         int i = this.scorePoints;
         this.scorePoints = points;
-
-        if (i != points || this.field_178818_g) {
-            this.field_178818_g = false;
-            this.getScoreScoreboard().func_96536_a(this);
-        }
     }
 
     public ScoreObjective getObjective() {
         return this.theScoreObjective;
     }
 
-    /**
-     * Returns the name of the player this score belongs to.
-     */
     public String getPlayerName() {
         return this.scorePlayerName;
     }
@@ -105,7 +89,7 @@ public class Score {
         this.locked = locked;
     }
 
-    public void func_96651_a(List<UUID> p_96651_1_) {
-        this.setScorePoints(this.theScoreObjective.getCriteria().getScoreForPlayers(p_96651_1_));
+    public void setPointsForPlayers(List<UUID> players) {
+        this.setScorePoints(this.theScoreObjective.getCriteria().getScoreForPlayers(players));
     }
 }

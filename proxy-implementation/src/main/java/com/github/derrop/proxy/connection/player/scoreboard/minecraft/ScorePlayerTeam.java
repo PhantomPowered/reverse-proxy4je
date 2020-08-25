@@ -32,48 +32,45 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ScorePlayerTeam extends Team {
 
-    private final Scoreboard theScoreboard;
     private final String registeredName;
-    private final Set<String> membershipSet = Sets.<String>newHashSet();
-    private String teamNameSPT;
-    private String namePrefixSPT = "";
-    private String colorSuffix = "";
-    private boolean allowFriendlyFire = true;
-    private boolean canSeeFriendlyInvisibles = true;
-    private EnumVisible nameTagVisibility = EnumVisible.ALWAYS;
-    private EnumVisible deathMessageVisibility = EnumVisible.ALWAYS;
-    private int chatFormat = -1;
-
+    private final Set<String> membershipSet = Sets.newHashSet();
     private final Map<String, Object> properties = new ConcurrentHashMap<>();
 
-    public ScorePlayerTeam(Scoreboard theScoreboardIn, String name) {
-        this.theScoreboard = theScoreboardIn;
+    private String teamName;
+    private String namePrefix = "";
+    private String colorSuffix = "";
+
+    private boolean allowFriendlyFire = true;
+    private boolean canSeeFriendlyInvisible = true;
+
+    private Visibility nameTagVisibility = Visibility.ALWAYS;
+    private Visibility deathMessageVisibility = Visibility.ALWAYS;
+
+    private int chatFormat = -1;
+
+    public ScorePlayerTeam(String name) {
         this.registeredName = name;
-        this.teamNameSPT = name;
+        this.teamName = name;
     }
 
     public Map<String, Object> getProperties() {
         return this.properties;
     }
 
-    /**
-     * Retrieve the name by which this team is registered in the scoreboard.
-     */
     @Override
     public String getRegisteredName() {
         return this.registeredName;
     }
 
     public String getTeamName() {
-        return this.teamNameSPT;
+        return this.teamName;
     }
 
     public void setTeamName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null");
         } else {
-            this.teamNameSPT = name;
-            this.theScoreboard.sendTeamUpdate(this);
+            this.teamName = name;
         }
     }
 
@@ -82,32 +79,24 @@ public class ScorePlayerTeam extends Team {
         return this.membershipSet;
     }
 
-    /**
-     * Returns the color prefix for the player's team name.
-     */
     public String getColorPrefix() {
-        return this.namePrefixSPT;
+        return this.namePrefix;
     }
 
     public void setNamePrefix(String prefix) {
         if (prefix == null) {
             throw new IllegalArgumentException("Prefix cannot be null");
         } else {
-            this.namePrefixSPT = prefix;
-            this.theScoreboard.sendTeamUpdate(this);
+            this.namePrefix = prefix;
         }
     }
 
-    /**
-     * Returns the color suffix for the player's team name.
-     */
     public String getColorSuffix() {
         return this.colorSuffix;
     }
 
     public void setNameSuffix(String suffix) {
         this.colorSuffix = suffix;
-        this.theScoreboard.sendTeamUpdate(this);
     }
 
     @Override
@@ -115,11 +104,8 @@ public class ScorePlayerTeam extends Team {
         return this.getColorPrefix() + input + this.getColorSuffix();
     }
 
-    /**
-     * Returns the player name including the color prefixes and suffixes.
-     */
-    public static String formatPlayerName(Team p_96667_0_, String p_96667_1_) {
-        return p_96667_0_ == null ? p_96667_1_ : p_96667_0_.formatString(p_96667_1_);
+    public static String formatPlayerName(Team team, String playerName) {
+        return team == null ? playerName : team.formatString(playerName);
     }
 
     @Override
@@ -129,40 +115,36 @@ public class ScorePlayerTeam extends Team {
 
     public void setAllowFriendlyFire(boolean friendlyFire) {
         this.allowFriendlyFire = friendlyFire;
-        this.theScoreboard.sendTeamUpdate(this);
     }
 
     @Override
     public boolean getSeeFriendlyInvisiblesEnabled() {
-        return this.canSeeFriendlyInvisibles;
+        return this.canSeeFriendlyInvisible;
     }
 
     public void setSeeFriendlyInvisiblesEnabled(boolean friendlyInvisibles) {
-        this.canSeeFriendlyInvisibles = friendlyInvisibles;
-        this.theScoreboard.sendTeamUpdate(this);
+        this.canSeeFriendlyInvisible = friendlyInvisibles;
     }
 
     @Override
-    public EnumVisible getNameTagVisibility() {
+    public Visibility getNameTagVisibility() {
         return this.nameTagVisibility;
     }
 
     @Override
-    public EnumVisible getDeathMessageVisibility() {
+    public Visibility getDeathMessageVisibility() {
         return this.deathMessageVisibility;
     }
 
-    public void setNameTagVisibility(EnumVisible p_178772_1_) {
-        this.nameTagVisibility = p_178772_1_;
-        this.theScoreboard.sendTeamUpdate(this);
+    public void setNameTagVisibility(Visibility visibility) {
+        this.nameTagVisibility = visibility;
     }
 
-    public void setDeathMessageVisibility(EnumVisible p_178773_1_) {
-        this.deathMessageVisibility = p_178773_1_;
-        this.theScoreboard.sendTeamUpdate(this);
+    public void setDeathMessageVisibility(Visibility visibility) {
+        this.deathMessageVisibility = visibility;
     }
 
-    public int func_98299_i() {
+    public int write() {
         int i = 0;
 
         if (this.getAllowFriendlyFire()) {
@@ -176,13 +158,13 @@ public class ScorePlayerTeam extends Team {
         return i;
     }
 
-    public void func_98298_a(int p_98298_1_) {
-        this.setAllowFriendlyFire((p_98298_1_ & 1) > 0);
-        this.setSeeFriendlyInvisiblesEnabled((p_98298_1_ & 2) > 0);
+    public void read(int data) {
+        this.setAllowFriendlyFire((data & 1) > 0);
+        this.setSeeFriendlyInvisiblesEnabled((data & 2) > 0);
     }
 
-    public void setChatFormat(int p_178774_1_) {
-        this.chatFormat = p_178774_1_;
+    public void setChatFormat(int chatFormat) {
+        this.chatFormat = chatFormat;
     }
 
     public int getChatFormat() {

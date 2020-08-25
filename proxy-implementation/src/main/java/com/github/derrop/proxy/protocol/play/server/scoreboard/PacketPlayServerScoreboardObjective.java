@@ -28,7 +28,7 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
-import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.ScoreObjectiveCriteria;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerScoreboardObjective implements Packet {
@@ -36,13 +36,13 @@ public class PacketPlayServerScoreboardObjective implements Packet {
     private String name;
     private String value;
     private byte action;
-    private IScoreObjectiveCriteria.EnumRenderType type;
+    private ScoreObjectiveCriteria.RenderType type;
 
     public PacketPlayServerScoreboardObjective(String name) {
         this(name, null, null, (byte) 1);
     }
 
-    public PacketPlayServerScoreboardObjective(String name, String value, IScoreObjectiveCriteria.EnumRenderType type, byte action) {
+    public PacketPlayServerScoreboardObjective(String name, String value, ScoreObjectiveCriteria.RenderType type, byte action) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -59,7 +59,7 @@ public class PacketPlayServerScoreboardObjective implements Packet {
 
         if (action == 0 || action == 2) {
             this.value = protoBuf.readString();
-            this.type = IScoreObjectiveCriteria.EnumRenderType.valueOf(protoBuf.readString().toUpperCase());
+            this.type = ScoreObjectiveCriteria.RenderType.valueOf(protoBuf.readString().toUpperCase());
         }
     }
 
@@ -87,7 +87,7 @@ public class PacketPlayServerScoreboardObjective implements Packet {
         return this.value;
     }
 
-    public IScoreObjectiveCriteria.EnumRenderType getType() {
+    public ScoreObjectiveCriteria.RenderType getType() {
         return this.type;
     }
 
@@ -103,7 +103,7 @@ public class PacketPlayServerScoreboardObjective implements Packet {
         this.value = value;
     }
 
-    public void setType(IScoreObjectiveCriteria.EnumRenderType type) {
+    public void setType(ScoreObjectiveCriteria.RenderType type) {
         this.type = type;
     }
 

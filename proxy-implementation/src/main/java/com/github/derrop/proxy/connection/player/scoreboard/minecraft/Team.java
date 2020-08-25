@@ -28,16 +28,10 @@ import java.util.Collection;
 
 public abstract class Team {
 
-    /**
-     * Same as == .
-     */
     public boolean isSameTeam(Team other) {
         return this == other;
     }
 
-    /**
-     * Retrieve the name by which this team is registered in the scoreboard.
-     */
     public abstract String getRegisteredName();
 
     public abstract String formatString(String input);
@@ -46,9 +40,9 @@ public abstract class Team {
 
     public abstract boolean getAllowFriendlyFire();
 
-    public abstract EnumVisible getNameTagVisibility();
+    public abstract Visibility getNameTagVisibility();
 
     public abstract Collection<String> getMembershipCollection();
 
-    public abstract EnumVisible getDeathMessageVisibility();
+    public abstract Visibility getDeathMessageVisibility();
 }
