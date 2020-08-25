@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.account.BanTester;
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
@@ -47,9 +47,9 @@ import com.github.derrop.proxy.api.task.EmptyTaskFutureListener;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.task.util.TaskUtil;
-import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.util.raytrace.BlockIterator;
-import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
+import com.github.derrop.proxy.api.network.NetworkAddress;
+import com.github.derrop.proxy.api.raytrace.BlockIterator;
+import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import com.github.derrop.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.derrop.proxy.network.channel.WrappedNetworkChannel;
 import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
@@ -376,7 +376,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
             task.addListener(booleanTaskFutureListener);
         }
 
-        Constants.EXECUTOR_SERVICE.execute(() -> {
+        APIUtil.EXECUTOR_SERVICE.execute(() -> {
             this.client = new ConnectedProxyClient(this.proxy, this);
 
             try {

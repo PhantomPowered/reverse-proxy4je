@@ -26,13 +26,42 @@ package com.github.derrop.proxy.network;
 
 import com.github.derrop.proxy.network.pipeline.length.LengthFrameEncoder;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.WriteBufferWaterMark;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.ServerSocketChannel;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.util.ResourceLeakDetector;
+import io.netty.util.concurrent.FastThreadLocalThread;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ThreadFactory;
 
 public final class NetworkUtils {
 
     private NetworkUtils() {
         throw new UnsupportedOperationException();
+    }
+
+    static {
+        if (System.getProperty("io.netty.leakDetectionLevel") == null) {
+            ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
+        }
+
+        System.setProperty("io.netty.allocator.maxOrder", "9");
+        System.setProperty("io.netty.noPreferDirect", "true");
+        System.setProperty("io.netty.maxDirectMemory", "0");
+        System.setProperty("io.netty.recycler.maxCapacity", "0");
+        System.setProperty("io.netty.recycler.maxCapacity.default", "0");
+        System.setProperty("io.netty.selectorAutoRebuildThreshold", "0");
+        System.setProperty("io.netty.allocator.type", "UNPOOLED");
     }
 
     public static final String TIMEOUT = "timeout";
@@ -49,27 +78,42 @@ public final class NetworkUtils {
     public static final MessageToByteEncoder<ByteBuf> LENGTH_FRAME_ENCODER = new LengthFrameEncoder();
     public static final WriteBufferWaterMark WATER_MARK = new WriteBufferWaterMark(524288, 2097152);
 
-    public static int longToInt(long in) {
-        return in > Integer.MAX_VALUE ? Integer.MAX_VALUE : in < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int) in;
-    }
-
-    public static int varintSize(int paramInt) {
-        if ((paramInt & 0xFFFFFF80) == 0) {
+    public static int varIntSize(int paramInt) {
+        if ((paramInt & -128) == 0) {
             return 1;
         }
 
-        if ((paramInt & 0xFFFFC000) == 0) {
+        if ((paramInt & -16_384) == 0) {
             return 2;
         }
 
-        if ((paramInt & 0xFFE00000) == 0) {
+        if ((paramInt & -2_097_152) == 0) {
             return 3;
         }
 
-        if ((paramInt & 0xF0000000) == 0) {
+        if ((paramInt & -268_435_456) == 0) {
             return 4;
         }
 
         return 5;
+    }
+
+    public static EventLoopGroup newEventLoopGroup() {
+        return Epoll.isAvailable() ?
+                new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory()) :
+                new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory());
+    }
+
+    public static Class<? extends SocketChannel> getSocketChannelClass() {
+        return Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class;
+    }
+
+    public static Class<? extends ServerSocketChannel> getServerSocketChannelClass() {
+        return Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
+    }
+
+    @NotNull
+    public static ThreadFactory threadFactory() {
+        return r -> new FastThreadLocalThread(r);
     }
 }

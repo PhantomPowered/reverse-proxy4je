@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;

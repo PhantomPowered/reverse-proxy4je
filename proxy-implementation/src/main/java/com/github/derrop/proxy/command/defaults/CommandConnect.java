@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -33,7 +33,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
@@ -108,7 +108,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
     private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
         ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player.getUniqueId());
         if (nextClient == null || nextClient.equals(oldClient)) {
-            player.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason")));
+            player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason")));
             return;
         }
 
@@ -167,7 +167,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
 
             CountDownLatch countDownLatch = new CountDownLatch(clients.size());
             for (ServiceConnection client : clients) {
-                Constants.EXECUTOR_SERVICE.execute(() -> {
+                APIUtil.EXECUTOR_SERVICE.execute(() -> {
                     try {
                         this.connect(client, address).get(10, TimeUnit.SECONDS);
                     } catch (InterruptedException | ExecutionException | TimeoutException exception) {

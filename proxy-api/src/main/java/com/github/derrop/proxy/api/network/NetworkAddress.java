@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.api.network;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,7 +103,7 @@ public class NetworkAddress {
         return new NetworkAddress(rawHost, host, port);
     }
 
-    public static org.xbill.DNS.SRVRecord lookupMinecraftSRVRecord(String host) {
+    private static org.xbill.DNS.SRVRecord lookupMinecraftSRVRecord(String host) {
         try {
             org.xbill.DNS.Record[] records = new org.xbill.DNS.Lookup("_minecraft._tcp." + host, org.xbill.DNS.Type.SRV).run();
             if (records == null) {

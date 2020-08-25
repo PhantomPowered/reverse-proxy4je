@@ -4,7 +4,7 @@ import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.EulerAngle;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 
 import java.util.HashMap;
 import java.util.Map;

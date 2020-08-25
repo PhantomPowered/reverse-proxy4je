@@ -22,24 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.api.paste;
 
-public final class Duo<L, R> {
+import org.jetbrains.annotations.NotNull;
 
-    public Duo(L left, R right) {
-        this.left = left;
-        this.right = right;
-    }
+import java.util.Optional;
 
-    private final L left;
+public interface PasteServerUploadResult {
 
-    private final R right;
+    boolean wasSuccessful();
 
-    public L getLeft() {
-        return left;
-    }
+    @NotNull Optional<String> getPasteUrl();
 
-    public R getRight() {
-        return right;
-    }
+    @NotNull Optional<String> getDeleteSecret();
+
+    @NotNull String getContent();
 }

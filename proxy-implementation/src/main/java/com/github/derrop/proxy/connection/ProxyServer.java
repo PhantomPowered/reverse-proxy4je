@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.launcher.MCProxy;
+import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.ServerConnectionChannelInitializer;
-import com.github.derrop.proxy.util.NettyUtils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -42,12 +42,12 @@ public class ProxyServer {
         this.proxy = proxy;
     }
 
-    private final EventLoopGroup bossGroup = NettyUtils.newEventLoopGroup();
-    private final EventLoopGroup workerGroup = NettyUtils.newEventLoopGroup();
+    private final EventLoopGroup bossGroup = NetworkUtils.newEventLoopGroup();
+    private final EventLoopGroup workerGroup = NetworkUtils.newEventLoopGroup();
 
     public void start(SocketAddress address) {
         new ServerBootstrap()
-                .channel(NettyUtils.getServerSocketChannelClass())
+                .channel(NetworkUtils.getServerSocketChannelClass())
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .childHandler(new ServerConnectionChannelInitializer(this.proxy))
                 .group(this.bossGroup, this.workerGroup)

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api;
+package com.github.derrop.proxy.api.configuration;
 
 import com.github.derrop.proxy.api.ping.ServerPing;
 

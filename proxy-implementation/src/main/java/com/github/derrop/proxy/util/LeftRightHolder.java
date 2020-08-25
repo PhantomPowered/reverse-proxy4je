@@ -24,52 +24,52 @@
  */
 package com.github.derrop.proxy.util;
 
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
-public class ByteQuad {
+import java.util.Map;
 
-    private final byte first;
-    private final byte second;
-    private final byte third;
-    private final byte fourth;
+public final class LeftRightHolder<L, R> implements Map.Entry<L, R> {
 
-    public ByteQuad(byte first, byte second, byte third, byte fourth) {
-        this.first = first;
-        this.second = second;
-        this.third = third;
-        this.fourth = fourth;
+    public static <L, R> @NotNull LeftRightHolder<L, R> left(L left) {
+        return of(left, null);
     }
 
-    public ByteQuad copy() {
-        return new ByteQuad(this.first, this.second, this.third, this.fourth);
+    public static <L, R> @NotNull LeftRightHolder<L, R> right(R right) {
+        return of(null, right);
     }
 
-    public byte getFirst() {
-        return this.first;
+    public static <L, R> @NotNull LeftRightHolder<L, R> of(L left, R right) {
+        return new LeftRightHolder<>(left, right);
     }
 
-    public byte getSecond() {
-        return this.second;
+    private LeftRightHolder(L left, R right) {
+        this.left = left;
+        this.right = right;
     }
 
-    public byte getThird() {
-        return this.third;
+    private final L left;
+    private final R right;
+
+    public L getLeft() {
+        return left;
     }
 
-    public byte getFourth() {
-        return this.fourth;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ByteQuad byteQuad = (ByteQuad) o;
-        return first == byteQuad.first && second == byteQuad.second && third == byteQuad.third && fourth == byteQuad.fourth;
+    public R getRight() {
+        return right;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(first, second, third, fourth);
+    public L getKey() {
+        return this.left;
+    }
+
+    @Override
+    public R getValue() {
+        return this.right;
+    }
+
+    @Override
+    public R setValue(R value) {
+        throw new UnsupportedOperationException("Not supported in this implementation");
     }
 }

@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.nbt;
 
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 import org.jetbrains.annotations.Contract;
 
 import java.io.DataInput;

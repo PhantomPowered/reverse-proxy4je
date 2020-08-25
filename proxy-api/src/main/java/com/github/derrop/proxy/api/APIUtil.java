@@ -33,9 +33,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 
-public final class Constants {
+public final class APIUtil {
 
-    private Constants() {
+    private APIUtil() {
         throw new UnsupportedOperationException();
     }
 

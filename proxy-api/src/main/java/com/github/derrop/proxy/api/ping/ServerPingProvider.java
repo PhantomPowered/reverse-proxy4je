@@ -1,7 +1,7 @@
 package com.github.derrop.proxy.api.ping;
 
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 
 public interface ServerPingProvider {
 

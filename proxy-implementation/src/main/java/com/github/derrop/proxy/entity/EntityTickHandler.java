@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
@@ -41,7 +41,7 @@ public final class EntityTickHandler {
     }
 
     public static void startTick(ServiceRegistry registry) {
-        Constants.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
+        APIUtil.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
             ServiceConnector connector = registry.getProviderUnchecked(ServiceConnector.class);
             for (ServiceConnection onlineClient : connector.getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {

@@ -1,16 +1,17 @@
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.ping.Favicon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public final class Utils {
+public final class ImplementationUtil {
 
-    private Utils() {
+    private ImplementationUtil() {
         throw new UnsupportedOperationException();
     }
 
@@ -23,6 +24,11 @@ public final class Utils {
     }
 
     public static UUID parseUUID(String uuid) {
-        return UUID.fromString(Constants.UUID_PATTERN.matcher(uuid).replaceAll("$1-$2-$3-$4-$5"));
+        return UUID.fromString(APIUtil.UUID_PATTERN.matcher(uuid).replaceAll("$1-$2-$3-$4-$5"));
+    }
+
+    @NotNull
+    public static String replaceLast(@NotNull String in, @NotNull String regex, @NotNull String replacement) {
+        return in.replaceFirst("(?s)(.*)" + regex, "$1" + replacement);
     }
 }

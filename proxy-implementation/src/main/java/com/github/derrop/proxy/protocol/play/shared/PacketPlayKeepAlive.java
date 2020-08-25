@@ -27,7 +27,6 @@ package com.github.derrop.proxy.protocol.play.shared;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +53,7 @@ public class PacketPlayKeepAlive implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeVarInt(NetworkUtils.longToInt(this.randomId));
+        protoBuf.writeVarInt(Math.toIntExact(this.randomId));
     }
 
     public long getRandomId() {

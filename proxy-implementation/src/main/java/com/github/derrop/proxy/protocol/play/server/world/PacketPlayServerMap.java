@@ -27,7 +27,7 @@ package com.github.derrop.proxy.protocol.play.server.world;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.util.ByteQuad;
+import com.github.derrop.proxy.protocol.play.server.world.util.ByteQuad;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 

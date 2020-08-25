@@ -27,7 +27,7 @@ package com.github.derrop.proxy.network.listener;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.network.channel.ChannelListener;
-import com.github.derrop.proxy.util.Utils;
+import com.github.derrop.proxy.ImplementationUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class InitialListener implements ChannelListener {
@@ -40,7 +40,7 @@ public class InitialListener implements ChannelListener {
     @Override
     public void handleException(@NotNull NetworkChannel channel, @NotNull Throwable cause) {
         if (InitialHandler.canSendKickMessage(channel)) {
-            InitialHandler.disconnect(channel, ChatColor.RED + Utils.stringifyException(cause));
+            InitialHandler.disconnect(channel, ChatColor.RED + ImplementationUtil.stringifyException(cause));
         } else {
             channel.close();
         }

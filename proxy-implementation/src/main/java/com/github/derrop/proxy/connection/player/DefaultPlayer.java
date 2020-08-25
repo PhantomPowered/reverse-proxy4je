@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.launcher.MCProxy;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.Proxy;
-import com.github.derrop.proxy.api.Tickable;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.block.half.HorizontalHalf;
@@ -72,7 +72,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
-public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetworkChannel, Tickable, Entity.Callable {
+public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetworkChannel, TickHandler, Entity.Callable {
 
     private static final long ONE_TICK_IN_MILLISECONDS = 50;
 
@@ -157,7 +157,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
             );
         }
 
-        Constants.EXECUTOR_SERVICE.execute(() -> {
+        APIUtil.EXECUTOR_SERVICE.execute(() -> {
             for (int i = 0; i < units; i++) {
                 this.sendMessage(ChatMessageType.ACTION_BAR, message);
 
@@ -336,7 +336,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendMessage(@NotNull String message) {
-        this.sendMessage(ChatMessageType.CHAT, LegacyComponentSerializer.legacySection().deserialize(Constants.MESSAGE_PREFIX + message));
+        this.sendMessage(ChatMessageType.CHAT, LegacyComponentSerializer.legacySection().deserialize(APIUtil.MESSAGE_PREFIX + message));
     }
 
     @Override
@@ -394,7 +394,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
         ServiceConnection nextClient = this.proxy.getServiceRegistry().getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
-            this.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
+            this.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
                     + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacySection().serialize(reason)));
             return;
         }

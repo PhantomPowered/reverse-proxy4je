@@ -22,28 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.api.paste;
 
-public class PlayerPositionPacketUtil {
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
-    public static byte getClientRotation(float in) {
-        return (byte) ((int) (in * 256F / 360F));
-    }
+import java.io.IOException;
 
-    public static int getClientLocation(double in) {
-        return floor(in * 32D);
-    }
+public interface PasteServer {
 
-    public static double getServerLocation(int in) {
-        return (double) in / 32D;
-    }
+    @NotNull
+    String getUrl();
 
-    public static float getServerRotation(byte in) {
-        return (((float) in * 360F) / 256F);
-    }
+    void setUrl(@NotNull String url);
 
-    public static int floor(double d0) {
-        int i = (int) d0;
-        return d0 < (double) i ? i - 1 : i;
-    }
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long getLimitPerDocument();
+
+    void setLimitPerDocument(@Range(from = 0, to = Long.MAX_VALUE) long limit);
+
+    @NotNull
+    PasteServerUploadResult[] uploadDocumentSafely(@NotNull String content);
+
+    @NotNull
+    PasteServerUploadResult[] uploadDocument(@NotNull String content) throws IOException;
 }

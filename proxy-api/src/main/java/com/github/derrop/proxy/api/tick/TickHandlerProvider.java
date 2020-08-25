@@ -22,31 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.util;
+package com.github.derrop.proxy.api.tick;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-
-public interface PasteServerProvider {
-
-    @NotNull
-    String getUrl();
-
-    void setUrl(@NotNull String url);
-
-    long getLimitPerDocument();
-
-    void setLimitPerDocument(long limit);
-
-    @Nullable
-    String[] uploadDocumentCaught(@NotNull String content);
-
-    @Nullable
-    String[] uploadDocument(@NotNull String content) throws IOException;
-
-    @Nullable
-    String[] mapAsURLs(@Nullable String[] keys);
-
+public interface TickHandlerProvider { // TODO
 }

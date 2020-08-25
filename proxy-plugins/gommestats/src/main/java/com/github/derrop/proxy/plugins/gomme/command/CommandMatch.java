@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins.gomme.command;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -54,7 +54,7 @@ public class CommandMatch extends NonTabCompleteableCommandCallback {
                 sender.sendMessage(" * Begin: " + (matchInfo.getBeginTimestamp() == -1 ? "None" : MatchInfo.FORMAT.format(matchInfo.getBeginTimestamp())));
                 sender.sendMessage(" * End: " + (matchInfo.getEndTimestamp() == -1 ? "None" : MatchInfo.FORMAT.format(matchInfo.getEndTimestamp())));
 
-                TextComponent component = TextComponent.of(Constants.MESSAGE_PREFIX + " * §7[§aClick to get the MatchLog§7]")
+                TextComponent component = TextComponent.of(APIUtil.MESSAGE_PREFIX + " * §7[§aClick to get the MatchLog§7]")
                         .clickEvent(ClickEvent.runCommand("/proxy match createLog " + connection.getName()))
                         .hoverEvent(HoverEvent.showText(TextComponent.of("§7Click to create the log for this match")));
                 sender.sendMessage(component);

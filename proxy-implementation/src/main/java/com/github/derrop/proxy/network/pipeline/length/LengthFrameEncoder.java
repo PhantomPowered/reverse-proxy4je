@@ -37,7 +37,7 @@ public class LengthFrameEncoder extends MessageToByteEncoder<ByteBuf> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, ByteBuf byteBuf2) throws Exception {
         int readable = byteBuf.readableBytes();
-        int length = NetworkUtils.varintSize(readable);
+        int length = NetworkUtils.varIntSize(readable);
         byteBuf2.ensureWritable(readable + length);
 
         ByteBufUtils.writeVarInt(readable, byteBuf2);

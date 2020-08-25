@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins.gommecw.running;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.block.BlockState;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.block.half.VerticalHalf;
@@ -130,7 +130,7 @@ public class RunningClanWarManager {
     }
 
     private void initSpectator(ServiceConnection connection, RunningClanWar clanWar, int index) {
-        Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+        APIUtil.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
             connection.getAbilities().setFlying(true);
 
             // TODO move into position

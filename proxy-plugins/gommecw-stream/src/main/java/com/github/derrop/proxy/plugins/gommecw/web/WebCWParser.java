@@ -1,7 +1,6 @@
 package com.github.derrop.proxy.plugins.gommecw.web;
 
-import com.github.derrop.proxy.api.Tickable;
-import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.plugins.gommecw.event.GommeCWAddEvent;
@@ -24,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-public class WebCWParser implements Tickable {
+public class WebCWParser implements TickHandler {
 
     private static final int UPDATE_TICK = 100;
 

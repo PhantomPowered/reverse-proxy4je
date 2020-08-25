@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.connection.handler;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
@@ -134,7 +134,7 @@ public class ClientPacketHandler {
     }
 
     private boolean isTargetingBlock(ServiceConnection connection) {
-        int distance = connection.getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? Constants.CREATIVE_PLACE_DISTANCE : Constants.SURVIVAL_PLACE_DISTANCE;
+        int distance = connection.getWorldDataProvider().getOwnGameMode() == GameMode.CREATIVE ? APIUtil.CREATIVE_PLACE_DISTANCE : APIUtil.SURVIVAL_PLACE_DISTANCE;
         try {
             Location targetedBlock = connection.getTargetBlock(distance);
             if (targetedBlock != null) {

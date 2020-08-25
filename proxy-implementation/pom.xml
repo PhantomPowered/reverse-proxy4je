@@ -95,7 +95,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>com.github.derrop.proxy.ProxyBootstrap</Main-Class>
+                            <Main-Class>com.github.derrop.proxy.launcher.ProxyLauncher</Main-Class>
                             <Version>1.0</Version>
                             <Implementation-Version>1.0</Implementation-Version>
                         </manifestEntries>

@@ -28,7 +28,7 @@ import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.types.living.animal.npc.Villager;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 
 public class ProxyVillager extends ProxyNPC implements Villager {

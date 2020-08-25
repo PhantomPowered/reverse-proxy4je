@@ -24,14 +24,15 @@
  */
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.Tickable;
+import com.github.derrop.proxy.launcher.MCProxy;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.derrop.proxy.api.events.connection.service.ServiceDisconnectEvent;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.exception.CancelProceedException;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
@@ -43,7 +44,6 @@ import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
 import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.derrop.proxy.connection.login.ProxyClientLoginListener;
@@ -65,7 +65,6 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
 import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
-import com.github.derrop.proxy.util.NettyUtils;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -89,7 +88,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ConnectedProxyClient extends DefaultNetworkChannel implements Tickable {
+public class ConnectedProxyClient extends DefaultNetworkChannel implements TickHandler {
 
     private final MCProxy proxy;
     private final BasicServiceConnection connection;
@@ -229,8 +228,8 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements Ticka
         this.connectionHandler = future;
 
         new Bootstrap()
-                .channel(NettyUtils.getSocketChannelClass())
-                .group(NettyUtils.newEventLoopGroup())
+                .channel(NetworkUtils.getSocketChannelClass())
+                .group(NetworkUtils.newEventLoopGroup())
                 .handler(initializer)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))

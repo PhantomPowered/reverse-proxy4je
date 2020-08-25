@@ -22,23 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy;
+package com.github.derrop.proxy.launcher;
 
 import com.github.derrop.proxy.account.AccountBiConsumer;
 import com.github.derrop.proxy.account.BasicProvidedSessionService;
-import com.github.derrop.proxy.api.Configuration;
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.Proxy;
-import com.github.derrop.proxy.api.Tickable;
 import com.github.derrop.proxy.api.block.BlockStateRegistry;
 import com.github.derrop.proxy.api.command.CommandMap;
+import com.github.derrop.proxy.api.configuration.Configuration;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.connection.Whitelist;
 import com.github.derrop.proxy.api.database.DatabaseDriver;
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.registry.handler.PacketHandlerRegistry;
 import com.github.derrop.proxy.api.network.registry.packet.PacketRegistry;
+import com.github.derrop.proxy.api.paste.PasteServerProvider;
 import com.github.derrop.proxy.api.ping.ServerPingProvider;
 import com.github.derrop.proxy.api.player.PlayerRepository;
 import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
@@ -46,13 +47,12 @@ import com.github.derrop.proxy.api.plugin.PluginManager;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.session.ProvidedSessionService;
-import com.github.derrop.proxy.api.util.NetworkAddress;
-import com.github.derrop.proxy.api.util.PasteServerProvider;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.block.DefaultBlockStateRegistry;
 import com.github.derrop.proxy.brand.ProxyBrandChangeListener;
 import com.github.derrop.proxy.command.DefaultCommandMap;
 import com.github.derrop.proxy.command.defaults.*;
-import com.github.derrop.proxy.config.JsonConfiguration;
+import com.github.derrop.proxy.configuration.JsonConfiguration;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.connection.ProxyServer;
 import com.github.derrop.proxy.connection.handler.ClientPacketHandler;
@@ -67,6 +67,7 @@ import com.github.derrop.proxy.network.SimpleChannelInitializer;
 import com.github.derrop.proxy.network.listener.InitialHandler;
 import com.github.derrop.proxy.network.registry.handler.DefaultPacketHandlerRegistry;
 import com.github.derrop.proxy.network.registry.packet.DefaultPacketRegistry;
+import com.github.derrop.proxy.paste.DefaultPasteServerProvider;
 import com.github.derrop.proxy.ping.DefaultServerPingProvider;
 import com.github.derrop.proxy.plugin.DefaultPluginManager;
 import com.github.derrop.proxy.protocol.PacketRegistrar;
@@ -75,7 +76,6 @@ import com.github.derrop.proxy.storage.DefaultPlayerIdStorage;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.github.derrop.proxy.storage.database.H2DatabaseConfig;
 import com.github.derrop.proxy.storage.database.H2DatabaseDriver;
-import com.github.derrop.proxy.util.DefaultPasteServerProvider;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,11 +91,12 @@ public class MCProxy extends Proxy {
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
     private final ProxyServer proxyServer = new ProxyServer(this);
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
-    private final Collection<Tickable> tickables = new CopyOnWriteArrayList<>();
+    private final Collection<TickHandler> tickHandlers = new CopyOnWriteArrayList<>();
 
     protected MCProxy() {
         System.out.println("Registering default services...");
         this.serviceRegistry.setProvider(null, Proxy.class, this, true);
+        this.serviceRegistry.setProvider(null, PasteServerProvider.class, new DefaultPasteServerProvider(), false, true);
         this.serviceRegistry.setProvider(null, BlockStateRegistry.class, new DefaultBlockStateRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketHandlerRegistry.class, new DefaultPacketHandlerRegistry(), false, true);
         this.serviceRegistry.setProvider(null, PacketRegistry.class, new DefaultPacketRegistry(), false, true);
@@ -103,7 +104,6 @@ public class MCProxy extends Proxy {
         this.serviceRegistry.setProvider(null, DatabaseDriver.class, new H2DatabaseDriver(), false, true);
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this), false, true);
-        this.serviceRegistry.setProvider(null, PasteServerProvider.class, new DefaultPasteServerProvider());
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());
@@ -118,10 +118,10 @@ public class MCProxy extends Proxy {
     }
 
     private void startMainLoop() {
-        Constants.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-            for (Tickable tickable : this.tickables) {
+        APIUtil.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
+            for (TickHandler tickHandler : this.tickHandlers) {
                 try {
-                    tickable.handleTick();
+                    tickHandler.handleTick();
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
@@ -143,7 +143,7 @@ public class MCProxy extends Proxy {
 
             for (ServiceConnection onlineClient : this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {
-                    onlineClient.getPlayer().disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Shutting down the proxy..."));
+                    onlineClient.getPlayer().disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Shutting down the proxy..."));
                 }
 
                 try {
@@ -158,8 +158,8 @@ public class MCProxy extends Proxy {
     }
 
     @Override
-    public void registerTickable(@NotNull Tickable tickable) {
-        this.tickables.add(tickable);
+    public void registerTickable(@NotNull TickHandler tickHandler) {
+        this.tickHandlers.add(tickHandler);
     }
 
     public SimpleChannelInitializer getBaseChannelInitializer() {

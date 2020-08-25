@@ -5,7 +5,7 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.DefaultServiceConnector;
 import com.github.derrop.proxy.network.channel.ChannelListener;
-import com.github.derrop.proxy.util.Utils;
+import com.github.derrop.proxy.ImplementationUtil;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public class ServerChannelListener implements ChannelListener {
         }
 
         this.unregister();
-        this.client.handleDisconnect(TextComponent.of("§c" + Utils.stringifyException(cause)));
+        this.client.handleDisconnect(TextComponent.of("§c" + ImplementationUtil.stringifyException(cause)));
         this.client.getConnection().close();
     }
 

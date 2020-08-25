@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.velocity;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
@@ -86,7 +86,7 @@ public class PlayerVelocityHandler {
     private static final double DRAG = 0.02;
 
     public static void start(ServiceRegistry registry) {
-        Constants.EXECUTOR_SERVICE.execute(() -> {
+        APIUtil.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.interrupted()) {
                 for (ServiceConnection onlineClient : registry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                     if (!(onlineClient instanceof BasicServiceConnection) || onlineClient.getPlayer() != null) {

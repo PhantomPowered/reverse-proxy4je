@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.service.entity.EntityPlayerSpawnEvent;
 import com.github.derrop.proxy.api.item.ItemStack;
@@ -166,7 +166,7 @@ public class EntityCache implements PacketCacheHandler {
         }
 
         if (this.shouldSendCameraPacket(targetProxyClient)) {
-            Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+            APIUtil.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
                 if (this.shouldSendCameraPacket(targetProxyClient)) {
                     con.sendPacket(new PacketPlayServerCamera(this.cameraTargetId));
                 }

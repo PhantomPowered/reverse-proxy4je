@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.network.pipeline.encryption;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
 import com.github.derrop.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import org.jetbrains.annotations.NotNull;
@@ -59,11 +59,11 @@ public final class ServerEncryptionUtils {
 
     @NotNull
     public static PacketLoginInEncryptionRequest getLoginEncryptionRequestPacket() {
-        String hash = Long.toString(Constants.RANDOM.nextLong(), 16);
+        String hash = Long.toString(APIUtil.RANDOM.nextLong(), 16);
         byte[] publicKey = KEY_PAIR.getPublic().getEncoded();
 
         byte[] verifyBytes = new byte[4];
-        Constants.RANDOM.nextBytes(verifyBytes);
+        APIUtil.RANDOM.nextBytes(verifyBytes);
 
         return new PacketLoginInEncryptionRequest(hash, publicKey, verifyBytes);
     }

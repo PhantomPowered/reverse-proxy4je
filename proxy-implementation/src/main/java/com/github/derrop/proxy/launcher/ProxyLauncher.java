@@ -22,9 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy;
+package com.github.derrop.proxy.launcher;
 
-import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.configuration.Configuration;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
@@ -35,7 +35,7 @@ import com.github.derrop.proxy.console.ProxyConsole;
 import com.github.derrop.proxy.logging.ProxyLogLevels;
 import com.github.derrop.proxy.logging.ProxyLogger;
 
-public final class ProxyBootstrap {
+public final class ProxyLauncher {
 
     public static synchronized void main(String[] args) {
         ProxyConsole proxyConsole = new ProxyConsole();
@@ -74,7 +74,7 @@ public final class ProxyBootstrap {
                 "  \\____/|_| |_|_|_|_| |_|\\___|_|  |_|\\_____|_|   |_|  \\___/_/\\_\\\\__, |\n" +
                 "                                                                 __/ |\n" +
                 "                                                                |___/ \n");
-        System.out.println("Booting up online mc proxy version " + ProxyBootstrap.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
+        System.out.println("Booting up online mc proxy version " + ProxyLauncher.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
         System.out.println("Running on runtime " + System.getProperty("java.runtime.name") + " in vm " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.info"));
         System.out.println("Java Version: " + System.getProperty("java.runtime.version") + " (vm: " + System.getProperty("java.vm.version") + ")" + " system: " + System.getProperty("os.name") + " (arch: " + System.getProperty("os.arch") + ")");
         System.out.println();

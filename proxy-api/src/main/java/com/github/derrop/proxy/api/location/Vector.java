@@ -3,7 +3,7 @@
  */
 package com.github.derrop.proxy.api.location;
 
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;

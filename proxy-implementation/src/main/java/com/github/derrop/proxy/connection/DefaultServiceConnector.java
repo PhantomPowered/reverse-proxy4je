@@ -1,12 +1,12 @@
 package com.github.derrop.proxy.connection;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.launcher.MCProxy;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.connection.reconnect.ReconnectProfile;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
@@ -100,7 +100,7 @@ public class DefaultServiceConnector implements ServiceConnector {
     }
 
     public void switchClientSafe(Player player, ServiceConnection proxyClient) {
-        player.disconnect(TextComponent.of(Constants.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
+        player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
         this.setReconnectTarget(player.getUniqueId(), proxyClient.getUniqueId());
     }
 

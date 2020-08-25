@@ -24,7 +24,8 @@
  */
 package com.github.derrop.proxy.plugin;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.ImplementationUtil;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.Proxy;
 import com.github.derrop.proxy.api.plugin.PluginContainer;
 import com.github.derrop.proxy.api.plugin.PluginManager;
@@ -34,8 +35,8 @@ import com.github.derrop.proxy.api.plugin.annotation.Inject;
 import com.github.derrop.proxy.api.plugin.annotation.Plugin;
 import com.github.derrop.proxy.api.plugin.exceptions.PluginMainClassNotDefinedException;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.util.Duo;
-import com.github.derrop.proxy.util.io.IOUtils;
+import com.github.derrop.proxy.io.IOUtils;
+import com.github.derrop.proxy.util.LeftRightHolder;
 import com.google.common.collect.Maps;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
@@ -63,7 +64,7 @@ public final class DefaultPluginManager implements PluginManager {
     private final Collection<Path> toLoad = new CopyOnWriteArrayList<>();
 
     private final Path pluginsDirectory;
-    
+
     private final ServiceRegistry registry;
 
     public DefaultPluginManager(Path pluginsDirectory, ServiceRegistry registry) {
@@ -117,7 +118,7 @@ public final class DefaultPluginManager implements PluginManager {
 
     @Override
     public void detectPlugins() {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.pluginsDirectory, Constants.JAR_FILE_FILTER)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.pluginsDirectory, APIUtil.JAR_FILE_FILTER)) {
             for (Path path : stream) {
                 if (this.isPluginDetectedByPath(path)) {
                     continue;
@@ -213,12 +214,12 @@ public final class DefaultPluginManager implements PluginManager {
 
             try {
                 URLClassLoader classLoader = new FinalizeURLClassLoader(new URL[]{path.toUri().toURL()});
-                List<Duo<Class<?>, Plugin>> mainClassPossibilities = this.findMainClass(path, classLoader);
+                List<LeftRightHolder<Class<?>, Plugin>> mainClassPossibilities = this.findMainClass(path, classLoader);
                 if (mainClassPossibilities.size() != 1) {
                     throw new PluginMainClassNotDefinedException("Found " + mainClassPossibilities.size() + " main class targets in " + path.toString() + ". Expected: 1");
                 }
 
-                Duo<Class<?>, Plugin> mainClass = mainClassPossibilities.get(0);
+                LeftRightHolder<Class<?>, Plugin> mainClass = mainClassPossibilities.get(0);
                 PluginContainer container = new DefaultPluginContainer(this.pluginsDirectory, mainClass.getRight(), this.registry, mainClass.getLeft(), classLoader, path);
 
                 Object instance;
@@ -233,22 +234,22 @@ public final class DefaultPluginManager implements PluginManager {
                     continue;
                 }
 
-                Collection<Duo<PluginState, Method>> injectMethods = new ArrayList<>();
+                Collection<LeftRightHolder<PluginState, Method>> injectMethods = new ArrayList<>();
                 for (Method declaredMethod : mainClass.getLeft().getDeclaredMethods()) {
                     Inject inject = declaredMethod.getAnnotation(Inject.class);
                     if (inject == null) {
                         continue;
                     }
 
-                    injectMethods.add(new Duo<>(inject.state(), declaredMethod));
+                    injectMethods.add(LeftRightHolder.of(inject.state(), declaredMethod));
                 }
 
                 PluginContainerEntry entry = new PluginContainerEntry(
                         container,
                         instance,
-                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.LOADED).map(Duo::getRight).toArray(Method[]::new),
-                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.ENABLED).map(Duo::getRight).toArray(Method[]::new),
-                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.DISABLED).map(Duo::getRight).toArray(Method[]::new)
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.LOADED).map(LeftRightHolder::getRight).toArray(Method[]::new),
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.ENABLED).map(LeftRightHolder::getRight).toArray(Method[]::new),
+                        injectMethods.stream().filter(e -> e.getLeft() == PluginState.DISABLED).map(LeftRightHolder::getRight).toArray(Method[]::new)
                 );
                 this.pluginContainers.add(entry);
             } catch (final IOException ex) {
@@ -283,8 +284,8 @@ public final class DefaultPluginManager implements PluginManager {
     }
 
     @NotNull
-    private List<Duo<Class<?>, Plugin>> findMainClass(@NotNull Path plugin, @NotNull URLClassLoader classLoader) throws IOException {
-        List<Duo<Class<?>, Plugin>> out = new ArrayList<>();
+    private List<LeftRightHolder<Class<?>, Plugin>> findMainClass(@NotNull Path plugin, @NotNull URLClassLoader classLoader) throws IOException {
+        List<LeftRightHolder<Class<?>, Plugin>> out = new ArrayList<>();
         try (JarInputStream jarInputStream = new JarInputStream(Files.newInputStream(plugin))) {
             JarEntry entry;
             while ((entry = jarInputStream.getNextJarEntry()) != null) {
@@ -293,7 +294,7 @@ public final class DefaultPluginManager implements PluginManager {
                 }
 
                 String className = entry.getName().replace("/", ".");
-                className = IOUtils.replaceLast(className, ".class", "");
+                className = ImplementationUtil.replaceLast(className, ".class", "");
 
                 Class<?> clazz;
                 try {
@@ -306,7 +307,7 @@ public final class DefaultPluginManager implements PluginManager {
                     continue;
                 }
 
-                out.add(new Duo<>(clazz, annotation));
+                out.add(LeftRightHolder.of(clazz, annotation));
             }
         }
 

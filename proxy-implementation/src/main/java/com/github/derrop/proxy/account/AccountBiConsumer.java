@@ -24,12 +24,12 @@
  */
 package com.github.derrop.proxy.account;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.task.Task;
 import com.github.derrop.proxy.api.task.TaskFutureListener;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import org.jetbrains.annotations.NotNull;

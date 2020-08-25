@@ -26,8 +26,12 @@ package com.github.derrop.proxy.api.network;
 
 import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ByteBufUtils {
+
+    private static final RuntimeException BAD_VAR_INT_RECEIVED = new RuntimeException("Bad VarInt received");
 
     public static void writeString(String s, ByteBuf buf) {
         if (s.length() > Short.MAX_VALUE) {
@@ -56,43 +60,41 @@ public class ByteBufUtils {
     public static byte[] toArray(ByteBuf buf) {
         byte[] ret = new byte[buf.readableBytes()];
         buf.readBytes(ret);
-
         return ret;
     }
 
-    public static int readVarInt(ByteBuf input) {
-        return readVarInt(input, 5);
+    public static int readVarInt(@NotNull ByteBuf byteBuf) {
+        Integer varInt = readVarIntUnchecked(byteBuf);
+        if (varInt == null) {
+            throw BAD_VAR_INT_RECEIVED;
+        }
+
+        return varInt;
     }
 
-    public static int readVarInt(ByteBuf input, int maxBytes) {
-        int out = 0;
-        int bytes = 0;
-        byte in;
-        do {
-            in = input.readByte();
-
-            out |= (in & 0x7F) << (bytes++ * 7);
-
-            if (bytes > maxBytes) {
-                throw new RuntimeException("VarInt too big");
+    public static @Nullable Integer readVarIntUnchecked(@NotNull ByteBuf byteBuf) {
+        int i = 0;
+        int maxRead = Math.min(5, byteBuf.readableBytes());
+        for (int j = 0; j < maxRead; j++) {
+            int k = byteBuf.readByte();
+            i |= (k & 127) << j * 7;
+            if ((k & 128) != 128) {
+                return i;
             }
+        }
 
-        } while ((in & 0x80) == 0x80);
-
-        return out;
+        return null;
     }
 
     public static void writeVarInt(int value, ByteBuf output) {
-        int part;
-        do {
-            part = value & 0x7F;
-            value >>>= 7;
-            if (value != 0) {
-                part |= 0x80;
+        while (true) {
+            if ((value & -128) == 0) {
+                output.writeByte(value);
+                return;
             }
 
-            output.writeByte(part);
-        } while (value != 0);
+            output.writeByte(value & 127 | 128);
+            value >>>= 7;
+        }
     }
-
 }

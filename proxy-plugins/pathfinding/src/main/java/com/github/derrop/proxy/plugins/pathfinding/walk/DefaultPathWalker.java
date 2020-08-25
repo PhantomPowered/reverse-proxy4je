@@ -1,19 +1,15 @@
 package com.github.derrop.proxy.plugins.pathfinding.walk;
 
-import com.github.derrop.proxy.api.Tickable;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.plugins.pathfinding.Path;
-import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class DefaultPathWalker implements PathWalker, Tickable {
+public class DefaultPathWalker implements PathWalker, TickHandler {
 
     public static final double TPS = 20; // ticks per second
     public static final double BPT = 2; // blocks per tick TODO use flight/walk speed from the player abilities

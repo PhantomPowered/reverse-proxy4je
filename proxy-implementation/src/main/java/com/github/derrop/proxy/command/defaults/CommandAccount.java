@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.command.defaults;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
@@ -34,7 +34,7 @@ import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
@@ -322,7 +322,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
             sender.sendMessage(success ? ("§aSuccessfully connected as §e" + (credentials.getEmail() != null ? credentials.getEmail() : credentials.getUsername()) + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
             if (sender instanceof Player) {
-                TextComponent component = TextComponent.of(Constants.MESSAGE_PREFIX + "§aClick to connect");
+                TextComponent component = TextComponent.of(APIUtil.MESSAGE_PREFIX + "§aClick to connect");
                 component.clickEvent(ClickEvent.runCommand("/switch " + client.getName()));
                 component.hoverEvent(HoverEvent.showText(TextComponent.of("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
                 sender.sendMessage(component);

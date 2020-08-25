@@ -31,38 +31,38 @@ import java.util.Map;
 
 public enum Enchantment {
 
-    PROTECTION(0, MinecraftKey.forValue("protection")),
-    FIRE_PROTECTION(1, MinecraftKey.forValue("fire_protection")),
-    FEATHER_FALLING(2, MinecraftKey.forValue("feather_falling")),
-    BLAST_PROTECTION(3, MinecraftKey.forValue("blast_protection")),
-    PROJECTILE_PROTECTION(4, MinecraftKey.forValue("projectile_protection")),
-    RESPIRATION(5, MinecraftKey.forValue("respiration")),
-    AQUA_AFFINITY(6, MinecraftKey.forValue("aqua_affinity")),
-    THORNS(7, MinecraftKey.forValue("thorns")),
-    DEPTH_STRIDER(8, MinecraftKey.forValue("depth_strider")),
-    FROST_WALKER(9, MinecraftKey.forValue("frost_walker")), // 1.9 only
+    PROTECTION(0, MinecraftKey.of("protection")),
+    FIRE_PROTECTION(1, MinecraftKey.of("fire_protection")),
+    FEATHER_FALLING(2, MinecraftKey.of("feather_falling")),
+    BLAST_PROTECTION(3, MinecraftKey.of("blast_protection")),
+    PROJECTILE_PROTECTION(4, MinecraftKey.of("projectile_protection")),
+    RESPIRATION(5, MinecraftKey.of("respiration")),
+    AQUA_AFFINITY(6, MinecraftKey.of("aqua_affinity")),
+    THORNS(7, MinecraftKey.of("thorns")),
+    DEPTH_STRIDER(8, MinecraftKey.of("depth_strider")),
+    FROST_WALKER(9, MinecraftKey.of("frost_walker")), // 1.9 only
 
-    SHARPNESS(16, MinecraftKey.forValue("sharpness")),
-    SMITE(17, MinecraftKey.forValue("smite")),
-    BANE_OF_ARTHROPODS(18, MinecraftKey.forValue("bane_of_arthropods")),
-    KNOCKBACK(19, MinecraftKey.forValue("knockback")),
-    FIRE_ASPECT(20, MinecraftKey.forValue("fire_aspect")),
-    LOOTING(21, MinecraftKey.forValue("looting")),
+    SHARPNESS(16, MinecraftKey.of("sharpness")),
+    SMITE(17, MinecraftKey.of("smite")),
+    BANE_OF_ARTHROPODS(18, MinecraftKey.of("bane_of_arthropods")),
+    KNOCKBACK(19, MinecraftKey.of("knockback")),
+    FIRE_ASPECT(20, MinecraftKey.of("fire_aspect")),
+    LOOTING(21, MinecraftKey.of("looting")),
 
-    EFFICIENCY(32, MinecraftKey.forValue("efficiency")),
-    SILK_TOUCH(33, MinecraftKey.forValue("silk_touch")),
-    UNBREAKING(34, MinecraftKey.forValue("unbreaking")),
-    FORTUNE(35, MinecraftKey.forValue("fortune")),
+    EFFICIENCY(32, MinecraftKey.of("efficiency")),
+    SILK_TOUCH(33, MinecraftKey.of("silk_touch")),
+    UNBREAKING(34, MinecraftKey.of("unbreaking")),
+    FORTUNE(35, MinecraftKey.of("fortune")),
 
-    POWER(48, MinecraftKey.forValue("power")),
-    PUNCH(49, MinecraftKey.forValue("punch")),
-    FLAME(50, MinecraftKey.forValue("flame")),
-    INFINITY(51, MinecraftKey.forValue("infinity")),
+    POWER(48, MinecraftKey.of("power")),
+    PUNCH(49, MinecraftKey.of("punch")),
+    FLAME(50, MinecraftKey.of("flame")),
+    INFINITY(51, MinecraftKey.of("infinity")),
 
-    LUCK_OF_THE_SEA(61, MinecraftKey.forValue("luck_of_the_sea")),
-    LURE(62, MinecraftKey.forValue("lure")),
+    LUCK_OF_THE_SEA(61, MinecraftKey.of("luck_of_the_sea")),
+    LURE(62, MinecraftKey.of("lure")),
 
-    MENDING(70, MinecraftKey.forValue("mending")), // 1.9 only
+    MENDING(70, MinecraftKey.of("mending")), // 1.9 only
 
     UNKNOWN(-1, null);
 

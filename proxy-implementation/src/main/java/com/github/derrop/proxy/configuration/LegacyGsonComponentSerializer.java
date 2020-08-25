@@ -1,4 +1,4 @@
-package com.github.derrop.proxy.config;
+package com.github.derrop.proxy.configuration;
 
 import com.google.gson.*;
 import net.kyori.adventure.text.Component;

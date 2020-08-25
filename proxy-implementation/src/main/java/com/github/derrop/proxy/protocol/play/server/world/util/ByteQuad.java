@@ -22,46 +22,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.api.util.raytrace;
+package com.github.derrop.proxy.protocol.play.server.world.util;
 
-import com.github.derrop.proxy.api.entity.types.Entity;
-import com.github.derrop.proxy.api.location.Location;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.Objects;
 
-public class BlockingObject {
+public class ByteQuad {
 
-    public static final BlockingObject MISS = new BlockingObject(null, null, Type.MISS);
+    private final byte first;
+    private final byte second;
+    private final byte third;
+    private final byte fourth;
 
-    private final Entity entity;
-    private final Location location;
-    private final Type type;
-
-    public BlockingObject(@Nullable Entity entity, @Nullable Location location, @NotNull Type type) {
-        this.entity = entity;
-        this.location = location;
-        this.type = type;
+    public ByteQuad(byte first, byte second, byte third, byte fourth) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
+        this.fourth = fourth;
     }
 
-    @Nullable
-    public Entity getEntity() {
-        return this.entity;
+    public ByteQuad copy() {
+        return new ByteQuad(this.first, this.second, this.third, this.fourth);
     }
 
-    @Nullable
-    public Location getLocation() {
-        return this.location;
+    public byte getFirst() {
+        return this.first;
     }
 
-    @NotNull
-    public Type getType() {
-        return this.type;
+    public byte getSecond() {
+        return this.second;
     }
 
-    public enum Type {
-        MISS,
-        ENTITY,
-        BLOCK
+    public byte getThird() {
+        return this.third;
     }
 
+    public byte getFourth() {
+        return this.fourth;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ByteQuad byteQuad = (ByteQuad) o;
+        return first == byteQuad.first && second == byteQuad.second && third == byteQuad.third && fourth == byteQuad.fourth;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second, third, fourth);
+    }
 }

@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
@@ -93,7 +93,7 @@ public class MatchInfo {
     protected void start() {
         this.running = true;
         this.beginTimestamp = System.currentTimeMillis();
-        Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+        APIUtil.SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
             // TODO this shouldn't be done in this method but in the scoreboard update method
             for (PlayerInfo player : this.players) {
                 Team scoreTeam = this.invoker.getScoreboard().getTeamByEntry(player.getDisplayName() != null ? player.getDisplayName() : player.getUsername());

@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.player.Player;
@@ -61,7 +61,7 @@ public class LoginCache implements PacketCacheHandler {
     @Override
     public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
         if (this.lastLogin == null) {
-            Constants.EXECUTOR_SERVICE.execute(() -> {
+            APIUtil.EXECUTOR_SERVICE.execute(() -> {
                 int count = 0;
                 while (this.lastLogin == null && count++ < 50) {
                     try {

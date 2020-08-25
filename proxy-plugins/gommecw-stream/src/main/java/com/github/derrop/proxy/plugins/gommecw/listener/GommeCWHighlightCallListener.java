@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.plugins.gommecw.listener;
 
-import com.github.derrop.proxy.api.Constants;
-import com.github.derrop.proxy.api.Tickable;
+import com.github.derrop.proxy.api.APIUtil;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityStatusType;
 import com.github.derrop.proxy.api.entity.types.Entity;
@@ -46,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public class GommeCWHighlightCallListener implements Tickable {
+public class GommeCWHighlightCallListener implements TickHandler {
 
     private static final Object EMPTY_OBJECT = new Object();
     private static final String BOW_PROPERTY = "GommeCW-BowShooting";
@@ -75,7 +75,7 @@ public class GommeCWHighlightCallListener implements Tickable {
                 return;
             }
 
-            Collection<EntityPlayer> players = connection.getWorldDataProvider().getNearbyPlayers(Constants.HIT_DISTANCE);
+            Collection<EntityPlayer> players = connection.getWorldDataProvider().getNearbyPlayers(APIUtil.HIT_DISTANCE);
             if (players.isEmpty()) {
                 return;
             }

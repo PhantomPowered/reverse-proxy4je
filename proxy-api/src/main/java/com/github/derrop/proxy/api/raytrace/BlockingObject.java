@@ -22,45 +22,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.util.io;
+package com.github.derrop.proxy.api.raytrace;
 
+import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+public class BlockingObject {
 
-public final class IOUtils {
+    public static final BlockingObject MISS = new BlockingObject(null, null, Type.MISS);
 
-    private IOUtils() {
-        throw new UnsupportedOperationException();
+    private final Entity entity;
+    private final Location location;
+    private final Type type;
+
+    public BlockingObject(@Nullable Entity entity, @Nullable Location location, @NotNull Type type) {
+        this.entity = entity;
+        this.location = location;
+        this.type = type;
     }
 
-    public static void createDirectories(@NotNull Path path) {
-        if (Files.exists(path)) {
-            if (Files.isDirectory(path)) {
-                return;
-            }
+    @Nullable
+    public Entity getEntity() {
+        return this.entity;
+    }
 
-            try {
-                Files.delete(path);
-            } catch (final IOException ignored) {
-            }
-        }
-
-        Path parent = path.getParent();
-        if (parent != null) {
-            createDirectories(parent);
-        }
-
-        try {
-            Files.createDirectory(path);
-        } catch (final IOException ignored) {
-        }
+    @Nullable
+    public Location getLocation() {
+        return this.location;
     }
 
     @NotNull
-    public static String replaceLast(@NotNull String in, @NotNull String regex, @NotNull String replacement) {
-        return in.replaceFirst("(?s)(.*)" + regex, "$1" + replacement);
+    public Type getType() {
+        return this.type;
     }
+
+    public enum Type {
+        MISS,
+        ENTITY,
+        BLOCK
+    }
+
 }

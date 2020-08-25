@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.entity.types.living.human;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
@@ -103,7 +103,7 @@ public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
             PacketPlayServerPlayerInfo.Item item = infoCache.getRemovedItem(this.uniqueId);
             sender.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.ADD_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item}));
             sender.sendPacket(super.packet);
-            Constants.SCHEDULED_EXECUTOR_SERVICE.schedule(
+            APIUtil.SCHEDULED_EXECUTOR_SERVICE.schedule(
                     () -> sender.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.REMOVE_PLAYER, new PacketPlayServerPlayerInfo.Item[]{item})),
                     500, TimeUnit.MILLISECONDS
             );

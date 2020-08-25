@@ -24,7 +24,7 @@
  */
 package com.github.derrop.proxy.api.block;
 
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 import com.github.derrop.proxy.api.location.Vector;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;

@@ -26,7 +26,7 @@ package com.github.derrop.proxy.account;
 
 import com.github.derrop.proxy.api.chat.ChatColor;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
-import com.github.derrop.proxy.api.util.NetworkAddress;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.KickedException;
 import com.mojang.authlib.exceptions.AuthenticationException;

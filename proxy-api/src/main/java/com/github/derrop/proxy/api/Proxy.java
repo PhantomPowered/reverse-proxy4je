@@ -25,6 +25,7 @@
 package com.github.derrop.proxy.api;
 
 import com.github.derrop.proxy.api.service.ServiceRegistry;
+import com.github.derrop.proxy.api.tick.TickHandler;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,11 +33,26 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.ScheduledForRemoval
 public abstract class Proxy {
 
+    /**
+     * @deprecated Instead of using {@link Proxy#getServiceRegistry()} this will be given to every class which needs it
+     */
     @NotNull
+    @Deprecated
+    @ApiStatus.Internal
+    @ApiStatus.ScheduledForRemoval
     public abstract ServiceRegistry getServiceRegistry();
 
+    /**
+     * @deprecated Will be removed in a further update - and is only for internal use
+     */
+    @Deprecated
+    @ApiStatus.Internal
+    @ApiStatus.ScheduledForRemoval
     public abstract void shutdown();
 
-    public abstract void registerTickable(@NotNull Tickable tickable);
-
+    /**
+     * @deprecated Will be moved to the service registry using {@link com.github.derrop.proxy.api.tick.TickHandlerProvider}
+     */
+    @Deprecated
+    public abstract void registerTickable(@NotNull TickHandler tickHandler);
 }

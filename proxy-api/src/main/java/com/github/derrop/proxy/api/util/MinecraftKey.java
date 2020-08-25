@@ -24,17 +24,32 @@
  */
 package com.github.derrop.proxy.api.util;
 
-public class MinecraftKey {
+import org.jetbrains.annotations.NotNull;
 
-    @Deprecated // TODO - PAIL
-    public static MinecraftKey forValue(String value) {
-        return new MinecraftKey("minecraft", value);
+public final class MinecraftKey {
+
+    private static final String MINECRAFT_NAMESPACE = "minecraft";
+    private static final char DEFAULT_DELIMITER = 58;
+
+    public static @NotNull MinecraftKey of(@NotNull String name) {
+        return of(name, DEFAULT_DELIMITER);
+    }
+
+    public static @NotNull MinecraftKey of(@NotNull String string, char character) {
+        int index = string.indexOf(character);
+        String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
+        String value = index >= 0 ? string.substring(index + 1) : string;
+        return of(namespace, value);
+    }
+
+    public static @NotNull MinecraftKey of(@NotNull String namespace, @NotNull String value) {
+        return new MinecraftKey(namespace, value);
     }
 
     private final String key;
     private final String value;
 
-    public MinecraftKey(String key, String value) {
+    private MinecraftKey(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -49,6 +64,10 @@ public class MinecraftKey {
 
     @Override
     public String toString() {
-        return key + ":" + value;
+        return this.toString(DEFAULT_DELIMITER);
+    }
+
+    public String toString(char delimiter) {
+        return key + delimiter + value;
     }
 }

@@ -30,7 +30,7 @@ import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
-import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
+import com.github.derrop.proxy.protocol.play.server.entity.util.PlayerPositionPacketUtil;
 import com.github.derrop.proxy.data.DataWatcher;
 import com.github.derrop.proxy.data.DataWatcherEntry;
 import org.jetbrains.annotations.NotNull;

@@ -5,17 +5,19 @@ import com.github.derrop.proxy.api.player.id.PlayerId;
 import com.github.derrop.proxy.api.player.id.PlayerIdStorage;
 import com.github.derrop.proxy.api.player.id.PlayerRepositoryGetException;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
-import com.github.derrop.proxy.util.HttpHelper;
+import com.github.derrop.proxy.http.HttpUtil;
+import com.github.derrop.proxy.util.LeftRightHolder;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.util.UUIDTypeAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DefaultPlayerIdStorage extends DatabaseProvidedStorage<PlayerId> implements PlayerIdStorage {
 
@@ -25,9 +27,11 @@ public class DefaultPlayerIdStorage extends DatabaseProvidedStorage<PlayerId> im
 
     private final Cache<String, PlayerId> nameCache = CacheBuilder.newBuilder()
             .expireAfterWrite(60, TimeUnit.MINUTES)
+            .concurrencyLevel(3)
             .build();
     private final Cache<UUID, PlayerId> uuidCache = CacheBuilder.newBuilder()
             .expireAfterWrite(60, TimeUnit.MINUTES)
+            .concurrencyLevel(3)
             .build();
 
     public DefaultPlayerIdStorage(ServiceRegistry registry) {
@@ -51,24 +55,22 @@ public class DefaultPlayerIdStorage extends DatabaseProvidedStorage<PlayerId> im
         this.uuidCache.put(playerId.getUniqueId(), playerId);
     }
 
-    private void set(AtomicReference<PlayerId> reference, String result, Throwable error, boolean cached) {
-        if (error != null) {
-            throw new PlayerRepositoryGetException(error);
-        }
-
+    private @Nullable PlayerId set(String result, boolean update) {
         JsonObject object = JsonParser.parseString(result).getAsJsonObject();
         if (!object.has("name") || !object.has("id")) {
-            return;
+            return null;
         }
 
         UUID uniqueId = UUIDTypeAdapter.fromString(object.get("id").getAsString());
-        reference.set(new PlayerId(uniqueId, object.get("name").getAsString()));
+        PlayerId playerId = new PlayerId(uniqueId, object.get("name").getAsString());
 
-        if (cached) {
-            this.update(reference.get());
+        if (update) {
+            this.update(playerId);
         } else {
-            this.insert(reference.get());
+            this.insert(playerId);
         }
+
+        return playerId;
     }
 
     private boolean isValid(PlayerId cached) {
@@ -77,87 +79,82 @@ public class DefaultPlayerIdStorage extends DatabaseProvidedStorage<PlayerId> im
 
     @Override
     public PlayerId getPlayerId(@NotNull String name) {
-        if (name.length() < 3) {
-            return null;
+        LeftRightHolder<PlayerId, Boolean> cached = this.getPlayerId0(name, null);
+        if (cached.getRight() && cached.getLeft() != null) {
+            return cached.getLeft();
         }
 
-        String lowerName = name.toLowerCase();
-
-        PlayerId cached = this.nameCache.getIfPresent(lowerName);
-        if (this.isValid(cached)) {
-            return cached;
-        }
-        cached = super.get(lowerName);
-        if (this.isValid(cached)) {
-            this.put(cached);
-            return cached;
+        LeftRightHolder<String, IOException> result = HttpUtil.getSync(String.format(NAME_TO_UUID, name));
+        if (result.getRight() == null) {
+            return this.set(result.getLeft(), cached.getRight());
         }
 
-        boolean isCached = cached != null;
-        AtomicReference<PlayerId> reference = new AtomicReference<>();
-
-        HttpHelper.getHTTPSync(String.format(NAME_TO_UUID, name), (result, error) -> this.set(reference, result, error, isCached));
-
-        return reference.get();
+        throw new PlayerRepositoryGetException(result.getRight());
     }
 
     @Override
     public PlayerId getPlayerId(@NotNull UUID uniqueId) {
-        String uniqueIdString = uniqueId.toString();
-
-        PlayerId cached = this.uuidCache.getIfPresent(uniqueId);
-        if (this.isValid(cached)) {
-            return cached;
-        }
-        cached = super.get(uniqueIdString);
-        if (this.isValid(cached)) {
-            this.put(cached);
-            return cached;
+        LeftRightHolder<PlayerId, Boolean> cached = this.getPlayerId0(null, uniqueId);
+        if (cached.getRight() && cached.getLeft() != null) {
+            return cached.getLeft();
         }
 
-        boolean isCached = cached != null;
-        AtomicReference<PlayerId> reference = new AtomicReference<>();
+        LeftRightHolder<String, IOException> result = HttpUtil.getSync(String.format(UUID_TO_NAME, uniqueId.toString().replace("-", "")));
+        if (result.getRight() == null) {
+            return this.set(result.getLeft(), cached.getRight());
+        }
 
-        HttpHelper.getHTTPSync(String.format(UUID_TO_NAME, uniqueIdString.replace("-", "")), (result, error) -> this.set(reference, result, error, isCached));
-
-        return reference.get();
+        throw new PlayerRepositoryGetException(result.getRight());
     }
 
     @Override
-    public PlayerId getPlayerId(@NotNull String name, @NotNull UUID uniqueId) {
-        {
+    public PlayerId getPlayerId(@Nullable String name, @Nullable UUID uniqueId) {
+        LeftRightHolder<PlayerId, Boolean> result = this.getPlayerId0(name, uniqueId);
+        if (result.getRight()) {
+            return result.getLeft();
+        }
+
+        return null;
+    }
+
+    public @NotNull LeftRightHolder<PlayerId, Boolean> getPlayerId0(@Nullable String name, @Nullable UUID uniqueId) {
+        if (uniqueId != null) {
             String uniqueIdString = uniqueId.toString();
             PlayerId cached = this.uuidCache.getIfPresent(uniqueId);
             if (this.isValid(cached)) {
-                return cached;
+                return LeftRightHolder.of(cached, true);
             }
 
             cached = super.get(uniqueIdString);
             if (this.isValid(cached)) {
                 this.put(cached);
-                return cached;
+                return LeftRightHolder.of(cached, true);
+            } else {
+                return LeftRightHolder.of(cached, false);
             }
         }
 
-        {
+        if (name != null) {
             if (name.length() < 3) {
-                return null;
+                return LeftRightHolder.of(null, false);
             }
 
             String lowerName = name.toLowerCase();
             PlayerId cached = this.nameCache.getIfPresent(lowerName);
             if (this.isValid(cached)) {
-                return cached;
+                return LeftRightHolder.of(cached, true);
             }
 
             cached = super.get(lowerName);
             if (this.isValid(cached)) {
                 this.put(cached);
-                return cached;
+                return LeftRightHolder.of(cached, true);
+            } else {
+                return LeftRightHolder.of(cached, false);
             }
         }
 
-        return null;
+        return LeftRightHolder.of(null, false);
     }
 
     @Override

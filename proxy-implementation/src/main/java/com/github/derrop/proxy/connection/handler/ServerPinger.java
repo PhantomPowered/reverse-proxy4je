@@ -1,12 +1,13 @@
 package com.github.derrop.proxy.connection.handler;
 
-import com.github.derrop.proxy.MCProxy;
+import com.github.derrop.proxy.launcher.MCProxy;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ProtocolState;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
+import com.github.derrop.proxy.api.task.DefaultTask;
 import com.github.derrop.proxy.api.task.Task;
-import com.github.derrop.proxy.api.util.NetworkAddress;
 import com.github.derrop.proxy.network.NetworkUtils;
 import com.github.derrop.proxy.network.channel.ChannelListener;
 import com.github.derrop.proxy.network.channel.DefaultNetworkChannel;
@@ -15,8 +16,6 @@ import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftDecoder;
 import com.github.derrop.proxy.network.pipeline.minecraft.MinecraftEncoder;
 import com.github.derrop.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
-import com.github.derrop.proxy.api.task.DefaultTask;
-import com.github.derrop.proxy.util.NettyUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -71,8 +70,8 @@ public class ServerPinger extends DefaultNetworkChannel implements ChannelListen
         };
 
         new Bootstrap()
-                .channel(NettyUtils.getSocketChannelClass())
-                .group(NettyUtils.newEventLoopGroup())
+                .channel(NetworkUtils.getSocketChannelClass())
+                .group(NetworkUtils.newEventLoopGroup())
                 .handler(initializer)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15000)
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))

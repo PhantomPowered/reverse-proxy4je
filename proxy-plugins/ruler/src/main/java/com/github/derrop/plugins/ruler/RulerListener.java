@@ -8,7 +8,7 @@ import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.event.annotation.Listener;
 import com.github.derrop.proxy.api.events.connection.player.PlayerInteractEvent;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.util.raytrace.BlockingObject;
+import com.github.derrop.proxy.api.raytrace.BlockingObject;
 import net.kyori.adventure.text.TextComponent;
 
 public class RulerListener {

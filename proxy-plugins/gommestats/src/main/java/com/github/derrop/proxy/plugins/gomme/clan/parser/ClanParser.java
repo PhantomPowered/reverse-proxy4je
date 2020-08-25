@@ -1,6 +1,6 @@
 package com.github.derrop.proxy.plugins.gomme.clan.parser;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
@@ -166,7 +166,7 @@ public class ClanParser {
         Task<ClanInfo> task = connection.getProperty(PENDING_CLAN_REQUEST_TASK);
         connection.removeProperty(PENDING_CLAN_REQUEST_TASK);
 
-        Constants.EXECUTOR_SERVICE.execute(() -> {
+        APIUtil.EXECUTOR_SERVICE.execute(() -> {
             ClanInfo clanInfo = request.toClanInfo(this.registry.getProviderUnchecked(PlayerIdStorage.class));
 
             if (task != null) {

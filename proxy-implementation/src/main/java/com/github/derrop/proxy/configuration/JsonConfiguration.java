@@ -22,12 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.config;
+package com.github.derrop.proxy.configuration;
 
-import com.github.derrop.proxy.api.Configuration;
+import com.github.derrop.proxy.api.configuration.Configuration;
 import com.github.derrop.proxy.api.ping.Favicon;
 import com.github.derrop.proxy.api.ping.ServerPing;
-import com.github.derrop.proxy.util.Utils;
+import com.github.derrop.proxy.ImplementationUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -80,7 +80,7 @@ public class JsonConfiguration implements Configuration {
             exception.printStackTrace();
         }
 
-        this.motd = Utils.GSON.fromJson(this.jsonObject.get("motd"), ServerPing.class);
+        this.motd = ImplementationUtil.GSON.fromJson(this.jsonObject.get("motd"), ServerPing.class);
         if (Files.exists(SERVER_ICON)) {
             try (InputStream inputStream = Files.newInputStream(SERVER_ICON)) {
                 BufferedImage image = ImageIO.read(inputStream);

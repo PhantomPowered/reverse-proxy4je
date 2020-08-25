@@ -1,14 +1,14 @@
 /*
  * This class has been taken from the Bukkit API
  */
-package com.github.derrop.proxy.api.util.raytrace;
+package com.github.derrop.proxy.api.raytrace;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Facing;
 import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.location.Vector;
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

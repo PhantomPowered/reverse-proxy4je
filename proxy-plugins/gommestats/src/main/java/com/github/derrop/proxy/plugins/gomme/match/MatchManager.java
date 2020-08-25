@@ -24,14 +24,15 @@
  */
 package com.github.derrop.proxy.plugins.gomme.match;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.block.half.HorizontalHalf;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
 import com.github.derrop.proxy.api.database.DatabaseProvidedStorage;
 import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.paste.PasteServerProvider;
+import com.github.derrop.proxy.api.paste.PasteServerUploadResult;
 import com.github.derrop.proxy.api.player.Player;
-import com.github.derrop.proxy.api.util.PasteServerProvider;
 import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.GommeStatsCore;
 import com.github.derrop.proxy.plugins.gomme.events.GommeMatchDetectEvent;
@@ -163,7 +164,7 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
     }
 
     private void writeToDatabase(MatchInfo matchInfo) {
-        Constants.EXECUTOR_SERVICE.execute(() -> {
+        APIUtil.EXECUTOR_SERVICE.execute(() -> {
             String[] urls = this.createPaste(matchInfo);
 
             if (urls != null) {
@@ -183,8 +184,8 @@ public class MatchManager extends DatabaseProvidedStorage<JsonObject> {
 
     public String[] createPaste(MatchInfo matchInfo) {
         PasteServerProvider paste = matchInfo.getInvoker().getProxy().getServiceRegistry().getProviderUnchecked(PasteServerProvider.class);
-        String[] keys = paste.uploadDocumentCaught(matchInfo.toReadableText());
-        return paste.mapAsURLs(keys);
+        PasteServerUploadResult[] keys = paste.getPasteServerForUrl("https://just-paste.it/").uploadDocumentSafely(matchInfo.toReadableText());
+        return paste.getUrlsFromResults(keys);
     }
 
     public long countMatches() {

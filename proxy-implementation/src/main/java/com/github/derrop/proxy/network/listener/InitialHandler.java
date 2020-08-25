@@ -24,9 +24,9 @@
  */
 package com.github.derrop.proxy.network.listener;
 
-import com.github.derrop.proxy.MCProxy;
-import com.github.derrop.proxy.api.Configuration;
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.launcher.MCProxy;
+import com.github.derrop.proxy.api.configuration.Configuration;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.event.EventManager;
 import com.github.derrop.proxy.api.events.connection.PingEvent;
@@ -37,7 +37,7 @@ import com.github.derrop.proxy.api.network.channel.NetworkChannel;
 import com.github.derrop.proxy.api.ping.ServerPing;
 import com.github.derrop.proxy.api.player.OfflinePlayer;
 import com.github.derrop.proxy.api.player.PlayerRepository;
-import com.github.derrop.proxy.api.util.Callback;
+import com.github.derrop.proxy.api.concurrent.Callback;
 import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.connection.LoginResult;
 import com.github.derrop.proxy.connection.handler.ClientChannelListener;
@@ -60,8 +60,8 @@ import com.github.derrop.proxy.protocol.status.client.PacketStatusOutPong;
 import com.github.derrop.proxy.protocol.status.client.PacketStatusOutResponse;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInPing;
 import com.github.derrop.proxy.protocol.status.server.PacketStatusInRequest;
-import com.github.derrop.proxy.util.HttpHelper;
-import com.github.derrop.proxy.util.Utils;
+import com.github.derrop.proxy.http.HttpUtil;
+import com.github.derrop.proxy.ImplementationUtil;
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -104,7 +104,7 @@ public class InitialHandler {
             return;
         }
 
-        channel.write(new PacketStatusOutResponse(Utils.GSON.toJson(event.getResponse())));
+        channel.write(new PacketStatusOutResponse(ImplementationUtil.GSON.toJson(event.getResponse())));
 
         channel.setProperty(INIT_STATE, State.PING);
     }
@@ -211,9 +211,9 @@ public class InitialHandler {
 
         Callback<String> handler = (result, error) -> {
             if (error == null) {
-                LoginResult obj = Utils.GSON.fromJson(result, LoginResult.class);
+                LoginResult obj = ImplementationUtil.GSON.fromJson(result, LoginResult.class);
                 if (obj != null && obj.getId() != null) {
-                    UUID uniqueId = Utils.parseUUID(obj.getId());
+                    UUID uniqueId = ImplementationUtil.parseUUID(obj.getId());
                     /*if (uniqueId == null) {
                         uniqueId = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
                     }*/
@@ -227,7 +227,7 @@ public class InitialHandler {
             }
         };
 
-        HttpHelper.getHTTPAsync(authURL, handler);
+        HttpUtil.get(authURL, handler);
     }
 
     private void finish(NetworkChannel channel, UUID uniqueId, LoginResult result) {
@@ -290,7 +290,7 @@ public class InitialHandler {
 
     static void disconnect(NetworkChannel channel, @NotNull String reason) {
         if (canSendKickMessage(channel)) {
-            disconnect(channel, TextComponent.of(Constants.MESSAGE_PREFIX + reason));
+            disconnect(channel, TextComponent.of(APIUtil.MESSAGE_PREFIX + reason));
         } else {
             channel.close();
         }

@@ -24,11 +24,11 @@
  */
 package com.github.derrop.proxy.plugins.gommecw.highlights;
 
-import com.github.derrop.proxy.api.Constants;
+import com.github.derrop.proxy.api.APIUtil;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
 import com.github.derrop.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.util.MathHelper;
+import com.github.derrop.proxy.api.math.MathHelper;
 import com.github.derrop.proxy.plugins.gommecw.running.ClanWarTeam;
 import com.github.derrop.proxy.plugins.gommecw.running.RunningClanWar;
 
@@ -36,7 +36,7 @@ import java.util.UUID;
 
 public class DefaultHighlightListener implements GommeCWHighlightListener {
 
-    private static final double MAX_DAMAGE_DISTANCE = MathHelper.square(Constants.SURVIVAL_PLACE_DISTANCE + 5);
+    private static final double MAX_DAMAGE_DISTANCE = MathHelper.square(APIUtil.SURVIVAL_PLACE_DISTANCE + 5);
 
     @Override
     public void handleTick(RunningClanWar clanWar) {

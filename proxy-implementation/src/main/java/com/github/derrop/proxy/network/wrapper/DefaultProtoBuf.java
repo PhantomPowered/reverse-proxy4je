@@ -26,11 +26,12 @@ package com.github.derrop.proxy.network.wrapper;
 
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.nbt.CompressedStreamTools;
 import com.github.derrop.proxy.api.nbt.NBTSizeTracker;
 import com.github.derrop.proxy.api.nbt.NBTTagCompound;
+import com.github.derrop.proxy.api.network.ByteBufUtils;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.item.ProxyItemStack;
+import com.github.derrop.proxy.nbt.CompressedStreamTools;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufInputStream;
@@ -61,17 +62,11 @@ public final class DefaultProtoBuf extends ProtoBuf {
     }
 
     private final int protocolVersion;
-
     private final ByteBuf initByteBuf;
-
     private ByteBuf wrapped;
 
     public void setWrapped(ByteBuf wrapped) {
         this.wrapped = wrapped;
-    }
-
-    public ByteBuf getInitByteBuf() {
-        return initByteBuf;
     }
 
     @Override
@@ -171,35 +166,12 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
     @Override
     public int readVarInt() {
-        int numRead = 0;
-        int result = 0;
-        byte read;
-
-        do {
-            read = this.readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            if (numRead++ > 5) {
-                System.err.println("VarInt is too big");
-                throw new EmptyStackException();
-            }
-        } while ((read & 0b10000000) != 0);
-
-        return result;
+        return ByteBufUtils.readVarInt(this);
     }
 
     @Override
     public void writeVarInt(int value) {
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-
-            this.writeByte(temp);
-        } while (value != 0);
+        ByteBufUtils.writeVarInt(value, this);
     }
 
     @Override

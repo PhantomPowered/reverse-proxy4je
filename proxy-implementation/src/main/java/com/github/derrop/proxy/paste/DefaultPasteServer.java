@@ -22,67 +22,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.util;
+package com.github.derrop.proxy.paste;
 
-import com.github.derrop.proxy.api.util.PasteServerProvider;
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
+import com.github.derrop.proxy.api.paste.PasteServer;
+import com.github.derrop.proxy.api.paste.PasteServerUploadResult;
+import com.github.derrop.proxy.http.HttpUtil;
+import com.github.derrop.proxy.util.LeftRightHolder;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
-public class DefaultPasteServerProvider implements PasteServerProvider {
+/* package */ class DefaultPasteServer implements PasteServer {
 
-    private String url = "https://just-paste.it";
+    private static final PasteServerUploadResult[] EMPTY_RESULT = new PasteServerUploadResult[0];
+
+    protected DefaultPasteServer(String apiUrl) {
+        this.apiUrl = apiUrl;
+    }
+
+    private String apiUrl;
     private long limitPerDocument = 350_000;
 
     @Override
     public @NotNull String getUrl() {
-        return this.url;
+        return this.apiUrl;
     }
 
     @Override
     public void setUrl(@NotNull String url) {
-        this.url = url;
+        this.apiUrl = url;
     }
 
     @Override
-    public long getLimitPerDocument() {
+    public @Range(from = 0, to = Long.MAX_VALUE) long getLimitPerDocument() {
         return this.limitPerDocument;
     }
 
     @Override
-    public void setLimitPerDocument(long limit) {
-        Preconditions.checkArgument(limit > 0, "limit cannot be zero or smaller");
+    public void setLimitPerDocument(@Range(from = 0, to = Long.MAX_VALUE) long limit) {
         this.limitPerDocument = limit;
     }
 
     @Override
-    public String[] uploadDocumentCaught(@NotNull String content) {
-        try {
-            return this.uploadDocument(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public @NotNull PasteServerUploadResult[] uploadDocumentSafely(@NotNull String content) {
+        return this.uploadDocument(content);
     }
 
     @Override
-    public String[] uploadDocument(@NotNull String content) throws IOException {
+    public @NotNull PasteServerUploadResult[] uploadDocument(@NotNull String content) {
         if (content.isEmpty()) {
-            return new String[0];
+            return EMPTY_RESULT;
         }
 
-        String url = this.url;
-
+        String url = this.apiUrl; // hack
         if (!url.endsWith("/documents")) {
             url += (url.endsWith("/") ? "" : "/") + "documents";
         }
@@ -94,31 +92,23 @@ public class DefaultPasteServerProvider implements PasteServerProvider {
             content = content.substring(next);
         } while (!content.isEmpty());
 
-        Collection<String> output = new ArrayList<>(documents.size());
-
+        Collection<PasteServerUploadResult> output = new ArrayList<>(documents.size());
         for (String document : documents) {
-            URLConnection connection = new URL(url).openConnection();
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-
-            try (OutputStream outputStream = connection.getOutputStream()) {
-                outputStream.write(document.getBytes(StandardCharsets.UTF_8));
-            }
-
-            try (InputStream inputStream = connection.getInputStream();
-                 Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-                JsonElement element = JsonParser.parseReader(reader);
-                if (element.isJsonObject()) {
-                    output.add(element.getAsJsonObject().get("key").getAsString());
+            LeftRightHolder<String, IOException> result = HttpUtil.postSync(url, outputStream -> {
+                try {
+                    outputStream.write(document.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException exception) {
+                    exception.printStackTrace();
                 }
+            });
+            if (result.getRight() != null) {
+                result.getRight().printStackTrace();
+            } else {
+                JsonObject jsonObject = JsonParser.parseString(result.getLeft()).getAsJsonObject();
+                output.add(new DefaultPasteServerUploadResult(jsonObject, url, document));
             }
         }
 
-        return output.toArray(new String[0]);
-    }
-
-    @Override
-    public String[] mapAsURLs(@Nullable String[] keys) {
-        return keys == null ? null : Arrays.stream(keys).map(key -> this.url + "/" + key).toArray(String[]::new);
+        return output.toArray(new PasteServerUploadResult[0]);
     }
 }
