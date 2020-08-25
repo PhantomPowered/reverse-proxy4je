@@ -24,10 +24,10 @@
  */
 package com.github.derrop.proxy.connection.cache.handler;
 
-import com.github.derrop.proxy.api.player.GameMode;
+import com.github.derrop.proxy.api.math.MathHelper;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
-import com.github.derrop.proxy.api.math.MathHelper;
+import com.github.derrop.proxy.api.player.GameMode;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.PacketCache;
 import com.github.derrop.proxy.connection.cache.PacketCacheHandler;
@@ -59,14 +59,16 @@ public class GameStateCache implements PacketCacheHandler {
             this.rainStrength = 1;
         } else if (packet.getState() == 3) {
             this.gameMode = GameMode.getById(MathHelper.floor(packet.getValue() + 0.5F));
-        }/* else if (packet.getState() == 4) { // display win game screen
+        /*} else if (packet.getState() == 4) { // display win game screen
         } else if (packet.getState() == 5) { // some demo actions (display demo screen, display some messages)
         } else if (packet.getState() == 6) { // play "random.successful_hit" sound
-        }*/ else if (packet.getState() == 7) { // change rain strength
+        */
+        } else if (packet.getState() == 7) { // change rain strength
             this.rainStrength = packet.getValue();
         } else if (packet.getState() == 8) { // change thunder strength
             this.thunderStrength = packet.getValue();
-        }/* else if (packet.getState() == 10) { // display guardian effect
+        }
+        /* else if (packet.getState() == 10) { // display guardian effect
         }*/
     }
 

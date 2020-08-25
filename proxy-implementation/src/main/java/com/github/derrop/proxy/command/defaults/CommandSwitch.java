@@ -39,7 +39,7 @@ import java.util.Optional;
 public class CommandSwitch extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
-    
+
     public CommandSwitch(ServiceRegistry registry) {
         super("proxy.command.switch", null);
         this.registry = registry;

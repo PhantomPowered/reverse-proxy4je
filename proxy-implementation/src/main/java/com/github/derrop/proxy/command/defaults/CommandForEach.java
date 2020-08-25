@@ -39,7 +39,7 @@ import java.util.Arrays;
 public class CommandForEach extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
-    
+
     public CommandForEach(ServiceRegistry registry) {
         super("proxy.command.foreach", null);
         this.registry = registry;

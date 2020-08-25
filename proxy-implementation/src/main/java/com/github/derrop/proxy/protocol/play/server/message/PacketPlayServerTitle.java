@@ -105,6 +105,10 @@ public class PacketPlayServerTitle implements Packet {
                 this.fadeIn = protoBuf.readInt();
                 this.stay = protoBuf.readInt();
                 this.fadeOut = protoBuf.readInt();
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -127,6 +131,9 @@ public class PacketPlayServerTitle implements Packet {
                 protoBuf.writeInt(this.fadeIn);
                 protoBuf.writeInt(this.stay);
                 protoBuf.writeInt(this.fadeOut);
+                break;
+
+            default:
                 break;
         }
     }

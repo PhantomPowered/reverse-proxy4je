@@ -19,9 +19,11 @@ public enum UserStatus {
 
     public static UserStatus getById(int id) {
         for (UserStatus status : values()) {
-            if (status.id == id)
+            if (status.id == id) {
                 return status;
+            }
         }
+
         return OFFLINE;
     }
 

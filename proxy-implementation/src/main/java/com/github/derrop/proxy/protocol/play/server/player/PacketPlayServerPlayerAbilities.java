@@ -115,13 +115,13 @@ public class PacketPlayServerPlayerAbilities implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerPlayerAbilities{" +
-                "invulnerable=" + invulnerable +
-                ", flying=" + flying +
-                ", allowFlying=" + allowFlying +
-                ", creativeMode=" + creativeMode +
-                ", flySpeed=" + flySpeed +
-                ", walkSpeed=" + walkSpeed +
-                '}';
+        return "PacketPlayServerPlayerAbilities{"
+                + "invulnerable=" + invulnerable
+                + ", flying=" + flying
+                + ", allowFlying=" + allowFlying
+                + ", creativeMode=" + creativeMode
+                + ", flySpeed=" + flySpeed
+                + ", walkSpeed=" + walkSpeed
+                + '}';
     }
 }

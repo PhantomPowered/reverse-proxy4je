@@ -10,11 +10,14 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 
 public class PacketEncoder extends MessageToByteEncoder<LabyPacket> {
-    protected void encode(ChannelHandlerContext channelHandlerContext, LabyPacket labyPacket, ByteBuf byteBuf) throws Exception {
+
+    protected void encode(ChannelHandlerContext channelHandlerContext, LabyPacket labyPacket, ByteBuf byteBuf) {
         ProtoBuf buffer = new DefaultProtoBuf(47, byteBuf);
         int id = LabyProtocol.getProtocol().getPacketId(labyPacket);
-        if ((id != 62 && id != 63))
+        if ((id != 62 && id != 63)) {
             System.err.println("[OUT] " + id + " " + labyPacket.getClass().getSimpleName());
+        }
+
         buffer.writeVarInt(LabyProtocol.getProtocol().getPacketId(labyPacket));
         labyPacket.write(buffer);
     }

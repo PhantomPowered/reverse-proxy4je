@@ -25,19 +25,11 @@
 package com.github.derrop.proxy.connection.player.scoreboard;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.api.event.Event;
-import com.github.derrop.proxy.api.event.EventManager;
-import com.github.derrop.proxy.api.events.connection.service.scoreboard.*;
-import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.scoreboard.DisplaySlot;
 import com.github.derrop.proxy.api.scoreboard.Objective;
 import com.github.derrop.proxy.api.scoreboard.Scoreboard;
 import com.github.derrop.proxy.api.scoreboard.Team;
 import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
-import com.github.derrop.proxy.connection.cache.handler.scoreboard.ScoreboardHandler;
-import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardDisplay;
-import com.github.derrop.proxy.protocol.play.server.scoreboard.PacketPlayServerScoreboardObjective;
-import com.github.derrop.proxy.connection.player.scoreboard.minecraft.Score;
 import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScoreObjective;
 import com.github.derrop.proxy.connection.player.scoreboard.minecraft.ScorePlayerTeam;
 import org.jetbrains.annotations.NotNull;

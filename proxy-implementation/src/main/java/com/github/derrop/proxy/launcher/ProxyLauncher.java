@@ -24,12 +24,12 @@
  */
 package com.github.derrop.proxy.launcher;
 
-import com.github.derrop.proxy.api.configuration.Configuration;
 import com.github.derrop.proxy.api.command.CommandMap;
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.exception.PermissionDeniedException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.configuration.Configuration;
 import com.github.derrop.proxy.command.console.ConsoleCommandSender;
 import com.github.derrop.proxy.console.ProxyConsole;
 import com.github.derrop.proxy.logging.ProxyLogLevels;
@@ -65,15 +65,15 @@ public final class ProxyLauncher {
     }
 
     private static void sendWelcomeScreen() {
-        System.out.println("\n" +
-                "   ____        _ _            __  __  _____ _____                     \n" +
-                "  / __ \\      | (_)          |  \\/  |/ ____|  __ \\                    \n" +
-                " | |  | |_ __ | |_ _ __   ___| \\  / | |    | |__) | __ _____  ___   _ \n" +
-                " | |  | | '_ \\| | | '_ \\ / _ \\ |\\/| | |    |  ___/ '__/ _ \\ \\/ / | | |\n" +
-                " | |__| | | | | | | | | |  __/ |  | | |____| |   | | | (_) >  <| |_| |\n" +
-                "  \\____/|_| |_|_|_|_| |_|\\___|_|  |_|\\_____|_|   |_|  \\___/_/\\_\\\\__, |\n" +
-                "                                                                 __/ |\n" +
-                "                                                                |___/ \n");
+        System.out.println("\n"
+                + "   ____        _ _            __  __  _____ _____                     \n"
+                + "  / __ \\      | (_)          |  \\/  |/ ____|  __ \\                    \n"
+                + " | |  | |_ __ | |_ _ __   ___| \\  / | |    | |__) | __ _____  ___   _ \n"
+                + " | |  | | '_ \\| | | '_ \\ / _ \\ |\\/| | |    |  ___/ '__/ _ \\ \\/ / | | |\n"
+                + " | |__| | | | | | | | | |  __/ |  | | |____| |   | | | (_) >  <| |_| |\n"
+                + "  \\____/|_| |_|_|_|_| |_|\\___|_|  |_|\\_____|_|   |_|  \\___/_/\\_\\\\__, |\n"
+                + "                                                                 __/ |\n"
+                + "                                                                |___/ \n");
         System.out.println("Booting up online mc proxy version " + ProxyLauncher.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
         System.out.println("Running on runtime " + System.getProperty("java.runtime.name") + " in vm " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.info"));
         System.out.println("Java Version: " + System.getProperty("java.runtime.version") + " (vm: " + System.getProperty("java.vm.version") + ")" + " system: " + System.getProperty("os.name") + " (arch: " + System.getProperty("os.arch") + ")");

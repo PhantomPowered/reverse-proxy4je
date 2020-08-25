@@ -237,8 +237,13 @@ public class Vector implements Cloneable, Serializable {
 
     @NotNull
     public Vector rotateAroundNonUnitAxis(@NotNull Vector axis, double angle) throws IllegalArgumentException {
-        double x = getX(), y = getY(), z = getZ();
-        double x2 = axis.getX(), y2 = axis.getY(), z2 = axis.getZ();
+        double x = getX();
+        double y = getY();
+        double z = getZ();
+
+        double x2 = axis.getX();
+        double y2 = axis.getY();
+        double z2 = axis.getZ();
 
         double cosTheta = Math.cos(angle);
         double sinTheta = Math.sin(angle);

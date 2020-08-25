@@ -98,6 +98,8 @@ public class WebCWParser implements TickHandler {
                                 current.setMap(element.text());
                             }
                             break;
+                        default:
+                            break;
                     }
                 } else if (current != null && element.tagName().equals("a") && element.text().equals("Matchpage")) {
                     String matchId = element.attr("href").replaceFirst("/clan-match\\?id=", "");

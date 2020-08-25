@@ -82,9 +82,9 @@ public class PacketPlayClientBlockPlace implements Packet {
         this.location = buf.readLocation();
         this.placedBlockDirection = buf.readUnsignedByte();
         this.stack = buf.readItemStack();
-        this.facingX = (float)buf.readUnsignedByte() / 16.0F;
-        this.facingY = (float)buf.readUnsignedByte() / 16.0F;
-        this.facingZ = (float)buf.readUnsignedByte() / 16.0F;
+        this.facingX = (float) buf.readUnsignedByte() / 16.0F;
+        this.facingY = (float) buf.readUnsignedByte() / 16.0F;
+        this.facingZ = (float) buf.readUnsignedByte() / 16.0F;
     }
 
     @Override
@@ -104,13 +104,13 @@ public class PacketPlayClientBlockPlace implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayClientBlockPlace{" +
-                "location=" + location +
-                ", placedBlockDirection=" + placedBlockDirection +
-                ", stack=" + stack +
-                ", facingX=" + facingX +
-                ", facingY=" + facingY +
-                ", facingZ=" + facingZ +
-                '}';
+        return "PacketPlayClientBlockPlace{"
+                + "location=" + location
+                + ", placedBlockDirection=" + placedBlockDirection
+                + ", stack=" + stack
+                + ", facingX=" + facingX
+                + ", facingY=" + facingY
+                + ", facingZ=" + facingZ
+                + '}';
     }
 }

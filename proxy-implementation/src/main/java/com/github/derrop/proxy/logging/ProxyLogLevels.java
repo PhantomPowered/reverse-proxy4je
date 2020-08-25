@@ -26,7 +26,7 @@ package com.github.derrop.proxy.logging;
 
 import java.util.logging.Level;
 
-public class ProxyLogLevels extends Level {
+public final class ProxyLogLevels extends Level {
 
     public static final Level COMMAND = new ProxyLogLevels("COMMAND", Level.INFO.intValue() + 50);
 

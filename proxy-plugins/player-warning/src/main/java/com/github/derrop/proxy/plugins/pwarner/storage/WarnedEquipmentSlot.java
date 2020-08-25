@@ -42,9 +42,9 @@ public class WarnedEquipmentSlot {
 
     @Override
     public String toString() {
-        return "WarnedEquipmentSlot{" +
-                "slot=" + slot +
-                ", material=" + material +
-                '}';
+        return "WarnedEquipmentSlot{"
+                + "slot=" + slot
+                + ", material=" + material
+                + '}';
     }
 }

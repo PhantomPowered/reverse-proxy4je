@@ -78,11 +78,11 @@ public class PacketPlayClientUseEntity implements Packet, EntityPacket {
 
     @Override
     public String toString() {
-        return "PacketPlayClientUseEntity{" +
-                "entityId=" + entityId +
-                ", action=" + action +
-                ", hitVector=" + hitVector +
-                '}';
+        return "PacketPlayClientUseEntity{"
+                + "entityId=" + entityId
+                + ", action=" + action
+                + ", hitVector=" + hitVector
+                + '}';
     }
 
     public enum Action {

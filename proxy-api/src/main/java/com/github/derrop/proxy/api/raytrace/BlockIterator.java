@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * This class performs ray tracing and iterates along blocks on a line
+ * This class performs ray tracing and iterates along blocks on a line.
  */
 public class BlockIterator implements Iterator<Location> {
 
@@ -43,7 +43,6 @@ public class BlockIterator implements Iterator<Location> {
 
     /**
      * Constructs the BlockIterator.
-     * <p>
      * This considers all blocks as 1x1x1 in size.
      *
      * @param blockAccess The block access to use for tracing
@@ -228,7 +227,6 @@ public class BlockIterator implements Iterator<Location> {
 
     /**
      * Constructs the BlockIterator.
-     * <p>
      * This considers all blocks as 1x1x1 in size.
      *
      * @param loc The location for the start of the ray trace
@@ -244,7 +242,6 @@ public class BlockIterator implements Iterator<Location> {
 
     /**
      * Constructs the BlockIterator.
-     * <p>
      * This considers all blocks as 1x1x1 in size.
      *
      * @param loc The location for the start of the ray trace
@@ -258,7 +255,6 @@ public class BlockIterator implements Iterator<Location> {
 
     /**
      * Constructs the BlockIterator.
-     * <p>
      * This considers all blocks as 1x1x1 in size.
      *
      * @param loc The location for the start of the ray trace
@@ -270,7 +266,6 @@ public class BlockIterator implements Iterator<Location> {
 
     /**
      * Constructs the BlockIterator.
-     * <p>
      * This considers all blocks as 1x1x1 in size.
      *
      * @param entity Information from the entity is used to set up the trace
@@ -284,9 +279,8 @@ public class BlockIterator implements Iterator<Location> {
     }
 
     /**
-     * Returns true if the iteration has more elements
+     * Returns true if the iteration has more elements.
      */
-
     @Override
     public boolean hasNext() {
         scan();
@@ -294,7 +288,7 @@ public class BlockIterator implements Iterator<Location> {
     }
 
     /**
-     * Returns the next Block in the trace
+     * Returns the next Block in the trace.
      *
      * @return the next Block in the trace
      */

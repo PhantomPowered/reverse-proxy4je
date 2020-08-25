@@ -30,6 +30,8 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class PacketPlayServerScoreboardTeam implements Packet {
 
     private String name;
@@ -196,6 +198,16 @@ public class PacketPlayServerScoreboardTeam implements Packet {
     }
 
     public String toString() {
-        return "PacketPlayServerScoreboardTeam(name=" + this.getName() + ", mode=" + this.getMode() + ", displayName=" + this.getDisplayName() + ", prefix=" + this.getPrefix() + ", suffix=" + this.getSuffix() + ", nameTagVisibility=" + this.getNameTagVisibility() + ", collisionRule=" + this.getCollisionRule() + ", color=" + this.getColor() + ", friendlyFire=" + this.getFriendlyFire() + ", players=" + java.util.Arrays.deepToString(this.getPlayers()) + ")";
+        return "PacketPlayServerScoreboardTeam(name=" + this.getName()
+                + ", mode=" + this.getMode()
+                + ", displayName=" + this.getDisplayName()
+                + ", prefix=" + this.getPrefix()
+                + ", suffix=" + this.getSuffix()
+                + ", nameTagVisibility=" + this.getNameTagVisibility()
+                + ", collisionRule=" + this.getCollisionRule()
+                + ", color=" + this.getColor()
+                + ", friendlyFire=" + this.getFriendlyFire()
+                + ", players=" + Arrays.deepToString(this.getPlayers())
+                + ")";
     }
 }

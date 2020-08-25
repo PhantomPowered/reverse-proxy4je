@@ -120,10 +120,10 @@ public class PacketPlayServerMultiBlockChange implements Packet {
 
         @Override
         public String toString() {
-            return "BlockUpdateData{" +
-                    "chunkPosCrammed=" + chunkPosCrammed +
-                    ", blockState=" + blockState +
-                    '}';
+            return "BlockUpdateData{"
+                    + "chunkPosCrammed=" + chunkPosCrammed
+                    + ", blockState=" + blockState
+                    + '}';
         }
     }
 

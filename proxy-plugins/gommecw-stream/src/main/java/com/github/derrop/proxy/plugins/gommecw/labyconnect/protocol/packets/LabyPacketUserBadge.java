@@ -59,10 +59,10 @@ public class LabyPacketUserBadge extends LabyPacket {
 
     @Override
     public String toString() {
-        return "PacketUserBadge{" +
-                "uuids=" + Arrays.toString(uuids) +
-                ", ranks=" + Arrays.toString(ranks) +
-                "} " + super.toString();
+        return "PacketUserBadge{"
+                + "uuids=" + Arrays.toString(uuids)
+                + ", ranks=" + Arrays.toString(ranks)
+                + "} " + super.toString();
     }
 }
 

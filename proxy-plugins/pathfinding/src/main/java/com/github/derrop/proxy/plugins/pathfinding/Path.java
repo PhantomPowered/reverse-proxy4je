@@ -26,8 +26,8 @@ package com.github.derrop.proxy.plugins.pathfinding;
 
 import com.github.derrop.proxy.api.block.BlockAccess;
 import com.github.derrop.proxy.api.block.Material;
-import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.location.Location;
+import com.github.derrop.proxy.api.player.Player;
 
 import java.util.Arrays;
 import java.util.Queue;
@@ -145,12 +145,12 @@ public class Path {
 
     @Override
     public String toString() {
-        return "Path{" +
-                "points=" + points +
-                ", allPoints=" + Arrays.toString(allPoints) +
-                ", started=" + started +
-                ", recursive=" + recursive +
-                ", success=" + success +
-                '}';
+        return "Path{"
+                + "points=" + points
+                + ", allPoints=" + Arrays.toString(allPoints)
+                + ", started=" + started
+                + ", recursive=" + recursive
+                + ", success=" + success
+                + '}';
     }
 }

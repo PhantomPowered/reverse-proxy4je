@@ -112,8 +112,8 @@ public class DefaultHighlightListener implements GommeCWHighlightListener {
                         return;
                     }
 
-                    if (playerInfo.getUniqueId().equals(clanWar.getFrame().getCurrentDisplayedPlayer()) &&
-                            "near_bed".equals(clanWar.getFrame().getLastSwitchReason())) {
+                    if (playerInfo.getUniqueId().equals(clanWar.getFrame().getCurrentDisplayedPlayer())
+                            && "near_bed".equals(clanWar.getFrame().getLastSwitchReason())) {
                         clanWar.getFrame().togglePlayerCamera(null, null, "away_bed");
                     }
                     System.out.println(playerInfo.getUsername() + " is away from the bed of " + bedTeam.getColor());

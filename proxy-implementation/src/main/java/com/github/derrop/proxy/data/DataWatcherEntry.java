@@ -3,8 +3,8 @@ package com.github.derrop.proxy.data;
 import com.github.derrop.proxy.api.item.ItemStack;
 import com.github.derrop.proxy.api.location.EulerAngle;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.api.math.MathHelper;
+import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,11 +63,11 @@ public class DataWatcherEntry {
     @Override
     public String toString() {
         Class<?> dataType = getDataType(objectType);
-        return "SerializableObject{" +
-                "objectType=" + objectType + "(" + (dataType != null ? dataType.getSimpleName() : null) + ")" +
-                ", id=" + id +
-                ", value=" + value +
-                '}';
+        return "SerializableObject{"
+                + "objectType=" + objectType + "(" + (dataType != null ? dataType.getSimpleName() : null) + ")"
+                + ", id=" + id
+                + ", value=" + value
+                + '}';
     }
 
     public void write(ProtoBuf buffer) {
@@ -111,6 +111,10 @@ public class DataWatcherEntry {
                 buffer.writeFloat(MathHelper.preventNaN(rotations.getX()));
                 buffer.writeFloat(MathHelper.preventNaN(rotations.getY()));
                 buffer.writeFloat(MathHelper.preventNaN(rotations.getZ()));
+                break;
+
+            default:
+                throw new IllegalStateException(i + " > 7");
         }
     }
 
@@ -165,6 +169,9 @@ public class DataWatcherEntry {
                 value = new EulerAngle(x, y, z);
                 break;
             }
+
+            default:
+                return null;
         }
 
         return value != null ? new DataWatcherEntry(typeId, id, value) : null;

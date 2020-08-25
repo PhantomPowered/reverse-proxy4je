@@ -108,15 +108,15 @@ public class PacketPlayServerEntity implements Packet, EntityPacket {
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntity{" +
-                "entityId=" + entityId +
-                ", posX=" + posX +
-                ", posY=" + posY +
-                ", posZ=" + posZ +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                ", onGround=" + onGround +
-                ", hasRotation=" + hasRotation +
-                '}';
+        return "PacketPlayServerEntity{"
+                + "entityId=" + entityId
+                + ", posX=" + posX
+                + ", posY=" + posY
+                + ", posZ=" + posZ
+                + ", yaw=" + yaw
+                + ", pitch=" + pitch
+                + ", onGround=" + onGround
+                + ", hasRotation=" + hasRotation
+                + '}';
     }
 }

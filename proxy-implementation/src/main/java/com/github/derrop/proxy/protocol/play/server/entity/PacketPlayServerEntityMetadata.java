@@ -27,9 +27,9 @@ package com.github.derrop.proxy.protocol.play.server.entity;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.data.DataWatcher;
 import com.github.derrop.proxy.data.DataWatcherEntry;
+import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -84,9 +84,9 @@ public class PacketPlayServerEntityMetadata implements Packet, EntityPacket {
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntityMetadata{" +
-                "entityId=" + entityId +
-                ", objects=" + objects +
-                '}';
+        return "PacketPlayServerEntityMetadata{"
+                + "entityId=" + entityId
+                + ", objects=" + objects
+                + '}';
     }
 }

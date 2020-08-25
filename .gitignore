@@ -1,6 +1,7 @@
 dependency-reduced-pom.xml
 
 .idea/
+.mvn/wrapper/maven-wrapper.jar
 *.iml
 *.ipr
 *.iws

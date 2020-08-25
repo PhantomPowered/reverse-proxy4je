@@ -27,13 +27,15 @@ package com.github.derrop.proxy.api.event;
 public interface Cancelable {
 
     /**
-     * Marks the current event as (not) cancelled
+     * Marks the current event as (not) cancelled.
      *
      * @param cancel If the event should get cancelled
      */
     void cancel(boolean cancel);
 
     /**
+     * If the current event is cancelled.
+     *
      * @return If the current event is cancelled
      */
     boolean isCancelled();

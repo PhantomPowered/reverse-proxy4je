@@ -103,12 +103,12 @@ public class PacketPlayClientPositionLook extends PacketPlayClientPlayerPosition
 
     @Override
     public String toString() {
-        return "PacketPlayClientPositionLook{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                "} " + super.toString();
+        return "PacketPlayClientPositionLook{"
+                + "x=" + x
+                + ", y=" + y
+                + ", z=" + z
+                + ", yaw=" + yaw
+                + ", pitch=" + pitch
+                + "} " + super.toString();
     }
 }

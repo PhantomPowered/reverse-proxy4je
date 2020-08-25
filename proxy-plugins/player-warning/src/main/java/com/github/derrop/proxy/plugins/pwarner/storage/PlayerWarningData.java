@@ -22,11 +22,9 @@ public class PlayerWarningData {
     }
 
     public WarnedEquipmentSlot getEquipmentSlotData(int slotId, Material material) {
-        return this.equipmentSlots.containsKey(slotId) ?
-                this.equipmentSlots.get(slotId).stream()
-                        .filter(slot -> slot.getMaterial() == material)
-                        .findFirst().orElse(null) :
-                null;
+        return this.equipmentSlots.containsKey(slotId)
+                ? this.equipmentSlots.get(slotId).stream().filter(slot -> slot.getMaterial() == material).findFirst().orElse(null)
+                : null;
     }
 
     private PlayerWarningData(UUID targetPlayerId, Map<Integer, Collection<WarnedEquipmentSlot>> equipmentSlots) {
@@ -49,9 +47,9 @@ public class PlayerWarningData {
 
     @Override
     public String toString() {
-        return "PlayerWarningData{" +
-                "targetPlayerId=" + targetPlayerId +
-                ", equipmentSlots=" + equipmentSlots +
-                '}';
+        return "PlayerWarningData{"
+                + "targetPlayerId=" + targetPlayerId
+                + ", equipmentSlots=" + equipmentSlots
+                + '}';
     }
 }

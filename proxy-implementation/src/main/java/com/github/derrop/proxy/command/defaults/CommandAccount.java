@@ -31,10 +31,10 @@ import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.connection.ServiceConnector;
+import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.player.Player;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.api.session.MCServiceCredentials;
-import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.storage.MCServiceCredentialsStorage;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
@@ -70,7 +70,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
         if ((args.length == 4 || args.length == 5) && args[0].equalsIgnoreCase("add")) {
             NetworkAddress address = NetworkAddress.parse(args[1]);
-            boolean exportable = Boolean.parseBoolean(args[args.length - 1]);
+            final boolean exportable = Boolean.parseBoolean(args[args.length - 1]);
 
             if (address == null) {
                 sender.sendMessage("§cInvalid address");
@@ -86,17 +86,17 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
             String password = args.length == 5 ? args[3] : null;
 
-            MCServiceCredentials credentials = password == null ?
-                    MCServiceCredentials.offline(args[2], address.asString(), exportable) :
-                    MCServiceCredentials.online(args[2], password, address.asString(), exportable);
+            MCServiceCredentials credentials = password == null
+                    ? MCServiceCredentials.offline(args[2], address.asString(), exportable)
+                    : MCServiceCredentials.online(args[2], password, address.asString(), exportable);
 
             storage.insert(args[2], credentials);
             this.connect(connector, credentials, address, sender);
 
             sender.sendMessage("§aSuccessfully imported account " + args[2]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("close")) {
-            this.closeAll(connector, sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1])) ||
-                    args[1].equalsIgnoreCase(client.getName()));
+            this.closeAll(connector, sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1]))
+                    || args[1].equalsIgnoreCase(client.getName()));
         } else if (args.length == 2 && args[0].equalsIgnoreCase("closeAll")) {
             NetworkAddress address = NetworkAddress.parse(args[1]);
             if (address == null) {

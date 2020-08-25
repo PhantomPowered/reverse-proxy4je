@@ -28,7 +28,9 @@ import java.util.Objects;
 
 public class PathPoint {
 
-    private double x, y, z;
+    private double x;
+    private double y;
+    private double z;
     private PathPoint previousPoint;
 
     public PathPoint(double x, double y, double z) {
@@ -76,12 +78,16 @@ public class PathPoint {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         PathPoint point = (PathPoint) o;
-        return Double.compare(point.x, x) == 0 &&
-                Double.compare(point.y, y) == 0 &&
-                Double.compare(point.z, z) == 0;
+        return Double.compare(point.x, x) == 0 && Double.compare(point.y, y) == 0 && Double.compare(point.z, z) == 0;
     }
 
     @Override
@@ -91,10 +97,10 @@ public class PathPoint {
 
     @Override
     public String toString() {
-        return "PathPoint{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                '}';
+        return "PathPoint{"
+                + "x=" + x
+                + ", y=" + y
+                + ", z=" + z
+                + '}';
     }
 }

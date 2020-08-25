@@ -97,7 +97,7 @@ public class Chunk {
             ChunkSection storage = storages[i];
 
             if (storage != null && (maxLength & 1 << i) != 0) {
-            //if (storage != null && (!fullChunk || /*!storage.isEmpty()*/ true) && (maxLength & 1 << i) != 0) {
+                //if (storage != null && (!fullChunk || /*!storage.isEmpty()*/ true) && (maxLength & 1 << i) != 0) {
                 extracted.dataLength |= 1 << i;
                 list.add(storage);
             }
@@ -136,7 +136,7 @@ public class Chunk {
         System.arraycopy(sourceArray, 0, targetArray, copyAmount, sourceArray.length);
         return copyAmount + sourceArray.length;
     }
-    
+
     public int getBlockStateAt(int x, int y, int z) {
         if (y >= 0 && y >> 4 < this.storageArrays.length) {
             ChunkSection extendedblockstorage = this.storageArrays[y >> 4];

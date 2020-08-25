@@ -1,10 +1,6 @@
 package com.github.derrop.proxy.plugins.pathfinding.walk;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
-import com.github.derrop.proxy.plugins.pathfinding.Path;
-import com.github.derrop.proxy.plugins.pathfinding.PathPoint;
-
-import java.util.Queue;
 
 public abstract class WalkablePath {
 

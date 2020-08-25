@@ -48,11 +48,11 @@ public class RunningClanWarInfo {
 
     @Override
     public String toString() {
-        return "RunningClanWarInfo{" +
-                "matchId='" + matchId + '\'' +
-                ", map='" + map + '\'' +
-                ", clans=" + Arrays.toString(clans) +
-                ", beginTimestamp=" + beginTimestamp +
-                '}';
+        return "RunningClanWarInfo{"
+                + "matchId='" + matchId + '\''
+                + ", map='" + map + '\''
+                + ", clans=" + Arrays.toString(clans)
+                + ", beginTimestamp=" + beginTimestamp
+                + '}';
     }
 }

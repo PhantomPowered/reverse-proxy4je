@@ -27,7 +27,7 @@ package com.github.derrop.proxy.api.entity.types.living.creature;
 public interface IronGolem extends Golem {
 
     /**
-     * Normally this is called 'isPlayerCreated' but this name was easier to understand
+     * Normally this is called 'isPlayerCreated' but this name was easier to understand.
      *
      * @return Whether this iron golem was built by a player
      */

@@ -42,9 +42,9 @@ public class PacketPlayClientCommand implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayClientCommand{" +
-                "action=" + action +
-                '}';
+        return "PacketPlayClientCommand{"
+                + "action=" + action
+                + '}';
     }
 
     public enum Action {

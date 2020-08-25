@@ -107,11 +107,11 @@ public class PacketPlayServerEntityVelocity implements Packet, EntityPacket {
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntityVelocity{" +
-                "entityId=" + entityId +
-                ", motionX=" + motionX +
-                ", motionY=" + motionY +
-                ", motionZ=" + motionZ +
-                '}';
+        return "PacketPlayServerEntityVelocity{"
+                + "entityId=" + entityId
+                + ", motionX=" + motionX
+                + ", motionY=" + motionY
+                + ", motionZ=" + motionZ
+                + '}';
     }
 }

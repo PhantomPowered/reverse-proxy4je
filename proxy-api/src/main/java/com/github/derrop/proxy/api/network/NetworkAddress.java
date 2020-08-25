@@ -132,11 +132,16 @@ public class NetworkAddress {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         NetworkAddress that = (NetworkAddress) o;
-        return port == that.port &&
-                Objects.equals(host, that.host);
+        return port == that.port && Objects.equals(host, that.host);
     }
 
     @Override

@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class JsonNbtUtils {
+public final class JsonNbtUtils {
 
     private static final Pattern DOUBLE_PATTERN_NO_SUFFIX = Pattern.compile("[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?", Pattern.CASE_INSENSITIVE);
     private static final Pattern DOUBLE_PATTERN = Pattern.compile("[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d", Pattern.CASE_INSENSITIVE);

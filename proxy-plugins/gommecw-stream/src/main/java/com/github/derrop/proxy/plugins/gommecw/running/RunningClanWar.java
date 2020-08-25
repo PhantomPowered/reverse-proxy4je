@@ -114,12 +114,12 @@ public class RunningClanWar {
 
     @Override
     public String toString() {
-        return "RunningClanWar{" +
-                "spectators=" + spectators +
-                ", teams=" + teams +
-                ", info=" + info +
-                ", matchInfo=" + matchInfo +
-                ", labyUsers=" + labyUsers +
-                '}';
+        return "RunningClanWar{"
+                + "spectators=" + spectators
+                + ", teams=" + teams
+                + ", info=" + info
+                + ", matchInfo=" + matchInfo
+                + ", labyUsers=" + labyUsers
+                + '}';
     }
 }

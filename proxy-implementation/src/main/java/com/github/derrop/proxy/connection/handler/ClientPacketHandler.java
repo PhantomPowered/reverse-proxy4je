@@ -87,14 +87,17 @@ public class ClientPacketHandler {
             case STOP_SPRINTING:
                 connection.setSprinting(false);
                 break;
+
+            default:
+                break;
         }
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.BLOCK_DIG, directions = ProtocolDirection.TO_SERVER)
     public void handleLeftClick(DefaultPlayer player, PacketPlayClientPlayerDigging packet) {
-        if (packet.getAction() != PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK &&
-                packet.getAction() != PacketPlayClientPlayerDigging.Action.ABORT_DESTROY_BLOCK &&
-                packet.getAction() != PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK) {
+        if (packet.getAction() != PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK
+                && packet.getAction() != PacketPlayClientPlayerDigging.Action.ABORT_DESTROY_BLOCK
+                && packet.getAction() != PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK) {
             return;
         }
 

@@ -7,7 +7,8 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ChunkEvent extends Event {
 
     private final ServiceConnection serviceConnection;
-    private final int x, z;
+    private final int x;
+    private final int z;
 
     public ChunkEvent(@NotNull ServiceConnection serviceConnection, int x, int z) {
         this.serviceConnection = serviceConnection;

@@ -80,11 +80,11 @@ public abstract class ItemStack {
 
     @Override
     public String toString() {
-        return "ItemStack{" +
-                "itemId=" + itemId +
-                ", amount=" + amount +
-                ", meta=" + meta +
-                ", nbt=" + nbt +
-                '}';
+        return "ItemStack{"
+                + "itemId=" + itemId
+                + ", amount=" + amount
+                + ", meta=" + meta
+                + ", nbt=" + nbt
+                + '}';
     }
 }

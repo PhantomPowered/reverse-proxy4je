@@ -117,11 +117,10 @@ public class PacketPlayServerMapChunk implements Packet {
 
         @Override
         public String toString() {
-            return "Extracted{" +
-                    "data=" + data.length +
-                    ", dataLength=" + dataLength +
-                    '}';
+            return "Extracted{"
+                    + "data=" + data.length
+                    + ", dataLength=" + dataLength
+                    + '}';
         }
     }
-
 }

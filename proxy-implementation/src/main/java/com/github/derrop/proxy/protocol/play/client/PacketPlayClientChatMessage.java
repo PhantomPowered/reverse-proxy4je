@@ -70,8 +70,8 @@ public class PacketPlayClientChatMessage implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayClientChatMessage{" +
-                "message='" + message + '\'' +
-                '}';
+        return "PacketPlayClientChatMessage{"
+                + "message='" + message + '\''
+                + '}';
     }
 }

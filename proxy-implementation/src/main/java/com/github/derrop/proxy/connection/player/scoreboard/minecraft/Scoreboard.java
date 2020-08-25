@@ -24,21 +24,24 @@
  */
 package com.github.derrop.proxy.connection.player.scoreboard.minecraft;
 
+import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.github.derrop.proxy.connection.player.scoreboard.minecraft.criteria.IScoreObjectiveCriteria;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Scoreboard {
-    
+
     private final Map<String, ScoreObjective> scoreObjectives = new ConcurrentHashMap<>();
     private final Map<IScoreObjectiveCriteria, List<ScoreObjective>> scoreObjectiveCriterias = new ConcurrentHashMap<>();
     private final Map<String, Map<ScoreObjective, Score>> entitiesScoreObjectives = new ConcurrentHashMap<>();
 
     /**
-     * Index 0 is tab menu, 1 is sidebar, and 2 is below name
+     * Index 0 is tab menu, 1 is sidebar, and 2 is below name.
      */
     private final ScoreObjective[] objectiveDisplaySlots = new ScoreObjective[19];
     private final Map<String, ScorePlayerTeam> teams = new ConcurrentHashMap<>();
@@ -46,14 +49,14 @@ public class Scoreboard {
     private static String[] field_178823_g = null;
 
     /**
-     * Returns a ScoreObjective for the objective name
+     * Returns a ScoreObjective for the objective name.
      */
     public ScoreObjective getObjective(String name) {
         return this.scoreObjectives.get(name);
     }
 
     /**
-     * Create and returns the score objective for the given name and ScoreCriteria
+     * Create and returns the score objective for the given name and ScoreCriteria.
      */
     public ScoreObjective addScoreObjective(String name, IScoreObjectiveCriteria criteria) {
         if (name.length() > 16) {
@@ -86,7 +89,7 @@ public class Scoreboard {
     }
 
     /**
-     * Returns if the entity has the given ScoreObjective
+     * Returns if the entity has the given ScoreObjective.
      */
     public boolean entityHasObjective(String name, ScoreObjective p_178819_2_) {
         Map<ScoreObjective, Score> map = this.entitiesScoreObjectives.get(name);
@@ -100,7 +103,7 @@ public class Scoreboard {
     }
 
     /**
-     * Returns the value of the given objective for the given entity name
+     * Returns the value of the given objective for the given entity name.
      */
     public Score getValueFromObjective(String name, ScoreObjective objective) {
         if (name.length() > 40) {
@@ -220,7 +223,7 @@ public class Scoreboard {
     }
 
     /**
-     * 0 is tab menu, 1 is sidebar, 2 is below name
+     * 0 is tab menu, 1 is sidebar, 2 is below name.
      */
     public void setObjectiveInDisplaySlot(int p_96530_1_, ScoreObjective p_96530_2_) {
         this.objectiveDisplaySlots[p_96530_1_] = p_96530_2_;
@@ -230,14 +233,14 @@ public class Scoreboard {
     }
 
     /**
-     * 0 is tab menu, 1 is sidebar, 2 is below name
+     * 0 is tab menu, 1 is sidebar, 2 is below name.
      */
     public ScoreObjective getObjectiveInDisplaySlot(int p_96539_1_) {
         return this.objectiveDisplaySlots[p_96539_1_];
     }
 
     /**
-     * Retrieve the ScorePlayerTeam instance identified by the passed team name
+     * Retrieve the ScorePlayerTeam instance identified by the passed team name.
      */
     public ScorePlayerTeam getTeam(String p_96508_1_) {
         return this.teams.get(p_96508_1_);
@@ -261,7 +264,7 @@ public class Scoreboard {
     }
 
     /**
-     * Removes the team from the scoreboard, updates all player memberships and broadcasts the deletion to all players
+     * Removes the team from the scoreboard, updates all player memberships and broadcasts the deletion to all players.
      */
     public void removeTeam(ScorePlayerTeam p_96511_1_) {
         this.teams.remove(p_96511_1_.getRegisteredName());
@@ -274,7 +277,7 @@ public class Scoreboard {
     }
 
     /**
-     * Adds a player to the given team
+     * Adds a player to the given team.
      */
     public boolean addPlayerToTeam(String player, String newTeam) {
         if (player.length() > 40) {
@@ -334,7 +337,7 @@ public class Scoreboard {
     }
 
     /**
-     * Called when a score objective is added
+     * Called when a score objective is added.
      */
     public void onScoreObjectiveAdded(ScoreObjective scoreObjectiveIn) {
     }
@@ -355,13 +358,13 @@ public class Scoreboard {
     }
 
     /**
-     * This packet will notify the players that this team is created, and that will register it on the client
+     * This packet will notify the players that this team is created, and that will register it on the client.
      */
     public void broadcastTeamCreated(ScorePlayerTeam playerTeam) {
     }
 
     /**
-     * This packet will notify the players that this team is updated
+     * This packet will notify the players that this team is updated.
      */
     public void sendTeamUpdate(ScorePlayerTeam playerTeam) {
     }

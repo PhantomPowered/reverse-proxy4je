@@ -57,9 +57,9 @@ public class PacketPlayServerEntityHeadRotation implements Packet, EntityPacket 
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntityHeadRotation{" +
-                "entityId=" + entityId +
-                ", yaw=" + yaw +
-                '}';
+        return "PacketPlayServerEntityHeadRotation{"
+                + "entityId=" + entityId
+                + ", yaw=" + yaw
+                + '}';
     }
 }

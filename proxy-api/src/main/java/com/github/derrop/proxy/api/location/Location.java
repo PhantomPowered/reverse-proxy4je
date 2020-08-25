@@ -299,14 +299,14 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Location{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                ", onGround=" + onGround +
-                '}';
+        return "Location{"
+                + "x=" + x
+                + ", y=" + y
+                + ", z=" + z
+                + ", yaw=" + yaw
+                + ", pitch=" + pitch
+                + ", onGround=" + onGround
+                + '}';
     }
 
     public String toShortString() {
@@ -315,15 +315,21 @@ public class Location {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         Location location = (Location) o;
-        return Double.compare(location.x, x) == 0 &&
-                Double.compare(location.y, y) == 0 &&
-                Double.compare(location.z, z) == 0 &&
-                Float.compare(location.yaw, yaw) == 0 &&
-                Float.compare(location.pitch, pitch) == 0 &&
-                onGround == location.onGround;
+        return Double.compare(location.x, x) == 0
+                && Double.compare(location.y, y) == 0
+                && Double.compare(location.z, z) == 0
+                && Float.compare(location.yaw, yaw) == 0
+                && Float.compare(location.pitch, pitch) == 0
+                && onGround == location.onGround;
     }
 
     @Override

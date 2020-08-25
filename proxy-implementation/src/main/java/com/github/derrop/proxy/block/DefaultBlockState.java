@@ -404,15 +404,15 @@ public class DefaultBlockState implements BlockState {
 
     @Override
     public boolean isPassable() {
-        return this.material == Material.AIR ||
-                this.material == Material.SIGN_POST || this.material == Material.WALL_SIGN ||
-                this.material == Material.GOLD_PLATE || this.material == Material.IRON_PLATE || this.material == Material.STONE_PLATE || this.material == Material.WOOD_PLATE ||
-                this.material == Material.STANDING_BANNER || this.material == Material.WALL_BANNER ||
-                this.material == Material.WATER || this.material == Material.STATIONARY_WATER ||
-                ((this.material == Material.TRAP_DOOR || this.material == Material.IRON_TRAPDOOR) && this.isOpen()) ||
-                (this.material.isDoor() && this.isOpen()) ||
-                (this.material.isFenceGate() && this.isOpen()) ||
-                (this.material == Material.SNOW && this.getLayers() < 5);
+        return this.material == Material.AIR
+                || this.material == Material.SIGN_POST || this.material == Material.WALL_SIGN
+                || this.material == Material.GOLD_PLATE || this.material == Material.IRON_PLATE || this.material == Material.STONE_PLATE || this.material == Material.WOOD_PLATE
+                || this.material == Material.STANDING_BANNER || this.material == Material.WALL_BANNER
+                || this.material == Material.WATER || this.material == Material.STATIONARY_WATER
+                || ((this.material == Material.TRAP_DOOR || this.material == Material.IRON_TRAPDOOR) && this.isOpen())
+                || (this.material.isDoor() && this.isOpen())
+                || (this.material.isFenceGate() && this.isOpen())
+                || (this.material == Material.SNOW && this.getLayers() < 5);
     }
 
     @Override

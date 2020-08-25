@@ -30,6 +30,7 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class PacketPlayServerPlayerInfo implements Packet {
@@ -116,6 +117,11 @@ public class PacketPlayServerPlayerInfo implements Packet {
                     if (protoBuf.readBoolean()) {
                         item.displayName = protoBuf.readString();
                     }
+
+                    break;
+
+                default:
+                    break;
             }
         }
     }
@@ -167,6 +173,10 @@ public class PacketPlayServerPlayerInfo implements Packet {
                     if (item.displayName != null) {
                         protoBuf.writeString(item.displayName);
                     }
+
+                    break;
+
+                default:
                     break;
             }
         }
@@ -265,7 +275,13 @@ public class PacketPlayServerPlayerInfo implements Packet {
         }
 
         public String toString() {
-            return "PacketPlayServerPlayerInfo.Item(uuid=" + this.getUniqueId() + ", username=" + this.getUsername() + ", properties=" + java.util.Arrays.deepToString(this.getProperties()) + ", gamemode=" + this.getGamemode() + ", ping=" + this.getPing() + ", displayName=" + this.getDisplayName() + ")";
+            return "PacketPlayServerPlayerInfo.Item(uuid=" + this.getUniqueId()
+                    + ", username=" + this.getUsername()
+                    + ", properties=" + Arrays.deepToString(this.getProperties())
+                    + ", gamemode=" + this.getGamemode()
+                    + ", ping=" + this.getPing()
+                    + ", displayName=" + this.getDisplayName()
+                    + ")";
         }
     }
 }

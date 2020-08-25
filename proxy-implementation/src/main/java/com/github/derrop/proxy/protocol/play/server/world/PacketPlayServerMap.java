@@ -27,8 +27,8 @@ package com.github.derrop.proxy.protocol.play.server.world;
 import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
-import com.github.derrop.proxy.protocol.play.server.world.util.ByteQuad;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.github.derrop.proxy.protocol.play.server.world.util.ByteQuad;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -171,16 +171,16 @@ public class PacketPlayServerMap implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerMap{" +
-                "mapId=" + mapId +
-                ", mapScale=" + mapScale +
-                ", visiblePlayers=" + Arrays.toString(visiblePlayers) +
-                ", mapMinX=" + mapMinX +
-                ", mapMinY=" + mapMinY +
-                ", mapMaxX=" + mapMaxX +
-                ", mapMaxY=" + mapMaxY +
-                ", mapDataBytes=" + Arrays.toString(mapDataBytes) +
-                '}';
+        return "PacketPlayServerMap{"
+                + "mapId=" + mapId
+                + ", mapScale=" + mapScale
+                + ", visiblePlayers=" + Arrays.toString(visiblePlayers)
+                + ", mapMinX=" + mapMinX
+                + ", mapMinY=" + mapMinY
+                + ", mapMaxX=" + mapMaxX
+                + ", mapMaxY=" + mapMaxY
+                + ", mapDataBytes=" + Arrays.toString(mapDataBytes)
+                + '}';
     }
 
 }

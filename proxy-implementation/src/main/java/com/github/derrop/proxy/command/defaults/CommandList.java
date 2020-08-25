@@ -40,7 +40,7 @@ import java.util.Collection;
 public class CommandList extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
-    
+
     public CommandList(ServiceRegistry registry) {
         super("proxy.command.list", null);
         this.registry = registry;

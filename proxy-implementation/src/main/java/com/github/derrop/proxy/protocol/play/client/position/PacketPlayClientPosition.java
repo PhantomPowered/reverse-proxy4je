@@ -87,10 +87,10 @@ public class PacketPlayClientPosition extends PacketPlayClientPlayerPosition {
 
     @Override
     public String toString() {
-        return "PacketPlayClientPosition{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                "} " + super.toString();
+        return "PacketPlayClientPosition{"
+                + "x=" + x
+                + ", y=" + y
+                + ", z=" + z
+                + "} " + super.toString();
     }
 }

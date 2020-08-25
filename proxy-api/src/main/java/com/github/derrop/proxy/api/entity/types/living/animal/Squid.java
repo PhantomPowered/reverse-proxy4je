@@ -24,7 +24,5 @@
  */
 package com.github.derrop.proxy.api.entity.types.living.animal;
 
-import com.github.derrop.proxy.api.entity.types.living.animal.WaterAnimal;
-
 public interface Squid extends WaterAnimal {
 }

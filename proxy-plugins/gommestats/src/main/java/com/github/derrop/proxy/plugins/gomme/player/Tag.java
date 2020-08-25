@@ -52,10 +52,10 @@ public class Tag {
 
     @Override
     public String toString() {
-        return "Tag{" +
-                "name='" + name + '\'' +
-                ", timestamp=" + timestamp +
-                ", creator=" + creator +
-                '}';
+        return "Tag{"
+                + "name='" + name + '\''
+                + ", timestamp=" + timestamp
+                + ", creator=" + creator
+                + '}';
     }
 }

@@ -45,11 +45,16 @@ public class ClanId {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         ClanId clanId = (ClanId) o;
-        return type == clanId.type &&
-                id.equalsIgnoreCase(clanId.id);
+        return type == clanId.type && id.equalsIgnoreCase(clanId.id);
     }
 
     @Override

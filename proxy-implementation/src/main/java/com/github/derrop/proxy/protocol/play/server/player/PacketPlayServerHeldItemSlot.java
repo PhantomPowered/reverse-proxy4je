@@ -66,8 +66,8 @@ public class PacketPlayServerHeldItemSlot implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerHeldItemSlot{" +
-                "slot=" + slot +
-                '}';
+        return "PacketPlayServerHeldItemSlot{"
+                + "slot=" + slot
+                + '}';
     }
 }

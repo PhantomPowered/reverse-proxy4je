@@ -80,11 +80,11 @@ public class FollowingWalkablePath extends WalkablePath {
         } else {
             location.setDirection(this.getConnection().getLocation().toVector());
         }
-            /*if (path.getConnection().getLocation().distanceSquared(location) > 25) { TODO
-                runningPaths.remove(entry.getKey());
-                System.err.println("FAILED");
-                continue;
-            }*/
+        /*if (path.getConnection().getLocation().distanceSquared(location) > 25) { TODO
+            runningPaths.remove(entry.getKey());
+            System.err.println("FAILED");
+            continue;
+        }*/
         this.getConnection().interactive().teleport(location);
     }
 

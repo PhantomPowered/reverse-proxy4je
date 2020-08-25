@@ -49,15 +49,15 @@ public class PacketPlayServerEntityLookMove extends PacketPlayServerEntity {
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntityLookMove{" +
-                "entityId=" + entityId +
-                ", posX=" + posX +
-                ", posY=" + posY +
-                ", posZ=" + posZ +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                ", onGround=" + onGround +
-                ", hasRotation=true" +
-                "} " + super.toString();
+        return "PacketPlayServerEntityLookMove{"
+                + "entityId=" + entityId
+                + ", posX=" + posX
+                + ", posY=" + posY
+                + ", posZ=" + posZ
+                + ", yaw=" + yaw
+                + ", pitch=" + pitch
+                + ", onGround=" + onGround
+                + ", hasRotation=true"
+                + "} " + super.toString();
     }
 }

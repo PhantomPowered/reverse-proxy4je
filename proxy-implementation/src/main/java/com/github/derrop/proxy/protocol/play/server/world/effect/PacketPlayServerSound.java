@@ -102,13 +102,13 @@ public class PacketPlayServerSound implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerSound{" +
-                "soundName='" + soundName + '\'' +
-                ", posX=" + posX +
-                ", posY=" + posY +
-                ", posZ=" + posZ +
-                ", soundVolume=" + soundVolume +
-                ", soundPitch=" + soundPitch +
-                '}';
+        return "PacketPlayServerSound{"
+                + "soundName='" + soundName + '\''
+                + ", posX=" + posX
+                + ", posY=" + posY
+                + ", posZ=" + posZ
+                + ", soundVolume=" + soundVolume
+                + ", soundPitch=" + soundPitch
+                + '}';
     }
 }

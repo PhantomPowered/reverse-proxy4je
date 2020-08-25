@@ -28,11 +28,11 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
+import com.github.derrop.proxy.data.DataWatcher;
+import com.github.derrop.proxy.data.DataWatcherEntry;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import com.github.derrop.proxy.protocol.play.server.entity.EntityPacket;
 import com.github.derrop.proxy.protocol.play.server.entity.util.PlayerPositionPacketUtil;
-import com.github.derrop.proxy.data.DataWatcher;
-import com.github.derrop.proxy.data.DataWatcherEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -194,16 +194,16 @@ public class PacketPlayServerNamedEntitySpawn implements PositionedPacket, Entit
 
     @Override
     public String toString() {
-        return "PacketPlayServerNamedEntitySpawn{" +
-                "entityId=" + entityId +
-                ", playerId=" + playerId +
-                ", x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                ", currentItem=" + currentItem +
-                ", objects=" + objects +
-                '}';
+        return "PacketPlayServerNamedEntitySpawn{"
+                + "entityId=" + entityId
+                + ", playerId=" + playerId
+                + ", x=" + x
+                + ", y=" + y
+                + ", z=" + z
+                + ", yaw=" + yaw
+                + ", pitch=" + pitch
+                + ", currentItem=" + currentItem
+                + ", objects=" + objects
+                + '}';
     }
 }

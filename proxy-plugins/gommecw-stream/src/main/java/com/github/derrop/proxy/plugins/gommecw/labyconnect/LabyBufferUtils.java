@@ -15,9 +15,11 @@ public class LabyBufferUtils {
 
     public static int getVarIntSize(int input) {
         for (int var1 = 1; var1 < 5; var1++) {
-            if ((input & -1 << var1 * 7) == 0)
+            if ((input & -1 << var1 * 7) == 0) {
                 return var1;
+            }
         }
+
         return 5;
     }
 

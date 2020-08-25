@@ -54,8 +54,8 @@ public class LoginPrepareListener {
 
     @Listener
     public void handlePlayerMove(PlayerMoveEvent event) {
-        if (event.getPlayer().getConnectedClient() instanceof LoginServiceConnection &&
-                ((LoginServiceConnection) event.getPlayer().getConnectedClient()).getConnectionTimestamp() + 1000 < System.currentTimeMillis()) {
+        if (event.getPlayer().getConnectedClient() instanceof LoginServiceConnection
+                && ((LoginServiceConnection) event.getPlayer().getConnectedClient()).getConnectionTimestamp() + 1000 < System.currentTimeMillis()) {
             event.cancel(true);
         }
     }

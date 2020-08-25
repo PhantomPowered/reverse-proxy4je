@@ -30,8 +30,8 @@ public class WebClanInfo {
 
     @Override
     public String toString() {
-        return "WebClanInfo{" +
-                "name='" + name + '\'' +
-                '}';
+        return "WebClanInfo{"
+                + "name='" + name + '\''
+                + '}';
     }
 }

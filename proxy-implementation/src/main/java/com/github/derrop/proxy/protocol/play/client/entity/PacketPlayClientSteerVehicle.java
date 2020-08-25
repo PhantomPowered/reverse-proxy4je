@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientSteerVehicle implements Packet {
 
-    /** Positive for left strafe, negative for right */
+    /* Positive for left strafe, negative for right */
     private float strafeSpeed;
 
-    /** Positive for forward, negative for backward */
+    /* Positive for forward, negative for backward */
     private float forwardSpeed;
     private boolean jumping;
     private boolean sneaking;

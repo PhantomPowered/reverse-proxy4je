@@ -69,10 +69,10 @@ public class PacketPlayServerEntityEquipment implements Packet, EntityPacket {
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntityEquipment{" +
-                "entityId=" + entityId +
-                ", slot=" + slot +
-                ", item=" + item +
-                '}';
+        return "PacketPlayServerEntityEquipment{"
+                + "entityId=" + entityId
+                + ", slot=" + slot
+                + ", item=" + item
+                + '}';
     }
 }

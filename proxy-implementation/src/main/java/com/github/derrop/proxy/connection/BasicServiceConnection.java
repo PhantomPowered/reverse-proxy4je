@@ -56,7 +56,7 @@ import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPla
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.derrop.proxy.protocol.rewrite.EntityRewrite;
-import com.github.derrop.proxy.protocol.rewrite.EntityRewrite_1_8;
+import com.github.derrop.proxy.protocol.rewrite.EntityRewrite18;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
@@ -105,7 +105,7 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
 
-    private final EntityRewrite entityRewrite = new EntityRewrite_1_8();
+    private final EntityRewrite entityRewrite = new EntityRewrite18();
 
     private ConnectedProxyClient client;
     private final PlayerAbilities abilities = new DefaultPlayerAbilities(this);

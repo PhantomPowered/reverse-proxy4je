@@ -42,8 +42,8 @@ public class PacketPlayServerSetDifficulty implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerSetDifficulty{" +
-                "difficulty=" + difficulty +
-                '}';
+        return "PacketPlayServerSetDifficulty{"
+                + "difficulty=" + difficulty
+                + '}';
     }
 }

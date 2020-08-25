@@ -96,14 +96,20 @@ public class MCServiceCredentials {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MCServiceCredentials)) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof MCServiceCredentials)) {
+            return false;
+        }
+
         MCServiceCredentials that = (MCServiceCredentials) o;
-        return isExportable() == that.isExportable() &&
-                Objects.equals(getUsername(), that.getUsername()) &&
-                Objects.equals(getEmail(), that.getEmail()) &&
-                Objects.equals(getPassword(), that.getPassword()) &&
-                getDefaultServer().equals(that.getDefaultServer());
+        return isExportable() == that.isExportable()
+                && Objects.equals(getUsername(), that.getUsername())
+                && Objects.equals(getEmail(), that.getEmail())
+                && Objects.equals(getPassword(), that.getPassword())
+                && getDefaultServer().equals(that.getDefaultServer());
     }
 
     @Override

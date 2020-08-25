@@ -50,7 +50,7 @@ public interface ProtocolIds {
         int MINECRAFT_1_15_1 = 575;
         int MINECRAFT_1_15_2 = 578;
     }
-    
+
     interface ToClient {
 
         interface Play {

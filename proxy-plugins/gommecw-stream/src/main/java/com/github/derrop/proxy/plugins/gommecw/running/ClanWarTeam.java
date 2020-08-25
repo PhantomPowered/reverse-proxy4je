@@ -57,14 +57,14 @@ public class ClanWarTeam {
 
     @Override
     public String toString() {
-        return "ClanWarTeam{" +
-                "color=" + color +
-                ", bedAlive=" + bedAlive +
-                ", clanName='" + clanName + '\'' +
-                ", clanTag='" + clanTag + '\'' +
-                ", members=" + members +
-                ", bedLocation=" + bedLocation +
-                '}';
+        return "ClanWarTeam{"
+                + "color=" + color
+                + ", bedAlive=" + bedAlive
+                + ", clanName='" + clanName + '\''
+                + ", clanTag='" + clanTag + '\''
+                + ", members=" + members
+                + ", bedLocation=" + bedLocation
+                + '}';
     }
 
     public enum Color {

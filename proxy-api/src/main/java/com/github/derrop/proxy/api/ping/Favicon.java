@@ -12,7 +12,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class Favicon {
+public final class Favicon {
+
+    private Favicon() {
+        throw new UnsupportedOperationException();
+    }
 
     public static final TypeAdapter<Favicon> FAVICON_TYPE_ADAPTER = new TypeAdapter<Favicon>() {
         @Override

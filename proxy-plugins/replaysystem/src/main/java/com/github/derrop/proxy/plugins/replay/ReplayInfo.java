@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.plugins.replay;
 
-import com.github.derrop.proxy.api.session.MCServiceCredentials;
 import com.github.derrop.proxy.api.network.NetworkAddress;
+import com.github.derrop.proxy.api.session.MCServiceCredentials;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -76,7 +76,7 @@ public class ReplayInfo {
     public long getTimestamp() {
         return timestamp;
     }
-    
+
     public void write(DataOutputStream outputStream) throws IOException {
         outputStream.writeInt(this.ownEntityId);
 
@@ -103,7 +103,7 @@ public class ReplayInfo {
 
         outputStream.writeLong(this.timestamp);
     }
-    
+
     public void read(DataInputStream inputStream) throws IOException {
         this.ownEntityId = inputStream.readInt();
 
@@ -121,5 +121,5 @@ public class ReplayInfo {
 
         this.timestamp = inputStream.readLong();
     }
-    
+
 }

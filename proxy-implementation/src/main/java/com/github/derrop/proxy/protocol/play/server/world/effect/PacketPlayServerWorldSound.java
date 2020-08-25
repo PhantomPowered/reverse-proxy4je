@@ -80,11 +80,11 @@ public class PacketPlayServerWorldSound implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerWorldSound{" +
-                "soundType=" + soundType +
-                ", soundPos=" + soundLocation +
-                ", soundData=" + soundData +
-                ", serverWide=" + serverWide +
-                '}';
+        return "PacketPlayServerWorldSound{"
+                + "soundType=" + soundType
+                + ", soundPos=" + soundLocation
+                + ", soundData=" + soundData
+                + ", serverWide=" + serverWide
+                + '}';
     }
 }

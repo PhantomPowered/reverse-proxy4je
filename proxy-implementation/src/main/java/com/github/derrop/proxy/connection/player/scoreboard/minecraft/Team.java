@@ -29,14 +29,14 @@ import java.util.Collection;
 public abstract class Team {
 
     /**
-     * Same as ==
+     * Same as == .
      */
     public boolean isSameTeam(Team other) {
-        return other == null ? false : this == other;
+        return this == other;
     }
 
     /**
-     * Retrieve the name by which this team is registered in the scoreboard
+     * Retrieve the name by which this team is registered in the scoreboard.
      */
     public abstract String getRegisteredName();
 

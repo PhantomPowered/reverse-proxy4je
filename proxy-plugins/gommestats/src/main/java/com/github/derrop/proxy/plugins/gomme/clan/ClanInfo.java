@@ -78,14 +78,14 @@ public class ClanInfo {
 
     @Override
     public String toString() {
-        return "ClanInfo{" +
-                "name='" + name + '\'' +
-                ", shortcut='" + shortcut + '\'' +
-                ", tags=" + tags +
-                ", members=" + members +
-                ", unknownMemberCount=" + unknownMemberCount +
-                ", maxMemberCount=" + maxMemberCount +
-                ", timestamp=" + timestamp +
-                '}';
+        return "ClanInfo{"
+                + "name='" + name + '\''
+                + ", shortcut='" + shortcut + '\''
+                + ", tags=" + tags
+                + ", members=" + members
+                + ", unknownMemberCount=" + unknownMemberCount
+                + ", maxMemberCount=" + maxMemberCount
+                + ", timestamp=" + timestamp
+                + '}';
     }
 }

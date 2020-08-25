@@ -24,8 +24,8 @@
  */
 package com.github.derrop.proxy.connection.player;
 
-import com.github.derrop.proxy.api.player.GameMode;
 import com.github.derrop.proxy.api.entity.PlayerInfo;
+import com.github.derrop.proxy.api.player.GameMode;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -108,13 +108,14 @@ public class BasicPlayerInfo implements PlayerInfo {
 
     @Override
     public String toString() {
-        return "BasicPlayerInfo{" +
-                "uniqueId=" + uniqueId +
-                ", username='" + username + '\'' +
-                ", properties=" + Arrays.toString(properties) +
-                ", gamemode=" + gamemode +
-                ", ping=" + ping +
-                ", displayName='" + displayName + '\'' +
+        return "BasicPlayerInfo{"
+                + "uniqueId=" + uniqueId
+                + ", username='" + username + '\''
+                + ", properties=" + Arrays.toString(properties)
+                + ", gamemode=" + gamemode
+                + ", ping=" + ping
+                + ", displayName='" + displayName + '\''
+                +
                 '}';
     }
 }

@@ -43,30 +43,27 @@ public class CommandPlayerWarns extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
-            switch (args[1].toLowerCase()) {
-                case "equip": {
-                    if (data.getEquipmentSlots().isEmpty()) {
-                        sender.sendMessage("No warnings on equipment slot updates defined");
-                        return CommandResult.BREAK;
+            if ("equip".equals(args[1].toLowerCase())) {
+                if (data.getEquipmentSlots().isEmpty()) {
+                    sender.sendMessage("No warnings on equipment slot updates defined");
+                    return CommandResult.BREAK;
+                }
+
+                for (Map.Entry<Integer, Collection<WarnedEquipmentSlot>> entry : data.getEquipmentSlots().entrySet()) {
+                    if (entry.getValue().isEmpty()) {
+                        continue;
                     }
 
-                    for (Map.Entry<Integer, Collection<WarnedEquipmentSlot>> entry : data.getEquipmentSlots().entrySet()) {
-                        if (entry.getValue().isEmpty()) {
-                            continue;
-                        }
+                    EquipmentSlot slot = EquipmentSlot.getById(entry.getKey());
+                    if (slot == null) {
+                        continue;
+                    }
 
-                        EquipmentSlot slot = EquipmentSlot.getById(entry.getKey());
-                        if (slot == null) {
-                            continue;
-                        }
-
-                        sender.sendMessage("Warnings for the slot §e" + slot.getFormattedName());
-                        for (WarnedEquipmentSlot warn : entry.getValue()) {
-                            sender.sendMessage(" - §e" + (warn.getColor() == null ? ChatColor.YELLOW : warn.getColor()) + warn.getMaterial());
-                        }
+                    sender.sendMessage("Warnings for the slot §e" + slot.getFormattedName());
+                    for (WarnedEquipmentSlot warn : entry.getValue()) {
+                        sender.sendMessage(" - §e" + (warn.getColor() == null ? ChatColor.YELLOW : warn.getColor()) + warn.getMaterial());
                     }
                 }
-                break;
             }
 
         } else if ((args.length == 3 || args.length == 4) && args[0].equalsIgnoreCase("equip")) {

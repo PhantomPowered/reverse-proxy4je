@@ -102,7 +102,7 @@ public class CommandPath extends NonTabCompleteableCommandCallback {
             if (path.isSuccess()) {
                 double distance = Math.sqrt(start.distanceSquared(pos));
                 double bps = (DefaultPathWalker.BPT * DefaultPathWalker.TPS);
-                long time = (long) ((double) path.getAllPoints().length / bps) + 10;
+                final long time = (long) ((double) path.getAllPoints().length / bps) + 10;
 
                 sender.sendMessage("§aSuccessfully found the path from " + start.toShortString() + " to " + pos.toShortString() + " (" + String.format("%.2f", distance) + " blocks airway)");
                 sender.sendMessage("§aBlocks to walk: " + path.getAllPoints().length + " §7(Calculated with a speed of " + bps + " blocks per second)");

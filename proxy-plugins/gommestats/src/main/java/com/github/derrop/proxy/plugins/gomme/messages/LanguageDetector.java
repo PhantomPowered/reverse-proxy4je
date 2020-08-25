@@ -100,8 +100,8 @@ public class LanguageDetector extends MessageRegistry {
         if (event.getDirection() != ProtocolDirection.TO_CLIENT || event.getType() != ChatMessageType.SYSTEM) {
             return;
         }
-        ServiceConnection connection = (ServiceConnection) event.getConnection();
 
+        final ServiceConnection connection = (ServiceConnection) event.getConnection();
         GommeServerType serverType = event.getConnection().getProperty(GommeConstants.CURRENT_SERVER_PROPERTY);
         if (serverType == null || serverType == GommeServerType.LOBBY) {
             return;
@@ -112,10 +112,9 @@ public class LanguageDetector extends MessageRegistry {
         if (breakIndex == -1) {
             return;
         }
+
         input = input.substring(0, breakIndex);
-
         Language language = this.getLanguage(serverType, MessageType.LANGUAGE_SELECTED, input);
-
         if (language == null) {
             return;
         }

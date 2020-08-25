@@ -26,7 +26,6 @@ package com.github.derrop.proxy.api.events.connection.service.entity.status;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.entity.EntityStatusType;
-import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.event.Cancelable;
 import com.github.derrop.proxy.api.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +46,7 @@ public class SelfEntityStatusEvent extends Event implements Cancelable {
     public ServiceConnection getConnection() {
         return this.connection;
     }
-    
+
     @NotNull
     public EntityStatusType getStatusType() {
         return this.statusType;

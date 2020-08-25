@@ -201,8 +201,8 @@ public enum Facing {
         return VALUES[Math.abs(index % VALUES.length)];
     }
 
-    public static Facing getHorizontal(int p_176731_0_) {
-        return HORIZONTALS[Math.abs(p_176731_0_ % HORIZONTALS.length)];
+    public static Facing getHorizontal(int horizontalIndex) {
+        return HORIZONTALS[Math.abs(horizontalIndex % HORIZONTALS.length)];
     }
 
     public static Facing fromAngle(double angle) {

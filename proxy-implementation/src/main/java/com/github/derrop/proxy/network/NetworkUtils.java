@@ -99,9 +99,9 @@ public final class NetworkUtils {
     }
 
     public static EventLoopGroup newEventLoopGroup() {
-        return Epoll.isAvailable() ?
-                new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory()) :
-                new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory());
+        return Epoll.isAvailable()
+                ? new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory())
+                : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), threadFactory());
     }
 
     public static Class<? extends SocketChannel> getSocketChannelClass() {

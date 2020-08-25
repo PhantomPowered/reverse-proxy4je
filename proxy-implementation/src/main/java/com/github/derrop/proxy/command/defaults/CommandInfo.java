@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class CommandInfo extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
-    
+
     public CommandInfo(ServiceRegistry registry) {
         super("proxy.command.info", null);
         this.registry = registry;

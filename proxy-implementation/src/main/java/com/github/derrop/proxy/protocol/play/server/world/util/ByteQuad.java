@@ -62,8 +62,14 @@ public class ByteQuad {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         ByteQuad byteQuad = (ByteQuad) o;
         return first == byteQuad.first && second == byteQuad.second && third == byteQuad.third && fourth == byteQuad.fourth;
     }

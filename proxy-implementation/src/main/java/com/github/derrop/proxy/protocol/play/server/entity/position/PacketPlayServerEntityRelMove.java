@@ -42,13 +42,13 @@ public class PacketPlayServerEntityRelMove extends PacketPlayServerEntity {
 
     @Override
     public String toString() {
-        return "PacketPlayServerEntityRelMove{" +
-                "entityId=" + entityId +
-                ", posX=" + posX +
-                ", posY=" + posY +
-                ", posZ=" + posZ +
-                ", onGround=" + onGround +
-                ", hasRotation=false" +
-                "} ";
+        return "PacketPlayServerEntityRelMove{"
+                + "entityId=" + entityId
+                + ", posX=" + posX
+                + ", posY=" + posY
+                + ", posZ=" + posZ
+                + ", onGround=" + onGround
+                + ", hasRotation=false"
+                + "} ";
     }
 }

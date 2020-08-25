@@ -37,11 +37,11 @@ public class ClanWarMember {
 
     @Override
     public String toString() {
-        return "ClanWarMember{" +
-                "uniqueId=" + uniqueId +
-                ", name='" + name + '\'' +
-                ", alive=" + alive +
-                ", unknown=" + unknown +
-                '}';
+        return "ClanWarMember{"
+                + "uniqueId=" + uniqueId
+                + ", name='" + name + '\''
+                + ", alive=" + alive
+                + ", unknown=" + unknown
+                + '}';
     }
 }

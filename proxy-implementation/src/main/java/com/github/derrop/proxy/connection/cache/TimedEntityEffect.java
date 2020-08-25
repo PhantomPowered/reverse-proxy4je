@@ -86,14 +86,14 @@ public class TimedEntityEffect implements EntityEffect {
 
     @Override
     public String toString() {
-        return "TimedEntityEffect{" +
-                "entityId=" + entityId +
-                ", effectId=" + effectId +
-                ", amplifier=" + amplifier +
-                ", initialDurationTicks=" + initialDurationTicks +
-                ", timeout=" + timeout +
-                ", hideParticles=" + hideParticles +
-                '}';
+        return "TimedEntityEffect{"
+                + "entityId=" + entityId
+                + ", effectId=" + effectId
+                + ", amplifier=" + amplifier
+                + ", initialDurationTicks=" + initialDurationTicks
+                + ", timeout=" + timeout
+                + ", hideParticles=" + hideParticles
+                + '}';
     }
 
     private static long getTimeout(int ticks) {

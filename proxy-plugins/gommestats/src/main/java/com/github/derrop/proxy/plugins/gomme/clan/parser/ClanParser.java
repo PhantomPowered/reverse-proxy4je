@@ -117,11 +117,13 @@ public class ClanParser {
                         request.setMemberCount(ClanMember.Type.LEADER, Integer.parseInt(data.get("count")));
                     }
                     break;
+
                 case CLAN_INFO_MODERATOR_COUNT:
                     if (request != null && data != null) {
                         request.setMemberCount(ClanMember.Type.MODERATOR, Integer.parseInt(data.get("count")));
                     }
                     break;
+
                 case CLAN_INFO_MEMBER_COUNT:
                     if (request != null && data != null) {
                         request.setMemberCount(ClanMember.Type.MEMBER, Integer.parseInt(data.get("count")));
@@ -137,7 +139,6 @@ public class ClanParser {
                     ClanMember.Rank rank = ClanMember.Rank.parseRank(data.get("rankColor"));
 
                     request.addMember(new PendingClanMember(data.get("name"), request.getReadingMemberType(), rank));
-
                     if (request.hasEnoughMembers()) {
                         this.finish(connection, request);
                     }
@@ -152,7 +153,9 @@ public class ClanParser {
                     request.setUnknownMemberCount(unknown);
 
                     this.finish(connection, request);
+                    break;
 
+                default:
                     break;
             }
         });

@@ -173,6 +173,8 @@ public class PacketPlayServerWorldBorder implements Packet {
                 this.warningTime = protoBuf.readVarInt();
                 break;
 
+            default:
+                break;
         }
     }
 
@@ -214,11 +216,23 @@ public class PacketPlayServerWorldBorder implements Packet {
                 protoBuf.writeVarInt(this.warningDistance);
                 protoBuf.writeVarInt(this.warningTime);
                 break;
+
+            default:
+                break;
         }
     }
 
     public String toString() {
-        return "PacketPlayServerWorldBorder(action=" + this.getAction() + ", size=" + this.getSize() + ", centerX=" + this.getCenterX() + ", centerZ=" + this.getCenterZ() + ", targetSize=" + this.getTargetSize() + ", diameter=" + this.getDiameter() + ", timeUntilTarget=" + this.getTimeUntilTarget() + ", warningTime=" + this.getWarningTime() + ", warningDistance=" + this.getWarningDistance() + ")";
+        return "PacketPlayServerWorldBorder(action=" + this.getAction()
+                + ", size=" + this.getSize()
+                + ", centerX=" + this.getCenterX()
+                + ", centerZ=" + this.getCenterZ()
+                + ", targetSize=" + this.getTargetSize()
+                + ", diameter=" + this.getDiameter()
+                + ", timeUntilTarget=" + this.getTimeUntilTarget()
+                + ", warningTime=" + this.getWarningTime()
+                + ", warningDistance=" + this.getWarningDistance()
+                + ")";
     }
 
     public enum Action {

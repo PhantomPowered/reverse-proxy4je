@@ -39,7 +39,7 @@ import java.util.function.Function;
 public interface DatabaseDriver extends AutoCloseable {
 
     /**
-     * Connects to the database
+     * Connects to the database.
      *
      * @param config The config file for the database config
      * @return If the connection was successful
@@ -47,14 +47,14 @@ public interface DatabaseDriver extends AutoCloseable {
     boolean connect(@NotNull DatabaseConfig config);
 
     /**
-     * Creates a new table in the database
+     * Creates a new table in the database.
      *
      * @param table The name of the new table in the database
      */
     void createTable(@NotNull String table);
 
     /**
-     * Deletes a table from the database
+     * Deletes a table from the database.
      *
      * @param table The name of the table which should get deleted
      */
@@ -69,21 +69,21 @@ public interface DatabaseDriver extends AutoCloseable {
     long count(@NotNull String table);
 
     /**
-     * Inserts a database object into the database
+     * Inserts a database object into the database.
      *
      * @param object The object which should get inserted
      */
     void insert(@NotNull DatabaseObject object);
 
     /**
-     * Updates an object in the database
+     * Updates an object in the database.
      *
      * @param object The object which should get updated
      */
     void update(@NotNull DatabaseObject object);
 
     /**
-     * Gets an object from the database
+     * Gets an object from the database.
      *
      * @param databaseObjectToken The token to deserialize the object from the database
      * @param <T>                 The type of the object which gets deserialize from the database
@@ -95,7 +95,7 @@ public interface DatabaseDriver extends AutoCloseable {
     }
 
     /**
-     * Gets a value from the database or the default value if the key does not exists
+     * Gets a value from the database or the default value if the key does not exists.
      *
      * @param databaseObjectToken The token for the database object to load it
      * @param def                 The defined value which is used if the key does not exists
@@ -105,7 +105,7 @@ public interface DatabaseDriver extends AutoCloseable {
     @Nullable <T> T getOrDefault(@NotNull DatabaseObjectToken<T> databaseObjectToken, @Nullable T def);
 
     /**
-     * Gets all objects from a specific table in the database
+     * Gets all objects from a specific table in the database.
      *
      * @param table  The table in which the objects are located
      * @param mapper The mapper which creates the objects from the bytes of the database
@@ -125,7 +125,7 @@ public interface DatabaseDriver extends AutoCloseable {
     }
 
     /**
-     * Accepts all values in the database to the consumer
+     * Accepts all values in the database to the consumer.
      *
      * @param table   The table in which the objects are located
      * @param mapper  The mapper which creates the objects from the bytes of the database
@@ -135,7 +135,7 @@ public interface DatabaseDriver extends AutoCloseable {
     <T> void forEachInTable(@NotNull String table, @NotNull Function<byte[], T> mapper, @NotNull Consumer<T> handler);
 
     /**
-     * Deletes an object from the database
+     * Deletes an object from the database.
      *
      * @param table The table name from which the object should get deleted
      * @param key   The key of the database which should get deleted
@@ -143,7 +143,7 @@ public interface DatabaseDriver extends AutoCloseable {
     void deleteFromTable(@NotNull String table, @NotNull String key);
 
     /**
-     * Closes the current connection to the database
+     * Closes the current connection to the database.
      */
     @Override
     void close();

@@ -2,7 +2,6 @@ package com.github.derrop.proxy.plugins.gomme.events;
 
 import com.github.derrop.proxy.api.connection.ServiceConnection;
 import com.github.derrop.proxy.api.event.Event;
-import com.github.derrop.proxy.plugins.gomme.GommeServerType;
 import com.github.derrop.proxy.plugins.gomme.match.MatchInfo;
 import org.jetbrains.annotations.NotNull;
 

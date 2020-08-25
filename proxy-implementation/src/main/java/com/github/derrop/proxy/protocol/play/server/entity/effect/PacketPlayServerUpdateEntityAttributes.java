@@ -85,10 +85,10 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerUpdateEntityAttributes{" +
-                "entityId=" + entityId +
-                ", attributes=" + attributes +
-                '}';
+        return "PacketPlayServerUpdateEntityAttributes{"
+                + "entityId=" + entityId
+                + ", attributes=" + attributes
+                + '}';
     }
 
     public class Attribute {
@@ -128,11 +128,11 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
 
         @Override
         public String toString() {
-            return "Attribute{" +
-                    "name='" + name + '\'' +
-                    ", value=" + value +
-                    ", modifiers=" + modifiers +
-                    '}';
+            return "Attribute{"
+                    + "name='" + name + '\''
+                    + ", value=" + value
+                    + ", modifiers=" + modifiers
+                    + '}';
         }
     }
 
@@ -183,12 +183,12 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
 
         @Override
         public String toString() {
-            return "AttributeModifier{" +
-                    "amount=" + amount +
-                    ", operation=" + operation +
-                    ", name='" + name + '\'' +
-                    ", id=" + id +
-                    '}';
+            return "AttributeModifier{"
+                    + "amount=" + amount
+                    + ", operation=" + operation
+                    + ", name='" + name + '\''
+                    + ", id=" + id
+                    + '}';
         }
     }
 

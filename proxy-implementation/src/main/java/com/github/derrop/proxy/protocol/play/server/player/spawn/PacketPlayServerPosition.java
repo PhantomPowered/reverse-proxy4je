@@ -31,7 +31,6 @@ import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -127,17 +126,18 @@ public class PacketPlayServerPosition implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerPosition{" +
-                "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", yaw=" + yaw +
-                ", pitch=" + pitch +
-                ", flags=" + flags +
-                '}';
+        return "PacketPlayServerPosition{"
+                + "x=" + x
+                + ", y=" + y
+                + ", z=" + z
+                + ", yaw=" + yaw
+                + ", pitch=" + pitch
+                + ", flags=" + flags
+                + '}';
     }
 
     public enum TeleportFlags {
+
         X(0),
         Y(1),
         Z(2),
@@ -162,7 +162,7 @@ public class PacketPlayServerPosition implements Packet {
             EnumSet<TeleportFlags> result = EnumSet.noneOf(TeleportFlags.class);
             TeleportFlags[] values = values();
 
-            for(int i = 0; i < values.length; ++i) {
+            for (int i = 0; i < values.length; ++i) {
                 TeleportFlags flags = values[i];
                 if (flags.matches(in)) {
                     result.add(flags);
@@ -183,5 +183,4 @@ public class PacketPlayServerPosition implements Packet {
             return result;
         }
     }
-    
 }

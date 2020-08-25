@@ -30,10 +30,8 @@ import org.apache.commons.lang3.Validate;
 import java.util.Arrays;
 import java.util.Map;
 
-/**
- * An enum of all material IDs accepted by the official server and client
- */
 public enum Material {
+
     AIR(0, 0),
     STONE(1),
     GRASS(2),
@@ -424,19 +422,19 @@ public enum Material {
 
     private final int id;
     private static Material[] byId = new Material[383];
-    private final static Map<String, Material> BY_NAME = Maps.newHashMap();
+    private static final Map<String, Material> BY_NAME = Maps.newHashMap();
     private final int maxStack;
     private final short durability;
 
-    private Material(final int id) {
+    Material(final int id) {
         this(id, 64);
     }
 
-    private Material(final int id, final int stack) {
+    Material(final int id, final int stack) {
         this(id, stack, 0);
     }
 
-    private Material(final int id, final int stack, final int durability) {
+    Material(final int id, final int stack, final int durability) {
         this.id = id;
         this.durability = (short) durability;
         this.maxStack = stack;
@@ -512,7 +510,7 @@ public enum Material {
 
         try {
             result = getMaterial(Integer.parseInt(name));
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException ignored) {
         }
 
         if (result == null) {
@@ -975,8 +973,9 @@ public enum Material {
             case WOOD_DOOR:
             case WOODEN_DOOR:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public boolean isWooden() {
@@ -991,8 +990,9 @@ public enum Material {
             case ACACIA_DOOR:
             case DARK_OAK_DOOR:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public boolean isFence() {
@@ -1006,8 +1006,9 @@ public enum Material {
             case SPRUCE_FENCE:
             case NETHER_FENCE:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public boolean isFenceGate() {
@@ -1019,8 +1020,9 @@ public enum Material {
             case DARK_OAK_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public boolean isSword() {
@@ -1031,8 +1033,8 @@ public enum Material {
             case IRON_SWORD:
             case WOOD_SWORD:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
-
 }

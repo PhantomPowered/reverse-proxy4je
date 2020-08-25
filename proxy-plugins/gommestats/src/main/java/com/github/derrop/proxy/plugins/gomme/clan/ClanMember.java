@@ -66,11 +66,11 @@ public class ClanMember {
 
     @Override
     public String toString() {
-        return "ClanMember{" +
-                "playerId=" + playerId +
-                ", memberType=" + memberType +
-                ", rank=" + rank +
-                '}';
+        return "ClanMember{"
+                + "playerId=" + playerId
+                + ", memberType=" + memberType
+                + ", rank=" + rank
+                + '}';
     }
 
     public static enum Type {

@@ -55,8 +55,8 @@ public class PacketPlayServerPlayerStatistics implements Packet {
 
     @Override
     public String toString() {
-        return "PacketPlayServerPlayerStatistics{" +
-                "statistics=" + statistics +
-                '}';
+        return "PacketPlayServerPlayerStatistics{"
+                + "statistics=" + statistics
+                + '}';
     }
 }

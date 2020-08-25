@@ -37,7 +37,6 @@ import com.github.derrop.proxy.connection.BasicServiceConnection;
 import com.github.derrop.proxy.plugins.replay.ReplayInfo;
 import com.github.derrop.proxy.plugins.replay.ReplayOutputStream;
 import com.github.derrop.proxy.plugins.replay.ReplaySystem;
-import com.github.derrop.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -70,20 +69,6 @@ public class CommandReplay extends NonTabCompleteableCommandCallback {
     public @NotNull CommandResult process(@NotNull CommandSender sender, @NotNull String[] args, @NotNull String fullLine) throws CommandExecutionException {
         if (args.length == 0) {
             UUID id = UUID.randomUUID();
-            ((Player) sender).sendPacket(new PacketPlayServerPlayerInfo(
-                    PacketPlayServerPlayerInfo.Action.ADD_PLAYER,
-                    new PacketPlayServerPlayerInfo.Item[]{
-                            new PacketPlayServerPlayerInfo.Item(
-                                    id, "TEST_NAME",
-                                    new String[][]{
-                                            new String[]{"textures", "eyJ0aW1lc3RhbXAiOjE1ODY2MzAyNDg2ODQsInByb2ZpbGVJZCI6ImFmN2M3YWFiMmRhOTRlYmI4MWZlN2I0NGUxYjhiNTBjIiwicHJvZmlsZU5hbWUiOiJkZXJyb3AiLCJzaWduYXR1cmVSZXF1aXJlZCI6dHJ1ZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzVlZmI0NjQzMjRkNzlmZjUyNGNlNjIwYTUzNzNkODkwMjY5ODI2NjczNjY2ODg1NjBhNGE1ZWZiN2QzM2I4NzUifX19", "bONmCbEnrKzF5h20M/aiqCFYSl/LCa2gvVXdDR7ndfpYyv9BQTZaksb1NvBo21YueewVxMlz6OOMSbCN74mCYOEoC+G+bm0DMiOr5aU7ZOSqXnmm09H//4/uqKaehpyQbRNFbqR1kGXweznhFAaxP+iceNgcK4bGwAQ5axPwxz86vNcyojUPwbBr+vi5nX3McAKLw7ht6rAg6JIxR3SgGUxXDJHArFxTpFE3zyc31mOUwrs78IgyYoapXwAQS5+OfmkY/YCBbDITUuBkYgMcAlMt1jeylR9C9Qg1eJ6KclTlu/AVUZwkrorXCQnEZfagYsflPkL6DT6lb9X7Si7M+ECskRb6S9GJ12pDtmqiACrwEtW7gPRon9geWA2Jz6+OqUlUX8g/PiDIbW/F3wNCSRXncQ4Qw/9f4fUCjvQLrgfDuuk3GBYxlQyQVZBz7OEgFwyHGwg3GMLYdAVyE829CyqH/kptR+37/M8mWwjjIWP/R6HkkB5HggzRM971BuyMFaU97i1CYhBHgjr5JqU2MdrbOcqJ8hWa/CLI0uI57a+9heTYgB/vyxrQR3v5AwAEvZOfLuDJkjAyMrfSHWw7q+vxiUFJODLogn1ACcp/Az+LRYn7tztfrJXkEGROLj6CqPj0TvLBEHjc7htrkG1NrBPRU0CrFT1rvRT6koqqvH4="}
-                                    },
-                                    1, 0,
-                                    "DisplayTEST"
-
-                            )
-                    }
-            ));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException exception) {

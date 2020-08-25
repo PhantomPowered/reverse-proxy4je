@@ -25,7 +25,6 @@
 package com.github.derrop.proxy.api.permission;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
 

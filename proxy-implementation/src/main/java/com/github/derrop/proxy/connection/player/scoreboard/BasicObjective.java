@@ -48,9 +48,8 @@ public class BasicObjective implements Objective {
     }
 
     public void ensureRegistered() { // maybe received unregister by server?
-        if (this.scoreboard.getHandle().getObjective(this.name) == null || this.handle == null ||
-                this.scoreboard.getHandle().getObjectiveInDisplaySlot(this.handle.getDisplaySlot()) != this.handle) {
-
+        if (this.scoreboard.getHandle().getObjective(this.name) == null || this.handle == null
+                || this.scoreboard.getHandle().getObjectiveInDisplaySlot(this.handle.getDisplaySlot()) != this.handle) {
             if (this.handle != null && this.scoreboard.getHandle().getObjectiveInDisplaySlot(this.handle.getDisplaySlot()) != null) {
                 Collection<com.github.derrop.proxy.connection.player.scoreboard.minecraft.Score> scores = this.scoreboard.getHandle().getSortedScores(this.handle);
 

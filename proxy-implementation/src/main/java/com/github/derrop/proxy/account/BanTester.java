@@ -34,16 +34,11 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -125,14 +120,14 @@ public class BanTester {
                         this.writeIndex();
                         continue;
 
-                    case NOT_BANNED:
-                        return false;
-
                     case BANNED:
                         System.out.println("Account " + proxyClient.getAccountName() + "#" + proxyClient.getAccountUUID() + " (" + credentials.getEmail() + ") is banned on " + address);
                         ++this.currentProxyIndex; // prevent that more accounts get banned while connecting through this proxy
                         this.writeIndex();
                         return true;
+
+                    default:
+                        return false;
                 }
             }
         }

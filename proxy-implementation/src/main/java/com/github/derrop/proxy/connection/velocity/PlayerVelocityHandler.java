@@ -61,9 +61,13 @@ public class PlayerVelocityHandler {
         }
     }
 
-    private double motionX, motionY, motionZ;
+    private double motionX;
+    private double motionY;
+    private double motionZ;
 
-    private double targetX, targetY, targetZ;
+    private double targetX;
+    private double targetY;
+    private double targetZ;
 
     public void moveEntity(double x, double y, double z) {
         /*if (this.inWeb) {
@@ -80,7 +84,7 @@ public class PlayerVelocityHandler {
         //int material = ((ChunkCache) this.proxyClient.getPacketCache().getHandler(handler -> handler instanceof ChunkCache)).getMaterial(new BlockPos(x, y - 1, z));
         //this.onGround = (material != 0 && material != 10 /* flowing lava */ && material != 11 /* stationary lava */ &&
         //        material != 8 /* flowing water */ && material != 9 /* stationary water */) && (int) y == y;
-     //   this.onGround = (int) y == y;
+        //   this.onGround = (int) y == y;
     }
 
     private static final double DRAG = 0.02;

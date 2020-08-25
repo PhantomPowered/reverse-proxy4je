@@ -23,7 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
 // TODO Names with 16 Chars are too long for the GUI
 public class Frame extends JFrame {
 
-    private static final int WIDTH = 1920, HEIGHT = 1080;
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
 
     private static final String AVATAR_URL = "https://minotar.net/helm/%s/%d.png";
     private static final Image BAC_IMAGE;
@@ -62,7 +63,8 @@ public class Frame extends JFrame {
     private final Robot robot;
     private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
-    private final int height, width;
+    private final int height;
+    private final int width;
 
     private JLabel playerCameraLabelHead;
     private JLabel playerCameraLabel;
@@ -264,15 +266,14 @@ public class Frame extends JFrame {
     }
 
     private void drawTeam(Collection<Container> output, int eloPoints, String clanName, ClanWarTeam team, Color color, int x, int y, boolean left) throws MalformedURLException {
-        String displayName = "Elo: " + eloPoints + " / " + clanName;
-
-        int initialY = y;
+        final String displayName = "Elo: " + eloPoints + " / " + clanName;
+        final int initialY = y;
 
         Font font = new Font("ARIAL", Font.PLAIN, FONT_SIZE);
         FontMetrics metrics = super.getFontMetrics(font);
 
         Font clanNameFont = new Font("ARIAL", Font.BOLD, CLAN_FONT_SIZE);
-        int clanNameWidth = super.getFontMetrics(clanNameFont).stringWidth(displayName);
+        final int clanNameWidth = super.getFontMetrics(clanNameFont).stringWidth(displayName);
 
         int longestText = team.getMembers().stream().map(ClanWarMember::getName).mapToInt(metrics::stringWidth).max().orElse(0);
         int highestX = 0;
@@ -314,7 +315,7 @@ public class Frame extends JFrame {
 
             boolean hasBac = ThreadLocalRandom.current().nextInt(100) < 25; // TODO use the data out of the player
             boolean hasLaby = ThreadLocalRandom.current().nextInt(100) < 25 && !hasBac; // TODO use the data out of the player
-            int newX = statsX + (left ? 0 : statsWidth);
+            final int newX = statsX + (left ? 0 : statsWidth);
 
             if (hasBac) {
                 JLabel bac = new JLabel(new ImageIcon(BAC_IMAGE));
