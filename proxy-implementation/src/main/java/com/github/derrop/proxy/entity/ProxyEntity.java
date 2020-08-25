@@ -1,6 +1,5 @@
 package com.github.derrop.proxy.entity;
 
-import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.entity.EntityEffect;
 import com.github.derrop.proxy.api.entity.EntityType;
 import com.github.derrop.proxy.api.entity.LivingEntityType;
@@ -13,10 +12,12 @@ import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.PacketSender;
 import com.github.derrop.proxy.api.network.util.PositionedPacket;
+import com.github.derrop.proxy.api.player.inventory.EquipmentSlot;
 import com.github.derrop.proxy.api.service.ServiceRegistry;
 import com.github.derrop.proxy.connection.ConnectedProxyClient;
 import com.github.derrop.proxy.connection.cache.TimedEntityEffect;
 import com.github.derrop.proxy.connection.cache.handler.EntityEffectCache;
+import com.github.derrop.proxy.data.DataWatcher;
 import com.github.derrop.proxy.entity.types.block.ProxyEnderCrystal;
 import com.github.derrop.proxy.entity.types.block.ProxyFallingBlock;
 import com.github.derrop.proxy.entity.types.block.ProxyTNTPrimed;
@@ -42,7 +43,6 @@ import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntit
 import com.github.derrop.proxy.protocol.play.server.entity.effect.PacketPlayServerRemoveEntityEffect;
 import com.github.derrop.proxy.protocol.play.server.entity.spawn.PacketPlayServerNamedEntitySpawn;
 import com.github.derrop.proxy.util.PlayerPositionPacketUtil;
-import com.github.derrop.proxy.data.DataWatcher;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +57,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
 
     protected Location location;
     private boolean onGround;
-    private final Unsafe unsafe = this::setLocation;
+    private final Unsafe unsafe = this::teleport;
 
     private final int entityId;
     private final Object type;
@@ -348,7 +348,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     }
 
     @Override
-    public void setLocation(@NotNull Location location) {
+    public void teleport(@NotNull Location location) {
         this.location = location;
         this.updateLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), location.isOnGround());
     }

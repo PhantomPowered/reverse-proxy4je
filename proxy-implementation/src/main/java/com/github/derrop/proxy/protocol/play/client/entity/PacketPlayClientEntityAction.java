@@ -71,6 +71,15 @@ public class PacketPlayClientEntityAction implements Packet, EntityPacket {
         return ProtocolIds.FromClient.Play.ENTITY_ACTION;
     }
 
+    @Override
+    public String toString() {
+        return "PacketPlayClientEntityAction{" +
+                "entityId=" + entityId +
+                ", action=" + action +
+                ", auxData=" + auxData +
+                '}';
+    }
+
     public enum Action {
         START_SNEAKING,
         STOP_SNEAKING,

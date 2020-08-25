@@ -23,4 +23,9 @@ public class PacketPlayClientArmAnimation implements Packet {
     public int getId() {
         return ProtocolIds.FromClient.Play.ARM_ANIMATION;
     }
+
+    @Override
+    public String toString() {
+        return "PacketPlayClientArmAnimation{}";
+    }
 }

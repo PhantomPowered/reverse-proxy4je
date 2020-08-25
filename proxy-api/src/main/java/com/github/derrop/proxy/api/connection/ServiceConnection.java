@@ -61,8 +61,7 @@ public interface ServiceConnection extends Connection, AutoCloseable {
     @ApiStatus.Experimental
     Location getLocation();
 
-    @ApiStatus.Experimental
-    void setLocation(Location location);
+    InteractiveServiceConnection interactive();
 
     int getDimension();
 
@@ -71,6 +70,8 @@ public interface ServiceConnection extends Connection, AutoCloseable {
     PlayerId getLastConnectedPlayer();
 
     PlayerAbilities getAbilities();
+
+    ServiceInventory getInventory();
 
     @NotNull
     MCServiceCredentials getCredentials();

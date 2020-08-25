@@ -118,7 +118,8 @@ public class PacketPlayServerMapChunk implements Packet {
         @Override
         public String toString() {
             return "Extracted{" +
-                    "dataLength=" + dataLength +
+                    "data=" + data.length +
+                    ", dataLength=" + dataLength +
                     '}';
         }
     }

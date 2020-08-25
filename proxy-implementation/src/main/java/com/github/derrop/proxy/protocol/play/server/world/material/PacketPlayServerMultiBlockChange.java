@@ -117,6 +117,14 @@ public class PacketPlayServerMultiBlockChange implements Packet {
         public int getBlockState() {
             return blockState;
         }
+
+        @Override
+        public String toString() {
+            return "BlockUpdateData{" +
+                    "chunkPosCrammed=" + chunkPosCrammed +
+                    ", blockState=" + blockState +
+                    '}';
+        }
     }
 
 }

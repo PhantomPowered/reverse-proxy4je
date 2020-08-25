@@ -102,4 +102,15 @@ public class PacketPlayClientBlockPlace implements Packet {
         return ProtocolIds.FromClient.Play.BLOCK_PLACE;
     }
 
+    @Override
+    public String toString() {
+        return "PacketPlayClientBlockPlace{" +
+                "location=" + location +
+                ", placedBlockDirection=" + placedBlockDirection +
+                ", stack=" + stack +
+                ", facingX=" + facingX +
+                ", facingY=" + facingY +
+                ", facingZ=" + facingZ +
+                '}';
+    }
 }

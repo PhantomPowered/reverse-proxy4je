@@ -22,30 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.derrop.proxy.command.defaults;
+package com.github.derrop.proxy.api.connection;
 
-import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallback;
-import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
-import com.github.derrop.proxy.api.command.result.CommandResult;
-import com.github.derrop.proxy.api.command.sender.CommandSender;
+import com.github.derrop.proxy.api.block.Facing;
+import com.github.derrop.proxy.api.entity.types.Entity;
 import com.github.derrop.proxy.api.location.Location;
-import com.github.derrop.proxy.api.player.Player;
+import com.github.derrop.proxy.api.location.Vector;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandAdf extends NonTabCompleteableCommandCallback {
+public interface InteractiveServiceConnection {
 
-    public CommandAdf() {
-        super("proxy.command.adf", null);
-    }
+    ServiceConnection basic();
 
-    @Override
-    public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
-        Player player = (Player) commandSender;
+    @ApiStatus.Experimental
+    void teleport(@NotNull Location location);
 
-        Location current = player.getLocation().clone();
-        Location newLoc = new Location(current.getX() + 1, current.getY() + 1, current.getZ(), current.getYaw(), current.getPitch());
+    void breakBlock(Location blockLocation, Facing facing);
 
-        player.teleport(newLoc);
-        return CommandResult.END;
-    }
+    void performAirLeftClick();
+
+    void performEntityLeftClick(@NotNull Entity entity);
+
+    void performBlockLeftClick(@NotNull Location blockLocation, @NotNull Facing facing);
+
+    // in the air only possible with an item in the hand
+    void performAirRightClick();
+
+    void performEntityRightClick(@NotNull Entity entity, @NotNull Vector hitVector);
+
+    void performBlockRightClick(@NotNull Location blockLocation, @NotNull Facing facing, @NotNull Vector vector);
+
+    void toggleSneaking(boolean sneaking);
+
+    void toggleSprinting(boolean sprinting);
+
+    void openInventory();
+
 }

@@ -82,7 +82,7 @@ public interface Entity extends Scaleable {
     @NotNull
     Location getLocation();
 
-    void setLocation(@NotNull Location location);
+    void teleport(@NotNull Location location);
 
     boolean isOnGround();
 
