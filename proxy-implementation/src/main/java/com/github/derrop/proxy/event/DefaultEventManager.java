@@ -83,13 +83,13 @@ public final class DefaultEventManager implements EventManager {
 
     @Override
     public void registerListener(@Nullable PluginContainer pluginContainer, @NotNull Object listener) {
-        for (Method declaredMethod : listener.getClass().getDeclaredMethods()) {
-            Listener annotation = declaredMethod.getAnnotation(Listener.class);
+        for (Method method : listener.getClass().getMethods()) {
+            Listener annotation = method.getAnnotation(Listener.class);
             if (annotation == null) {
                 continue;
             }
 
-            Class<?>[] parameters = declaredMethod.getParameterTypes();
+            Class<?>[] parameters = method.getParameterTypes();
             if (parameters.length != 1) {
                 System.err.println("Unable to register listener which has more than one parameter");
                 continue;
@@ -104,7 +104,7 @@ public final class DefaultEventManager implements EventManager {
                     pluginContainer,
                     parameters[0],
                     listener,
-                    declaredMethod,
+                    method,
                     annotation.priority()
             );
             this.registeredListeners.add(container);
