@@ -27,6 +27,7 @@ import com.github.derrop.proxy.protocol.play.server.player.PacketPlayServerPlaye
 import com.github.derrop.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.derrop.proxy.protocol.play.server.world.PacketPlayServerTimeUpdate;
 import com.github.derrop.proxy.protocol.play.server.world.material.PacketPlayServerEmptyMapChunk;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -330,7 +331,7 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
         player.sendPacket(new PacketPlayServerTimeUpdate(1, 23700));
         player.sendPacket(new PacketPlayServerEmptyMapChunk(0, 0));
         player.sendPacket(new PacketPlayServerPlayerInfo(PacketPlayServerPlayerInfo.Action.ADD_PLAYER, new PacketPlayServerPlayerInfo.Item[]{
-                new PacketPlayServerPlayerInfo.Item(player.getUniqueId(), player.getName(), new String[0][], 1, 0, player.getName())
+                new PacketPlayServerPlayerInfo.Item(new GameProfile(player.getUniqueId(), player.getName()), 1, 0, player.getName())
         }));
 
         this.blockAccess = new LoginBlockAccess((DefaultPlayer) player);

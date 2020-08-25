@@ -42,11 +42,11 @@ public class ChunkSection {
         this.data = new char[4096];
     }
 
-    public int get(int x, int y, int z) {
+    public int getBlockState(int x, int y, int z) {
         return this.data[y << 8 | z << 4 | x];
     }
 
-    public void set(int x, int y, int z, int state) {
+    public void setBlockState(int x, int y, int z, int state) {
         this.data[y << 8 | z << 4 | x] = (char) state;
     }
 

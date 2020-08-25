@@ -28,9 +28,11 @@ import com.github.derrop.proxy.api.connection.ProtocolDirection;
 import com.github.derrop.proxy.api.network.Packet;
 import com.github.derrop.proxy.api.network.wrapper.ProtoBuf;
 import com.github.derrop.proxy.protocol.ProtocolIds;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 public class PacketPlayServerPlayerInfo implements Packet {
@@ -68,54 +70,53 @@ public class PacketPlayServerPlayerInfo implements Packet {
     }
 
     @Override
-    public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.action = Action.values()[protoBuf.readVarInt()];
-        this.items = new Item[protoBuf.readVarInt()];
+    public void read(@NotNull ProtoBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        this.action = Action.values()[buf.readVarInt()];
+        this.items = new Item[buf.readVarInt()];
 
         for (int i = 0; i < items.length; i++) {
             Item item = items[i] = new Item();
-            item.setUniqueId(protoBuf.readUniqueId());
+            UUID uniqueId = buf.readUniqueId();
+
+            if (action != Action.ADD_PLAYER) {
+                item.profile = new GameProfile(uniqueId, "null");
+            }
 
             switch (action) {
                 case ADD_PLAYER:
-                    item.username = protoBuf.readString();
-                    item.properties = new String[protoBuf.readVarInt()][];
+                    item.profile = new GameProfile(uniqueId, buf.readString());
 
-                    for (int j = 0; j < item.properties.length; j++) {
-                        String name = protoBuf.readString();
-                        String value = protoBuf.readString();
+                    PropertyMap properties = item.profile.getProperties();
+                    int size = buf.readVarInt();
 
-                        if (protoBuf.readBoolean()) {
-                            item.properties[j] = new String[]{
-                                    name, value, protoBuf.readString()
-                            };
-                        } else {
-                            item.properties[j] = new String[]{
-                                    name, value
-                            };
-                        }
+                    for (int j = 0; j < size; j++) {
+                        String name = buf.readString();
+                        String value = buf.readString();
+                        String signature = buf.readBoolean() ? buf.readString() : null;
+
+                        properties.put(name, signature != null ? new Property(name, value, signature) : new Property(name, value));
                     }
 
-                    item.gamemode = protoBuf.readVarInt();
-                    item.ping = protoBuf.readVarInt();
+                    item.gamemode = buf.readVarInt();
+                    item.ping = buf.readVarInt();
 
-                    if (protoBuf.readBoolean()) {
-                        item.displayName = protoBuf.readString();
+                    if (buf.readBoolean()) {
+                        item.displayName = buf.readString();
                     }
 
                     break;
 
                 case UPDATE_GAMEMODE:
-                    item.gamemode = protoBuf.readVarInt();
+                    item.gamemode = buf.readVarInt();
                     break;
 
                 case UPDATE_LATENCY:
-                    item.ping = protoBuf.readVarInt();
+                    item.ping = buf.readVarInt();
                     break;
 
                 case UPDATE_DISPLAY_NAME:
-                    if (protoBuf.readBoolean()) {
-                        item.displayName = protoBuf.readString();
+                    if (buf.readBoolean()) {
+                        item.displayName = buf.readString();
                     }
 
                     break;
@@ -127,51 +128,51 @@ public class PacketPlayServerPlayerInfo implements Packet {
     }
 
     @Override
-    public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeVarInt(this.action.ordinal());
-        protoBuf.writeVarInt(this.items.length);
+    public void write(@NotNull ProtoBuf buf, @NotNull ProtocolDirection direction, int protocolVersion) {
+        buf.writeVarInt(this.action.ordinal());
+        buf.writeVarInt(this.items.length);
 
         for (Item item : this.items) {
-            protoBuf.writeUniqueId(item.uniqueId);
+            buf.writeUniqueId(item.getUniqueId());
 
             switch (action) {
                 case ADD_PLAYER:
-                    protoBuf.writeString(item.username);
-                    protoBuf.writeVarInt(item.properties.length);
+                    buf.writeString(item.getUsername());
+                    PropertyMap properties = item.getProfile().getProperties();
 
-                    for (String[] property : item.properties) {
-                        protoBuf.writeString(property[0]);
-                        protoBuf.writeString(property[1]);
+                    buf.writeVarInt(properties.size());
 
-                        if (property.length >= 3) {
-                            protoBuf.writeBoolean(true);
-                            protoBuf.writeString(property[2]);
-                        } else {
-                            protoBuf.writeBoolean(false);
+                    for (Property property : properties.values()) {
+                        buf.writeString(property.getName());
+                        buf.writeString(property.getValue());
+
+                        buf.writeBoolean(property.hasSignature());
+                        if (property.hasSignature()) {
+                            buf.writeString(property.getSignature());
                         }
                     }
 
-                    protoBuf.writeVarInt(item.gamemode);
-                    protoBuf.writeVarInt(item.ping);
-                    protoBuf.writeBoolean(item.displayName != null);
+                    buf.writeVarInt(item.gamemode);
+                    buf.writeVarInt(item.ping);
+                    buf.writeBoolean(item.displayName != null);
 
                     if (item.displayName != null) {
-                        protoBuf.writeString(item.displayName);
+                        buf.writeString(item.displayName);
                     }
                     break;
 
                 case UPDATE_GAMEMODE:
-                    protoBuf.writeVarInt(item.gamemode);
+                    buf.writeVarInt(item.gamemode);
                     break;
 
                 case UPDATE_LATENCY:
-                    protoBuf.writeVarInt(item.ping);
+                    buf.writeVarInt(item.ping);
                     break;
 
                 case UPDATE_DISPLAY_NAME:
-                    protoBuf.writeBoolean(item.displayName != null);
+                    buf.writeBoolean(item.displayName != null);
                     if (item.displayName != null) {
-                        protoBuf.writeString(item.displayName);
+                        buf.writeString(item.displayName);
                     }
 
                     break;
@@ -197,17 +198,13 @@ public class PacketPlayServerPlayerInfo implements Packet {
 
     public static class Item implements Cloneable {
 
-        private UUID uniqueId;
-        private String username;
-        private String[][] properties;
+        private GameProfile profile;
         private int gamemode;
         private int ping;
         private String displayName;
 
-        public Item(UUID uniqueId, String username, String[][] properties, int gamemode, int ping, String displayName) {
-            this.uniqueId = uniqueId;
-            this.username = username;
-            this.properties = properties;
+        public Item(GameProfile profile, int gamemode, int ping, String displayName) {
+            this.profile = profile;
             this.gamemode = gamemode;
             this.ping = ping;
             this.displayName = displayName;
@@ -227,15 +224,17 @@ public class PacketPlayServerPlayerInfo implements Packet {
         }
 
         public UUID getUniqueId() {
-            return this.uniqueId;
+            return this.profile.getId();
+        }
+
+        public void setUniqueId(UUID uniqueId) {
+            PropertyMap map = this.profile.getProperties();
+            this.profile = new GameProfile(uniqueId, this.profile.getName());
+            this.profile.getProperties().putAll(map);
         }
 
         public String getUsername() {
-            return this.username;
-        }
-
-        public String[][] getProperties() {
-            return this.properties;
+            return this.profile.getName();
         }
 
         public int getGamemode() {
@@ -250,16 +249,8 @@ public class PacketPlayServerPlayerInfo implements Packet {
             return this.displayName;
         }
 
-        public void setUniqueId(UUID uniqueId) {
-            this.uniqueId = uniqueId;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public void setProperties(String[][] properties) {
-            this.properties = properties;
+        public GameProfile getProfile() {
+            return this.profile;
         }
 
         public void setGamemode(int gamemode) {
@@ -277,7 +268,7 @@ public class PacketPlayServerPlayerInfo implements Packet {
         public String toString() {
             return "PacketPlayServerPlayerInfo.Item(uuid=" + this.getUniqueId()
                     + ", username=" + this.getUsername()
-                    + ", properties=" + Arrays.deepToString(this.getProperties())
+                    + ", properties=" + this.getProfile().getProperties()
                     + ", gamemode=" + this.getGamemode()
                     + ", ping=" + this.getPing()
                     + ", displayName=" + this.getDisplayName()

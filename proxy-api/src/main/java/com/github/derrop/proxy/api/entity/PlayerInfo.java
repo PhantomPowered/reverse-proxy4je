@@ -25,16 +25,17 @@
 package com.github.derrop.proxy.api.entity;
 
 import com.github.derrop.proxy.api.player.GameMode;
+import com.mojang.authlib.GameProfile;
 
 import java.util.UUID;
 
 public interface PlayerInfo {
 
+    GameProfile getProfile();
+
     UUID getUniqueId();
 
     String getUsername();
-
-    String[][] getProperties();
 
     GameMode getGamemode();
 

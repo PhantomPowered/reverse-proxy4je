@@ -161,6 +161,6 @@ public class PlayerInfoCache implements PacketCacheHandler {
     }
 
     public PlayerInfo toPlayerInfo(PacketPlayServerPlayerInfo.Item item) {
-        return new BasicPlayerInfo(item.getUniqueId(), item.getUsername(), item.getProperties(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName());
+        return new BasicPlayerInfo(item.getProfile(), GameMode.getById(item.getGamemode()), item.getPing(), item.getDisplayName());
     }
 }

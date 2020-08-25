@@ -28,7 +28,6 @@ import com.github.derrop.proxy.api.command.basic.NonTabCompleteableCommandCallba
 import com.github.derrop.proxy.api.command.exception.CommandExecutionException;
 import com.github.derrop.proxy.api.command.result.CommandResult;
 import com.github.derrop.proxy.api.command.sender.CommandSender;
-import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,13 +38,31 @@ public class CommandAdf extends NonTabCompleteableCommandCallback {
     }
 
     @Override
+    public boolean testPermission(@NotNull CommandSender commandSender) {
+        return true;
+    }
+
+    @Override
     public @NotNull CommandResult process(@NotNull CommandSender commandSender, @NotNull String[] arguments, @NotNull String fullLine) throws CommandExecutionException {
         Player player = (Player) commandSender;
 
-        Location current = player.getLocation().clone();
+        /*Location current = player.getLocation().clone();
         Location newLoc = new Location(current.getX() + 1, current.getY() + 1, current.getZ(), current.getYaw(), current.getPitch());
 
-        player.teleport(newLoc);
+        player.teleport(newLoc);*/
+
+        if (arguments.length == 1) {
+            player.sendBlockChange(player.getLocation(), Integer.parseInt(arguments[0]));
+            player.sendMessage("Done: " + arguments[0]);
+        } else {
+            int a = 0;
+            for (int i = Integer.parseInt(arguments[0]); i < Integer.parseInt(arguments[1]); i++) {
+                player.sendBlockChange(player.getLocation().clone().add(a++, 0, 0), i);
+                player.sendMessage("Done: " + i);
+            }
+        }
+
+
         return CommandResult.END;
     }
 }
