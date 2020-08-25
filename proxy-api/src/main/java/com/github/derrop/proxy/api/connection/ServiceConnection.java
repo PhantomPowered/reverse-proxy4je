@@ -104,6 +104,15 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     void displayMessage(@NotNull ChatMessageType type, @NotNull Component... components);
 
+    /* true = client connected and packet sent, false otherwise */
+    boolean setTabHeaderAndFooter(Component header, Component footer);
+
+    void resetTabHeaderAndFooter();
+
+    Component getTabHeader();
+
+    Component getTabFooter();
+
     @NotNull
     Task<Boolean> connect();
 

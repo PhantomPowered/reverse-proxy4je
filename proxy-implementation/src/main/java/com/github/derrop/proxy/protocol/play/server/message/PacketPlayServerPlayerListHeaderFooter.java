@@ -56,6 +56,14 @@ public class PacketPlayServerPlayerListHeaderFooter implements Packet {
         return this.footer;
     }
 
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public void setFooter(String footer) {
+        this.footer = footer;
+    }
+
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.header = protoBuf.readString();

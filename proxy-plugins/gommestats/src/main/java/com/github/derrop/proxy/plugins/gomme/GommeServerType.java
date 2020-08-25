@@ -29,6 +29,7 @@ package com.github.derrop.proxy.plugins.gomme;
  * TODO maybe we could just parse it out of the tablist header?
  */
 public enum GommeServerType {
+
     LOBBY("Lobby", "LOBBY", "compass"),
     //CITY_BUILD("CityBuild", "", "workbench"), 1.13.2+ only
     CORES("Cores", "CORES", "beacon"),

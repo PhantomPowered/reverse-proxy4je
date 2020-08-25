@@ -172,6 +172,26 @@ public class LoginServiceConnection implements ServiceConnection, Entity.Callabl
     }
 
     @Override
+    public boolean setTabHeaderAndFooter(Component header, Component footer) {
+        return true;
+    }
+
+    @Override
+    public void resetTabHeaderAndFooter() {
+
+    }
+
+    @Override
+    public Component getTabHeader() {
+        return null;
+    }
+
+    @Override
+    public Component getTabFooter() {
+        return null;
+    }
+
+    @Override
     public @NotNull Task<Boolean> connect() {
         return TaskUtil.completedTask(false);
     }

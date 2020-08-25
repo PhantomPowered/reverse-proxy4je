@@ -31,6 +31,8 @@ import com.github.derrop.proxy.api.block.Material;
 import com.github.derrop.proxy.api.chat.ChatMessageType;
 import com.github.derrop.proxy.api.connection.*;
 import com.github.derrop.proxy.api.entity.types.Entity;
+import com.github.derrop.proxy.api.event.EventManager;
+import com.github.derrop.proxy.api.events.connection.service.TabListUpdateEvent;
 import com.github.derrop.proxy.api.location.Location;
 import com.github.derrop.proxy.api.network.NetworkAddress;
 import com.github.derrop.proxy.api.network.Packet;
@@ -55,12 +57,14 @@ import com.github.derrop.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.derrop.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.derrop.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
+import com.github.derrop.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
 import com.github.derrop.proxy.protocol.rewrite.EntityRewrite;
 import com.github.derrop.proxy.protocol.rewrite.EntityRewrite18;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -100,11 +104,9 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     private final MCServiceCredentials credentials;
     private final UserAuthentication authentication;
-
     private final NetworkAddress networkAddress;
 
     private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
-
     private final EntityRewrite entityRewrite = new EntityRewrite18();
 
     private ConnectedProxyClient client;
@@ -116,8 +118,10 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private Location location = new Location(0, 0, 0, 0, 0);
 
     private final ServiceInventory inventory = new DefaultServiceInventory(this);
-
     private final InteractiveServiceConnection interactive = new BasicInteractiveServiceConnection(this);
+
+    private Component tabHeader = TextComponent.empty();
+    private Component tabFooter = TextComponent.empty();
 
     private void handleLocationUpdate(Location newLocation) {
         Packet clientPacket = PacketPlayClientPlayerPosition.create(this.location, newLocation);
@@ -351,6 +355,47 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
         for (Component component : components) {
             this.displayMessage(type, component);
         }
+    }
+
+    @Override
+    public boolean setTabHeaderAndFooter(Component header, Component footer) {
+        TabListUpdateEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new TabListUpdateEvent(
+                this,
+                header,
+                footer
+        ));
+        if (event.isCancelled()) {
+            return true;
+        }
+
+        this.tabHeader = event.getHeader() == null ? TextComponent.empty() : event.getHeader();
+        this.tabFooter = event.getFooter() == null ? TextComponent.empty() : event.getFooter();
+
+        Player player = this.getPlayer();
+        if (player != null) {
+            player.sendPacket(new PacketPlayServerPlayerListHeaderFooter(
+                    GsonComponentSerializer.gson().serialize(this.tabHeader),
+                    GsonComponentSerializer.gson().serialize(this.tabFooter)
+            ));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void resetTabHeaderAndFooter() {
+        this.setTabHeaderAndFooter(null, null);
+    }
+
+    @Override
+    public Component getTabHeader() {
+        return this.tabHeader;
+    }
+
+    @Override
+    public Component getTabFooter() {
+        return this.tabFooter;
     }
 
     @Override
