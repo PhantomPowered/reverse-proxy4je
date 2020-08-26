@@ -24,7 +24,6 @@
  */
 package com.github.phantompowered.proxy.connection;
 
-import com.github.phantompowered.proxy.account.BanTester;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.Material;
@@ -71,14 +70,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class BasicServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
 
-    private static final Set<NetworkAddress> BANNED_ADDRESSES = new HashSet<>();
     private final ServiceRegistry serviceRegistry;
     private final MCServiceCredentials credentials;
     private final UserAuthentication authentication;
@@ -403,11 +404,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public @NotNull Task<Boolean> connect(@NotNull Collection<TaskFutureListener<Boolean>> listener) {
-        if (BANNED_ADDRESSES.contains(this.networkAddress)) {
-            System.err.println("To prevent ip bans the connection to " + this.networkAddress + " was aborted");
-            return TaskUtil.completedTask(false, listener);
-        }
-
         Task<Boolean> task = new DefaultTask<>();
         for (TaskFutureListener<Boolean> booleanTaskFutureListener : listener) {
             task.addListener(booleanTaskFutureListener);
@@ -435,14 +431,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
             } catch (final InterruptedException | ExecutionException | TimeoutException exception) {
                 task.completeExceptionally(exception);
                 this.client = null;
-
-                if (exception.getCause() instanceof KickedException) {
-                    if (BanTester.isBanned(exception.getMessage()) == BanTester.BanTestResult.BANNED) {
-                        BANNED_ADDRESSES.add(this.networkAddress);
-                        System.out.println("Preventing connections to " + networkAddress + " because " + credentials.getEmail() + " is banned");
-                        return;
-                    }
-                }
 
                 if (this.isReScheduleOnFailure()) {
                     this.reSchedule(listener);
