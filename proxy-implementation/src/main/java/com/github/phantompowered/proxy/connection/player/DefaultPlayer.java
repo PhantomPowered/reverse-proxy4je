@@ -451,7 +451,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public void teleport(@NotNull Location location) {
         if (this.connectedClient != null) {
-            this.connectedClient.interactive().teleport(location);
+            this.connectedClient.teleport(location);
         }
     }
 

@@ -28,7 +28,10 @@ import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
-import com.github.phantompowered.proxy.api.connection.*;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
+import com.github.phantompowered.proxy.api.connection.ServiceConnector;
+import com.github.phantompowered.proxy.api.connection.ServiceInventory;
+import com.github.phantompowered.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.service.TabListUpdateEvent;
@@ -78,7 +81,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class BasicServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
+public class BasicServiceConnection extends BasicInteractiveServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
 
     private final ServiceRegistry serviceRegistry;
     private final MCServiceCredentials credentials;
@@ -88,7 +91,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
     private final PlayerAbilities abilities = new DefaultPlayerAbilities(this);
     private final ServiceInventory inventory = new DefaultServiceInventory(this);
-    private final InteractiveServiceConnection interactive = new BasicInteractiveServiceConnection(this);
     private ConnectedProxyClient client;
     private boolean reScheduleOnFailure;
     private boolean sneaking;
@@ -155,11 +157,6 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     public void setLocation(Location location) {
         this.handleLocationUpdate(location);
         this.location = location;
-    }
-
-    @Override
-    public InteractiveServiceConnection interactive() {
-        return this.interactive;
     }
 
     @Override
@@ -568,11 +565,15 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
 
     @Override
     public @NotNull NetworkUnsafe networkUnsafe() {
-        return packet -> client.write(packet);
+        return packet -> this.client.write(packet);
     }
 
     @Override
     public void handleEntityPacket(@NotNull Packet packet) {
+    }
 
+    @Override
+    protected BasicServiceConnection getConnection() {
+        return this;
     }
 }

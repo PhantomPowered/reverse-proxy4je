@@ -48,7 +48,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-public interface ServiceConnection extends Connection, AutoCloseable {
+public interface ServiceConnection extends InteractiveServiceConnection, Connection, AutoCloseable {
 
     @NotNull
     ServiceRegistry getServiceRegistry();
@@ -58,8 +58,6 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     @ApiStatus.Experimental
     Location getLocation();
-
-    InteractiveServiceConnection interactive();
 
     int getDimension();
 
@@ -144,6 +142,7 @@ public interface ServiceConnection extends Connection, AutoCloseable {
 
     BlockAccess getBlockAccess();
 
+    @ApiStatus.Internal
     void syncPackets(Player player, boolean switched);
 
     @ApiStatus.Internal

@@ -33,8 +33,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface InteractiveServiceConnection {
 
-    ServiceConnection basic();
-
     @ApiStatus.Experimental
     void teleport(@NotNull Location location);
 

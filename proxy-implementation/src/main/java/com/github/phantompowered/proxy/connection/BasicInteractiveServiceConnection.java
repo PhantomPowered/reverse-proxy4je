@@ -26,7 +26,6 @@ package com.github.phantompowered.proxy.connection;
 
 import com.github.phantompowered.proxy.api.block.Facing;
 import com.github.phantompowered.proxy.api.connection.InteractiveServiceConnection;
-import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.location.Location;
@@ -39,43 +38,34 @@ import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayCli
 import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientUseEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class BasicInteractiveServiceConnection implements InteractiveServiceConnection {
+public abstract class BasicInteractiveServiceConnection implements InteractiveServiceConnection {
 
     private static final Location AIR_LOCATION = new Location(-1, -1, -1, 0, 0, false);
 
-    private final BasicServiceConnection connection;
-
-    public BasicInteractiveServiceConnection(BasicServiceConnection connection) {
-        this.connection = connection;
-    }
-
-    @Override
-    public ServiceConnection basic() {
-        return this.connection;
-    }
+    protected abstract BasicServiceConnection getConnection();
 
     @Override
     public void teleport(@NotNull Location location) {
-        this.connection.setLocation(location);
+        this.getConnection().setLocation(location);
     }
 
     @Override
     public void breakBlock(Location blockLocation, Facing facing) {
-        if (!this.connection.getBlockAccess().getMaterial(blockLocation).isSolid()) {
+        if (!this.getConnection().getBlockAccess().getMaterial(blockLocation).isSolid()) {
             return;
         }
 
-        this.connection.sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK));
-        this.connection.sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK));
+        this.getConnection().sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK));
+        this.getConnection().sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.STOP_DESTROY_BLOCK));
     }
 
     @Override
     public void performAirLeftClick() {
-        this.connection.sendPacket(new PacketPlayClientArmAnimation());
+        this.getConnection().sendPacket(new PacketPlayClientArmAnimation());
     }
 
     private void useEntity(int entityId, PacketPlayClientUseEntity.Action action, Vector hitVector) {
-        this.connection.sendPacket(new PacketPlayClientUseEntity(entityId, action, hitVector));
+        this.getConnection().sendPacket(new PacketPlayClientUseEntity(entityId, action, hitVector));
     }
 
     @Override
@@ -85,17 +75,17 @@ public class BasicInteractiveServiceConnection implements InteractiveServiceConn
 
     @Override
     public void performBlockLeftClick(@NotNull Location blockLocation, @NotNull Facing facing) {
-        this.connection.sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK));
-        this.connection.sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.ABORT_DESTROY_BLOCK));
+        this.getConnection().sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.START_DESTROY_BLOCK));
+        this.getConnection().sendPacket(new PacketPlayClientPlayerDigging(blockLocation, facing, PacketPlayClientPlayerDigging.Action.ABORT_DESTROY_BLOCK));
     }
 
     @Override
     public void performAirRightClick() {
-        ItemStack item = this.connection.getInventory().getItemInHand();
+        ItemStack item = this.getConnection().getInventory().getItemInHand();
         if (item == null) {
             return;
         }
-        this.connection.sendPacket(new PacketPlayClientBlockPlace(AIR_LOCATION, 255, item, 0, 0, 0));
+        this.getConnection().sendPacket(new PacketPlayClientBlockPlace(AIR_LOCATION, 255, item, 0, 0, 0));
     }
 
     @Override
@@ -106,29 +96,29 @@ public class BasicInteractiveServiceConnection implements InteractiveServiceConn
 
     @Override
     public void performBlockRightClick(@NotNull Location blockLocation, @NotNull Facing facing, @NotNull Vector vector) {
-        ItemStack item = this.connection.getInventory().getItemInHand();
+        ItemStack item = this.getConnection().getInventory().getItemInHand();
         if (item == null) {
             item = ProxyItemStack.AIR;
         }
-        this.connection.sendPacket(new PacketPlayClientBlockPlace(blockLocation, facing.getIndex(), item, (float) vector.getX(), (float) vector.getY(), (float) vector.getZ()));
+        this.getConnection().sendPacket(new PacketPlayClientBlockPlace(blockLocation, facing.getIndex(), item, (float) vector.getX(), (float) vector.getY(), (float) vector.getZ()));
     }
 
     @Override
     public void toggleSneaking(boolean sneaking) {
-        if (this.connection.isSneaking() != sneaking) {
-            this.connection.sendPacket(new PacketPlayClientEntityAction(this.connection.getEntityId(), sneaking ? PacketPlayClientEntityAction.Action.START_SNEAKING : PacketPlayClientEntityAction.Action.STOP_SNEAKING));
+        if (this.getConnection().isSneaking() != sneaking) {
+            this.getConnection().sendPacket(new PacketPlayClientEntityAction(this.getConnection().getEntityId(), sneaking ? PacketPlayClientEntityAction.Action.START_SNEAKING : PacketPlayClientEntityAction.Action.STOP_SNEAKING));
         }
     }
 
     @Override
     public void toggleSprinting(boolean sprinting) {
-        if (this.connection.isSprinting() != sprinting) {
-            this.connection.sendPacket(new PacketPlayClientEntityAction(this.connection.getEntityId(), sprinting ? PacketPlayClientEntityAction.Action.START_SPRINTING : PacketPlayClientEntityAction.Action.STOP_SPRINTING));
+        if (this.getConnection().isSprinting() != sprinting) {
+            this.getConnection().sendPacket(new PacketPlayClientEntityAction(this.getConnection().getEntityId(), sprinting ? PacketPlayClientEntityAction.Action.START_SPRINTING : PacketPlayClientEntityAction.Action.STOP_SPRINTING));
         }
     }
 
     @Override
     public void openInventory() {
-        this.connection.sendPacket(new PacketPlayClientEntityAction(this.connection.getEntityId(), PacketPlayClientEntityAction.Action.OPEN_INVENTORY));
+        this.getConnection().sendPacket(new PacketPlayClientEntityAction(this.getConnection().getEntityId(), PacketPlayClientEntityAction.Action.OPEN_INVENTORY));
     }
 }
