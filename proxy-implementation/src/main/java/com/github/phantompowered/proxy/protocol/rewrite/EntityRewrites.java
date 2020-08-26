@@ -22,29 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.network;
+package com.github.phantompowered.proxy.protocol.rewrite;
 
-import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
-import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
-import org.jetbrains.annotations.NotNull;
+import com.github.phantompowered.proxy.protocol.ProtocolIds;
 
-public interface Packet {
+import java.util.HashMap;
+import java.util.Map;
 
-    void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion);
+public class EntityRewrites {
 
-    void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion);
+    private static final Map<Integer, EntityRewrite> REWRITES = new HashMap<>();
 
-    @Override
-    String toString();
-
-    int getId();
-
-    default Packet mapToServerside() {
-        return null;
+    static {
+        REWRITES.put(ProtocolIds.Versions.MINECRAFT_1_8, new EntityRewrite18());
     }
 
-    default Packet mapToServerside(int selfEntityId) {
-        return this.mapToServerside();
+    public static EntityRewrite getRewrite(int version) {
+        return REWRITES.get(version);
     }
 
 }

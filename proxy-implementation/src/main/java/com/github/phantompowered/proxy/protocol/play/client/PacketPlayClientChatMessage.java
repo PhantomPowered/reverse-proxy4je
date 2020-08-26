@@ -24,10 +24,14 @@
  */
 package com.github.phantompowered.proxy.protocol.play.client;
 
+import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientChatMessage implements Packet {
@@ -66,6 +70,11 @@ public class PacketPlayClientChatMessage implements Packet {
         }
 
         protoBuf.writeString(this.message);
+    }
+
+    @Override
+    public Packet mapToServerside() {
+        return new PacketPlayServerChatMessage(GsonComponentSerializer.gson().serialize(LegacyComponentSerializer.legacySection().deserialize(APIUtil.MESSAGE_PREFIX + "Sent message §e" + this.message)));
     }
 
     @Override

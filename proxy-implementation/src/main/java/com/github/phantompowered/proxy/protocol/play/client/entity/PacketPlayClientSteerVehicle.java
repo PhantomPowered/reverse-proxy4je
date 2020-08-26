@@ -13,6 +13,7 @@ public class PacketPlayClientSteerVehicle implements Packet {
 
     /* Positive for forward, negative for backward */
     private float forwardSpeed;
+
     private boolean jumping;
     private boolean sneaking;
 

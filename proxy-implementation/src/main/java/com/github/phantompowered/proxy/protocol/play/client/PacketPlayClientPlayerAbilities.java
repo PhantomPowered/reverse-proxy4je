@@ -17,4 +17,16 @@ public class PacketPlayClientPlayerAbilities extends PacketPlayServerPlayerAbili
     public int getId() {
         return ProtocolIds.FromClient.Play.ABILITIES;
     }
+
+    @Override
+    public Packet mapToServerside() {
+        return new PacketPlayServerPlayerAbilities(
+                super.isInvulnerable(),
+                super.isFlying(),
+                super.isAllowFlying(),
+                super.isCreativeMode(),
+                super.getFlySpeed(),
+                super.getWalkSpeed()
+        );
+    }
 }

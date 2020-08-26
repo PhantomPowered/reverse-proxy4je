@@ -31,6 +31,7 @@ import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.api.task.Task;
 import com.github.phantompowered.proxy.api.task.TaskFutureListener;
 import com.github.phantompowered.proxy.connection.BasicServiceConnection;
+import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +48,7 @@ public class AccountBiConsumer implements BiConsumer<MCServiceCredentials, Netwo
     @Override
     public void accept(MCServiceCredentials mcServiceCredentials, NetworkAddress networkAddress) {
         try {
-            ServiceConnection connection = new BasicServiceConnection(this.serviceRegistry, mcServiceCredentials, networkAddress);
+            ServiceConnection connection = new BasicServiceConnection(this.serviceRegistry, mcServiceCredentials, networkAddress, ProtocolIds.Versions.MINECRAFT_1_8);
             connection.setReScheduleOnFailure(true);
 
             connection.connect(new TaskFutureListener<Boolean>() {

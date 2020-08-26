@@ -28,6 +28,7 @@ import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientHeldItemSlot implements Packet {
@@ -62,6 +63,11 @@ public class PacketPlayClientHeldItemSlot implements Packet {
     @Override
     public int getId() {
         return ProtocolIds.FromClient.Play.HELD_ITEM_SLOT;
+    }
+
+    @Override
+    public Packet mapToServerside() {
+        return new PacketPlayServerHeldItemSlot(this.slot);
     }
 
     @Override

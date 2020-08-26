@@ -30,15 +30,4 @@ public class EntityRewrite18 extends EntityRewrite {
         }
     }
 
-    private void rewriteEntityPacket(EntityPacket entity, int oldEntityId, int newEntityId) {
-        if (entity.getEntityId() == -1) {
-            return;
-        }
-
-        entity.setEntityId(this.getModifiedEntityId(entity.getEntityId(), oldEntityId, newEntityId));
-    }
-
-    private int getModifiedEntityId(int currentId, int oldId, int newId) {
-        return currentId == oldId ? newId : currentId == newId ? oldId : currentId;
-    }
 }

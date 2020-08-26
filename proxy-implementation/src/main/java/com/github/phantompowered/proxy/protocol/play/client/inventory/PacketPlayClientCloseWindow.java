@@ -4,6 +4,7 @@ import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerCloseWindow;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayClientCloseWindow implements Packet {
@@ -33,6 +34,11 @@ public class PacketPlayClientCloseWindow implements Packet {
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeByte(this.windowId);
+    }
+
+    @Override
+    public Packet mapToServerside() {
+        return new PacketPlayServerCloseWindow(this.windowId);
     }
 
     @Override

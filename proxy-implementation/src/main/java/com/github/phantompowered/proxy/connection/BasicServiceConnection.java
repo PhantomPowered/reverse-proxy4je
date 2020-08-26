@@ -58,7 +58,7 @@ import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlaySer
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
 import com.github.phantompowered.proxy.protocol.rewrite.EntityRewrite;
-import com.github.phantompowered.proxy.protocol.rewrite.EntityRewrite18;
+import com.github.phantompowered.proxy.protocol.rewrite.EntityRewrites;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
@@ -84,8 +84,8 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private final MCServiceCredentials credentials;
     private final UserAuthentication authentication;
     private final NetworkAddress networkAddress;
+    private final EntityRewrite entityRewrite;
     private final ServiceWorldDataProvider worldDataProvider = new BasicServiceWorldDataProvider(this);
-    private final EntityRewrite entityRewrite = new EntityRewrite18();
     private final PlayerAbilities abilities = new DefaultPlayerAbilities(this);
     private final ServiceInventory inventory = new DefaultServiceInventory(this);
     private final InteractiveServiceConnection interactive = new BasicInteractiveServiceConnection(this);
@@ -97,15 +97,21 @@ public class BasicServiceConnection implements ServiceConnection, WrappedNetwork
     private Component tabHeader = TextComponent.empty();
     private Component tabFooter = TextComponent.empty();
 
-    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress) throws AuthenticationException {
-        this(serviceRegistry, credentials, networkAddress, true);
+    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version) throws AuthenticationException {
+        this(serviceRegistry, credentials, networkAddress, version, true);
     }
 
-    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, boolean reScheduleOnFailure) throws AuthenticationException {
+    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version, boolean reScheduleOnFailure) throws AuthenticationException {
         this.serviceRegistry = serviceRegistry;
         this.credentials = credentials;
         this.networkAddress = networkAddress;
         this.reScheduleOnFailure = reScheduleOnFailure;
+
+        EntityRewrite entityRewrite = EntityRewrites.getRewrite(version);
+        if (entityRewrite == null) {
+            throw new IllegalStateException("Unknown version: " + version);
+        }
+        this.entityRewrite = entityRewrite;
 
         if (credentials.isOffline()) {
             this.authentication = null;

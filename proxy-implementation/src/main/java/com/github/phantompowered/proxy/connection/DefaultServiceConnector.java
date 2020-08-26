@@ -8,6 +8,7 @@ import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.connection.reconnect.ReconnectProfile;
+import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +56,7 @@ public class DefaultServiceConnector implements ServiceConnector {
 
     @Override
     public @NotNull ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
-        return new BasicServiceConnection(this.serviceRegistry, credentials, serverAddress);
+        return new BasicServiceConnection(this.serviceRegistry, credentials, serverAddress, ProtocolIds.Versions.MINECRAFT_1_8);
     }
 
     public void setReconnectTarget(UUID uniqueId, UUID targetUniqueId) {

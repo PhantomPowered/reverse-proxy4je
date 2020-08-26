@@ -57,14 +57,9 @@ import com.github.phantompowered.proxy.network.pipeline.minecraft.MinecraftDecod
 import com.github.phantompowered.proxy.network.pipeline.minecraft.MinecraftEncoder;
 import com.github.phantompowered.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
 import com.github.phantompowered.proxy.protocol.login.client.PacketLoginInLoginRequest;
-import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientPlayerAbilities;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
-import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
-import com.github.phantompowered.proxy.protocol.play.client.inventory.PacketPlayClientHeldItemSlot;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
-import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import io.netty.bootstrap.Bootstrap;
@@ -309,14 +304,15 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public void free() {
         Player redirector = this.redirector;
+
         if (redirector != null) {
             this.packetCache.handleFree(redirector);
             redirector.removeOutgoingPacketListener(this.redirectorListenerKey);
 
             this.lastDisconnectionTimestamp = System.currentTimeMillis();
             this.lastConnectedPlayer = new PlayerId(redirector.getUniqueId(), redirector.getName());
-
         }
+
         this.redirector = null;
     }
 
@@ -387,18 +383,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         this.packetCache.handleClientPacket(packet);
 
         if (!this.viewers.isEmpty()) {
-            Packet serverPacket = null;
-            if (packet instanceof PacketPlayClientHeldItemSlot) {
-                serverPacket = new PacketPlayServerHeldItemSlot(((PacketPlayClientHeldItemSlot) packet).getSlot());
-            } else if (packet instanceof PacketPlayClientPlayerAbilities) {
-                PacketPlayClientPlayerAbilities abilities = (PacketPlayClientPlayerAbilities) packet;
-                serverPacket = new PacketPlayServerPlayerAbilities(
-                        abilities.isInvulnerable(), abilities.isFlying(), abilities.isAllowFlying(), abilities.isCreativeMode(),
-                        abilities.getFlySpeed(), abilities.getWalkSpeed()
-                );
-            } else if (packet instanceof PacketPlayClientEntityAction) {
-                // TODO sneak, sprint, ...
-            }
+            Packet serverPacket = packet.mapToServerside(this.entityId);
 
             if (serverPacket != null) {
                 for (Player viewer : this.viewers) {
