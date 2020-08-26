@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.github.derrop.minecraft.proxy</groupId>
-        <artifactId>MCProxy</artifactId>
+        <groupId>com.github.phantompowered</groupId>
+        <artifactId>proxy</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.derrop.minecraft.proxy</groupId>
+            <groupId>com.github.phantompowered</groupId>
             <artifactId>proxy-api</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
@@ -95,7 +95,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>com.github.derrop.proxy.launcher.ProxyLauncher</Main-Class>
+                            <Main-Class>com.github.phantompowered.proxy.launcher.ProxyLauncher</Main-Class>
                             <Version>1.0</Version>
                             <Implementation-Version>1.0</Implementation-Version>
                         </manifestEntries>
