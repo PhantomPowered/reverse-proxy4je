@@ -33,6 +33,7 @@ import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.PingEvent;
 import com.github.phantompowered.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerLoginEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerPreLoginEvent;
 import com.github.phantompowered.proxy.api.network.PacketHandler;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
 import com.github.phantompowered.proxy.api.ping.ServerPing;
@@ -166,10 +167,21 @@ public class InitialHandler {
             case 2:
                 channel.setProperty(INIT_STATE, State.USERNAME);
                 channel.setProtocolState(ProtocolState.LOGIN);
+
+                PlayerPreLoginEvent event = new PlayerPreLoginEvent(channel, packet.getProtocolVersion());
+
                 if (packet.getProtocolVersion() != ProtocolIds.Versions.MINECRAFT_1_8) {
-                    disconnect(channel, "We only support 1.8");
+                    event.cancel(true);
+                    event.setCancelReason(TextComponent.of("We only support 1.8"));
+                }
+
+                channel.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
+
+                if (event.isCancelled()) {
+                    disconnect(channel, event.getCancelReason());
                     return;
                 }
+
                 break;
 
             default:
