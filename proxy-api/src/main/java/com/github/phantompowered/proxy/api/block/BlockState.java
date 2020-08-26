@@ -116,4 +116,6 @@ public interface BlockState {
 
     boolean hasNoDrop();
 
+    HugeMushroomVariant getHugeMushroomVariant();
+
 }

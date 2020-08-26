@@ -167,14 +167,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(293, Material.LEAVES).subMaterial(SubMaterial.WOOD_SPRUCE); // complete
         registerState(294, Material.LEAVES).subMaterial(SubMaterial.WOOD_BIRCH); // complete
         registerState(295, Material.LEAVES).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
-        registerState(296, Material.LEAVES);
-        registerState(297, Material.LEAVES);
-        registerState(298, Material.LEAVES);
-        registerState(299, Material.LEAVES);
-        registerState(300, Material.LEAVES);
-        registerState(301, Material.LEAVES);
-        registerState(302, Material.LEAVES);
-        registerState(303, Material.LEAVES);
+        registerState(296, Material.LEAVES).subMaterial(SubMaterial.WOOD_OAK).checkDecay().decayable(); // complete
+        registerState(297, Material.LEAVES).subMaterial(SubMaterial.WOOD_SPRUCE).checkDecay().decayable(); // complete
+        registerState(298, Material.LEAVES).subMaterial(SubMaterial.WOOD_BIRCH).checkDecay().decayable(); // complete
+        registerState(299, Material.LEAVES).subMaterial(SubMaterial.WOOD_JUNGLE).checkDecay().decayable(); // complete
+        registerState(300, Material.LEAVES).subMaterial(SubMaterial.WOOD_OAK).checkDecay(); // complete
+        registerState(301, Material.LEAVES).subMaterial(SubMaterial.WOOD_SPRUCE).checkDecay(); // complete
+        registerState(302, Material.LEAVES).subMaterial(SubMaterial.WOOD_BIRCH).checkDecay(); // complete
+        registerState(303, Material.LEAVES).subMaterial(SubMaterial.WOOD_JUNGLE).checkDecay(); // complete
         registerState(304, Material.SPONGE).subMaterial(SubMaterial.SPONGE_NORMAL); // complete
         registerState(305, Material.SPONGE).subMaterial(SubMaterial.SPONGE_WET); // complete
         registerState(320, Material.GLASS); // complete
@@ -245,12 +245,9 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(476, Material.PISTON_STICKY_BASE).facing(Facing.WEST).powered(); // complete
         registerState(477, Material.PISTON_STICKY_BASE).facing(Facing.EAST).powered(); // complete
         registerState(480, Material.WEB); // complete
-        /* type = ?: */
-        registerState(496, Material.LONG_GRASS);
-        /* type = tall grass: */
-        registerState(497, Material.LONG_GRASS);
-        /* type = fern: */
-        registerState(498, Material.LONG_GRASS);
+        registerState(496, Material.LONG_GRASS).subMaterial(SubMaterial.LONG_GRASS_DEAD_BUSH); // complete
+        registerState(497, Material.LONG_GRASS).subMaterial(SubMaterial.LONG_GRASS_GRASS); // complete
+        registerState(498, Material.LONG_GRASS).subMaterial(SubMaterial.LONG_GRASS_FERN); // complete
         registerState(512, Material.DEAD_BUSH); // complete
         registerState(528, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.DOWN); // complete
         registerState(529, Material.PISTON_BASE).half(VerticalHalf.BOTTOM).facing(Facing.UP); // complete
@@ -292,18 +289,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(573, Material.WOOL).subMaterial(SubMaterial.COLOR_GREEN); // complete
         registerState(574, Material.WOOL).subMaterial(SubMaterial.COLOR_RED); // complete
         registerState(575, Material.WOOL).subMaterial(SubMaterial.COLOR_BLACK); // complete
-        registerState(576, Material.PISTON_EXTENSION);
-        registerState(577, Material.PISTON_EXTENSION);
-        registerState(578, Material.PISTON_EXTENSION);
-        registerState(579, Material.PISTON_EXTENSION);
-        registerState(580, Material.PISTON_EXTENSION);
-        registerState(581, Material.PISTON_EXTENSION);
-        registerState(584, Material.PISTON_EXTENSION);
-        registerState(585, Material.PISTON_EXTENSION);
-        registerState(586, Material.PISTON_EXTENSION);
-        registerState(587, Material.PISTON_EXTENSION);
-        registerState(588, Material.PISTON_EXTENSION);
-        registerState(589, Material.PISTON_EXTENSION);
+        registerState(576, Material.PISTON_EXTENSION).facing(Facing.DOWN).pistonType(PistonType.NORMAL); // complete
+        registerState(577, Material.PISTON_EXTENSION).facing(Facing.EAST).pistonType(PistonType.NORMAL); // complete
+        registerState(578, Material.PISTON_EXTENSION).facing(Facing.WEST).pistonType(PistonType.NORMAL); // complete
+        registerState(579, Material.PISTON_EXTENSION).facing(Facing.SOUTH).pistonType(PistonType.NORMAL); // complete
+        registerState(580, Material.PISTON_EXTENSION).facing(Facing.NORTH).pistonType(PistonType.NORMAL); // complete
+        registerState(581, Material.PISTON_EXTENSION).facing(Facing.UP).pistonType(PistonType.NORMAL); // complete
+        registerState(584, Material.PISTON_EXTENSION).facing(Facing.DOWN).pistonType(PistonType.STICKY); // complete
+        registerState(585, Material.PISTON_EXTENSION).facing(Facing.EAST).pistonType(PistonType.STICKY); // complete
+        registerState(586, Material.PISTON_EXTENSION).facing(Facing.WEST).pistonType(PistonType.STICKY); // complete
+        registerState(587, Material.PISTON_EXTENSION).facing(Facing.SOUTH).pistonType(PistonType.STICKY); // complete
+        registerState(588, Material.PISTON_EXTENSION).facing(Facing.NORTH).pistonType(PistonType.STICKY); // complete
+        registerState(589, Material.PISTON_EXTENSION).facing(Facing.UP).pistonType(PistonType.STICKY); // complete
         registerState(592, Material.YELLOW_FLOWER); // complete
         registerState(608, Material.FLOWER).subMaterial(SubMaterial.FLOWER_POPPY); // complete
         registerState(609, Material.FLOWER).subMaterial(SubMaterial.FLOWER_BLUE_ORCHID); // complete
@@ -361,22 +358,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(803, Material.TORCH).facing(Facing.SOUTH); // complete
         registerState(804, Material.TORCH).facing(Facing.NORTH); // complete
         registerState(805, Material.TORCH); // complete
-        registerState(816, Material.FIRE);
-        registerState(817, Material.FIRE);
-        registerState(818, Material.FIRE);
-        registerState(819, Material.FIRE);
-        registerState(820, Material.FIRE);
-        registerState(821, Material.FIRE);
-        registerState(822, Material.FIRE);
-        registerState(823, Material.FIRE);
-        registerState(824, Material.FIRE);
-        registerState(825, Material.FIRE);
-        registerState(826, Material.FIRE);
-        registerState(827, Material.FIRE);
-        registerState(828, Material.FIRE);
-        registerState(829, Material.FIRE);
-        registerState(830, Material.FIRE);
-        registerState(831, Material.FIRE);
+        registerState(816, Material.FIRE).age(0); // complete
+        registerState(817, Material.FIRE).age(1); // complete
+        registerState(818, Material.FIRE).age(2); // complete
+        registerState(819, Material.FIRE).age(3); // complete
+        registerState(820, Material.FIRE).age(4); // complete
+        registerState(821, Material.FIRE).age(5); // complete
+        registerState(822, Material.FIRE).age(6); // complete
+        registerState(823, Material.FIRE).age(7); // complete
+        registerState(824, Material.FIRE).age(8); // complete
+        registerState(825, Material.FIRE).age(9); // complete
+        registerState(826, Material.FIRE).age(10); // complete
+        registerState(827, Material.FIRE).age(11); // complete
+        registerState(828, Material.FIRE).age(12); // complete
+        registerState(829, Material.FIRE).age(13); // complete
+        registerState(830, Material.FIRE).age(14); // complete
+        registerState(831, Material.FIRE).age(15); // complete
         registerState(832, Material.MOB_SPAWNER); // complete
         registerState(848, Material.WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
         registerState(849, Material.WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
@@ -683,32 +680,32 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1569, Material.SMOOTH_BRICK).subMaterial(SubMaterial.MOSSY_STONE_BRICK); // complete
         registerState(1570, Material.SMOOTH_BRICK).subMaterial(SubMaterial.CRACKED_STONE_BRICK); // complete
         registerState(1571, Material.SMOOTH_BRICK).subMaterial(SubMaterial.CRACKED_STONE_BRICK); // complete
-        registerState(1584, Material.HUGE_MUSHROOM_1);
-        registerState(1585, Material.HUGE_MUSHROOM_1);
-        registerState(1586, Material.HUGE_MUSHROOM_1);
-        registerState(1587, Material.HUGE_MUSHROOM_1);
-        registerState(1588, Material.HUGE_MUSHROOM_1);
-        registerState(1589, Material.HUGE_MUSHROOM_1);
-        registerState(1590, Material.HUGE_MUSHROOM_1);
-        registerState(1591, Material.HUGE_MUSHROOM_1);
-        registerState(1592, Material.HUGE_MUSHROOM_1);
-        registerState(1593, Material.HUGE_MUSHROOM_1);
-        registerState(1594, Material.HUGE_MUSHROOM_1);
-        registerState(1598, Material.HUGE_MUSHROOM_1);
-        registerState(1599, Material.HUGE_MUSHROOM_1);
-        registerState(1600, Material.HUGE_MUSHROOM_2);
-        registerState(1601, Material.HUGE_MUSHROOM_2);
-        registerState(1602, Material.HUGE_MUSHROOM_2);
-        registerState(1603, Material.HUGE_MUSHROOM_2);
-        registerState(1604, Material.HUGE_MUSHROOM_2);
-        registerState(1605, Material.HUGE_MUSHROOM_2);
-        registerState(1606, Material.HUGE_MUSHROOM_2);
-        registerState(1607, Material.HUGE_MUSHROOM_2);
-        registerState(1608, Material.HUGE_MUSHROOM_2);
-        registerState(1609, Material.HUGE_MUSHROOM_2);
-        registerState(1610, Material.HUGE_MUSHROOM_2);
-        registerState(1614, Material.HUGE_MUSHROOM_2);
-        registerState(1615, Material.HUGE_MUSHROOM_2);
+        registerState(1584, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.ALL_INSIDE); // complete
+        registerState(1585, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.NORTH_WEST); // complete
+        registerState(1586, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.NORTH); // complete
+        registerState(1587, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.NORTH_EAST); // complete
+        registerState(1588, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.WEST); // complete
+        registerState(1589, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.CENTER); // complete
+        registerState(1590, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.EAST); // complete
+        registerState(1591, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.SOUTH_WEST); // complete
+        registerState(1592, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.SOUTH); // complete
+        registerState(1593, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.SOUTH_EAST); // complete
+        registerState(1594, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.STEM); // complete
+        registerState(1598, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.ALL_OUTSIDE); // complete
+        registerState(1599, Material.HUGE_MUSHROOM_1).hughMushroomVariant(HugeMushroomVariant.ALL_STEM); // complete
+        registerState(1600, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.ALL_INSIDE); // complete
+        registerState(1601, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.NORTH_WEST); // complete
+        registerState(1602, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.NORTH); // complete
+        registerState(1603, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.NORTH_EAST); // complete
+        registerState(1604, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.WEST); // complete
+        registerState(1605, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.CENTER); // complete
+        registerState(1606, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.EAST); // complete
+        registerState(1607, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.SOUTH_WEST); // complete
+        registerState(1608, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.SOUTH); // complete
+        registerState(1609, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.SOUTH_EAST); // complete
+        registerState(1610, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.STEM); // complete
+        registerState(1614, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.ALL_OUTSIDE); // complete
+        registerState(1615, Material.HUGE_MUSHROOM_2).hughMushroomVariant(HugeMushroomVariant.ALL_STEM); // complete
         registerState(1616, Material.IRON_FENCE); // complete
         registerState(1632, Material.THIN_GLASS); // complete
         registerState(1648, Material.MELON_BLOCK); // complete
@@ -925,22 +922,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2208, Material.BEACON); // complete
         registerState(2224, Material.COBBLE_WALL).subMaterial(SubMaterial.COBBLESTONE_WALL); // complete
         registerState(2225, Material.COBBLE_WALL).subMaterial(SubMaterial.MOSSY_COBBLESTONE_WALL); // complete
-        registerState(2240, Material.FLOWER_POT);
-        registerState(2241, Material.FLOWER_POT);
-        registerState(2242, Material.FLOWER_POT);
-        registerState(2243, Material.FLOWER_POT);
-        registerState(2244, Material.FLOWER_POT);
-        registerState(2245, Material.FLOWER_POT);
-        registerState(2246, Material.FLOWER_POT);
-        registerState(2247, Material.FLOWER_POT);
-        registerState(2248, Material.FLOWER_POT);
-        registerState(2249, Material.FLOWER_POT);
-        registerState(2250, Material.FLOWER_POT);
-        registerState(2251, Material.FLOWER_POT);
-        registerState(2252, Material.FLOWER_POT);
-        registerState(2253, Material.FLOWER_POT);
-        registerState(2254, Material.FLOWER_POT);
-        registerState(2255, Material.FLOWER_POT);
+        registerState(2240, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_EMPTY); // complete
+        registerState(2241, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_ROSE); // complete
+        registerState(2242, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_DANDELION); // complete
+        registerState(2243, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_SAPLING_OAK); // complete
+        registerState(2244, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_SAPLING_SPRUCE); // complete
+        registerState(2245, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_SAPLING_BIRCH); // complete
+        registerState(2246, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_SAPLING_JUNGLE); // complete
+        registerState(2247, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_MUSHROOM_RED); // complete
+        registerState(2248, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_MUSHROOM_BROWN); // complete
+        registerState(2249, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_CACTUS); // complete
+        registerState(2250, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_DEAD_BUSH); // complete
+        registerState(2251, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_FERN); // complete
+        registerState(2252, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_SAPLING_ACACIA); // complete
+        registerState(2253, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_SAPLING_DARK_OAK); // complete
+        registerState(2254, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_EMPTY1); // complete
+        registerState(2255, Material.FLOWER_POT).subMaterial(SubMaterial.FLOWER_POT_EMPTY2); // complete
         registerState(2256, Material.CARROT).age(0); // complete
         registerState(2257, Material.CARROT).age(1); // complete
         registerState(2258, Material.CARROT).age(2); // complete
@@ -1158,22 +1155,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2573, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_GREEN); // complete
         registerState(2574, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_RED); // complete
         registerState(2575, Material.STAINED_GLASS_PANE).subMaterial(SubMaterial.COLOR_BLACK); // complete
-        registerState(2576, Material.LEAVES);
-        registerState(2577, Material.LEAVES);
-        registerState(2580, Material.LEAVES);
-        registerState(2581, Material.LEAVES);
-        registerState(2584, Material.LEAVES);
-        registerState(2585, Material.LEAVES);
-        registerState(2588, Material.LEAVES);
-        registerState(2589, Material.LEAVES);
-        registerState(2592, Material.LOG);
-        registerState(2593, Material.LOG);
-        registerState(2596, Material.LOG);
-        registerState(2597, Material.LOG);
-        registerState(2600, Material.LOG);
-        registerState(2601, Material.LOG);
-        registerState(2604, Material.LOG);
-        registerState(2605, Material.LOG);
+        registerState(2576, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_ACACIA).decayable(); // complete
+        registerState(2577, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_DARK_OAK).decayable(); // complete
+        registerState(2580, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_ACACIA); // complete
+        registerState(2581, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
+        registerState(2584, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_ACACIA).decayable().checkDecay(); // complete
+        registerState(2585, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_DARK_OAK).decayable().checkDecay(); // complete
+        registerState(2588, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_ACACIA).checkDecay(); // complete
+        registerState(2589, Material.LEAVES_2).subMaterial(SubMaterial.WOOD_DARK_OAK).checkDecay(); // complete
+        registerState(2592, Material.LOG_2).subMaterial(SubMaterial.WOOD_ACACIA).axis(Facing.Axis.Y); // complete
+        registerState(2593, Material.LOG_2).subMaterial(SubMaterial.WOOD_DARK_OAK).axis(Facing.Axis.Y); // complete
+        registerState(2596, Material.LOG_2).subMaterial(SubMaterial.WOOD_ACACIA).axis(Facing.Axis.X); // complete
+        registerState(2597, Material.LOG_2).subMaterial(SubMaterial.WOOD_DARK_OAK).axis(Facing.Axis.X); // complete
+        registerState(2600, Material.LOG_2).subMaterial(SubMaterial.WOOD_ACACIA).axis(Facing.Axis.Z); // complete
+        registerState(2601, Material.LOG_2).subMaterial(SubMaterial.WOOD_DARK_OAK).axis(Facing.Axis.Z); // complete
+        registerState(2604, Material.LOG_2).subMaterial(SubMaterial.WOOD_ACACIA).axis(Facing.Axis.NONE); // complete
+        registerState(2605, Material.LOG_2).subMaterial(SubMaterial.WOOD_DARK_OAK).axis(Facing.Axis.NONE); // complete
         registerState(2608, Material.ACACIA_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
         registerState(2609, Material.ACACIA_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(2610, Material.ACACIA_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
@@ -1192,22 +1189,22 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2631, Material.DARK_OAK_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2640, Material.SLIME_BLOCK); // complete
         registerState(2656, Material.BARRIER); // complete
-        registerState(2672, Material.IRON_TRAPDOOR);
-        registerState(2673, Material.IRON_TRAPDOOR);
-        registerState(2674, Material.IRON_TRAPDOOR);
-        registerState(2675, Material.IRON_TRAPDOOR);
-        registerState(2676, Material.IRON_TRAPDOOR);
-        registerState(2677, Material.IRON_TRAPDOOR);
-        registerState(2678, Material.IRON_TRAPDOOR);
-        registerState(2679, Material.IRON_TRAPDOOR);
-        registerState(2680, Material.IRON_TRAPDOOR);
-        registerState(2681, Material.IRON_TRAPDOOR);
-        registerState(2682, Material.IRON_TRAPDOOR);
-        registerState(2683, Material.IRON_TRAPDOOR);
-        registerState(2684, Material.IRON_TRAPDOOR);
-        registerState(2685, Material.IRON_TRAPDOOR);
-        registerState(2686, Material.IRON_TRAPDOOR);
-        registerState(2687, Material.IRON_TRAPDOOR);
+        registerState(2672, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.NORTH); // complete
+        registerState(2673, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.SOUTH); // complete
+        registerState(2674, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.WEST); // complete
+        registerState(2675, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
+        registerState(2676, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.NORTH).open(); // complete
+        registerState(2677, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.SOUTH).open(); // complete
+        registerState(2678, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.WEST).open(); // complete
+        registerState(2679, Material.IRON_TRAPDOOR).half(VerticalHalf.BOTTOM).facing(Facing.EAST).open(); // complete
+        registerState(2680, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.NORTH); // complete
+        registerState(2681, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.SOUTH); // complete
+        registerState(2682, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.WEST); // complete
+        registerState(2683, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.EAST); // complete
+        registerState(2684, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.NORTH).open(); // complete
+        registerState(2685, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.SOUTH).open(); // complete
+        registerState(2686, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.WEST).open(); // complete
+        registerState(2687, Material.IRON_TRAPDOOR).half(VerticalHalf.TOP).facing(Facing.EAST).open(); // complete
         registerState(2688, Material.PRISMARINE).subMaterial(SubMaterial.PRISMARINE_NORMAL); // complete
         registerState(2689, Material.PRISMARINE).subMaterial(SubMaterial.PRISMARINE_BRICKS); // complete
         registerState(2690, Material.PRISMARINE).subMaterial(SubMaterial.PRISMARINE_DARK); // complete
@@ -1240,10 +1237,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2803, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_LARGE_FERN).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
         registerState(2804, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_RED_ROSE).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
         registerState(2805, Material.DOUBLE_PLANT).subMaterial(SubMaterial.PLANT_PEONY).half(VerticalHalf.BOTTOM).facing(Facing.EAST); // complete
-        registerState(2808, Material.DOUBLE_PLANT);
-        registerState(2809, Material.DOUBLE_PLANT);
+        registerState(2808, Material.DOUBLE_PLANT).half(VerticalHalf.TOP).facing(Facing.SOUTH); // complete
+        registerState(2809, Material.DOUBLE_PLANT).half(VerticalHalf.TOP).facing(Facing.WEST); // complete
         registerState(2810, Material.DOUBLE_PLANT).half(VerticalHalf.TOP).facing(Facing.NORTH); // complete
-        registerState(2811, Material.DOUBLE_PLANT);
+        registerState(2811, Material.DOUBLE_PLANT).half(VerticalHalf.TOP).facing(Facing.EAST); // complete
         registerState(2816, Material.STANDING_BANNER).rotation(0); // complete
         registerState(2817, Material.STANDING_BANNER).rotation(1); // complete
         registerState(2818, Material.STANDING_BANNER).rotation(2); // complete
@@ -1291,10 +1288,10 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2885, Material.RED_SANDSTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(2886, Material.RED_SANDSTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2887, Material.RED_SANDSTONE_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
-        registerState(2896, Material.DOUBLE_STONE_SLAB2);
-        registerState(2904, Material.DOUBLE_STONE_SLAB2);
-        registerState(2912, Material.STONE_SLAB2);
-        registerState(2920, Material.STONE_SLAB2);
+        registerState(2896, Material.DOUBLE_STONE_SLAB2).subMaterial(SubMaterial.STONE_SLAB_RED_SANDSTONE); // complete
+        registerState(2904, Material.DOUBLE_STONE_SLAB2).subMaterial(SubMaterial.STONE_SLAB_RED_SANDSTONE).seamless(); // complete
+        registerState(2912, Material.STONE_SLAB2).subMaterial(SubMaterial.STONE_SLAB_RED_SANDSTONE).half(VerticalHalf.BOTTOM); // complete
+        registerState(2920, Material.STONE_SLAB2).subMaterial(SubMaterial.STONE_SLAB_RED_SANDSTONE).half(VerticalHalf.TOP); // complete
         registerState(2928, Material.SPRUCE_FENCE_GATE).facing(Facing.SOUTH); // complete
         registerState(2929, Material.SPRUCE_FENCE_GATE).facing(Facing.WEST); // complete
         registerState(2930, Material.SPRUCE_FENCE_GATE).facing(Facing.NORTH); // complete

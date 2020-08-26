@@ -106,6 +106,23 @@ public enum SubMaterial {
     FLOWER_PINK_TULIP(7, Material.FLOWER),
     FLOWER_OXEYE_DAISY(8, Material.FLOWER),
 
+    FLOWER_POT_EMPTY(0, Material.FLOWER_POT),
+    FLOWER_POT_ROSE(1, Material.FLOWER_POT),
+    FLOWER_POT_DANDELION(2, Material.FLOWER_POT),
+    FLOWER_POT_SAPLING_OAK(3, Material.FLOWER_POT),
+    FLOWER_POT_SAPLING_SPRUCE(4, Material.FLOWER_POT),
+    FLOWER_POT_SAPLING_BIRCH(5, Material.FLOWER_POT),
+    FLOWER_POT_SAPLING_JUNGLE(6, Material.FLOWER_POT),
+    FLOWER_POT_MUSHROOM_RED(7, Material.FLOWER_POT),
+    FLOWER_POT_MUSHROOM_BROWN(8, Material.FLOWER_POT),
+    FLOWER_POT_CACTUS(9, Material.FLOWER_POT),
+    FLOWER_POT_DEAD_BUSH(10, Material.FLOWER_POT),
+    FLOWER_POT_FERN(11, Material.FLOWER_POT),
+    FLOWER_POT_SAPLING_ACACIA(12, Material.FLOWER_POT),
+    FLOWER_POT_SAPLING_DARK_OAK(13, Material.FLOWER_POT),
+    FLOWER_POT_EMPTY1(14, Material.FLOWER_POT),
+    FLOWER_POT_EMPTY2(15, Material.FLOWER_POT),
+
     STONE(0, Material.MONSTER_EGGS),
     COBBLESTONE(1, Material.MONSTER_EGGS),
     STONE_BRICK_EGG(2, Material.MONSTER_EGGS),
@@ -119,7 +136,11 @@ public enum SubMaterial {
     CHISELED_STONE_BRICK(3, Material.SMOOTH_BRICK),
 
     COBBLESTONE_WALL(0, Material.COBBLE_WALL),
-    MOSSY_COBBLESTONE_WALL(1, Material.COBBLE_WALL);
+    MOSSY_COBBLESTONE_WALL(1, Material.COBBLE_WALL),
+
+    LONG_GRASS_GRASS(0, Material.LONG_GRASS),
+    LONG_GRASS_FERN(1, Material.LONG_GRASS),
+    LONG_GRASS_DEAD_BUSH(2, Material.LONG_GRASS); // this actually doesn't have a sub id, you can't get it as an item, it's just a block that exists. There is even a difference to the Material.DEADBUSH with the ID 32.
 
     private final Material[] parents;
     private final int subId;

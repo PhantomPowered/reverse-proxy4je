@@ -71,6 +71,7 @@ public class DefaultBlockState implements BlockState {
     private boolean attached;
     private boolean disarmed;
     private boolean noDrop;
+    private HugeMushroomVariant hugeMushroomVariant;
 
     public DefaultBlockState(int id, Material material) {
         this.id = id;
@@ -286,6 +287,12 @@ public class DefaultBlockState implements BlockState {
         return this;
     }
 
+    @CanIgnoreReturnValue
+    DefaultBlockState hughMushroomVariant(HugeMushroomVariant variant) {
+        this.hugeMushroomVariant = variant;
+        return this;
+    }
+
     @Override
     public int getId() {
         return this.id;
@@ -478,5 +485,10 @@ public class DefaultBlockState implements BlockState {
     @Override
     public boolean hasNoDrop() {
         return this.noDrop;
+    }
+
+    @Override
+    public HugeMushroomVariant getHugeMushroomVariant() {
+        return this.hugeMushroomVariant;
     }
 }
