@@ -56,7 +56,7 @@ public class CommandAdf extends NonTabCompleteableCommandCallback {
             player.sendMessage("Done: " + arguments[0]);
         } else {
             int a = 0;
-            for (int i = Integer.parseInt(arguments[0]); i < Integer.parseInt(arguments[1]); i++) {
+            for (int i = Integer.parseInt(arguments[0]); i < Integer.parseInt(arguments[1]) + 1; i++) {
                 player.sendBlockChange(player.getLocation().clone().add(a++, 0, 0), i);
                 player.sendMessage("Done: " + i);
             }

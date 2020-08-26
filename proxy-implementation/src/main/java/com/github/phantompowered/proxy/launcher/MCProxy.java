@@ -137,6 +137,8 @@ public class MCProxy {
             }
 
             this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).close();
+
+            this.proxyServer.close();
         }
     }
 

@@ -110,7 +110,7 @@ public class BasicInteractiveServiceConnection implements InteractiveServiceConn
         if (item == null) {
             item = ProxyItemStack.AIR;
         }
-        this.connection.sendPacket(new PacketPlayClientBlockPlace(blockLocation, facing.getIndex() /* TODO is this correct? */, item, (float) vector.getX(), (float) vector.getY(), (float) vector.getZ()));
+        this.connection.sendPacket(new PacketPlayClientBlockPlace(blockLocation, facing.getIndex(), item, (float) vector.getX(), (float) vector.getY(), (float) vector.getZ()));
     }
 
     @Override

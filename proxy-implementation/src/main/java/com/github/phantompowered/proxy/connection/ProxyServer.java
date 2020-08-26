@@ -33,8 +33,7 @@ import io.netty.channel.EventLoopGroup;
 
 import java.net.SocketAddress;
 
-// TODO: ...
-public class ProxyServer {
+public class ProxyServer implements AutoCloseable {
 
     private final ServiceRegistry serviceRegistry;
     private final EventLoopGroup bossGroup = NetworkUtils.newEventLoopGroup();
@@ -56,4 +55,9 @@ public class ProxyServer {
         System.out.println("Running proxy on " + address);
     }
 
+    @Override
+    public void close() {
+        this.bossGroup.shutdownGracefully();
+        this.workerGroup.shutdownGracefully();
+    }
 }
