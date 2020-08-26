@@ -55,7 +55,6 @@ public class PacketCache {
 
     public PacketCache(ConnectedProxyClient targetProxyClient) {
         this.targetProxyClient = targetProxyClient;
-        this.reset();
     }
 
     public BiConsumer<ByteBuf, Integer> getPacketHandler() {

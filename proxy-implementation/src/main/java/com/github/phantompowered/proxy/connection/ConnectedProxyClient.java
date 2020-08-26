@@ -62,12 +62,10 @@ import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientReso
 import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
 import com.github.phantompowered.proxy.protocol.play.client.inventory.PacketPlayClientHeldItemSlot;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
-import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerHeldItemSlot;
 import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerPlayerAbilities;
 import com.mojang.authlib.UserAuthentication;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -86,7 +84,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ConnectedProxyClient extends DefaultNetworkChannel implements TickHandler {
@@ -96,16 +93,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     private final Collection<Player> viewers = new CopyOnWriteArrayList<>();
     private final UUID redirectorListenerKey = UUID.randomUUID();
     private final PacketCache packetCache;
-    private final Scoreboard scoreboard;
     private final Map<Predicate<Packet>, Long> blockedPackets = new ConcurrentHashMap<>();
+    private Scoreboard scoreboard;
     private NetworkAddress address;
     private UserAuthentication authentication;
     private MCServiceCredentials credentials;
     private Player redirector;
     private int entityId;
     private int dimension;
-    private PacketPlayServerEntityMetadata entityMetadata;
-    private Consumer<Packet> clientPacketHandler;
     private Runnable disconnectionHandler;
     private boolean globalAccount = true;
     private Component lastKickReason;
@@ -125,20 +120,12 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         this.sessionService = serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).createSessionService();
 
         this.packetCache = new PacketCache(this);
-        this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
+        this.resetPacketCache();
     }
 
-    public boolean performMojangLogin(MCServiceCredentials credentials) throws AuthenticationException {
-        if (credentials.isOffline()) {
-            this.credentials = credentials;
-            return true;
-        }
-
-        System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = this.serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
-        this.credentials = credentials;
-        System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
-        return true;
+    private void resetPacketCache() {
+        this.packetCache.reset();
+        this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
     }
 
     public void setAuthentication(UserAuthentication authentication, MCServiceCredentials credentials) {
@@ -153,7 +140,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
         super.close();
         this.address = null;
-        this.packetCache.reset();
+        this.resetPacketCache();
 
         if (this.connectionHandler != null) {
             if (this.lastKickReason != null) {
@@ -240,14 +227,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         return this.lastConnectedPlayer;
     }
 
-    public Consumer<Packet> getClientPacketHandler() {
-        return clientPacketHandler;
-    }
-
-    public void setClientPacketHandler(Consumer<Packet> clientPacketHandler) {
-        this.clientPacketHandler = clientPacketHandler;
-    }
-
     public void disableGlobal() {
         this.globalAccount = false;
     }
@@ -261,7 +240,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     }
 
     public UserAuthentication getAuthentication() {
-        return authentication;
+        return this.authentication;
     }
 
     public String getAccountName() {
@@ -273,7 +252,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     }
 
     public Component getLastKickReason() {
-        return lastKickReason;
+        return this.lastKickReason;
     }
 
     public void setLastKickReason(Component lastKickReason) {
@@ -281,19 +260,19 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     }
 
     public PlayerVelocityHandler getVelocityHandler() {
-        return velocityHandler;
+        return this.velocityHandler;
     }
 
     public Scoreboard getScoreboard() {
-        return scoreboard;
+        return this.scoreboard;
     }
 
     public PacketCache getPacketCache() {
-        return packetCache;
+        return this.packetCache;
     }
 
     public MinecraftSessionService getSessionService() {
-        return sessionService;
+        return this.sessionService;
     }
 
     public MCServiceCredentials getCredentials() {
@@ -302,10 +281,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public Player getRedirector() {
         return redirector;
-    }
-
-    public PacketPlayServerEntityMetadata getEntityMetadata() {
-        return entityMetadata;
     }
 
     public int getEntityId() {
@@ -400,10 +375,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
                 this.redirector = null;
             }
         }
-
-        if (deserialized instanceof PacketPlayServerEntityMetadata) {
-            this.entityMetadata = (PacketPlayServerEntityMetadata) deserialized;
-        }
     }
 
     public void handlePacketRedirected(Packet packet) {
@@ -413,10 +384,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     }
 
     public void handleClientPacket(Packet packet) {
-        if (this.clientPacketHandler != null) {
-            this.clientPacketHandler.accept(packet);
-        }
-
         this.packetCache.handleClientPacket(packet);
 
         if (!this.viewers.isEmpty()) {
