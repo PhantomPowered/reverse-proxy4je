@@ -17,7 +17,6 @@
     <modules>
         <module>proxy-implementation</module>
         <module>proxy-api</module>
-        <module>proxy-plugins</module>
     </modules>
 
     <repositories>

@@ -8,11 +8,10 @@ dependency-reduced-pom.xml
 
 target/
 
-logs/
-replays/
+/logs/
+/replays/
 /database/
 /plugins/
 
 config.json
 permissions.json
-proxy_info.txt
