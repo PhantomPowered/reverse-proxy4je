@@ -25,6 +25,7 @@
 package com.github.phantompowered.proxy.api.configuration;
 
 import com.github.phantompowered.proxy.api.ping.ServerPing;
+import org.jetbrains.annotations.Range;
 
 public interface Configuration {
 
@@ -43,4 +44,11 @@ public interface Configuration {
     ServerPing getMotd();
 
     void setMotd(ServerPing motd);
+
+    // -1 = disabled
+    @Range(from = 0, to = 256)
+    int getCompressionThreshold();
+
+    void setCompressionThreshold(@Range(from = 0, to = 256) int threshold);
+
 }

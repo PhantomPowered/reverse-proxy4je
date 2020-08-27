@@ -34,6 +34,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.jetbrains.annotations.Range;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -63,6 +64,7 @@ public class JsonConfiguration implements Configuration {
             this.jsonObject = new JsonObject();
             this.jsonObject.addProperty("proxyPort", 25565);
             this.jsonObject.addProperty("webPort", 80);
+            this.jsonObject.addProperty("compression", -1);
             this.motd = new ServerPing(
                     new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
                     new ServerPing.Players(0, 0, null),
@@ -139,5 +141,15 @@ public class JsonConfiguration implements Configuration {
     @Override
     public void setMotd(ServerPing motd) {
         this.motd = motd;
+    }
+
+    @Override
+    public @Range(from = 0, to = 256) int getCompressionThreshold() {
+        return Math.min(256, this.jsonObject.get("compression").getAsInt());
+    }
+
+    @Override
+    public void setCompressionThreshold(@Range(from = 0, to = 256) int threshold) {
+        this.jsonObject.addProperty("compression", threshold);
     }
 }

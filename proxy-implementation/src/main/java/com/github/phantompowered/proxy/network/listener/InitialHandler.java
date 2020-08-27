@@ -74,6 +74,7 @@ import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Optional;
 import java.util.UUID;
@@ -224,7 +225,7 @@ public class InitialHandler {
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_DECODER, NetworkUtils.DECRYPT, new PacketCipherDecoder(sharedKey));
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_ENCODER, NetworkUtils.ENCRYPT, new PacketCipherEncoder(sharedKey));
 
-        String encName = URLEncoder.encode(channel.getProperty("requestedName"), "UTF-8");
+        String encName = URLEncoder.encode(channel.getProperty("requestedName"), StandardCharsets.UTF_8);
 
         MessageDigest sha = MessageDigest.getInstance("SHA-1");
         for (byte[] bit : new byte[][]{
@@ -235,7 +236,7 @@ public class InitialHandler {
             sha.update(bit);
         }
 
-        String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16), "UTF-8");
+        String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16), StandardCharsets.UTF_8);
         String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash;
 
         Callback<String> handler = (result, exception) -> {
@@ -287,7 +288,14 @@ public class InitialHandler {
                     return;
                 }
 
-                DefaultPlayer player = new DefaultPlayer(this.serviceRegistry, ((BasicServiceConnection) client).getClient(), offlinePlayer, channel, channel.getProperty("sentProtocol"), 256);
+                DefaultPlayer player = new DefaultPlayer(
+                        this.serviceRegistry,
+                        ((BasicServiceConnection) client).getClient(),
+                        offlinePlayer,
+                        channel,
+                        channel.getProperty("sentProtocol"),
+                        this.serviceRegistry.getProviderUnchecked(Configuration.class).getCompressionThreshold()
+                );
                 repository.updateOfflinePlayer(player);
 
                 PlayerLoginEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PlayerLoginEvent(player));
@@ -300,7 +308,7 @@ public class InitialHandler {
                     return;
                 }
 
-                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), profile.getName())); // With dashes in between
+                channel.write(new PacketLoginOutLoginSuccess(uniqueId.toString(), profile.getName())); // Dashed UUID
                 channel.setProtocolState(ProtocolState.PLAY);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setNetworkChannel(player);
                 channel.getWrappedChannel().pipeline().get(HandlerEndpoint.class).setChannelListener(new ClientChannelListener(player));
