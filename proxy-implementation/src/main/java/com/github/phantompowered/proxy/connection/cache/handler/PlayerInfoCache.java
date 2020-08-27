@@ -26,6 +26,8 @@ package com.github.phantompowered.proxy.connection.cache.handler;
 
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.entity.PlayerInfo;
+import com.github.phantompowered.proxy.api.entity.types.Entity;
+import com.github.phantompowered.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.service.playerinfo.PlayerInfoAddEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.playerinfo.PlayerInfoRemoveEvent;
@@ -40,6 +42,8 @@ import com.github.phantompowered.proxy.connection.cache.PacketCacheHandler;
 import com.github.phantompowered.proxy.connection.player.BasicPlayerInfo;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
+import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerRespawn;
+import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityDestroy;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,18 +55,35 @@ public class PlayerInfoCache implements PacketCacheHandler {
     // TODO if the real player doesn't have the same uuid as the player connected with the server, the player will be displayed twice in the tablist
 
     private final Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
-    private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new CopyOnWriteArrayList<>(); // TODO Remove players when despawn packet received?
+    private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new CopyOnWriteArrayList<>();
     private PacketCache packetCache;
 
     @Override
     public int[] getPacketIDs() {
-        return new int[]{ProtocolIds.ToClient.Play.PLAYER_INFO};
+        return new int[]{ProtocolIds.ToClient.Play.PLAYER_INFO, ProtocolIds.ToClient.Play.ENTITY_DESTROY, ProtocolIds.ToClient.Play.RESPAWN};
     }
 
     @Override
     public void cachePacket(PacketCache packetCache, Packet newPacket) {
         this.packetCache = packetCache;
         ServiceConnection connection = packetCache.getTargetProxyClient().getConnection();
+
+        if (newPacket instanceof PacketPlayServerRespawn) {
+            this.lastRemovedItems.clear();
+            return;
+        }
+        if (newPacket instanceof PacketPlayServerEntityDestroy) {
+            int[] entities = ((PacketPlayServerEntityDestroy) newPacket).getEntityIds();
+
+            for (int entityId : entities) {
+                Entity entity = packetCache.getTargetProxyClient().getConnection().getWorldDataProvider().getEntityInWorld(entityId);
+                if (entity instanceof EntityPlayer) {
+                    this.lastRemovedItems.removeIf(item -> item.getUniqueId().equals(((EntityPlayer) entity).getUniqueId()));
+                }
+            }
+
+            return;
+        }
 
         PacketPlayServerPlayerInfo playerListItem = (PacketPlayServerPlayerInfo) newPacket;
 
