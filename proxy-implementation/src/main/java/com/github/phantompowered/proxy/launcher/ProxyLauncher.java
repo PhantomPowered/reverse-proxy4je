@@ -35,6 +35,10 @@ import com.github.phantompowered.proxy.console.ProxyConsole;
 import com.github.phantompowered.proxy.logging.ProxyLogLevels;
 import com.github.phantompowered.proxy.logging.ProxyLogger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 public final class ProxyLauncher {
 
     public static synchronized void main(String[] args) {
@@ -65,16 +69,14 @@ public final class ProxyLauncher {
     }
 
     private static void sendWelcomeScreen() {
-        System.out.println("\n"
-                + "   ____        _ _            __  __  _____ _____                     \n"
-                + "  / __ \\      | (_)          |  \\/  |/ ____|  __ \\                    \n"
-                + " | |  | |_ __ | |_ _ __   ___| \\  / | |    | |__) | __ _____  ___   _ \n"
-                + " | |  | | '_ \\| | | '_ \\ / _ \\ |\\/| | |    |  ___/ '__/ _ \\ \\/ / | | |\n"
-                + " | |__| | | | | | | | | |  __/ |  | | |____| |   | | | (_) >  <| |_| |\n"
-                + "  \\____/|_| |_|_|_|_| |_|\\___|_|  |_|\\_____|_|   |_|  \\___/_/\\_\\\\__, |\n"
-                + "                                                                 __/ |\n"
-                + "                                                                |___/ \n");
-        System.out.println("Booting up online mc proxy version " + ProxyLauncher.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
+        try (InputStream inputStream = ProxyLauncher.class.getClassLoader().getResourceAsStream("header.txt")) {
+            if (inputStream != null) {
+                System.out.println(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Booting up PhantomProxy version " + ProxyLauncher.class.getPackage().getImplementationVersion() + " by derrop and derklaro");
         System.out.println("Running on runtime " + System.getProperty("java.runtime.name") + " in vm " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.info"));
         System.out.println("Java Version: " + System.getProperty("java.runtime.version") + " (vm: " + System.getProperty("java.vm.version") + ")" + " system: " + System.getProperty("os.name") + " (arch: " + System.getProperty("os.arch") + ")");
         System.out.println();
