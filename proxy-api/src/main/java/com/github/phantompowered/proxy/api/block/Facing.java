@@ -26,13 +26,13 @@ package com.github.phantompowered.proxy.api.block;
 
 import com.github.phantompowered.proxy.api.location.Vector;
 import com.github.phantompowered.proxy.api.math.MathHelper;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public enum Facing {
 
@@ -297,7 +297,7 @@ public enum Facing {
         }
 
         @Override
-        public boolean apply(Facing facing) {
+        public boolean test(Facing facing) {
             return facing != null && facing.getAxis() == this;
         }
 
@@ -347,7 +347,7 @@ public enum Facing {
         }
 
         @Override
-        public boolean apply(Facing facing) {
+        public boolean test(Facing facing) {
             return facing != null && facing.getAxis().getPlane() == this;
         }
 

@@ -1,7 +1,6 @@
 package com.github.phantompowered.proxy.api.block;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,7 @@ public enum Particle {
     private static final String[] PARTICLE_NAMES;
 
     static {
-        List<String> list = Lists.newArrayList();
+        List<String> list = new ArrayList<>();
 
         for (Particle particle : values()) {
             PARTICLES.put(particle.getParticleId(), particle);

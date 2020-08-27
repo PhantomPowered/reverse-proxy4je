@@ -25,9 +25,9 @@
 package com.github.phantompowered.proxy.connection.player.scoreboard.minecraft;
 
 import com.github.phantompowered.proxy.connection.player.scoreboard.minecraft.criteria.ScoreObjectiveCriteria;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class Scoreboard {
                 throw new IllegalArgumentException("An objective with the name '" + name + "' already exists!");
             } else {
                 scoreobjective = new ScoreObjective(this, name, criteria);
-                List<ScoreObjective> list = this.scoreObjectiveCriterias.computeIfAbsent(criteria, k -> Lists.newArrayList());
+                List<ScoreObjective> list = this.scoreObjectiveCriterias.computeIfAbsent(criteria, k -> new ArrayList<>());
 
                 list.add(scoreobjective);
                 this.scoreObjectives.put(name, scoreobjective);
@@ -124,7 +124,7 @@ public class Scoreboard {
     }
 
     public Collection<Score> getSortedScores(ScoreObjective objective) {
-        List<Score> list = Lists.newArrayList();
+        List<Score> list = new ArrayList<>();
         for (Map<ScoreObjective, Score> map : this.entitiesScoreObjectives.values()) {
             Score score = map.get(objective);
 
@@ -157,7 +157,7 @@ public class Scoreboard {
 
     public Collection<Score> getScores() {
         Collection<Map<ScoreObjective, Score>> collection = this.entitiesScoreObjectives.values();
-        List<Score> list = Lists.newArrayList();
+        List<Score> list = new ArrayList<>();
         for (Map<ScoreObjective, Score> map : collection) {
             list.addAll(map.values());
         }

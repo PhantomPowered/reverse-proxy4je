@@ -24,17 +24,17 @@
  */
 package com.github.phantompowered.proxy.api.nbt;
 
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.Contract;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NBTTagList extends NBTBase {
 
-    private List<NBTBase> tagList = Lists.newArrayList();
+    private List<NBTBase> tagList = new ArrayList<>();
     private byte tagType = 0;
 
     @Override
@@ -67,7 +67,7 @@ public class NBTTagList extends NBTBase {
                 throw new RuntimeException("Missing type on ListTag");
             } else {
                 sizeTracker.read(32L * (long) i);
-                this.tagList = Lists.newArrayListWithCapacity(i);
+                this.tagList = new ArrayList<>(i);
 
                 for (int j = 0; j < i; ++j) {
                     NBTBase nbtbase = NBTBase.createNewByType(this.tagType);

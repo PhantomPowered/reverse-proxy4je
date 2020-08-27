@@ -33,7 +33,6 @@ import com.github.phantompowered.proxy.api.player.inventory.EquipmentSlot;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Enums;
 import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -61,7 +60,7 @@ public class ProxyItemMeta implements ItemMeta {
 
     private Map<Enchantment, Integer> enchantments = Maps.newHashMap();
     private Multimap<Attribute, AttributeModifier> modifiers = LinkedHashMultimap.create();
-    private List<TranslatableComponent> lore = Lists.newArrayList();
+    private List<TranslatableComponent> lore = new ArrayList<>();
 
     private TranslatableComponent displayName;
     private TranslatableComponent locName;

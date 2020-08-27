@@ -25,8 +25,8 @@
 package com.github.phantompowered.proxy.nbt;
 
 import com.github.phantompowered.proxy.api.nbt.*;
-import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -284,7 +284,7 @@ public final class JsonNbtUtils {
 
     @SuppressWarnings("unchecked")
     private <T extends Number> List<T> readArray(byte arrayType, byte expectedId) throws NBTException {
-        List<T> list = Lists.newArrayList();
+        List<T> list = new ArrayList<>();
 
         while (true) {
             if (this.peek() != ']') {

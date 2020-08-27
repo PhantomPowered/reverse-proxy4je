@@ -27,16 +27,15 @@ package com.github.phantompowered.proxy.http;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.concurrent.Callback;
 import com.github.phantompowered.proxy.util.LeftRightHolder;
-import com.google.common.io.CharStreams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 public final class HttpUtil {
@@ -64,17 +63,7 @@ public final class HttpUtil {
             );
             connection.connect();
 
-            InputStream inputStream = getCorrectInputStream(connection);
-            if (inputStream == null) {
-                connection.disconnect();
-                return LeftRightHolder.left(null);
-            }
-
-            try (InputStreamReader reader = new InputStreamReader(inputStream)) {
-                return LeftRightHolder.left(CharStreams.toString(reader));
-            } finally {
-                connection.disconnect();
-            }
+            return LeftRightHolder.left(readResponse(connection));
         } catch (IOException exception) {
             return LeftRightHolder.right(exception);
         }
@@ -104,19 +93,22 @@ public final class HttpUtil {
                 consumer.accept(outputStream);
             }
 
-            InputStream inputStream = getCorrectInputStream(connection);
-            if (inputStream == null) {
-                connection.disconnect();
-                return LeftRightHolder.left(null);
-            }
-
-            try (InputStreamReader reader = new InputStreamReader(inputStream)) {
-                return LeftRightHolder.left(CharStreams.toString(reader));
-            } finally {
-                connection.disconnect();
-            }
+            return LeftRightHolder.left(readResponse(connection));
         } catch (IOException exception) {
             return LeftRightHolder.right(exception);
+        }
+    }
+
+    private static String readResponse(HttpURLConnection connection) throws IOException {
+        try (InputStream inputStream = getCorrectInputStream(connection)) {
+            if (inputStream == null) {
+                connection.disconnect();
+                return null;
+            }
+
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } finally {
+            connection.disconnect();
         }
     }
 
