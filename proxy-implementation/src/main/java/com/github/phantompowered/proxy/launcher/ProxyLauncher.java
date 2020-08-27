@@ -48,7 +48,7 @@ public final class ProxyLauncher {
         sendWelcomeScreen();
 
         long start = System.currentTimeMillis();
-        MCProxy proxy = new MCProxy();
+        PhantomProxy proxy = new PhantomProxy();
         proxy.getServiceRegistry().setProvider(null, ProxyLogger.class, proxyLogger, true);
         proxy.getServiceRegistry().setProvider(null, ProxyConsole.class, proxyConsole, true);
         proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort(), start);

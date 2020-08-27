@@ -83,13 +83,13 @@ import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 
-public class MCProxy {
+public class PhantomProxy {
 
     private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
     private final ProxyServer proxyServer = new ProxyServer(this.serviceRegistry);
     private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
 
-    protected MCProxy() {
+    protected PhantomProxy() {
         System.out.println("Registering default services...");
         this.serviceRegistry.setProvider(null, SimpleChannelInitializer.class, this.baseChannelInitializer, false, true);
         this.serviceRegistry.setProvider(null, PasteServerProvider.class, new DefaultPasteServerProvider(), false, true);
