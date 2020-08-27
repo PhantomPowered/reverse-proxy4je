@@ -17,13 +17,16 @@ import com.github.phantompowered.proxy.api.events.connection.service.entity.stat
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.PacketHandler;
 import com.github.phantompowered.proxy.api.network.exception.CancelProceedException;
+import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.connection.AppendedActionBar;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
 import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
+import com.github.phantompowered.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.network.wrapper.DecodedPacket;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerLogin;
+import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
@@ -58,6 +61,17 @@ public class ServerPacketHandler {
     @PacketHandler(directions = ProtocolDirection.TO_CLIENT)
     public void handleGeneral(ConnectedProxyClient client, DecodedPacket packet) {
         client.redirectPacket(packet.getProtoBuf().clone(), packet.getPacket());
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.PLAYER_INFO, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING)
+    public void modifyPlayerInfo(ConnectedProxyClient client, PacketPlayServerPlayerInfo packet) {
+        Player player = client.getRedirector();
+        if (player == null) {
+            return;
+        }
+
+        PlayerInfoCache cache = (PlayerInfoCache) client.getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+        cache.replaceOwn(player, packet);
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING)

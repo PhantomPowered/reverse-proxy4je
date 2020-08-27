@@ -52,8 +52,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerInfoCache implements PacketCacheHandler {
 
-    // TODO if the real player doesn't have the same uuid as the player connected with the server, the player will be displayed twice in the tablist
-
     private final Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
     private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new CopyOnWriteArrayList<>();
     private PacketCache packetCache;
@@ -157,7 +155,7 @@ public class PlayerInfoCache implements PacketCacheHandler {
         con.sendPacket(playerListItem);
     }
 
-    private void replaceOwn(Player con, PacketPlayServerPlayerInfo playerListItem) {
+    public void replaceOwn(Player con, PacketPlayServerPlayerInfo playerListItem) {
         for (int i = 0; i < playerListItem.getItems().length; i++) {
             PacketPlayServerPlayerInfo.Item item = playerListItem.getItems()[i];
             if (item.getUniqueId().equals(this.packetCache.getTargetProxyClient().getAccountUUID())) {
