@@ -195,24 +195,15 @@ public class Chunk {
         return result;
     }
 
-    private void forEachBlockStates(BlockConsumer consumer) {
+    // the consumer will be called with x 0 - 16, y 0 - 256, z 0 - 16
+    public void forEachBlockStates(BlockConsumer consumer) {
         for (int y = 0; y < this.sections.length; y++) {
             ChunkSection storage = this.sections[y];
-            if (storage == null) {
-                for (int x = 0; x < 16; x++) {
-                    for (int cY = 0; cY < 16; cY++) {
-                        for (int z = 0; z < 16; z++) {
-                            consumer.accept(x, cY + (y * 16), z, -1, 0);
-                        }
-                    }
-                }
-                continue;
-            }
 
             for (int x = 0; x < 16; x++) {
                 for (int cY = 0; cY < 16; cY++) {
                     for (int z = 0; z < 16; z++) {
-                        consumer.accept(x, cY + (y * 16), z, -1, storage.getBlockState(x, cY, z));
+                        consumer.accept(x, cY + (y * 16), z, -1, storage != null ? storage.getBlockState(x, cY, z) : 0);
                     }
                 }
             }
@@ -221,7 +212,7 @@ public class Chunk {
     }
 
     public PacketPlayServerMapChunk getLastChunkData() {
-        return lastChunkData;
+        return this.lastChunkData;
     }
 
     public int getX() {

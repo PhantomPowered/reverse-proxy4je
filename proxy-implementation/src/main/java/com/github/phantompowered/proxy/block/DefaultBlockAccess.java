@@ -71,7 +71,7 @@ public class DefaultBlockAccess implements BlockAccess {
             return;
         }
 
-        this.forEachStates(chunk, (x, y, z, oldState, state) -> {
+        chunk.forEachBlockStates((x, y, z, oldState, state) -> {
             for (BlockConsumer consumer : this.blockTrackers.values()) {
                 consumer.accept(x, y, z, oldState, state);
             }
@@ -84,22 +84,11 @@ public class DefaultBlockAccess implements BlockAccess {
             return;
         }
 
-        this.forEachStates(chunk, (x, y, z, oldState, state) -> {
+        chunk.forEachBlockStates((x, y, z, oldState, state) -> {
             for (BlockConsumer consumer : this.blockTrackers.values()) {
                 consumer.accept(x, y, z, state, -1);
             }
         });
-    }
-
-    private void forEachStates(Chunk chunk, BlockConsumer consumer) {
-        int[][][] states = chunk.getAllBlockStates();
-        for (int x = 0; x < states.length; x++) {
-            for (int y = 0; y < states[x].length; y++) {
-                for (int z = 0; z < states[x][y].length; z++) {
-                    consumer.accept(x + (chunk.getX() << 4), y, z + (chunk.getZ() << 4), -1, states[x][y][z]);
-                }
-            }
-        }
     }
 
     @Override

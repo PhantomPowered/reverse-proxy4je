@@ -30,18 +30,19 @@ import com.github.phantompowered.proxy.api.block.half.VerticalHalf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 // TODO BlockStates that are completely done have a "complete" behind, others still need to be fully implemented
 public class DefaultBlockStateRegistry implements BlockStateRegistry {
 
-    private static final Map<Integer, BlockState> BLOCK_STATE_IDS = new HashMap<>();
+    private static final BlockState[] STATES = new BlockState[3164];
 
     private static final BlockState AIR_STATE = new DefaultBlockState(0, Material.AIR);
 
     static {
-        BLOCK_STATE_IDS.put(0, AIR_STATE); // complete
+        STATES[0] = AIR_STATE; // complete
         registerState(16, Material.STONE); // complete
         registerState(17, Material.STONE).subMaterial(SubMaterial.GRANITE); // complete
         registerState(18, Material.STONE).subMaterial(SubMaterial.POLISHED_GRANITE); // complete
@@ -1441,7 +1442,7 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
 
     private static DefaultBlockState registerState(int id, Material material) {
         DefaultBlockState state = new DefaultBlockState(id, material);
-        BLOCK_STATE_IDS.put(id, state);
+        STATES[id] = state;
         return state;
     }
 
@@ -1451,10 +1452,17 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         if (material == null || material == Material.AIR) {
             return new int[]{0};
         }
-        return BLOCK_STATE_IDS.entrySet().stream()
-                .filter(entry -> entry.getValue().getMaterial().equals(material))
-                .mapToInt(Map.Entry::getKey)
-                .toArray();
+        List<Integer> states = new ArrayList<>();
+        for (BlockState state : STATES) {
+            if (state.getMaterial() == material) {
+                states.add(state.getId());
+            }
+        }
+        int[] array = new int[states.size()];
+        for (int i = 0; i < states.size(); i++) {
+            array[i] = states.get(i);
+        }
+        return array;
     }
 
     @Override
@@ -1462,10 +1470,13 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         if (material == null || material == Material.AIR) {
             return new BlockState[]{AIR_STATE};
         }
-        return BLOCK_STATE_IDS.entrySet().stream()
-                .filter(entry -> entry.getValue().getMaterial().equals(material))
-                .map(Map.Entry::getValue)
-                .toArray(BlockState[]::new);
+        Collection<BlockState> states = new ArrayList<>();
+        for (BlockState state : STATES) {
+            if (state.getMaterial() == material) {
+                states.add(state);
+            }
+        }
+        return states.toArray(new BlockState[0]);
     }
 
     @Override
@@ -1483,13 +1494,14 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
     @NotNull
     @Override
     public BlockState getExactBlockState(int blockStateId) {
-        return BLOCK_STATE_IDS.getOrDefault(blockStateId, AIR_STATE);
+        BlockState state = blockStateId < 0 || blockStateId >= STATES.length ? null : STATES[blockStateId];
+        return state != null ? state : AIR_STATE;
     }
 
     @NotNull
     @Override
     public Material getMaterial(int blockStateId) {
-        return BLOCK_STATE_IDS.getOrDefault(blockStateId, AIR_STATE).getMaterial();
+        return this.getExactBlockState(blockStateId).getMaterial();
     }
 
     @Override
