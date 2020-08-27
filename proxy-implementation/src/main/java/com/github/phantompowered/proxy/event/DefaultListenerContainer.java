@@ -36,19 +36,21 @@ import java.lang.reflect.Method;
 
 public final class DefaultListenerContainer implements ListenerContainer {
 
-    private final PluginContainer pluginContainer;
-    private final Class<?> eventClassTarget;
-    private final Object listenerInstance;
-    private final Method method;
-    private final EventPriority priority;
-
     DefaultListenerContainer(PluginContainer pluginContainer, Class<?> eventClassTarget, Object listenerInstance, Method method, EventPriority priority) {
         this.pluginContainer = pluginContainer;
         this.eventClassTarget = eventClassTarget;
         this.listenerInstance = listenerInstance;
         this.method = method;
         this.priority = priority;
+
+        this.method.setAccessible(true);
     }
+
+    private final PluginContainer pluginContainer;
+    private final Class<?> eventClassTarget;
+    private final Object listenerInstance;
+    private final Method method;
+    private final EventPriority priority;
 
     @Override
     public @Nullable PluginContainer getPlugin() {
@@ -74,4 +76,5 @@ public final class DefaultListenerContainer implements ListenerContainer {
     public void call(@NotNull Event event) throws InvocationTargetException, IllegalAccessException {
         this.method.invoke(this.listenerInstance, event);
     }
+
 }
