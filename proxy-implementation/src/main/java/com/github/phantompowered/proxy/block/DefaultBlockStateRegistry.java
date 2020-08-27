@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// TODO BlockStates that are completely done have a "complete" behind, others still need to be fully implemented
 public class DefaultBlockStateRegistry implements BlockStateRegistry {
 
     private static final BlockState[] STATES = new BlockState[3164];
@@ -74,14 +73,15 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(108, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_ACACIA); // complete
         registerState(109, Material.SAPLING).age(1).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
         registerState(112, Material.BEDROCK); // complete
-        registerState(128, Material.WATER).layers(8);
-        registerState(129, Material.WATER).layers(7);
-        registerState(130, Material.WATER).layers(6);
-        registerState(131, Material.WATER).layers(5);
-        registerState(132, Material.WATER).layers(4);
-        registerState(133, Material.WATER).layers(3);
-        registerState(134, Material.WATER).layers(2);
-        registerState(135, Material.WATER).layers(1);
+        registerState(128, Material.WATER).layers(8); // complete
+        registerState(129, Material.WATER).layers(7); // complete
+        registerState(130, Material.WATER).layers(6); // complete
+        registerState(131, Material.WATER).layers(5); // complete
+        registerState(132, Material.WATER).layers(4); // complete
+        registerState(133, Material.WATER).layers(3); // complete
+        registerState(134, Material.WATER).layers(2); // complete
+        registerState(135, Material.WATER).layers(1); // complete
+        /* These states exist, but they have like the layers 9 - 15 and 0, but they all look the same
         registerState(136, Material.WATER);
         registerState(137, Material.WATER);
         registerState(138, Material.WATER);
@@ -89,15 +89,16 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(140, Material.WATER);
         registerState(141, Material.WATER);
         registerState(142, Material.WATER);
-        registerState(143, Material.WATER);
-        registerState(144, Material.STATIONARY_WATER).layers(8);
-        registerState(145, Material.STATIONARY_WATER).layers(7);
-        registerState(146, Material.STATIONARY_WATER).layers(6);
-        registerState(147, Material.STATIONARY_WATER).layers(5);
-        registerState(148, Material.STATIONARY_WATER).layers(4);
-        registerState(149, Material.STATIONARY_WATER).layers(3);
-        registerState(150, Material.STATIONARY_WATER).layers(2);
-        registerState(151, Material.STATIONARY_WATER).layers(1);
+        registerState(143, Material.WATER);*/
+        registerState(144, Material.STATIONARY_WATER).layers(8); // complete
+        registerState(145, Material.STATIONARY_WATER).layers(7); // complete
+        registerState(146, Material.STATIONARY_WATER).layers(6); // complete
+        registerState(147, Material.STATIONARY_WATER).layers(5); // complete
+        registerState(148, Material.STATIONARY_WATER).layers(4); // complete
+        registerState(149, Material.STATIONARY_WATER).layers(3); // complete
+        registerState(150, Material.STATIONARY_WATER).layers(2); // complete
+        registerState(151, Material.STATIONARY_WATER).layers(1); // complete
+        /* These states exist, but they have like the layers 9 - 15 and 0, but they all look the same
         registerState(152, Material.STATIONARY_WATER);
         registerState(153, Material.STATIONARY_WATER);
         registerState(154, Material.STATIONARY_WATER);
@@ -105,15 +106,16 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(156, Material.STATIONARY_WATER);
         registerState(157, Material.STATIONARY_WATER);
         registerState(158, Material.STATIONARY_WATER);
-        registerState(159, Material.STATIONARY_WATER);
-        registerState(160, Material.LAVA).layers(8);
-        registerState(161, Material.LAVA).layers(7);
-        registerState(162, Material.LAVA).layers(6);
-        registerState(163, Material.LAVA).layers(5);
-        registerState(164, Material.LAVA).layers(4);
-        registerState(165, Material.LAVA).layers(3);
-        registerState(166, Material.LAVA).layers(2);
-        registerState(167, Material.LAVA).layers(1);
+        registerState(159, Material.STATIONARY_WATER);*/
+        registerState(160, Material.LAVA).layers(8); // complete
+        registerState(161, Material.LAVA).layers(7); // complete
+        registerState(162, Material.LAVA).layers(6); // complete
+        registerState(163, Material.LAVA).layers(5); // complete
+        registerState(164, Material.LAVA).layers(4); // complete
+        registerState(165, Material.LAVA).layers(3); // complete
+        registerState(166, Material.LAVA).layers(2); // complete
+        registerState(167, Material.LAVA).layers(1); // complete
+        /* These states exist, but they have like the layers 9 - 15 and 0, but they all look the same
         registerState(168, Material.LAVA);
         registerState(169, Material.LAVA);
         registerState(170, Material.LAVA);
@@ -121,15 +123,16 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(172, Material.LAVA);
         registerState(173, Material.LAVA);
         registerState(174, Material.LAVA);
-        registerState(175, Material.LAVA);
-        registerState(176, Material.STATIONARY_LAVA).layers(8);
-        registerState(177, Material.STATIONARY_LAVA).layers(7);
-        registerState(178, Material.STATIONARY_LAVA).layers(6);
-        registerState(179, Material.STATIONARY_LAVA).layers(5);
-        registerState(180, Material.STATIONARY_LAVA).layers(4);
-        registerState(181, Material.STATIONARY_LAVA).layers(3);
-        registerState(182, Material.STATIONARY_LAVA).layers(2);
-        registerState(183, Material.STATIONARY_LAVA).layers(1);
+        registerState(175, Material.LAVA);*/
+        registerState(176, Material.STATIONARY_LAVA).layers(8); // complete
+        registerState(177, Material.STATIONARY_LAVA).layers(7); // complete
+        registerState(178, Material.STATIONARY_LAVA).layers(6); // complete
+        registerState(179, Material.STATIONARY_LAVA).layers(5); // complete
+        registerState(180, Material.STATIONARY_LAVA).layers(4); // complete
+        registerState(181, Material.STATIONARY_LAVA).layers(3); // complete
+        registerState(182, Material.STATIONARY_LAVA).layers(2); // complete
+        registerState(183, Material.STATIONARY_LAVA).layers(1); // complete
+        /* These states exist, but they have like the layers 9 - 15 and 0, but they all look the same
         registerState(184, Material.STATIONARY_LAVA);
         registerState(185, Material.STATIONARY_LAVA);
         registerState(186, Material.STATIONARY_LAVA);
@@ -137,7 +140,7 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(188, Material.STATIONARY_LAVA);
         registerState(189, Material.STATIONARY_LAVA);
         registerState(190, Material.STATIONARY_LAVA);
-        registerState(191, Material.STATIONARY_LAVA);
+        registerState(191, Material.STATIONARY_LAVA);*/
         registerState(192, Material.SAND).subMaterial(SubMaterial.SAND_NORMAL); // complete
         registerState(193, Material.SAND).subMaterial(SubMaterial.SAND_RED); // complete
         registerState(208, Material.GRAVEL); // complete
@@ -816,24 +819,24 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1952, Material.DRAGON_EGG); // complete
         registerState(1968, Material.REDSTONE_LAMP_OFF); // complete
         registerState(1984, Material.REDSTONE_LAMP_ON); // complete
-        registerState(2000, Material.WOOD_DOUBLE_STEP);
-        registerState(2001, Material.WOOD_DOUBLE_STEP);
-        registerState(2002, Material.WOOD_DOUBLE_STEP);
-        registerState(2003, Material.WOOD_DOUBLE_STEP);
-        registerState(2004, Material.WOOD_DOUBLE_STEP);
-        registerState(2005, Material.WOOD_DOUBLE_STEP);
-        registerState(2016, Material.WOOD_DOUBLE_STEP);
-        registerState(2017, Material.WOOD_DOUBLE_STEP);
-        registerState(2018, Material.WOOD_DOUBLE_STEP);
-        registerState(2019, Material.WOOD_STEP);
-        registerState(2020, Material.WOOD_STEP);
-        registerState(2021, Material.WOOD_STEP);
-        registerState(2024, Material.WOOD_STEP);
-        registerState(2025, Material.WOOD_STEP);
-        registerState(2026, Material.WOOD_STEP);
-        registerState(2027, Material.WOOD_STEP);
-        registerState(2028, Material.WOOD_STEP);
-        registerState(2029, Material.WOOD_STEP);
+        registerState(2000, Material.WOOD_DOUBLE_STEP).subMaterial(SubMaterial.WOOD_OAK); // complete
+        registerState(2001, Material.WOOD_DOUBLE_STEP).subMaterial(SubMaterial.WOOD_SPRUCE); // complete
+        registerState(2002, Material.WOOD_DOUBLE_STEP).subMaterial(SubMaterial.WOOD_BIRCH); // complete
+        registerState(2003, Material.WOOD_DOUBLE_STEP).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
+        registerState(2004, Material.WOOD_DOUBLE_STEP).subMaterial(SubMaterial.WOOD_ACACIA); // complete
+        registerState(2005, Material.WOOD_DOUBLE_STEP).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
+        registerState(2016, Material.WOOD_STEP).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.WOOD_OAK); // complete
+        registerState(2017, Material.WOOD_STEP).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.WOOD_SPRUCE); // complete
+        registerState(2018, Material.WOOD_STEP).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.WOOD_BIRCH); // complete
+        registerState(2019, Material.WOOD_STEP).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
+        registerState(2020, Material.WOOD_STEP).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.WOOD_ACACIA); // complete
+        registerState(2021, Material.WOOD_STEP).half(VerticalHalf.BOTTOM).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
+        registerState(2024, Material.WOOD_STEP).half(VerticalHalf.TOP).subMaterial(SubMaterial.WOOD_OAK); // complete
+        registerState(2025, Material.WOOD_STEP).half(VerticalHalf.TOP).subMaterial(SubMaterial.WOOD_SPRUCE); // complete
+        registerState(2026, Material.WOOD_STEP).half(VerticalHalf.TOP).subMaterial(SubMaterial.WOOD_BIRCH); // complete
+        registerState(2027, Material.WOOD_STEP).half(VerticalHalf.TOP).subMaterial(SubMaterial.WOOD_JUNGLE); // complete
+        registerState(2028, Material.WOOD_STEP).half(VerticalHalf.TOP).subMaterial(SubMaterial.WOOD_ACACIA); // complete
+        registerState(2029, Material.WOOD_STEP).half(VerticalHalf.TOP).subMaterial(SubMaterial.WOOD_DARK_OAK); // complete
         registerState(2032, Material.COCOA).age(0).facing(Facing.SOUTH); // complete
         registerState(2033, Material.COCOA).age(0).facing(Facing.WEST); // complete
         registerState(2034, Material.COCOA).age(0).facing(Facing.NORTH); // complete
@@ -846,7 +849,6 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2041, Material.COCOA).age(2).facing(Facing.WEST); // complete
         registerState(2042, Material.COCOA).age(2).facing(Facing.NORTH); // complete
         registerState(2043, Material.COCOA).age(2).facing(Facing.EAST); // complete
-
         registerState(2048, Material.SANDSTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
         registerState(2049, Material.SANDSTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(2050, Material.SANDSTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
@@ -901,7 +903,6 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2149, Material.SPRUCE_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(2150, Material.SPRUCE_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2151, Material.SPRUCE_WOOD_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
-
         registerState(2160, Material.BIRCH_WOOD_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
         registerState(2161, Material.BIRCH_WOOD_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(2162, Material.BIRCH_WOOD_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete

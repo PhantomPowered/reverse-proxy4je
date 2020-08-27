@@ -53,12 +53,12 @@ public enum SubMaterial {
     COLOR_RED(14, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE, Material.CARPET),
     COLOR_BLACK(15, Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE, Material.CARPET),
 
-    WOOD_OAK(0, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
-    WOOD_SPRUCE(1, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
-    WOOD_BIRCH(2, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
-    WOOD_JUNGLE(3, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES),
-    WOOD_ACACIA(0, Material.PLANKS, Material.LOG_2, Material.SAPLING, Material.LEAVES_2),
-    WOOD_DARK_OAK(1, Material.PLANKS, Material.LOG_2, Material.SAPLING, Material.LEAVES_2),
+    WOOD_OAK(0, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES, Material.WOOD_STEP, Material.WOOD_DOUBLE_STEP),
+    WOOD_SPRUCE(1, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES, Material.WOOD_STEP, Material.WOOD_DOUBLE_STEP),
+    WOOD_BIRCH(2, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES, Material.WOOD_STEP, Material.WOOD_DOUBLE_STEP),
+    WOOD_JUNGLE(3, Material.PLANKS, Material.LOG, Material.SAPLING, Material.LEAVES, Material.WOOD_STEP, Material.WOOD_DOUBLE_STEP),
+    WOOD_ACACIA(0, Material.PLANKS, Material.LOG_2, Material.SAPLING, Material.LEAVES_2, Material.WOOD_STEP, Material.WOOD_DOUBLE_STEP),
+    WOOD_DARK_OAK(1, Material.PLANKS, Material.LOG_2, Material.SAPLING, Material.LEAVES_2, Material.WOOD_STEP, Material.WOOD_DOUBLE_STEP),
 
     SANDSTONE_NORMAL(0, Material.SANDSTONE, Material.RED_SANDSTONE),
     SANDSTONE_CHISELED(1, Material.SANDSTONE, Material.RED_SANDSTONE),
