@@ -36,15 +36,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public final class DefaultEventManager implements EventManager {
+
+    private static final Comparator<ListenerContainer> PRIORITY_COMPARATOR = (c1, c2) -> (c1.getPriority().getPriority() > c2.getPriority().getPriority()) ? 1 : -1;
 
     private final Logger logger;
     private final List<ListenerContainer> registeredListeners = new CopyOnWriteArrayList<>();
@@ -66,14 +65,20 @@ public final class DefaultEventManager implements EventManager {
     public @NotNull <T extends Event> T callEvent(@NotNull T event) {
         event.preCall();
 
+        List<ListenerContainer> handlers = new ArrayList<>();
         for (ListenerContainer registeredListener : this.registeredListeners) {
             if (registeredListener.getTargetEventClass().equals(event.getClass())) {
-                try {
-                    this.logger.fine("Posting event " + event.getClass().getName() + " to listener " + registeredListener.getListenerInstance().getClass().getName());
-                    registeredListener.call(event);
-                } catch (final InvocationTargetException | IllegalAccessException ex) {
-                    ex.printStackTrace();
-                }
+                handlers.add(registeredListener);
+            }
+        }
+
+        handlers.sort(PRIORITY_COMPARATOR);
+        for (ListenerContainer registeredListener : handlers) {
+            try {
+                this.logger.fine("Posting event " + event.getClass().getName() + " to listener " + registeredListener.getListenerInstance().getClass().getName());
+                registeredListener.call(event);
+            } catch (final InvocationTargetException | IllegalAccessException ex) {
+                ex.printStackTrace();
             }
         }
 
@@ -109,8 +114,6 @@ public final class DefaultEventManager implements EventManager {
             );
             this.registeredListeners.add(container);
         }
-
-        this.registeredListeners.sort(Comparator.comparingInt(t0 -> t0.getPriority().getPriority()));
     }
 
     @Override
@@ -149,4 +152,5 @@ public final class DefaultEventManager implements EventManager {
     public @NotNull Collection<ListenerContainer> getRegisteredListeners() {
         return Collections.unmodifiableCollection(this.registeredListeners);
     }
+
 }
