@@ -70,8 +70,7 @@ public class ServerPacketHandler {
             return;
         }
 
-        PlayerInfoCache cache = (PlayerInfoCache) client.getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
-        cache.replaceOwn(player, packet);
+        client.getPacketCache().getHandler(PlayerInfoCache.class).replaceOwn(player, packet);
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.REDIRECTING)

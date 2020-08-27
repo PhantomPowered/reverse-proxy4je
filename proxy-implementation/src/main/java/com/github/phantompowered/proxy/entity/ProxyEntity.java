@@ -414,7 +414,7 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     }
 
     private EntityEffectCache getEffectCache() {
-        return (EntityEffectCache) this.client.getPacketCache().getHandler(handler -> handler instanceof EntityEffectCache);
+        return this.client.getPacketCache().getHandler(EntityEffectCache.class);
     }
 
     @Override

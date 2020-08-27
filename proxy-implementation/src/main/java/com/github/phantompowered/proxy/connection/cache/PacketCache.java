@@ -69,6 +69,11 @@ public class PacketCache {
         return this.handlers.stream().filter(filter).findFirst().orElse(null);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends PacketCacheHandler> T getHandler(Class<T> handlerClass) {
+        return (T) this.getHandler(handlerClass::isInstance);
+    }
+
     public BlockAccess getBlockAccess() {
         return this.blockAccess;
     }
@@ -109,7 +114,7 @@ public class PacketCache {
     }
 
     public int getBlockStateAt(Location pos) {
-        return ((ChunkCache) this.getHandler(handler -> handler instanceof ChunkCache)).getBlockStateAt(pos);
+        return this.getHandler(ChunkCache.class).getBlockStateAt(pos);
     }
 
     public Material getMaterialAt(Location pos) {

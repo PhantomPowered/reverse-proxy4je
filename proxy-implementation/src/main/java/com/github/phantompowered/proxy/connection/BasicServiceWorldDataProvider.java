@@ -54,15 +54,15 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
     }
 
     private GameStateCache getGameStateCache() {
-        return (GameStateCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof GameStateCache);
+        return this.connection.getClient().getPacketCache().getHandler(GameStateCache.class);
     }
 
     private EntityCache getEntityCache() {
-        return (EntityCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof EntityCache);
+        return this.connection.getClient().getPacketCache().getHandler(EntityCache.class);
     }
 
     private PlayerInfoCache getPlayerInfoCache() {
-        return (PlayerInfoCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInfoCache);
+        return this.connection.getClient().getPacketCache().getHandler(PlayerInfoCache.class);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class BasicServiceWorldDataProvider implements ServiceWorldDataProvider {
     public @NotNull GameMode getOwnGameMode() {
         GameMode gameMode = this.getGameStateCache().getGameMode();
         if (gameMode == null) {
-            LoginCache cache = (LoginCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof LoginCache);
+            LoginCache cache = this.connection.getClient().getPacketCache().getHandler(LoginCache.class);
             gameMode = GameMode.getById(cache.getLastLogin().getGameMode());
         }
         if (gameMode == null) {

@@ -45,7 +45,7 @@ public class DefaultServiceInventory implements ServiceInventory {
     }
 
     private PlayerInventoryCache cache() {
-        return (PlayerInventoryCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof PlayerInventoryCache);
+        return this.connection.getClient().getPacketCache().getHandler(PlayerInventoryCache.class);
     }
 
     @Override
@@ -55,8 +55,7 @@ public class DefaultServiceInventory implements ServiceInventory {
 
     @Override
     public int getHeldItemSlot() {
-        HeldItemSlotCache cache = (HeldItemSlotCache) this.connection.getClient().getPacketCache().getHandler(handler -> handler instanceof HeldItemSlotCache);
-        return cache.getSlot();
+        return this.connection.getClient().getPacketCache().getHandler(HeldItemSlotCache.class).getSlot();
     }
 
     @Override

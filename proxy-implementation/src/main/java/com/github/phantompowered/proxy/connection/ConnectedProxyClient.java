@@ -120,7 +120,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     private void resetPacketCache() {
         this.packetCache.reset();
-        this.scoreboard = new BasicScoreboard(connection, (ScoreboardCache) this.packetCache.getHandler(handler -> handler instanceof ScoreboardCache));
+        this.scoreboard = new BasicScoreboard(connection, this.packetCache.getHandler(ScoreboardCache.class));
     }
 
     public void setAuthentication(UserAuthentication authentication, MCServiceCredentials credentials) {
