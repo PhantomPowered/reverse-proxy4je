@@ -1,6 +1,6 @@
 package com.github.phantompowered.proxy.api.entity.types.living.human;
 
-import com.github.phantompowered.proxy.api.block.Material;
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.entity.PlayerInfo;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.player.inventory.EquipmentSlot;

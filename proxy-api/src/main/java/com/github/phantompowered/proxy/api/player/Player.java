@@ -24,8 +24,8 @@
  */
 package com.github.phantompowered.proxy.api.player;
 
-import com.github.phantompowered.proxy.api.block.Material;
 import com.github.phantompowered.proxy.api.block.half.HorizontalHalf;
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
 import com.github.phantompowered.proxy.api.command.sender.CommandSender;
 import com.github.phantompowered.proxy.api.connection.Connection;

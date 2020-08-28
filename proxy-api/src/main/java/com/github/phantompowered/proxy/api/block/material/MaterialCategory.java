@@ -22,23 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.block;
+package com.github.phantompowered.proxy.api.block.material;
 
-import com.github.phantompowered.proxy.api.block.material.Material;
-import org.jetbrains.annotations.Nullable;
+public enum MaterialCategory {
 
-public abstract class BlockMaterialHandler implements BlockConsumer {
+    SWORD,
+    ARMOR,
+    FENCE,
+    FENCE_GATE,
+    WOODEN,
+    DOOR,
+    ORE,
+    GRAVITY,
+    OCCLUDING,
+    BURNABLE,
+    FLAMMABLE,
+    TRANSPARENT,
+    SOLID,
+    EDIBLE
 
-    private final BlockStateRegistry registry;
-
-    public BlockMaterialHandler(BlockStateRegistry registry) {
-        this.registry = registry;
-    }
-
-    public abstract void accept(int x, int y, int z, @Nullable Material oldMaterial, @Nullable Material newMaterial);
-
-    @Override
-    public void accept(int x, int y, int z, int oldState, int state) {
-        this.accept(x, y, z, oldState == -1 ? null : this.registry.getMaterial(oldState), state == -1 ? null : this.registry.getMaterial(state));
-    }
 }

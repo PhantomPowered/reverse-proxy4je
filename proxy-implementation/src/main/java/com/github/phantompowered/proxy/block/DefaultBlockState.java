@@ -27,6 +27,8 @@ package com.github.phantompowered.proxy.block;
 import com.github.phantompowered.proxy.api.block.*;
 import com.github.phantompowered.proxy.api.block.half.HorizontalHalf;
 import com.github.phantompowered.proxy.api.block.half.VerticalHalf;
+import com.github.phantompowered.proxy.api.block.material.Material;
+import com.github.phantompowered.proxy.api.block.material.SubMaterial;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -35,6 +35,7 @@ import com.github.phantompowered.proxy.connection.BasicServiceConnection;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityVelocity;
 
+// TODO implement (Minecraft 1.8 MCP Client: Entity#moveEntity and Entity#pushOutOfBlocks might help)
 public class PlayerVelocityHandler {
 
     private static final double DRAG = 0.02;
@@ -175,7 +176,6 @@ public class PlayerVelocityHandler {
             this.motionZ = 0.0F;
         }*/
 
-        // todo implement with material?
         //int material = ((ChunkCache) this.proxyClient.getPacketCache().getHandler(handler -> handler instanceof ChunkCache)).getMaterial(new BlockPos(x, y - 1, z));
         //this.onGround = (material != 0 && material != 10 /* flowing lava */ && material != 11 /* stationary lava */ &&
         //        material != 8 /* flowing water */ && material != 9 /* stationary water */) && (int) y == y;

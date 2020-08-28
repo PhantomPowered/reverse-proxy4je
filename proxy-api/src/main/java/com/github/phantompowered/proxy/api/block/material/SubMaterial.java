@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.block;
+package com.github.phantompowered.proxy.api.block.material;
 
 public enum SubMaterial {
 

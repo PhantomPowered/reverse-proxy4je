@@ -24,7 +24,7 @@
  */
 package com.github.phantompowered.proxy.entity.types.minecart;
 
-import com.github.phantompowered.proxy.api.block.Material;
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.entity.EntityType;
 import com.github.phantompowered.proxy.api.entity.types.minecart.Minecart;
 import com.github.phantompowered.proxy.api.item.ItemStack;

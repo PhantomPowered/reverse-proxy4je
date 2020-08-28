@@ -26,7 +26,7 @@ package com.github.phantompowered.proxy.connection;
 
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
-import com.github.phantompowered.proxy.api.block.Material;
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.connection.ServiceConnector;

@@ -1,7 +1,7 @@
 package com.github.phantompowered.proxy.entity.types.living.human;
 
 import com.github.phantompowered.proxy.api.APIUtil;
-import com.github.phantompowered.proxy.api.block.Material;
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.entity.LivingEntityType;
 import com.github.phantompowered.proxy.api.entity.PlayerInfo;
 import com.github.phantompowered.proxy.api.entity.PlayerSkinConfiguration;

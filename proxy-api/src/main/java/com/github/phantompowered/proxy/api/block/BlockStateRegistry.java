@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.api.block;
 
+import com.github.phantompowered.proxy.api.block.material.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

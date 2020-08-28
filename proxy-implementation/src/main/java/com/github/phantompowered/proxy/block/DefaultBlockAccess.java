@@ -27,7 +27,7 @@ package com.github.phantompowered.proxy.block;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.BlockConsumer;
 import com.github.phantompowered.proxy.api.block.BlockStateRegistry;
-import com.github.phantompowered.proxy.api.block.Material;
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.player.chunk.ChunkLoadEvent;

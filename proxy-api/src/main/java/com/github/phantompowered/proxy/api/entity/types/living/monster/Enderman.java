@@ -24,7 +24,7 @@
  */
 package com.github.phantompowered.proxy.api.entity.types.living.monster;
 
-import com.github.phantompowered.proxy.api.block.Material;
+import com.github.phantompowered.proxy.api.block.material.Material;
 
 public interface Enderman extends Monster {
 
