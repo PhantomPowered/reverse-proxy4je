@@ -37,6 +37,9 @@ public class ChunkSection {
     private final int yBase;
     private final char[] data;
 
+    private byte[] lightData;
+    private byte[] skyLightData;
+
     public ChunkSection(int yBase) {
         this.yBase = yBase;
         this.data = new char[4096];
@@ -56,5 +59,21 @@ public class ChunkSection {
 
     public int getYLocation() {
         return yBase;
+    }
+
+    public byte[] getLightData() {
+        return this.lightData;
+    }
+
+    public void setLightData(byte[] lightData) {
+        this.lightData = lightData;
+    }
+
+    public byte[] getSkyLightData() {
+        return this.skyLightData;
+    }
+
+    public void setSkyLightData(byte[] skyLightData) {
+        this.skyLightData = skyLightData;
     }
 }

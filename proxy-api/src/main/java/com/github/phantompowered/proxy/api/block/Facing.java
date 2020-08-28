@@ -332,17 +332,18 @@ public enum Facing {
     }
 
     public enum Plane implements Predicate<Facing>, Iterable<Facing> {
-        HORIZONTAL(NORTH, EAST, SOUTH, WEST),
-        VERTICAL(UP, DOWN);
-
-        private final Facing[] facings;
-
-        Plane(Facing... facings) {
-            this.facings = facings;
-        }
+        HORIZONTAL,
+        VERTICAL;
 
         public Facing[] facings() {
-            return this.facings;
+            switch (this) {
+                case HORIZONTAL:
+                    return new Facing[]{Facing.NORTH, Facing.EAST, Facing.SOUTH, Facing.WEST};
+                case VERTICAL:
+                    return new Facing[]{Facing.UP, Facing.DOWN};
+                default:
+                    throw new IllegalStateException("Unexpected value: " + this);
+            }
         }
 
         @Override

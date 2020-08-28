@@ -48,7 +48,7 @@ public class Chunk {
         this.lastChunkData = chunkData;
     }
 
-    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk, int dimension) { // TODO doesn't work in the end
+    private void fillChunk(byte[] data, int chunkSize, boolean fullChunk, int dimension) {
         boolean hasSky = dimension == 0;
 
         int i = 0;
@@ -121,16 +121,16 @@ public class Chunk {
         }
 
         for (ChunkSection section : list) {
-            j = copyArray(ChunkSection.MAX_LIGHT_LEVEL, extracted.data, j);
+            j = copyArray(section.getLightData() == null ? ChunkSection.MAX_LIGHT_LEVEL : section.getLightData(), extracted.data, j);
         }
 
         if (hasSky) {
             for (ChunkSection section : list) {
-                j = copyArray(ChunkSection.MAX_LIGHT_LEVEL, extracted.data, j);
+                j = copyArray(section.getSkyLightData() == null ? ChunkSection.MAX_LIGHT_LEVEL : section.getSkyLightData(), extracted.data, j);
             }
         }
 
-        if (fullChunk) { // todo: why is this always a full chunk?
+        if (fullChunk) { // Without this being a full chunk, this wouldn't work in the end
             copyArray(this.biomeArray, extracted.data, j);
         }
 
