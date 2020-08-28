@@ -11,6 +11,7 @@ import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.entity.types.living.human.EntityPlayer;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.player.Player;
+import com.github.phantompowered.proxy.api.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -74,7 +75,20 @@ public class CommandFind extends NonTabCompleteableCommandCallback {
                 if (entity instanceof EntityPlayer) {
                     PlayerInfo playerInfo = ((EntityPlayer) entity).getPlayerInfo();
                     if (playerInfo != null) {
-                        player.sendMessage(" * " + entity.getLocation().toShortString() + " (" + playerInfo.getUsername() + ")" + " <-> " + distance + " blocks");
+                        String name = playerInfo.getUsername();
+                        if (playerInfo.getDisplayName() != null) {
+                            name = playerInfo.getDisplayName();
+                        }
+                        Team team = player.getConnectedClient().getScoreboard().getTeamByEntry(name);
+                        if (team != null) {
+                            if (team.getPrefix() != null) {
+                                name = team.getPrefix() + name;
+                            }
+                            if (team.getSuffix() != null) {
+                                name = name + team.getSuffix();
+                            }
+                        }
+                        player.sendMessage(" * " + entity.getLocation().toShortString() + " (" + name + "§7)" + " <-> " + distance + " blocks");
                     }
                     continue;
                 }
