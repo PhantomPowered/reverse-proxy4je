@@ -46,12 +46,12 @@ public enum Facing {
 
     private static final Facing[] VALUES = new Facing[6];
     private static final Facing[] HORIZONTALS = new Facing[4];
-    private static final Map<String, Facing> NAME_LOOKUP = Maps.newHashMap();
+    private static final Map<String, Facing> BY_NAME = Maps.newHashMap();
 
     static {
         for (Facing facing : values()) {
             VALUES[facing.index] = facing;
-            NAME_LOOKUP.put(facing.getName().toLowerCase(), facing);
+            BY_NAME.put(facing.getName().toLowerCase(), facing);
 
             if (facing.getAxis().isHorizontal()) {
                 HORIZONTALS[facing.horizontalIndex] = facing;
@@ -67,30 +67,30 @@ public enum Facing {
     private final Facing.AxisDirection axisDirection;
     private final Vector directionVec;
 
-    Facing(int indexIn, int oppositeIn, int horizontalIndexIn, String nameIn, Facing.AxisDirection axisDirectionIn, Facing.Axis axisIn, Vector directionVecIn) {
-        this.index = indexIn;
-        this.horizontalIndex = horizontalIndexIn;
-        this.opposite = oppositeIn;
-        this.name = nameIn;
-        this.axis = axisIn;
-        this.axisDirection = axisDirectionIn;
-        this.directionVec = directionVecIn;
+    Facing(int index, int opposite, int horizontalIndex, String name, Facing.AxisDirection direction, Facing.Axis axis, Vector directionVec) {
+        this.index = index;
+        this.horizontalIndex = horizontalIndex;
+        this.opposite = opposite;
+        this.name = name;
+        this.axis = axis;
+        this.axisDirection = direction;
+        this.directionVec = directionVec;
     }
 
-    public static Facing byName(@NotNull String name) {
-        return NAME_LOOKUP.get(name.toLowerCase());
+    public static Facing getByName(@NotNull String name) {
+        return BY_NAME.get(name.toLowerCase());
     }
 
-    public static Facing getFront(int index) {
+    public static Facing getByIndex(int index) {
         return VALUES[Math.abs(index % VALUES.length)];
     }
 
-    public static Facing getHorizontal(int horizontalIndex) {
+    public static Facing getByHorizontalIndex(int horizontalIndex) {
         return HORIZONTALS[Math.abs(horizontalIndex % HORIZONTALS.length)];
     }
 
-    public static Facing fromAngle(double angle) {
-        return getHorizontal(MathHelper.floor(angle / 90.0D + 0.5D) & 3);
+    public static Facing getByAngle(double angle) {
+        return getByHorizontalIndex(MathHelper.floor(angle / 90.0D + 0.5D) & 3);
     }
 
     public static Facing getFacingFromVector(float x, float y, float z) {
@@ -132,7 +132,7 @@ public enum Facing {
     }
 
     public Facing getOpposite() {
-        return getFront(this.opposite);
+        return getByIndex(this.opposite);
     }
 
     public Facing rotateAround(Facing.Axis axis) {
@@ -332,18 +332,17 @@ public enum Facing {
     }
 
     public enum Plane implements Predicate<Facing>, Iterable<Facing> {
-        HORIZONTAL,
-        VERTICAL;
+        HORIZONTAL(NORTH, EAST, SOUTH, WEST),
+        VERTICAL(UP, DOWN);
+
+        private final Facing[] facings;
+
+        Plane(Facing... facings) {
+            this.facings = facings;
+        }
 
         public Facing[] facings() {
-            switch (this) {
-                case HORIZONTAL:
-                    return new Facing[]{Facing.NORTH, Facing.EAST, Facing.SOUTH, Facing.WEST};
-                case VERTICAL:
-                    return new Facing[]{Facing.UP, Facing.DOWN};
-                default:
-                    throw new Error("Someone's been tampering with the universe!");
-            }
+            return this.facings;
         }
 
         @Override

@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.brand;
 
+import com.github.phantompowered.proxy.ImplementationUtil;
 import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.event.annotation.Listener;
 import com.github.phantompowered.proxy.api.events.connection.PluginMessageEvent;
@@ -42,7 +43,7 @@ public final class ProxyBrandChangeListener {
             buf.release();
 
             buf = Unpooled.buffer();
-            ByteBufUtils.writeString(event.getDirection() == ProtocolDirection.TO_SERVER ? "vanilla" : "RopProxy <-> " + serverBrand, buf);
+            ByteBufUtils.writeString(event.getDirection() == ProtocolDirection.TO_SERVER ? "vanilla" : ImplementationUtil.SERVER_BRAND_PREFIX + serverBrand, buf);
             event.setData(ByteBufUtils.toArray(buf));
         }
     }

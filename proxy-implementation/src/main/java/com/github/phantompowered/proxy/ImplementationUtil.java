@@ -13,6 +13,8 @@ import java.util.UUID;
 
 public final class ImplementationUtil {
 
+    public static final String SERVER_BRAND_PREFIX = "PhantomProxy <-> ";
+
     public static final Gson GSON = GsonComponentSerializer.gson().populator().apply(new GsonBuilder().registerTypeAdapter(Favicon.class, Favicon.FAVICON_TYPE_ADAPTER)).create();
     public static final Gson GAME_PROFILE_GSON = new GsonBuilder()
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())

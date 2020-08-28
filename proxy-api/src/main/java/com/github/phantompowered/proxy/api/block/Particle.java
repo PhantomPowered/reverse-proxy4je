@@ -79,8 +79,8 @@ public enum Particle {
         this.argumentCount = argumentCount;
     }
 
-    Particle(String particleNameIn, int particleIDIn, boolean shouldIgnoreRange) {
-        this(particleNameIn, particleIDIn, shouldIgnoreRange, 0);
+    Particle(String name, int id, boolean shouldIgnoreRange) {
+        this(name, id, shouldIgnoreRange, 0);
     }
 
     public static String[] getParticleNames() {

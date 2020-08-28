@@ -76,7 +76,7 @@ public interface BlockState {
     boolean isOccupied();
 
     @Nullable
-    BlockShape getShape();
+    RailShape getShape();
 
     boolean isShort();
 

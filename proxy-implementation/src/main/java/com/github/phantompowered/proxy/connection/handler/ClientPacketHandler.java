@@ -183,7 +183,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        Facing facing = Facing.getFront(packet.getPlacedBlockDirection());
+        Facing facing = Facing.getByIndex(packet.getPlacedBlockDirection());
         Location blockLocation = packet.getLocation().offset(facing);
         PlayerBlockPlaceEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerBlockPlaceEvent(player, packet.getLocation(), blockLocation, packet.getStack(), facing, new Vector(packet.getFacingX(), packet.getFacingY(), packet.getFacingZ())));

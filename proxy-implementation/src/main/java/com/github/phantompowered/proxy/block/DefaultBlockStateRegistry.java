@@ -214,30 +214,30 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(429, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.WEST); // complete
         registerState(430, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.NORTH); // complete
         registerState(431, Material.BED_BLOCK).occupied().half(VerticalHalf.TOP).facing(Facing.EAST); // complete
-        registerState(432, Material.POWERED_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
-        registerState(433, Material.POWERED_RAIL).shape(BlockShape.EAST_WEST); // complete
-        registerState(434, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
-        registerState(435, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_WEST); // complete
-        registerState(436, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_NORTH); // complete
-        registerState(437, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_SOUTH); // complete
-        registerState(440, Material.POWERED_RAIL).shape(BlockShape.NORTH_SOUTH).powered(); // complete
-        registerState(441, Material.POWERED_RAIL).shape(BlockShape.EAST_WEST).powered(); // complete
-        registerState(442, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_EAST).powered(); // complete
-        registerState(443, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_WEST).powered(); // complete
-        registerState(444, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_NORTH).powered(); // complete
-        registerState(445, Material.POWERED_RAIL).shape(BlockShape.ASCENDING_SOUTH).powered(); // complete
-        registerState(448, Material.DETECTOR_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
-        registerState(449, Material.DETECTOR_RAIL).shape(BlockShape.EAST_WEST); // complete
-        registerState(450, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
-        registerState(451, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_WEST); // complete
-        registerState(452, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_NORTH); // complete
-        registerState(453, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_SOUTH); // complete
-        registerState(456, Material.DETECTOR_RAIL).shape(BlockShape.NORTH_SOUTH).powered(); // complete
-        registerState(457, Material.DETECTOR_RAIL).shape(BlockShape.EAST_WEST).powered(); // complete
-        registerState(458, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_EAST).powered(); // complete
-        registerState(459, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_WEST).powered(); // complete
-        registerState(460, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_NORTH).powered(); // complete
-        registerState(461, Material.DETECTOR_RAIL).shape(BlockShape.ASCENDING_SOUTH).powered(); // complete
+        registerState(432, Material.POWERED_RAIL).shape(RailShape.NORTH_SOUTH); // complete
+        registerState(433, Material.POWERED_RAIL).shape(RailShape.EAST_WEST); // complete
+        registerState(434, Material.POWERED_RAIL).shape(RailShape.ASCENDING_EAST); // complete
+        registerState(435, Material.POWERED_RAIL).shape(RailShape.ASCENDING_WEST); // complete
+        registerState(436, Material.POWERED_RAIL).shape(RailShape.ASCENDING_NORTH); // complete
+        registerState(437, Material.POWERED_RAIL).shape(RailShape.ASCENDING_SOUTH); // complete
+        registerState(440, Material.POWERED_RAIL).shape(RailShape.NORTH_SOUTH).powered(); // complete
+        registerState(441, Material.POWERED_RAIL).shape(RailShape.EAST_WEST).powered(); // complete
+        registerState(442, Material.POWERED_RAIL).shape(RailShape.ASCENDING_EAST).powered(); // complete
+        registerState(443, Material.POWERED_RAIL).shape(RailShape.ASCENDING_WEST).powered(); // complete
+        registerState(444, Material.POWERED_RAIL).shape(RailShape.ASCENDING_NORTH).powered(); // complete
+        registerState(445, Material.POWERED_RAIL).shape(RailShape.ASCENDING_SOUTH).powered(); // complete
+        registerState(448, Material.DETECTOR_RAIL).shape(RailShape.NORTH_SOUTH); // complete
+        registerState(449, Material.DETECTOR_RAIL).shape(RailShape.EAST_WEST); // complete
+        registerState(450, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_EAST); // complete
+        registerState(451, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_WEST); // complete
+        registerState(452, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_NORTH); // complete
+        registerState(453, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_SOUTH); // complete
+        registerState(456, Material.DETECTOR_RAIL).shape(RailShape.NORTH_SOUTH).powered(); // complete
+        registerState(457, Material.DETECTOR_RAIL).shape(RailShape.EAST_WEST).powered(); // complete
+        registerState(458, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_EAST).powered(); // complete
+        registerState(459, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_WEST).powered(); // complete
+        registerState(460, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_NORTH).powered(); // complete
+        registerState(461, Material.DETECTOR_RAIL).shape(RailShape.ASCENDING_SOUTH).powered(); // complete
         registerState(464, Material.PISTON_STICKY_BASE).facing(Facing.DOWN); // complete
         registerState(465, Material.PISTON_STICKY_BASE).facing(Facing.UP); // complete
         registerState(466, Material.PISTON_STICKY_BASE).facing(Facing.NORTH); // complete
@@ -468,16 +468,16 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(1043, Material.LADDER).facing(Facing.SOUTH); // complete
         registerState(1044, Material.LADDER).facing(Facing.WEST); // complete
         registerState(1045, Material.LADDER).facing(Facing.EAST); // complete
-        registerState(1056, Material.RAILS).shape(BlockShape.NORTH_SOUTH); // complete
-        registerState(1057, Material.RAILS).shape(BlockShape.EAST_WEST); // complete
-        registerState(1058, Material.RAILS).shape(BlockShape.ASCENDING_EAST); // complete
-        registerState(1059, Material.RAILS).shape(BlockShape.ASCENDING_WEST); // complete
-        registerState(1060, Material.RAILS).shape(BlockShape.ASCENDING_NORTH); // complete
-        registerState(1061, Material.RAILS).shape(BlockShape.ASCENDING_SOUTH); // complete
-        registerState(1062, Material.RAILS).shape(BlockShape.SOUTH_EAST); // complete
-        registerState(1063, Material.RAILS).shape(BlockShape.SOUTH_WEST); // complete
-        registerState(1064, Material.RAILS).shape(BlockShape.NORTH_WEST); // complete
-        registerState(1065, Material.RAILS).shape(BlockShape.NORTH_EAST); // complete
+        registerState(1056, Material.RAILS).shape(RailShape.NORTH_SOUTH); // complete
+        registerState(1057, Material.RAILS).shape(RailShape.EAST_WEST); // complete
+        registerState(1058, Material.RAILS).shape(RailShape.ASCENDING_EAST); // complete
+        registerState(1059, Material.RAILS).shape(RailShape.ASCENDING_WEST); // complete
+        registerState(1060, Material.RAILS).shape(RailShape.ASCENDING_NORTH); // complete
+        registerState(1061, Material.RAILS).shape(RailShape.ASCENDING_SOUTH); // complete
+        registerState(1062, Material.RAILS).shape(RailShape.SOUTH_EAST); // complete
+        registerState(1063, Material.RAILS).shape(RailShape.SOUTH_WEST); // complete
+        registerState(1064, Material.RAILS).shape(RailShape.NORTH_WEST); // complete
+        registerState(1065, Material.RAILS).shape(RailShape.NORTH_EAST); // complete
         registerState(1072, Material.COBBLESTONE_STAIRS).facing(Facing.EAST).half(VerticalHalf.BOTTOM); // complete
         registerState(1073, Material.COBBLESTONE_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(1074, Material.COBBLESTONE_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
@@ -1103,18 +1103,18 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         registerState(2501, Material.QUARTZ_STAIRS).facing(Facing.WEST).half(VerticalHalf.BOTTOM); // complete
         registerState(2502, Material.QUARTZ_STAIRS).facing(Facing.SOUTH).half(VerticalHalf.BOTTOM); // complete
         registerState(2503, Material.QUARTZ_STAIRS).facing(Facing.NORTH).half(VerticalHalf.BOTTOM); // complete
-        registerState(2512, Material.ACTIVATOR_RAIL).shape(BlockShape.NORTH_SOUTH); // complete
-        registerState(2513, Material.ACTIVATOR_RAIL).shape(BlockShape.EAST_WEST); // complete
-        registerState(2514, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_EAST); // complete
-        registerState(2515, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_WEST); // complete
-        registerState(2516, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_NORTH); // complete
-        registerState(2517, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_SOUTH); // complete
-        registerState(2520, Material.ACTIVATOR_RAIL).shape(BlockShape.NORTH_SOUTH).powered(); // complete
-        registerState(2521, Material.ACTIVATOR_RAIL).shape(BlockShape.EAST_WEST).powered(); // complete
-        registerState(2522, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_EAST).powered(); // complete
-        registerState(2523, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_WEST).powered(); // complete
-        registerState(2524, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_NORTH).powered(); // complete
-        registerState(2525, Material.ACTIVATOR_RAIL).shape(BlockShape.ASCENDING_SOUTH).powered(); // complete
+        registerState(2512, Material.ACTIVATOR_RAIL).shape(RailShape.NORTH_SOUTH); // complete
+        registerState(2513, Material.ACTIVATOR_RAIL).shape(RailShape.EAST_WEST); // complete
+        registerState(2514, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_EAST); // complete
+        registerState(2515, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_WEST); // complete
+        registerState(2516, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_NORTH); // complete
+        registerState(2517, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_SOUTH); // complete
+        registerState(2520, Material.ACTIVATOR_RAIL).shape(RailShape.NORTH_SOUTH).powered(); // complete
+        registerState(2521, Material.ACTIVATOR_RAIL).shape(RailShape.EAST_WEST).powered(); // complete
+        registerState(2522, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_EAST).powered(); // complete
+        registerState(2523, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_WEST).powered(); // complete
+        registerState(2524, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_NORTH).powered(); // complete
+        registerState(2525, Material.ACTIVATOR_RAIL).shape(RailShape.ASCENDING_SOUTH).powered(); // complete
         registerState(2528, Material.DROPPER).facing(Facing.DOWN); // complete
         registerState(2529, Material.DROPPER).facing(Facing.UP); // complete
         registerState(2530, Material.DROPPER).facing(Facing.NORTH); // complete

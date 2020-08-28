@@ -60,10 +60,6 @@ public interface BlockAccess {
 
     boolean canSeeSky(@NotNull Location pos);
 
-    default int getStrongPower(@NotNull Location pos, @NotNull Facing direction) { // redstone (0 - 15)
-        return 0;
-    }
-
     void setMaterial(@NotNull Location pos, @Nullable Material material);
 
     void setBlockState(@NotNull Location pos, int blockState);

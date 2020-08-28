@@ -54,7 +54,7 @@ public class DefaultBlockState implements BlockState {
     private boolean checkDecay;
     private boolean triggered;
     private boolean occupied;
-    private BlockShape shape;
+    private RailShape shape;
     private boolean isShort;
     private PistonType pistonType;
     private int age;
@@ -164,7 +164,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @CanIgnoreReturnValue
-    DefaultBlockState shape(BlockShape shape) {
+    DefaultBlockState shape(RailShape shape) {
         this.shape = shape;
         return this;
     }
@@ -372,7 +372,7 @@ public class DefaultBlockState implements BlockState {
     }
 
     @Override
-    public @Nullable BlockShape getShape() {
+    public @Nullable RailShape getShape() {
         return this.shape;
     }
 

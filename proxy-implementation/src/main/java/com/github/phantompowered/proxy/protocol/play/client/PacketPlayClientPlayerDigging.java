@@ -51,7 +51,7 @@ public class PacketPlayClientPlayerDigging implements Packet {
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         this.action = Action.values()[protoBuf.readVarInt()];
         this.location = protoBuf.readLocation();
-        this.facing = Facing.getFront(protoBuf.readUnsignedByte());
+        this.facing = Facing.getByIndex(protoBuf.readUnsignedByte());
     }
 
     @Override

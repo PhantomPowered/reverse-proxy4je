@@ -65,7 +65,7 @@ public class PacketPlayServerSpawnEntityPainting implements Packet, EntityPacket
         this.entityId = protoBuf.readVarInt();
         this.title = protoBuf.readString();
         this.location = protoBuf.readLocation();
-        this.facing = Facing.getHorizontal(protoBuf.readUnsignedByte());
+        this.facing = Facing.getByHorizontalIndex(protoBuf.readUnsignedByte());
     }
 
     @Override

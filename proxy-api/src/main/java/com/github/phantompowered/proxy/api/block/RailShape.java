@@ -24,7 +24,7 @@
  */
 package com.github.phantompowered.proxy.api.block;
 
-public enum BlockShape {
+public enum RailShape {
 
     NORTH_SOUTH,
     NORTH_WEST,
