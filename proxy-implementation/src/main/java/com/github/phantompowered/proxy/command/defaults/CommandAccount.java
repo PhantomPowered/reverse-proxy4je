@@ -101,8 +101,8 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         } else if (args.length == 2 && args[0].equalsIgnoreCase("start")) {
 
             for (MCServiceCredentials credentials : storage.getAll()) {
-                if ((credentials.getEmail() != null && credentials.getEmail().equalsIgnoreCase(args[1])) ||
-                        (credentials.getUsername() != null && credentials.getUsername().equalsIgnoreCase(args[1]))) {
+                if ((credentials.getEmail() != null && credentials.getEmail().equalsIgnoreCase(args[1]))
+                        || (credentials.getUsername() != null && credentials.getUsername().equalsIgnoreCase(args[1]))) {
                     sender.sendMessage("§7Starting client §e" + credentials + "§7...");
                     if (credentials.getDefaultServer() == null) {
                         sender.sendMessage("§cFailed! No default server specified for this client");

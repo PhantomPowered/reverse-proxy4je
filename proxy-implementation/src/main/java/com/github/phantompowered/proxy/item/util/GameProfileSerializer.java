@@ -50,7 +50,7 @@ public final class GameProfileSerializer {
             stringUniqueId = compound.getString(GameProfilePropertyKeys.ID);
         }
 
-        if (name == null || name.isEmpty() || stringUniqueId == null || stringUniqueId.isEmpty()) {
+        if (stringUniqueId == null || stringUniqueId.isEmpty()) {
             return null;
         } else {
             UUID uniqueId;

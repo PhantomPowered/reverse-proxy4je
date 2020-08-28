@@ -59,7 +59,9 @@ public class ClientPacketHandler {
         if (player.getConnectedClient() != null && player.getConnectedClient().isConnected()) {
 
             if (packet.getPacket() != null && player.getConnectedClient() instanceof BasicServiceConnection) {
-                ((BasicServiceConnection) player.getConnectedClient()).getEntityRewrite().updatePacketToServer(packet.getPacket(), player.getEntityId(), player.getConnectedClient().getEntityId());
+                if (player.getEntityId() != player.getConnectedClient().getEntityId()) {
+                    ((BasicServiceConnection) player.getConnectedClient()).getEntityRewrite().updatePacketToServer(packet.getPacket(), player.getEntityId(), player.getConnectedClient().getEntityId());
+                }
                 ((BasicServiceConnection) player.getConnectedClient()).getClient().handleClientPacket(packet.getPacket());
                 ((BasicServiceConnection) player.getConnectedClient()).getClient().getVelocityHandler().handlePacket(ProtocolDirection.TO_SERVER, packet.getPacket());
             }

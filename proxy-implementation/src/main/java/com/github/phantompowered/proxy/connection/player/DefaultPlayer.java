@@ -410,9 +410,15 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendPacket(@NotNull Packet packet) {
+        this.write((Object) packet);
+    }
+
+    @Override
+    public void write(@NotNull Object packet) {
         ServiceConnection connection = this.connectingClient != null ? this.connectingClient : this.connectedClient;
-        if (connection instanceof BasicServiceConnection) {
-            ((BasicServiceConnection) connection).getEntityRewrite().updatePacketToClient(packet, connection.getEntityId(), this.entityId);
+
+        if (packet instanceof Packet && connection instanceof BasicServiceConnection && connection.getEntityId() != this.entityId) {
+            ((BasicServiceConnection) connection).getEntityRewrite().updatePacketToClient((Packet) packet, connection.getEntityId(), this.entityId);
         }
 
         this.channel.write(packet);

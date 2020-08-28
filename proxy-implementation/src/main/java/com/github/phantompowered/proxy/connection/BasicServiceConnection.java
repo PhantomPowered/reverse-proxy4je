@@ -395,6 +395,8 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
         return this.tabFooter;
     }
 
+    // TODO the connection management doesn't work properly, especially the detection of a disconnection by the server
+
     @Override
     public @NotNull Task<Boolean> connect() {
         return this.connect(EmptyTaskFutureListener.BOOL_INSTANCE);
