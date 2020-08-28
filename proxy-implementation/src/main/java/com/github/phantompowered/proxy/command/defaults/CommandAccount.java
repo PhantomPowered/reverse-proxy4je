@@ -95,8 +95,24 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
             sender.sendMessage("§aSuccessfully imported account " + args[2]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("close")) {
-            this.closeAll(connector, sender, client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(args[1]))
-                    || args[1].equalsIgnoreCase(client.getName()));
+
+            this.closeAll(connector, sender, this.emailOrName(args[1]));
+
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("start")) {
+
+            for (MCServiceCredentials credentials : storage.getAll()) {
+                if ((credentials.getEmail() != null && credentials.getEmail().equalsIgnoreCase(args[1])) ||
+                        (credentials.getUsername() != null && credentials.getUsername().equalsIgnoreCase(args[1]))) {
+                    sender.sendMessage("§7Starting client §e" + credentials + "§7...");
+                    if (credentials.getDefaultServer() == null) {
+                        sender.sendMessage("§cFailed! No default server specified for this client");
+                        continue;
+                    }
+                    this.connect(connector, credentials, NetworkAddress.parse(credentials.getDefaultServer()), sender);
+                    sender.sendMessage("§aDone");
+                }
+            }
+
         } else if (args.length == 2 && args[0].equalsIgnoreCase("closeAll")) {
             NetworkAddress address = NetworkAddress.parse(args[1]);
             if (address == null) {
@@ -292,18 +308,22 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         }
     }
 
+    private Predicate<ServiceConnection> emailOrName(String input) {
+        return client -> (client.getCredentials().getEmail() != null && client.getCredentials().getEmail().equalsIgnoreCase(input)) || input.equalsIgnoreCase(client.getName());
+    }
+
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("acc add <default-address> <E-Mail|OfflineUsername> [Password] <exportable>");
         sender.sendMessage("acc <email> setEmail <new-email>");
         sender.sendMessage("acc <email> setPassword <password>");
         sender.sendMessage("acc <email> setDefaultServer <default-server>");
+        sender.sendMessage("acc start <E-Mail|Username>");
         sender.sendMessage("acc close <E-Mail|Username>");
         sender.sendMessage("acc delete <e-mail>");
         sender.sendMessage("acc closeAll <address>");
         sender.sendMessage("acc export");
         sender.sendMessage("acc import <file-path>");
         sender.sendMessage("acc list");
-        // TODO acc start <e-mail> to let an account connect to its default server
     }
 
     private void connect(ServiceConnector connector, MCServiceCredentials credentials, NetworkAddress address, CommandSender sender) {

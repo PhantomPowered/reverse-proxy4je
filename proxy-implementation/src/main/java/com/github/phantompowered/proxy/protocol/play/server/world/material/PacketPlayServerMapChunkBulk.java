@@ -35,13 +35,13 @@ public class PacketPlayServerMapChunkBulk implements Packet {
     private int[] x;
     private int[] z;
     private boolean b;
-    private PacketPlayServerMapChunk.Extracted[] extracted;
+    private PacketPlayServerMapChunk.ChunkData[] chunkData;
 
-    public PacketPlayServerMapChunkBulk(int[] x, int[] z, boolean b, PacketPlayServerMapChunk.Extracted[] extracted) {
+    public PacketPlayServerMapChunkBulk(int[] x, int[] z, boolean b, PacketPlayServerMapChunk.ChunkData[] chunkData) {
         this.x = x;
         this.z = z;
         this.b = b;
-        this.extracted = extracted;
+        this.chunkData = chunkData;
     }
 
     public PacketPlayServerMapChunkBulk() {
@@ -72,8 +72,8 @@ public class PacketPlayServerMapChunkBulk implements Packet {
         return this.b;
     }
 
-    public PacketPlayServerMapChunk.Extracted[] getExtracted() {
-        return this.extracted;
+    public PacketPlayServerMapChunk.ChunkData[] getExtracted() {
+        return this.chunkData;
     }
 
     @Override
@@ -82,34 +82,34 @@ public class PacketPlayServerMapChunkBulk implements Packet {
         int size = protoBuf.readVarInt();
         this.x = new int[size];
         this.z = new int[size];
-        this.extracted = new PacketPlayServerMapChunk.Extracted[size];
+        this.chunkData = new PacketPlayServerMapChunk.ChunkData[size];
 
         for (int i = 0; i < size; i++) {
             this.x[i] = protoBuf.readInt();
             this.z[i] = protoBuf.readInt();
-            this.extracted[i] = new PacketPlayServerMapChunk.Extracted();
-            this.extracted[i].dataLength = protoBuf.readShort() & 65535;
+            this.chunkData[i] = new PacketPlayServerMapChunk.ChunkData();
+            this.chunkData[i].dataLength = protoBuf.readShort() & 65535;
 
-            this.extracted[i].data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(this.extracted[i].dataLength), this.b, true)];
+            this.chunkData[i].data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(this.chunkData[i].dataLength), this.b, true)];
         }
 
         for (int i = 0; i < size; i++) {
-            protoBuf.readBytes(this.extracted[i].data);
+            protoBuf.readBytes(this.chunkData[i].data);
         }
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
         protoBuf.writeBoolean(this.b);
-        protoBuf.writeVarInt(this.extracted.length);
+        protoBuf.writeVarInt(this.chunkData.length);
 
-        for (int i = 0; i < this.extracted.length; i++) {
+        for (int i = 0; i < this.chunkData.length; i++) {
             protoBuf.writeInt(this.x[i]);
             protoBuf.writeInt(this.z[i]);
-            protoBuf.writeShort(this.extracted[i].dataLength & 65535);
+            protoBuf.writeShort(this.chunkData[i].dataLength & 65535);
         }
 
-        for (PacketPlayServerMapChunk.Extracted value : this.extracted) {
+        for (PacketPlayServerMapChunk.ChunkData value : this.chunkData) {
             protoBuf.writeBytes(value.data);
         }
     }

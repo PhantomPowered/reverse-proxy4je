@@ -35,13 +35,13 @@ public class PacketPlayServerMapChunk implements Packet {
     private int x;
     private int z;
     private boolean fullChunk;
-    private Extracted extracted;
+    private ChunkData chunkData;
 
-    public PacketPlayServerMapChunk(int x, int z, boolean fullChunk, Extracted extracted) {
+    public PacketPlayServerMapChunk(int x, int z, boolean fullChunk, ChunkData chunkData) {
         this.x = x;
         this.z = z;
         this.fullChunk = fullChunk;
-        this.extracted = extracted;
+        this.chunkData = chunkData;
     }
 
     public PacketPlayServerMapChunk() {
@@ -80,12 +80,12 @@ public class PacketPlayServerMapChunk implements Packet {
         return this.fullChunk;
     }
 
-    public Extracted getExtracted() {
-        return this.extracted;
+    public ChunkData getExtracted() {
+        return this.chunkData;
     }
 
-    public void setExtracted(Extracted extracted) {
-        this.extracted = extracted;
+    public void setExtracted(ChunkData chunkData) {
+        this.chunkData = chunkData;
     }
 
     @Override
@@ -93,9 +93,9 @@ public class PacketPlayServerMapChunk implements Packet {
         this.x = protoBuf.readInt();
         this.z = protoBuf.readInt();
         this.fullChunk = protoBuf.readBoolean();
-        this.extracted = new Extracted();
-        this.extracted.dataLength = protoBuf.readShort();
-        this.extracted.data = protoBuf.readArray();
+        this.chunkData = new ChunkData();
+        this.chunkData.dataLength = protoBuf.readShort();
+        this.chunkData.data = protoBuf.readArray();
     }
 
     @Override
@@ -103,15 +103,15 @@ public class PacketPlayServerMapChunk implements Packet {
         protoBuf.writeInt(this.x);
         protoBuf.writeInt(this.z);
         protoBuf.writeBoolean(this.fullChunk);
-        protoBuf.writeShort(this.extracted.dataLength);
-        protoBuf.writeArray(this.extracted.data);
+        protoBuf.writeShort(this.chunkData.dataLength);
+        protoBuf.writeArray(this.chunkData.data);
     }
 
     public String toString() {
         return "PacketPlayServerMapChunk(x=" + this.getX() + ", z=" + this.getZ() + ", fullChunk=" + this.isFullChunk() + ", extracted=" + this.getExtracted() + ")";
     }
 
-    public static class Extracted {
+    public static class ChunkData {
         public byte[] data;
         public int dataLength;
 

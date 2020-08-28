@@ -85,7 +85,7 @@ public class Chunk {
 
     }
 
-    public PacketPlayServerMapChunk.Extracted getBytes(int dimension) {
+    public PacketPlayServerMapChunk.ChunkData getBytes(int dimension) {
         if (this.lastChunkData == null) {
             return null;
         }
@@ -95,7 +95,7 @@ public class Chunk {
         boolean hasSky = dimension == 0; // 0 = overworld; -1 = nether; 1 = end
 
         ChunkSection[] storages = this.sections;
-        PacketPlayServerMapChunk.Extracted extracted = new PacketPlayServerMapChunk.Extracted();
+        PacketPlayServerMapChunk.ChunkData chunkData = new PacketPlayServerMapChunk.ChunkData();
         List<ChunkSection> list = new ArrayList<>();
 
         for (int i = 0; i < storages.length; ++i) {
@@ -103,38 +103,38 @@ public class Chunk {
 
             if (storage != null && (maxLength & 1 << i) != 0) {
                 //if (storage != null && (!fullChunk || /*!storage.isEmpty()*/ true) && (maxLength & 1 << i) != 0) {
-                extracted.dataLength |= 1 << i;
+                chunkData.dataLength |= 1 << i;
                 list.add(storage);
             }
         }
 
-        extracted.data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(extracted.dataLength), hasSky, fullChunk)];
+        chunkData.data = new byte[PacketPlayServerMapChunk.getArraySize(Integer.bitCount(chunkData.dataLength), hasSky, fullChunk)];
         int j = 0;
 
         for (ChunkSection section : list) {
             char[] data = section.getData();
 
             for (char c : data) {
-                extracted.data[j++] = (byte) (c & 255);
-                extracted.data[j++] = (byte) (c >> 8 & 255);
+                chunkData.data[j++] = (byte) (c & 255);
+                chunkData.data[j++] = (byte) (c >> 8 & 255);
             }
         }
 
         for (ChunkSection section : list) {
-            j = copyArray(section.getLightData() == null ? ChunkSection.MAX_LIGHT_LEVEL : section.getLightData(), extracted.data, j);
+            j = copyArray(section.getLightData() == null ? ChunkSection.MAX_LIGHT_LEVEL : section.getLightData(), chunkData.data, j);
         }
 
         if (hasSky) {
             for (ChunkSection section : list) {
-                j = copyArray(section.getSkyLightData() == null ? ChunkSection.MAX_LIGHT_LEVEL : section.getSkyLightData(), extracted.data, j);
+                j = copyArray(section.getSkyLightData() == null ? ChunkSection.MAX_LIGHT_LEVEL : section.getSkyLightData(), chunkData.data, j);
             }
         }
 
         if (fullChunk) { // Without this being a full chunk, this wouldn't work in the end
-            copyArray(this.biomeArray, extracted.data, j);
+            copyArray(this.biomeArray, chunkData.data, j);
         }
 
-        return extracted;
+        return chunkData;
     }
 
     public int getBlockStateAt(int x, int y, int z) {
