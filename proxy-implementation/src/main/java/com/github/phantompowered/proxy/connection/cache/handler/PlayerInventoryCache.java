@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.connection.cache.handler;
 
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.PacketSender;
@@ -67,7 +68,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
 
             for (int slot = 0; slot < items.getItems().length; slot++) {
                 ItemStack item = items.getItems()[slot];
-                if (item.getItemId() > 0) {
+                if (item.getMaterial() != Material.AIR) {
                     this.itemsBySlot.put(slot, item);
                 } else {
                     this.itemsBySlot.remove(slot);
@@ -81,7 +82,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
                 return;
             }
 
-            if (item.getItemId() > 0) {
+            if (item.getMaterial() != Material.AIR) {
                 this.itemsBySlot.put(setSlot.getSlot(), item);
             } else {
                 this.itemsBySlot.remove(setSlot.getSlot());

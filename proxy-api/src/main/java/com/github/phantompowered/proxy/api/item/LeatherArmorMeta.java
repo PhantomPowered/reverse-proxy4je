@@ -22,28 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.item;
+package com.github.phantompowered.proxy.api.item;
 
-import com.github.phantompowered.proxy.api.block.material.Material;
-import com.github.phantompowered.proxy.api.item.ItemMeta;
-import com.github.phantompowered.proxy.api.item.ItemStack;
-import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
-import org.jetbrains.annotations.Nullable;
+public interface LeatherArmorMeta extends ItemMeta {
 
-public class ProxyItemStack extends ItemStack {
+    int getColor();
 
-    public static final ItemStack AIR = new ProxyItemStack(Material.AIR, 0, 0, null);
+    void setColor(int color);
 
-    public ProxyItemStack(Material material, int amount, int meta, NBTTagCompound nbt) {
-        super(material, amount, meta, nbt);
-    }
-
-    @Override
-    public @Nullable ItemMeta getItemMeta() {
-        if (this.itemMeta == null && this.nbt != null) {
-            this.itemMeta = ProxyItemMeta.createFromMaterial(this.material, this.meta, this.nbt);
-        }
-
-        return this.itemMeta;
-    }
 }

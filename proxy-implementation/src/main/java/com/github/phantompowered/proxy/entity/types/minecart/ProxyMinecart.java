@@ -69,7 +69,7 @@ public class ProxyMinecart extends ProxyEntity implements Minecart {
             return null;
         }
 
-        return new ProxyItemStack(material.getId(), 1, this.objectList.getInt(20) & 65280, new NBTTagCompound());
+        return new ProxyItemStack(material, 1, this.objectList.getInt(20) & 65280, new NBTTagCompound());
     }
 
     @Override

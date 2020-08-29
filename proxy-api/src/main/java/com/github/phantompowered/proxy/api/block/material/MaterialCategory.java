@@ -28,6 +28,7 @@ public enum MaterialCategory {
 
     SWORD,
     ARMOR,
+    LEATHER_ARMOR,
     FENCE,
     FENCE_GATE,
     WOODEN,

@@ -1,5 +1,6 @@
 package com.github.phantompowered.proxy.connection.player;
 
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.inventory.InventoryType;
@@ -51,7 +52,7 @@ public class DefaultPlayerInventory implements PlayerInventory {
             // TODO support other types than chests and custom sizes
             this.player.sendPacket(new PacketPlayServerOpenWindow(this.windowId, "minecraft:container", this.title != null ? this.title : TextComponent.of(this.type.getDefaultTitle()), this.type.getDefaultSize(), -1));
             for (int i = 0; i < this.content.length; i++) {
-                if (this.content[i] != null && this.content[i].getItemId() != 0) {
+                if (this.content[i] != null && this.content[i].getMaterial() != Material.AIR) {
                     this.player.sendPacket(new PacketPlayServerSetSlot(this.windowId, i, this.content[i]));
                 }
             }

@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.network.wrapper;
 
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.nbt.NBTSizeTracker;
@@ -208,22 +209,23 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
     @Override
     public ItemStack readItemStack() {
-        int itemId = this.readShort();
-        if (itemId >= 0) {
+        Material material = Material.getMaterial(this.readShort());
+
+        if (material != null && material != Material.AIR) {
             int amount = this.readByte();
             int meta = this.readShort();
 
-            return new ProxyItemStack(itemId, amount, meta, this.readNBTTagCompound());
+            return new ProxyItemStack(material, amount, meta, this.readNBTTagCompound());
         }
         return ProxyItemStack.AIR;
     }
 
     @Override
     public void writeItemStack(ItemStack item) {
-        if (item == null || item.getItemId() <= 0) {
+        if (item == null || item.getMaterial() == Material.AIR) {
             this.writeShort(-1);
         } else {
-            this.writeShort(item.getItemId());
+            this.writeShort(item.getMaterial().getId());
             this.writeByte(item.getAmount());
             this.writeShort(item.getMeta());
 

@@ -24,6 +24,8 @@
  */
 package com.github.phantompowered.proxy.item;
 
+import com.github.phantompowered.proxy.api.block.material.Material;
+import com.github.phantompowered.proxy.api.block.material.MaterialCategory;
 import com.github.phantompowered.proxy.api.item.*;
 import com.github.phantompowered.proxy.api.nbt.NBTBase;
 import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
@@ -186,17 +188,21 @@ public class ProxyItemMeta implements ItemMeta {
     }
 
     @NotNull
-    public static ItemMeta createFromItemId(int itemId, int meta, NBTTagCompound data) {
-        switch (itemId) {
-            case 373:
+    public static ItemMeta createFromMaterial(Material material, int meta, NBTTagCompound data) {
+        if (material.hasCategory(MaterialCategory.LEATHER_ARMOR)) {
+            return new ProxyLeatherArmorMeta(data);
+        }
+
+        switch (material) {
+            case POTION:
                 return new ProxyPotionMeta(data, meta);
-            case 386:
+            case BOOK_AND_QUILL:
                 return new ProxyBookMeta(data, false);
-            case 387:
+            case WRITTEN_BOOK:
                 return new ProxyBookMeta(data, true);
-            case 397:
+            case SKULL_ITEM:
                 return new ProxySkullMeta(data);
-            case 403:
+            case ENCHANTED_BOOK:
                 return new ProxyEnchantedBookMeta(data);
             default:
                 return new ProxyItemMeta(data);

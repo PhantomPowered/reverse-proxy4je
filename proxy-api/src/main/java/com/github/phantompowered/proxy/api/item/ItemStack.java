@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.api.item;
 
+import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import org.jetbrains.annotations.NotNull;
@@ -34,23 +35,23 @@ public abstract class ItemStack {
     protected final int amount;
     protected final int meta;
     protected final NBTTagCompound nbt;
-    protected int itemId;
+    protected Material material;
     @LazyInit
     protected @Nullable ItemMeta itemMeta;
 
-    public ItemStack(int itemId, int amount, int meta, NBTTagCompound nbt) {
-        this.itemId = itemId;
+    public ItemStack(Material material, int amount, int meta, NBTTagCompound nbt) {
+        this.material = material;
         this.amount = amount;
         this.meta = meta;
         this.nbt = nbt;
     }
 
-    public int getItemId() {
-        return itemId;
+    public Material getMaterial() {
+        return this.material;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 
     public int getAmount() {
@@ -80,7 +81,7 @@ public abstract class ItemStack {
     @Override
     public String toString() {
         return "ItemStack{"
-                + "itemId=" + itemId
+                + "material=" + material
                 + ", amount=" + amount
                 + ", meta=" + meta
                 + ", nbt=" + nbt

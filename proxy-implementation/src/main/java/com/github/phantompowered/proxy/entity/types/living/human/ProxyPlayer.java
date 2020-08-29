@@ -78,7 +78,7 @@ public class ProxyPlayer extends ProxyEntityLiving implements EntityPlayer {
     @Override
     public Material getMaterialInEquipmentSlot(@NotNull EquipmentSlot slot) {
         ItemStack item = this.getEquipmentSlot(EquipmentSlot.HAND);
-        return item == null ? null : Material.getMaterial(item.getItemId());
+        return item == null ? null : item.getMaterial();
     }
 
     @Override

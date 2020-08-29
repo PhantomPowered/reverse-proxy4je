@@ -24,26 +24,51 @@
  */
 package com.github.phantompowered.proxy.item;
 
-import com.github.phantompowered.proxy.api.block.material.Material;
-import com.github.phantompowered.proxy.api.item.ItemMeta;
-import com.github.phantompowered.proxy.api.item.ItemStack;
+import com.github.phantompowered.proxy.api.item.LeatherArmorMeta;
 import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
-public class ProxyItemStack extends ItemStack {
+public class ProxyLeatherArmorMeta extends ProxyItemMeta implements LeatherArmorMeta {
 
-    public static final ItemStack AIR = new ProxyItemStack(Material.AIR, 0, 0, null);
+    private int color;
 
-    public ProxyItemStack(Material material, int amount, int meta, NBTTagCompound nbt) {
-        super(material, amount, meta, nbt);
+    public ProxyLeatherArmorMeta(@NotNull NBTTagCompound source) {
+        super(source);
+
+        if (source.hasKey(ItemMetaKeys.DISPLAY, NbtTagNumbers.TAG_COMPOUND)) {
+            NBTTagCompound display = source.getCompoundTag(ItemMetaKeys.DISPLAY);
+            if (display.hasKey(LeatherArmorMetaKeys.COLOR, NbtTagNumbers.TAG_INT)) {
+                this.color = source.getCompoundTag(ItemMetaKeys.DISPLAY).getInteger(LeatherArmorMetaKeys.COLOR);
+            }
+        }
     }
 
     @Override
-    public @Nullable ItemMeta getItemMeta() {
-        if (this.itemMeta == null && this.nbt != null) {
-            this.itemMeta = ProxyItemMeta.createFromMaterial(this.material, this.meta, this.nbt);
+    public int getColor() {
+        return this.color;
+    }
+
+    @Override
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    @Override
+    public @NotNull NBTTagCompound write() {
+        NBTTagCompound base = super.write();
+
+        if (!base.hasKey(ItemMetaKeys.DISPLAY, NbtTagNumbers.TAG_COMPOUND)) {
+            base.setTag(ItemMetaKeys.DISPLAY, new NBTTagCompound());
         }
 
-        return this.itemMeta;
+        base.getCompoundTag(ItemMetaKeys.DISPLAY).setInteger(LeatherArmorMetaKeys.COLOR, this.color);
+
+        return base;
+    }
+
+    public interface LeatherArmorMetaKeys {
+
+        String COLOR = "color";
+
     }
 }

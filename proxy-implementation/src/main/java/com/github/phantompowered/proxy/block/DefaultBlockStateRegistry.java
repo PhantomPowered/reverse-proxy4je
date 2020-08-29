@@ -1457,7 +1457,7 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         }
         List<Integer> states = new ArrayList<>();
         for (BlockState state : STATES) {
-            if (state.getMaterial() == material) {
+            if (state != null && state.getMaterial() == material) {
                 states.add(state.getId());
             }
         }
@@ -1475,7 +1475,7 @@ public class DefaultBlockStateRegistry implements BlockStateRegistry {
         }
         Collection<BlockState> states = new ArrayList<>();
         for (BlockState state : STATES) {
-            if (state.getMaterial() == material) {
+            if (state != null && state.getMaterial() == material) {
                 states.add(state);
             }
         }
