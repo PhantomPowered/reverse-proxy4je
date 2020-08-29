@@ -40,6 +40,8 @@ import java.util.Optional;
 
 public interface CommandMap {
 
+    String INGAME_PREFIX = "/phantom "; // has to be lower case
+
     @NotNull
     default CommandContainer registerCommand(@Nullable PluginContainer pluginContainer, @NotNull CommandCallback commandCallback, @NotNull String... aliases) throws CommandRegistrationException {
         return this.registerCommand(pluginContainer, commandCallback, Arrays.asList(aliases));

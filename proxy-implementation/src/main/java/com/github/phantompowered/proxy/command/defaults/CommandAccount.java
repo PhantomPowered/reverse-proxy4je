@@ -25,6 +25,7 @@
 package com.github.phantompowered.proxy.command.defaults;
 
 import com.github.phantompowered.proxy.api.APIUtil;
+import com.github.phantompowered.proxy.api.command.CommandMap;
 import com.github.phantompowered.proxy.api.command.basic.NonTabCompleteableCommandCallback;
 import com.github.phantompowered.proxy.api.command.exception.CommandExecutionException;
 import com.github.phantompowered.proxy.api.command.result.CommandResult;
@@ -344,7 +345,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
             sender.sendMessage(result.isSuccess() ? ("§aSuccessfully connected as §e" + (credentials.getEmail() != null ? credentials.getEmail() : credentials.getUsername()) + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
             if (sender instanceof Player) {
                 TextComponent component = TextComponent.of(APIUtil.MESSAGE_PREFIX + "§aClick to connect");
-                component.clickEvent(ClickEvent.runCommand("/proxy switch " + client.getName()));
+                component.clickEvent(ClickEvent.runCommand(CommandMap.INGAME_PREFIX + "switch " + client.getName()));
                 component.hoverEvent(HoverEvent.showText(TextComponent.of("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
                 sender.sendMessage(component);
             }

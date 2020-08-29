@@ -290,10 +290,10 @@ public class ClientPacketHandler {
             throw CancelProceedException.INSTANCE;
         }
 
-        if (chat.getMessage().startsWith("/proxy ")) {
+        if (chat.getMessage().toLowerCase().startsWith(CommandMap.INGAME_PREFIX)) {
             try {
                 CommandMap commandMap = player.getServiceRegistry().getProviderUnchecked(CommandMap.class);
-                if (commandMap.process(player, chat.getMessage().replaceFirst("/proxy ", "")) != CommandResult.NOT_FOUND) {
+                if (commandMap.process(player, chat.getMessage().substring(CommandMap.INGAME_PREFIX.length())) != CommandResult.NOT_FOUND) {
                     throw CancelProceedException.INSTANCE;
                 }
             } catch (final CommandExecutionException | PermissionDeniedException ex) {
@@ -329,7 +329,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        if (!request.getCursor().startsWith("/proxy ")) {
+        if (!request.getCursor().toLowerCase().startsWith(CommandMap.INGAME_PREFIX)) {
             if (!request.getCursor().contains(" ")) {
                 player.setLastCommandCompleteRequest(request.getCursor());
             }
@@ -337,7 +337,7 @@ public class ClientPacketHandler {
             return;
         }
 
-        List<String> suggestions = player.getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring("/proxy ".length()));
+        List<String> suggestions = player.getServiceRegistry().getProviderUnchecked(CommandMap.class).getSuggestions(player, request.getCursor().substring(CommandMap.INGAME_PREFIX.length()));
         if (!suggestions.isEmpty()) {
             player.sendPacket(new PacketPlayServerTabCompleteResponse(suggestions));
             throw CancelProceedException.INSTANCE;
