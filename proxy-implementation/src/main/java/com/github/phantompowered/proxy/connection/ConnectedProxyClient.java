@@ -24,9 +24,10 @@
  */
 package com.github.phantompowered.proxy.connection;
 
+import com.github.phantompowered.proxy.ImplementationUtil;
 import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.connection.ProtocolState;
-import com.github.phantompowered.proxy.api.connection.ServiceConnector;
+import com.github.phantompowered.proxy.api.connection.ServiceConnectResult;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.service.ServiceConnectEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.ServiceDisconnectEvent;
@@ -41,12 +42,12 @@ import com.github.phantompowered.proxy.api.scoreboard.Scoreboard;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
-import com.github.phantompowered.proxy.api.task.DefaultTask;
 import com.github.phantompowered.proxy.api.task.Task;
 import com.github.phantompowered.proxy.api.tick.TickHandler;
 import com.github.phantompowered.proxy.connection.cache.PacketCache;
 import com.github.phantompowered.proxy.connection.cache.handler.scoreboard.ScoreboardCache;
 import com.github.phantompowered.proxy.connection.login.ProxyClientLoginListener;
+import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.connection.player.scoreboard.BasicScoreboard;
 import com.github.phantompowered.proxy.connection.velocity.PlayerVelocityHandler;
 import com.github.phantompowered.proxy.network.NetworkUtils;
@@ -56,7 +57,7 @@ import com.github.phantompowered.proxy.network.pipeline.handler.HandlerEndpoint;
 import com.github.phantompowered.proxy.network.pipeline.minecraft.MinecraftDecoder;
 import com.github.phantompowered.proxy.network.pipeline.minecraft.MinecraftEncoder;
 import com.github.phantompowered.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
-import com.github.phantompowered.proxy.protocol.login.client.PacketLoginInLoginRequest;
+import com.github.phantompowered.proxy.protocol.login.client.PacketLoginClientLoginRequest;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientResourcePackStatusResponse;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerResourcePackSend;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
@@ -69,8 +70,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -104,7 +106,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     private long lastAlivePacket = -1;
     private long lastDisconnectionTimestamp = System.currentTimeMillis();
 
-    private CompletableFuture<Boolean> connectionHandler;
+    private CompletableFuture<ServiceConnectResult> connectionHandler;
     private PlayerId lastConnectedPlayer;
     private boolean receivedServerDisconnect = false;
 
@@ -138,11 +140,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         this.resetPacketCache();
 
         if (this.connectionHandler != null) {
-            if (this.lastKickReason != null) {
-                this.connectionHandler.completeExceptionally(new KickedException(LegacyComponentSerializer.legacySection().serialize(this.lastKickReason)));
-            } else {
-                this.connectionHandler.complete(false);
-            }
+            this.connectionHandler.complete(ServiceConnectResult.failure(this.lastKickReason));
             this.connectionHandler = null;
         }
 
@@ -152,51 +150,45 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         this.entityId = -1;
         this.dimension = -1;
 
-        if (this.serviceRegistry != null && this.globalAccount) {
-            this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this.connection);
-        }
-
         if (this.disconnectionHandler != null) {
             this.disconnectionHandler.run();
         }
     }
 
-    public Task<Boolean> connect(NetworkAddress address, NetworkAddress proxy) {
+    public void connect(NetworkAddress address, NetworkAddress proxy, Task<ServiceConnectResult> task) {
         this.disconnect();
 
-        Task<Boolean> future = new DefaultTask<>();
-
-        ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
+        ChannelInitializer<Channel> initializer = new ChannelInitializer<>() {
             @Override
-            protected void initChannel(Channel ch) {
-                ConnectedProxyClient.this.serviceRegistry.getProviderUnchecked(SimpleChannelInitializer.class).initChannel(ch);
+            protected void initChannel(@NotNull Channel channel) {
+                ConnectedProxyClient.this.serviceRegistry.getProviderUnchecked(SimpleChannelInitializer.class).initChannel(channel);
 
                 if (proxy != null) {
-                    ch.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
+                    channel.pipeline().addFirst(new Socks5ProxyHandler(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
                 }
 
-                ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER,
+                channel.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER,
                         new MinecraftDecoder(ConnectedProxyClient.this.serviceRegistry, ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
-                ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
-                ch.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ConnectedProxyClient.this);
-                ch.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));
+                channel.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
+                channel.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ConnectedProxyClient.this);
+                channel.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));
             }
         };
-        ChannelFutureListener listener = future1 -> {
-            if (future1.isSuccess()) {
-                super.setChannel(future1.channel());
+        ChannelFutureListener listener = future -> {
+            if (future.isSuccess()) {
+                super.setChannel(future.channel());
                 this.address = address;
 
                 super.write(new PacketHandshakingClientSetProtocol(47, address.getHost(), address.getPort(), 2));
                 super.setProtocolState(ProtocolState.LOGIN);
-                super.write(new PacketLoginInLoginRequest(this.getAccountName()));
+                super.write(new PacketLoginClientLoginRequest(this.getAccountName()));
             } else {
-                future1.channel().close();
-                future.complete(false);
+                future.channel().close();
+                task.complete(ServiceConnectResult.failure(future.cause() == null ? null : TextComponent.of(ImplementationUtil.stringifyException(future.cause()))));
             }
         };
 
-        this.connectionHandler = future;
+        this.connectionHandler = task;
 
         new Bootstrap()
                 .channel(NetworkUtils.getSocketChannelClass())
@@ -206,8 +198,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
                 .connect(new InetSocketAddress(address.getHost(), address.getPort()))
                 .addListener(listener)
                 .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-
-        return future;
     }
 
     public void setDisconnectionHandler(Runnable disconnectionHandler) {
@@ -228,6 +218,14 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public BasicServiceConnection getConnection() {
         return this.connection;
+    }
+
+    public CompletableFuture<ServiceConnectResult> getConnectionHandler() {
+        return this.connectionHandler;
+    }
+
+    public void setConnectionHandler(CompletableFuture<ServiceConnectResult> connectionHandler) {
+        this.connectionHandler = connectionHandler;
     }
 
     public NetworkAddress getServerAddress() {
@@ -424,7 +422,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public void connectionSuccess() {
         if (this.connectionHandler != null) {
-            this.connectionHandler.complete(true);
+            this.connectionHandler.complete(ServiceConnectResult.success());
             this.connectionHandler = null;
 
             this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectEvent(this.connection));
@@ -433,7 +431,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public void connectionFailed() {
         if (this.connectionHandler != null) {
-            this.connectionHandler.completeExceptionally(new KickedException(GsonComponentSerializer.gson().serialize(this.lastKickReason)));
+            this.connectionHandler.complete(ServiceConnectResult.failure(this.lastKickReason));
             this.connectionHandler = null;
         }
     }
@@ -450,7 +448,9 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
         if (this.getRedirector() != null) {
             Player con = this.getRedirector();
             this.connection.getClient().free();
-            con.handleDisconnected(this.connection, reason);
+            if (con instanceof DefaultPlayer) {
+                ((DefaultPlayer) con).handleDisconnected(this.connection, reason);
+            }
         }
 
         this.connection.getClient().setLastKickReason(reason);

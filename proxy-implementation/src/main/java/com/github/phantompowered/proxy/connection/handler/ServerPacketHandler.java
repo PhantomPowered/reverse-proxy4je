@@ -2,7 +2,10 @@ package com.github.phantompowered.proxy.connection.handler;
 
 import com.github.phantompowered.proxy.api.block.half.HorizontalHalf;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
-import com.github.phantompowered.proxy.api.connection.*;
+import com.github.phantompowered.proxy.api.connection.Connection;
+import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
+import com.github.phantompowered.proxy.api.connection.ProtocolState;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.entity.EntityStatusType;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.event.Cancelable;
@@ -20,7 +23,6 @@ import com.github.phantompowered.proxy.api.network.exception.CancelProceedExcept
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.connection.AppendedActionBar;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
-import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
 import com.github.phantompowered.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.network.wrapper.DecodedPacket;
@@ -228,10 +230,7 @@ public class ServerPacketHandler {
         client.handleDisconnect(reason);
         client.setLastKickReason(reason);
 
-        ServiceConnector connector = client.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
-        if (connector instanceof DefaultServiceConnector) {
-            ((DefaultServiceConnector) connector).unregisterConnection(client.getConnection());
-        }
+        client.getConnection().close();
 
         throw CancelProceedException.INSTANCE;
     }

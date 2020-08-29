@@ -28,10 +28,7 @@ import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
-import com.github.phantompowered.proxy.api.connection.ServiceConnection;
-import com.github.phantompowered.proxy.api.connection.ServiceConnector;
-import com.github.phantompowered.proxy.api.connection.ServiceInventory;
-import com.github.phantompowered.proxy.api.connection.ServiceWorldDataProvider;
+import com.github.phantompowered.proxy.api.connection.*;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.service.TabListUpdateEvent;
@@ -49,10 +46,7 @@ import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
 import com.github.phantompowered.proxy.api.task.DefaultTask;
-import com.github.phantompowered.proxy.api.task.EmptyTaskFutureListener;
 import com.github.phantompowered.proxy.api.task.Task;
-import com.github.phantompowered.proxy.api.task.TaskFutureListener;
-import com.github.phantompowered.proxy.api.task.util.TaskUtil;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.phantompowered.proxy.network.channel.WrappedNetworkChannel;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientChatMessage;
@@ -77,9 +71,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class BasicServiceConnection extends BasicInteractiveServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
 
@@ -92,22 +83,18 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     private final PlayerAbilities abilities = new DefaultPlayerAbilities(this);
     private final ServiceInventory inventory = new DefaultServiceInventory(this);
     private ConnectedProxyClient client;
-    private boolean reScheduleOnFailure;
     private boolean sneaking;
     private boolean sprinting;
     private Location location = new Location(0, 0, 0, 0, 0);
     private Component tabHeader = TextComponent.empty();
     private Component tabFooter = TextComponent.empty();
 
-    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version) throws AuthenticationException {
-        this(serviceRegistry, credentials, networkAddress, version, true);
-    }
+    private long lastConnectionTryTimestamp = -1;
 
-    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version, boolean reScheduleOnFailure) throws AuthenticationException {
+    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version) throws AuthenticationException {
         this.serviceRegistry = serviceRegistry;
         this.credentials = credentials;
         this.networkAddress = networkAddress;
-        this.reScheduleOnFailure = reScheduleOnFailure;
 
         EntityRewrite entityRewrite = EntityRewrites.getRewrite(version);
         if (entityRewrite == null) {
@@ -167,6 +154,11 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     @Override
     public long getLastDisconnectionTimestamp() {
         return this.client.getLastDisconnectionTimestamp();
+    }
+
+    @Override
+    public long getLastConnectionTryTimestamp() {
+        return this.lastConnectionTryTimestamp;
     }
 
     @Override
@@ -395,84 +387,33 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
         return this.tabFooter;
     }
 
-    // TODO the connection management doesn't work properly, especially the detection of a disconnection by the server
-
     @Override
-    public @NotNull Task<Boolean> connect() {
-        return this.connect(EmptyTaskFutureListener.BOOL_INSTANCE);
-    }
-
-    @Override
-    public @NotNull Task<Boolean> connect(@NotNull TaskFutureListener<Boolean> listener) {
-        return this.connect(Collections.singletonList(listener));
-    }
-
-    @Override
-    public @NotNull Task<Boolean> connect(@NotNull Collection<TaskFutureListener<Boolean>> listener) {
-        Task<Boolean> task = new DefaultTask<>();
-        for (TaskFutureListener<Boolean> booleanTaskFutureListener : listener) {
-            task.addListener(booleanTaskFutureListener);
+    public @NotNull Task<ServiceConnectResult> connect() {
+        if (this.isConnected()) {
+            throw new IllegalStateException("Cannot connect if this client is already connected");
         }
+
+        Task<ServiceConnectResult> task = new DefaultTask<>();
+
+        task.exceptionally(throwable -> {
+            if (this.client != null) {
+                this.client.close();
+                this.client = null;
+            }
+            return null;
+        });
+
+        task.addListener(DefaultConnectionHandler.console(this));
 
         APIUtil.EXECUTOR_SERVICE.execute(() -> {
             this.client = new ConnectedProxyClient(this.serviceRegistry, this);
+            this.client.setAuthentication(this.authentication, this.credentials);
+            this.client.connect(this.networkAddress, null, task);
 
-            try {
-                this.client.setAuthentication(this.authentication, this.credentials);
-
-                Boolean result = this.client.connect(this.networkAddress, null).get(5, TimeUnit.SECONDS);
-                if (result != null && result) {
-                    ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
-                    if (connector instanceof DefaultServiceConnector) {
-                        ((DefaultServiceConnector) connector).addOnlineClient(this);
-                    }
-                    task.complete(true);
-                } else {
-                    task.complete(false);
-                    if (this.isReScheduleOnFailure()) {
-                        this.reSchedule(listener);
-                    }
-                }
-            } catch (final InterruptedException | ExecutionException | TimeoutException exception) {
-                task.completeExceptionally(exception);
-                this.client = null;
-
-                if (this.isReScheduleOnFailure()) {
-                    this.reSchedule(listener);
-                }
-            }
+            this.lastConnectionTryTimestamp = System.currentTimeMillis();
         });
+
         return task;
-    }
-
-    @Override
-    public @NotNull Task<Boolean> reconnect() {
-        return this.reconnect(EmptyTaskFutureListener.BOOL_INSTANCE);
-    }
-
-    @Override
-    public @NotNull Task<Boolean> reconnect(@NotNull TaskFutureListener<Boolean> listener) {
-        return this.reconnect(Collections.singletonList(listener));
-    }
-
-    @Override
-    public @NotNull Task<Boolean> reconnect(@NotNull Collection<TaskFutureListener<Boolean>> listener) {
-        if (this.client == null) {
-            return TaskUtil.completedTask(false, listener);
-        }
-
-        this.close();
-        return this.connect(listener);
-    }
-
-    @Override
-    public boolean isReScheduleOnFailure() {
-        return this.reScheduleOnFailure;
-    }
-
-    @Override
-    public void setReScheduleOnFailure(boolean reScheduleOnFailure) {
-        this.reScheduleOnFailure = reScheduleOnFailure;
     }
 
     @Override
@@ -496,16 +437,9 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     }
 
     @Override
-    public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason) {
-        this.reconnect();
-    }
-
-    @Override
     public void unregister() {
         ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
-        if (connector instanceof DefaultServiceConnector) {
-            ((DefaultServiceConnector) connector).addOnlineClient(this);
-        }
+        this.close();
     }
 
     @Override
@@ -523,21 +457,6 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
         this.client.redirectPackets(player, switched);
     }
 
-    private void reSchedule(Collection<TaskFutureListener<Boolean>> listener) {
-        if (this.client != null && this.client.isConnected()) {
-            this.client.close();
-            this.client = null;
-        }
-
-        try {
-            Thread.sleep(20000);
-        } catch (final InterruptedException ex) {
-            ex.printStackTrace();
-        }
-
-        this.connect(listener);
-    }
-
     @Override
     public void close() {
         if (!this.isConnected()) {
@@ -545,6 +464,7 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
         }
 
         this.client.disconnect();
+        this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).getOnlineClients().remove(this);
     }
 
     @Override

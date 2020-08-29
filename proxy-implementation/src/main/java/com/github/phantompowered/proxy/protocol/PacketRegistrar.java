@@ -28,8 +28,8 @@ import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.connection.ProtocolState;
 import com.github.phantompowered.proxy.api.network.registry.packet.PacketRegistry;
 import com.github.phantompowered.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
+import com.github.phantompowered.proxy.protocol.login.client.PacketLoginClientLoginRequest;
 import com.github.phantompowered.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
-import com.github.phantompowered.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutServerKickPlayer;
@@ -82,7 +82,7 @@ public final class PacketRegistrar {
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.HANDSHAKING, new PacketHandshakingClientSetProtocol());
 
         // Login
-        registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.LOGIN, new PacketLoginInLoginRequest());
+        registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.LOGIN, new PacketLoginClientLoginRequest());
         registry.registerPacket(ProtocolDirection.TO_SERVER, ProtocolState.LOGIN, new PacketLoginOutEncryptionResponse());
 
         registry.registerPacket(ProtocolDirection.TO_CLIENT, ProtocolState.LOGIN, new PacketLoginInEncryptionRequest());

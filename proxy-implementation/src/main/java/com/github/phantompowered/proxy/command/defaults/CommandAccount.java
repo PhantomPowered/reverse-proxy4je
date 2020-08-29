@@ -29,6 +29,7 @@ import com.github.phantompowered.proxy.api.command.basic.NonTabCompleteableComma
 import com.github.phantompowered.proxy.api.command.exception.CommandExecutionException;
 import com.github.phantompowered.proxy.api.command.result.CommandResult;
 import com.github.phantompowered.proxy.api.command.sender.CommandSender;
+import com.github.phantompowered.proxy.api.connection.ServiceConnectResult;
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.connection.ServiceConnector;
 import com.github.phantompowered.proxy.api.network.NetworkAddress;
@@ -328,7 +329,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
     private void connect(ServiceConnector connector, MCServiceCredentials credentials, NetworkAddress address, CommandSender sender) {
         try {
-            boolean success = connector.createConnection(credentials, address).connect().get(5, TimeUnit.SECONDS);
+            ServiceConnectResult result = connector.createConnection(credentials, address).connect().get(5, TimeUnit.SECONDS);
 
             ServiceConnection client = connector.getOnlineClients().stream()
                     .filter(proxyClient -> proxyClient.getCredentials().equals(credentials))
@@ -340,10 +341,10 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 return;
             }
 
-            sender.sendMessage(success ? ("§aSuccessfully connected as §e" + (credentials.getEmail() != null ? credentials.getEmail() : credentials.getUsername()) + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
+            sender.sendMessage(result.isSuccess() ? ("§aSuccessfully connected as §e" + (credentials.getEmail() != null ? credentials.getEmail() : credentials.getUsername()) + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
             if (sender instanceof Player) {
                 TextComponent component = TextComponent.of(APIUtil.MESSAGE_PREFIX + "§aClick to connect");
-                component.clickEvent(ClickEvent.runCommand("/switch " + client.getName()));
+                component.clickEvent(ClickEvent.runCommand("/proxy switch " + client.getName()));
                 component.hoverEvent(HoverEvent.showText(TextComponent.of("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
                 sender.sendMessage(component);
             }

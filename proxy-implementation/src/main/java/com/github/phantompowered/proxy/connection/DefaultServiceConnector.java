@@ -56,7 +56,9 @@ public class DefaultServiceConnector implements ServiceConnector {
 
     @Override
     public @NotNull ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
-        return new BasicServiceConnection(this.serviceRegistry, credentials, serverAddress, ProtocolIds.Versions.MINECRAFT_1_8);
+        BasicServiceConnection connection = new BasicServiceConnection(this.serviceRegistry, credentials, serverAddress, ProtocolIds.Versions.MINECRAFT_1_8);
+        this.onlineClients.add(connection);
+        return connection;
     }
 
     public void setReconnectTarget(UUID uniqueId, UUID targetUniqueId) {
@@ -95,18 +97,9 @@ public class DefaultServiceConnector implements ServiceConnector {
         return this.reconnectProfiles;
     }
 
-    public void addOnlineClient(BasicServiceConnection connection) {
-        this.onlineClients.add(connection);
-    }
-
     public void switchClientSafe(Player player, ServiceConnection proxyClient) {
         player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
         this.setReconnectTarget(player.getUniqueId(), proxyClient.getUniqueId());
-    }
-
-    public void unregisterConnection(BasicServiceConnection proxyClient) {
-        this.onlineClients.remove(proxyClient);
-        proxyClient.close();
     }
 
     @Override

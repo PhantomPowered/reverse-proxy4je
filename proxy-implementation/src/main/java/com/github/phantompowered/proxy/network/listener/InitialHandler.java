@@ -41,6 +41,7 @@ import com.github.phantompowered.proxy.api.player.OfflinePlayer;
 import com.github.phantompowered.proxy.api.player.PlayerRepository;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.connection.BasicServiceConnection;
+import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
 import com.github.phantompowered.proxy.connection.handler.ClientChannelListener;
 import com.github.phantompowered.proxy.connection.player.DefaultOfflinePlayer;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
@@ -52,8 +53,8 @@ import com.github.phantompowered.proxy.network.pipeline.encryption.ServerEncrypt
 import com.github.phantompowered.proxy.network.pipeline.handler.HandlerEndpoint;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import com.github.phantompowered.proxy.protocol.handshake.PacketHandshakingClientSetProtocol;
+import com.github.phantompowered.proxy.protocol.login.client.PacketLoginClientLoginRequest;
 import com.github.phantompowered.proxy.protocol.login.client.PacketLoginInEncryptionRequest;
-import com.github.phantompowered.proxy.protocol.login.client.PacketLoginInLoginRequest;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutEncryptionResponse;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutLoginSuccess;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutServerKickPlayer;
@@ -143,6 +144,15 @@ public class InitialHandler {
         disconnect(channel, "");
     }
 
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Login.DISCONNECT, directions = ProtocolDirection.TO_CLIENT, protocolState = ProtocolState.LOGIN)
+    public void handle(ConnectedProxyClient client, PacketLoginOutServerKickPlayer packet) {
+        Component component = GsonComponentSerializer.gson().deserialize(packet.getMessage());
+        if (client.getConnectionHandler() != null) {
+            client.getConnectionHandler().complete(ServiceConnectResult.failure(component));
+            client.setConnectionHandler(null);
+        }
+    }
+
     @PacketHandler(packetIds = ProtocolIds.FromClient.Handshaking.SET_PROTOCOL, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.HANDSHAKING)
     public void handle(NetworkChannel channel, PacketHandshakingClientSetProtocol packet) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.HANDSHAKE, "Not expecting HANDSHAKE");
@@ -191,7 +201,7 @@ public class InitialHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Login.START, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.LOGIN)
-    public void handle(NetworkChannel channel, PacketLoginInLoginRequest loginRequest) {
+    public void handle(NetworkChannel channel, PacketLoginClientLoginRequest loginRequest) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.USERNAME, "Not expecting USERNAME");
         channel.setProperty("requestedName", loginRequest.getData());
 

@@ -34,15 +34,15 @@ import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketLoginInLoginRequest implements Packet {
+public class PacketLoginClientLoginRequest implements Packet {
 
     private String data;
 
-    public PacketLoginInLoginRequest(String data) {
+    public PacketLoginClientLoginRequest(String data) {
         this.data = data;
     }
 
-    public PacketLoginInLoginRequest() {
+    public PacketLoginClientLoginRequest() {
     }
 
     @Override

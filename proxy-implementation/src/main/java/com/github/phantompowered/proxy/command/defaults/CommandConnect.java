@@ -29,12 +29,14 @@ import com.github.phantompowered.proxy.api.command.basic.NonTabCompleteableComma
 import com.github.phantompowered.proxy.api.command.exception.CommandExecutionException;
 import com.github.phantompowered.proxy.api.command.result.CommandResult;
 import com.github.phantompowered.proxy.api.command.sender.CommandSender;
+import com.github.phantompowered.proxy.api.connection.DefaultConnectionHandler;
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.connection.ServiceConnector;
 import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +55,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         this.registry = registry;
     }
 
-    private CompletableFuture<Void> connect(ServiceConnection connection, NetworkAddress address) {
+    private CompletableFuture<Void> connect(CommandSender sender, ServiceConnection connection, NetworkAddress address) {
         if (connection.getServerAddress().equals(address)) {
             return CompletableFuture.completedFuture(null);
         }
@@ -80,11 +82,11 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
                 exception.printStackTrace();
             }
 
-            return newClient.connect().thenAccept(success -> {
+            return newClient.connect().addListener(DefaultConnectionHandler.coloredCommand(newClient, sender)).thenAccept(result -> {
                 if (player != null) {
                     player.resetTitle();
                     player.enableAutoReconnect();
-                    if (success) {
+                    if (result.isSuccess()) {
                         player.useClientSafe(newClient);
                     } else {
                         this.fallback(player, connection, null);
@@ -93,8 +95,9 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             }).exceptionally(throwable -> {
                 if (player != null) {
                     player.resetTitle();
-                    player.sendActionBar(200, TextComponent.of(throwable.getMessage().replace('\n', ' ')));
-                    this.fallback(player, connection, throwable);
+                    Component reason = TextComponent.of(throwable.getMessage().replace('\n', ' '));
+                    player.sendActionBar(200, reason);
+                    this.fallback(player, connection, reason);
                 }
                 return null;
             });
@@ -105,16 +108,16 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
         return CompletableFuture.completedFuture(null);
     }
 
-    private void fallback(Player player, ServiceConnection oldClient, Throwable reason) {
+    private void fallback(Player player, ServiceConnection oldClient, Component reason) {
         ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player.getUniqueId());
         if (nextClient == null || nextClient.equals(oldClient)) {
-            player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n" + (reason != null ? reason.getMessage() : "Unknown reason")));
+            player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n").append(reason == null ? TextComponent.of("§cUnknown reason") : reason));
             return;
         }
 
         Title title = Title.of(
                 TextComponent.of("§cFailed to connect"),
-                TextComponent.of(reason != null ? reason.getClass().getSimpleName() : "Unknown reason")
+                TextComponent.of("§7see the actionbar for the reason")
         );
         player.sendTitle(title);
         player.useClient(nextClient);
@@ -147,7 +150,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
                 return CommandResult.BREAK;
             }
 
-            this.connect(proxyClient, address);
+            this.connect(commandSender, proxyClient, address);
         } else {
             NetworkAddress address = NetworkAddress.parse(arguments[1]);
             if (address == null) {
@@ -169,7 +172,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             for (ServiceConnection client : clients) {
                 APIUtil.EXECUTOR_SERVICE.execute(() -> {
                     try {
-                        this.connect(client, address).get(10, TimeUnit.SECONDS);
+                        this.connect(commandSender, client, address).get(10, TimeUnit.SECONDS);
                     } catch (InterruptedException | ExecutionException | TimeoutException exception) {
                         exception.printStackTrace();
                     }

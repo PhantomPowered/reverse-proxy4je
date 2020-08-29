@@ -38,5 +38,4 @@ public interface Connection extends PacketSender, NetworkChannel {
 
     void disconnect(@NotNull Component reason);
 
-    void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason);
 }

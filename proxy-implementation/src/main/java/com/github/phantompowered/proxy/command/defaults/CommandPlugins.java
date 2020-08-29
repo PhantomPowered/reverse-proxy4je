@@ -56,7 +56,7 @@ public class CommandPlugins extends NonTabCompleteableCommandCallback {
 
         String plugins = pluginManager.getPlugins().stream()
                 .filter(filter != null ? filter : plugin -> true)
-                .map(plugin -> (plugin.getDisplayName() == null ? plugin.getId() : plugin.getDisplayName()) + ":" + plugin.getVersion())
+                .map(plugin -> (plugin.getDisplayName() == null ? plugin.getId() : plugin.getDisplayName()) + " v" + plugin.getVersion())
                 .collect(Collectors.joining("\n"));
 
         if (args.length == 0) {

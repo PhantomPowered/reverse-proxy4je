@@ -37,7 +37,6 @@ import com.github.phantompowered.proxy.api.scoreboard.Scoreboard;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.api.task.Task;
-import com.github.phantompowered.proxy.api.task.TaskFutureListener;
 import com.mojang.authlib.UserAuthentication;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -62,6 +61,8 @@ public interface ServiceConnection extends InteractiveServiceConnection, Connect
     int getDimension();
 
     long getLastDisconnectionTimestamp();
+
+    long getLastConnectionTryTimestamp();
 
     PlayerId getLastConnectedPlayer();
 
@@ -111,27 +112,9 @@ public interface ServiceConnection extends InteractiveServiceConnection, Connect
 
     Component getTabFooter();
 
+    // IllegalState if this connection is already connected
     @NotNull
-    Task<Boolean> connect();
-
-    @NotNull
-    Task<Boolean> connect(@NotNull TaskFutureListener<Boolean> listener);
-
-    @NotNull
-    Task<Boolean> connect(@NotNull Collection<TaskFutureListener<Boolean>> listener);
-
-    @NotNull
-    Task<Boolean> reconnect();
-
-    @NotNull
-    Task<Boolean> reconnect(@NotNull TaskFutureListener<Boolean> listener);
-
-    @NotNull
-    Task<Boolean> reconnect(@NotNull Collection<TaskFutureListener<Boolean>> listener);
-
-    boolean isReScheduleOnFailure();
-
-    void setReScheduleOnFailure(boolean reScheduleOnFailure);
+    Task<ServiceConnectResult> connect() throws IllegalStateException;
 
     @Override
     boolean isConnected();

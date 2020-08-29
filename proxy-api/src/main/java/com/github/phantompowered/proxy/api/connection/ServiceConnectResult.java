@@ -22,11 +22,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.task;
+package com.github.phantompowered.proxy.api.connection;
 
-public class EmptyTaskFutureListener {
+import com.google.common.base.Preconditions;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-    public static final TaskFutureListener<Boolean> BOOL_INSTANCE = new TaskFutureListener<Boolean>() {
-    };
+public class ServiceConnectResult {
 
+    private final boolean success;
+    private final Component failureReason;
+
+    private ServiceConnectResult(boolean success, Component failureReason) {
+        this.success = success;
+        this.failureReason = failureReason;
+    }
+
+    @NotNull
+    public static ServiceConnectResult success() {
+        return new ServiceConnectResult(true, null);
+    }
+
+    @NotNull
+    public static ServiceConnectResult unknownFailure() {
+        return failure(null);
+    }
+
+    @NotNull
+    public static ServiceConnectResult failure(Component component) {
+        return new ServiceConnectResult(false, component);
+    }
+
+    public boolean isSuccess() {
+        return this.success;
+    }
+
+    @Nullable
+    public Component getFailureReason() {
+        Preconditions.checkArgument(!this.success, "failure reason is only available for failed results");
+        return this.failureReason;
+    }
 }

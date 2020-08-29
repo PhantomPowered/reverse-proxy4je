@@ -27,8 +27,8 @@ public final class ImplementationUtil {
 
     public static String stringifyException(Throwable t) {
         StackTraceElement[] trace = t.getStackTrace();
-        return t.getClass().getSimpleName() + " : " + t.getMessage()
-                + ((trace.length > 0) ? " @ " + trace[0].getClassName() + ":" + trace[0].getLineNumber() : "");
+        String firstLine = trace.length > 0 ? " @ " + trace[0].getClassName() + ":" + trace[0].getLineNumber() : "";
+        return t.getClass().getSimpleName() + ": " + t.getMessage() + firstLine;
     }
 
     public static UUID parseUUID(String uuid) {

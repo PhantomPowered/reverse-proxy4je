@@ -371,7 +371,6 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         this.connected = connected;
     }
 
-    @Override
     public void handleDisconnected(@NotNull ServiceConnection connection, @NotNull Component reason) {
         if (!this.connected) {
             return;

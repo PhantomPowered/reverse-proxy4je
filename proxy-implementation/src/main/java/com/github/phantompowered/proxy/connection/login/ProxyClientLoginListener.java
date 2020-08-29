@@ -24,10 +24,8 @@
  */
 package com.github.phantompowered.proxy.connection.login;
 
-import com.github.phantompowered.proxy.api.connection.ServiceConnector;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
-import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
 import com.github.phantompowered.proxy.network.channel.ChannelListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,10 +41,6 @@ public class ProxyClientLoginListener implements ChannelListener {
 
     @Override
     public void handleChannelInactive(@NotNull NetworkChannel channel) {
-        ServiceConnector connector = this.client.getServiceRegistry().getProviderUnchecked(ServiceConnector.class);
-        if (connector instanceof DefaultServiceConnector) {
-            ((DefaultServiceConnector) connector).unregisterConnection(this.client.getConnection());
-        }
     }
 
     @Override

@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.net.Proxy;
 import java.util.UUID;
 
+// TODO cache the sessions for 10 minutes or so after the proxy has been stopped
 public class BasicProvidedSessionService implements ProvidedSessionService {
 
     private static final AuthenticationService SERVICE = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());

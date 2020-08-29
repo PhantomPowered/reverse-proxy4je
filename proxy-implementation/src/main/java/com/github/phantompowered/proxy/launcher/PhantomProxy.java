@@ -24,7 +24,6 @@
  */
 package com.github.phantompowered.proxy.launcher;
 
-import com.github.phantompowered.proxy.account.AccountBiConsumer;
 import com.github.phantompowered.proxy.account.BasicProvidedSessionService;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.block.BlockStateRegistry;
@@ -59,6 +58,7 @@ import com.github.phantompowered.proxy.connection.handler.PingPacketHandler;
 import com.github.phantompowered.proxy.connection.handler.ServerPacketHandler;
 import com.github.phantompowered.proxy.connection.login.ProxyClientLoginHandler;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayerRepository;
+import com.github.phantompowered.proxy.connection.reconnect.ServiceReconnectionHandler;
 import com.github.phantompowered.proxy.connection.whitelist.DefaultWhitelist;
 import com.github.phantompowered.proxy.entity.EntityTickHandler;
 import com.github.phantompowered.proxy.event.DefaultEventManager;
@@ -76,12 +76,16 @@ import com.github.phantompowered.proxy.storage.MCServiceCredentialsStorage;
 import com.github.phantompowered.proxy.storage.database.H2DatabaseConfig;
 import com.github.phantompowered.proxy.storage.database.H2DatabaseDriver;
 import com.github.phantompowered.proxy.tick.DefaultTickHandlerProvider;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class PhantomProxy {
 
@@ -195,15 +199,23 @@ public class PhantomProxy {
     }
 
     private void readAccounts() {
-        AccountBiConsumer consumer = new AccountBiConsumer(this.serviceRegistry);
+        APIUtil.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(new ServiceReconnectionHandler(this.serviceRegistry), 10, 10, TimeUnit.SECONDS);
+
+        ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
         MCServiceCredentialsStorage storage = this.serviceRegistry.getProviderUnchecked(MCServiceCredentialsStorage.class);
         for (MCServiceCredentials credentials : storage.getAll()) {
-            NetworkAddress parse = NetworkAddress.parse(credentials.getDefaultServer());
-            if (parse == null) {
+            NetworkAddress address = NetworkAddress.parse(credentials.getDefaultServer());
+            if (address == null) {
                 continue;
             }
 
-            consumer.accept(credentials, parse);
+            try {
+                connector.createConnection(credentials, address).connect().get(10, TimeUnit.SECONDS);
+
+                Thread.sleep(500);
+            } catch (AuthenticationException | InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+            }
         }
     }
 
