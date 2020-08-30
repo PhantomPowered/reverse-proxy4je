@@ -67,17 +67,19 @@ public class DefaultServiceConnector implements ServiceConnector {
 
     @Override
     @NotNull
-    public Optional<? extends ServiceConnection> getClientByEmail(String email) {
+    public Optional<ServiceConnection> getClientByEmail(String email) {
         return this.onlineClients.stream()
                 .filter(connection -> connection.getCredentials().getEmail() != null)
                 .filter(connection -> connection.getCredentials().getEmail().equals(email))
+                .map(connection -> (ServiceConnection) connection)
                 .findFirst();
     }
 
     @Override
-    public Optional<? extends ServiceConnection> getClientByName(String name) {
+    public Optional<ServiceConnection> getClientByName(String name) {
         return this.onlineClients.stream()
                 .filter(connection -> connection.getName() != null && connection.getName().equals(name))
+                .map(connection -> (ServiceConnection) connection)
                 .findFirst();
     }
 

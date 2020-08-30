@@ -20,9 +20,9 @@ public interface ServiceConnector extends TickHandler {
     ServiceConnection findBestConnection(UUID playerUniqueId);
 
     @NotNull
-    Optional<? extends ServiceConnection> getClientByEmail(String email);
+    Optional<ServiceConnection> getClientByEmail(String email);
 
-    Optional<? extends ServiceConnection> getClientByName(String name);
+    Optional<ServiceConnection> getClientByName(String name);
 
     @NotNull
     Collection<? extends ServiceConnection> getOnlineClients();
