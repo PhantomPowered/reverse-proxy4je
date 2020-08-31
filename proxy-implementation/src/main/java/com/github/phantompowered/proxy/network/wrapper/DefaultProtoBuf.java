@@ -67,6 +67,10 @@ public final class DefaultProtoBuf extends ProtoBuf {
     private final ByteBuf initByteBuf;
     private ByteBuf wrapped;
 
+    public DefaultProtoBuf(int protocolVersion, @NotNull ByteBuf wrapped) {
+        this(null, protocolVersion, wrapped);
+    }
+
     public DefaultProtoBuf(ServiceRegistry registry, int protocolVersion, @NotNull ByteBuf wrapped) {
         this.registry = registry;
         this.protocolVersion = protocolVersion;
@@ -299,7 +303,7 @@ public final class DefaultProtoBuf extends ProtoBuf {
 
     @Override
     public <T extends PacketSerializable> @NotNull T readObject(@NotNull Class<T> objectClass) {
-        Class<? extends T> implementationClass = this.registry.getProviderUnchecked(ImplementationMapper.class).getImplementationClass(objectClass);
+        Class<? extends T> implementationClass = this.registry == null ? null : this.registry.getProviderUnchecked(ImplementationMapper.class).getImplementationClass(objectClass);
 
         try {
             return this.readObject((implementationClass != null ? implementationClass : objectClass).getDeclaredConstructor().newInstance());
