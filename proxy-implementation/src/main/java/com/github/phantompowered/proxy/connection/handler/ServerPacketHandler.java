@@ -133,7 +133,8 @@ public class ServerPacketHandler {
 
             EntityStatusType statusType = EntityStatusType.ofOtherEntity(entity.getClass(), packet.getStatus());
             if (statusType == null) {
-                System.err.printf("Unknown EntityStatusType received: %s for entity %d (type: %s)", packet.getStatus(), packet.getEntityId(), entity.getType() == null ? entity.getLivingType() : entity.getType());
+                System.err.println(String.format("Unknown EntityStatusType received: %s for entity %d (type: %s)", packet.getStatus(), packet.getEntityId(), entity.getType() == null ? entity.getLivingType() : entity.getType()));
+                // use println String.format because printf would somehow print the string in multiple lines
                 return;
             }
 

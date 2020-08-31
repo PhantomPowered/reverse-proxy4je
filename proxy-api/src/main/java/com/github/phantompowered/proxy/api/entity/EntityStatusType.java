@@ -34,7 +34,7 @@ public enum EntityStatusType {
     WOLF_TAME_SUCCESS(6, Tameable.class),
     WOLF_TAME_FAILED(7, Tameable.class),
     WOLF_SHAKING(8, Wolf.class),
-    ITEM_USE_FINISH(9, null), // only called for the client himself
+    ITEM_USE_FINISH(9, EntityPlayer.class),
     RESET_SHEEP_TIMER(10, Sheep.class),
     IGNITE_TNT_MINECART(10, Minecart.class),
     RESET_IRON_GOLEM_ROSE_TICK(11, IronGolem.class),

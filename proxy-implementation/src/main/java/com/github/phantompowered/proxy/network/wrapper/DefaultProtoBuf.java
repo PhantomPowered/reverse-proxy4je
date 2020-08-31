@@ -24,13 +24,16 @@
  */
 package com.github.phantompowered.proxy.network.wrapper;
 
+import com.github.phantompowered.proxy.api.ImplementationMapper;
 import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.nbt.NBTSizeTracker;
 import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
 import com.github.phantompowered.proxy.api.network.ByteBufUtils;
+import com.github.phantompowered.proxy.api.network.PacketSerializable;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.item.ProxyItemStack;
 import com.github.phantompowered.proxy.nbt.CompressedStreamTools;
 import io.netty.buffer.ByteBuf;
@@ -43,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -57,11 +61,14 @@ import java.util.UUID;
 
 public final class DefaultProtoBuf extends ProtoBuf {
 
+    private final ServiceRegistry registry;
+
     private final int protocolVersion;
     private final ByteBuf initByteBuf;
     private ByteBuf wrapped;
 
-    public DefaultProtoBuf(int protocolVersion, @NotNull ByteBuf wrapped) {
+    public DefaultProtoBuf(ServiceRegistry registry, int protocolVersion, @NotNull ByteBuf wrapped) {
+        this.registry = registry;
         this.protocolVersion = protocolVersion;
         this.wrapped = this.initByteBuf = wrapped;
     }
@@ -286,8 +293,30 @@ public final class DefaultProtoBuf extends ProtoBuf {
     }
 
     @Override
+    public void writeObject(@NotNull PacketSerializable serializable) {
+        serializable.write(this);
+    }
+
+    @Override
+    public <T extends PacketSerializable> @NotNull T readObject(@NotNull Class<T> objectClass) {
+        Class<? extends T> implementationClass = this.registry.getProviderUnchecked(ImplementationMapper.class).getImplementationClass(objectClass);
+
+        try {
+            return this.readObject((implementationClass != null ? implementationClass : objectClass).getDeclaredConstructor().newInstance());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new Error(e);
+        }
+    }
+
+    @Override
+    public <T extends PacketSerializable> @NotNull T readObject(@NotNull T object) {
+        object.read(this);
+        return object;
+    }
+
+    @Override
     public @NotNull ProtoBuf clone() {
-        return new DefaultProtoBuf(this.protocolVersion, this.initByteBuf);
+        return new DefaultProtoBuf(this.registry, this.protocolVersion, this.initByteBuf);
     }
 
     @Override

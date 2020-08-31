@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-/* package */ class DefaultPasteServerUploadResult implements PasteServerUploadResult {
+public class DefaultPasteServerUploadResult implements PasteServerUploadResult {
 
     private final boolean wasSuccessful;
     private final String url;

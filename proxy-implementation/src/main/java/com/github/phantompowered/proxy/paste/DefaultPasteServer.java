@@ -38,7 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/* package */ class DefaultPasteServer implements PasteServer {
+public class DefaultPasteServer implements PasteServer {
 
     private static final PasteServerUploadResult[] EMPTY_RESULT = new PasteServerUploadResult[0];
     private String apiUrl;

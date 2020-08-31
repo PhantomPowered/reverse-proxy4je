@@ -57,7 +57,7 @@ public class ServerPinger extends DefaultNetworkChannel implements ChannelListen
                 }
 
                 ch.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER, new MinecraftDecoder(ServerPinger.this.getServiceRegistry(), ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
-                ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
+                ch.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(serviceRegistry, ProtocolDirection.TO_SERVER));
                 ch.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ServerPinger.this);
                 ch.pipeline().get(HandlerEndpoint.class).setChannelListener(ServerPinger.this);
             }

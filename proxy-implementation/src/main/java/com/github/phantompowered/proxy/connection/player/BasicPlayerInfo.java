@@ -25,20 +25,23 @@
 package com.github.phantompowered.proxy.connection.player;
 
 import com.github.phantompowered.proxy.api.entity.PlayerInfo;
+import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.api.player.GameMode;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class BasicPlayerInfo implements PlayerInfo {
 
-    private final GameProfile profile;
+    private GameProfile profile;
 
-    private final GameMode gamemode;
+    private GameMode gamemode;
 
-    private final int ping;
+    private int ping;
 
-    private final String displayName;
+    private String displayName;
 
     public BasicPlayerInfo(GameProfile profile, GameMode gamemode, int ping, String displayName) {
         this.profile = profile;
@@ -85,5 +88,45 @@ public class BasicPlayerInfo implements PlayerInfo {
                 + ", ping=" + ping
                 + ", displayName='" + displayName + '\''
                 + '}';
+    }
+
+    @Override
+    public void write(@NotNull ProtoBuf buf) {
+        buf.writeUniqueId(this.profile.getId());
+        buf.writeString(this.profile.getName());
+
+        buf.writeVarInt(this.profile.getProperties().size());
+        for (Property property : this.profile.getProperties().values()) {
+            buf.writeString(property.getName());
+            buf.writeString(property.getValue());
+            buf.writeBoolean(property.hasSignature());
+            if (property.hasSignature()) {
+                buf.writeString(property.getSignature());
+            }
+        }
+
+        buf.writeByte(this.gamemode.getId());
+        buf.writeVarInt(this.ping);
+        buf.writeBoolean(this.displayName != null);
+        if (this.displayName != null) {
+            buf.writeString(this.displayName);
+        }
+    }
+
+    @Override
+    public void read(@NotNull ProtoBuf buf) {
+        this.profile = new GameProfile(buf.readUniqueId(), buf.readString());
+
+        int size = buf.readVarInt();
+        for (int i = 0; i < size; i++) {
+            String name = buf.readString();
+            String value = buf.readString();
+            String signature = buf.readBoolean() ? buf.readString() : null;
+            this.profile.getProperties().put(name, signature != null ? new Property(name, value, signature) : new Property(name, value));
+        }
+
+        this.gamemode = GameMode.getById(buf.readByte());
+        this.ping = buf.readVarInt();
+        this.displayName = buf.readBoolean() ? buf.readString() : null;
     }
 }

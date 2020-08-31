@@ -22,26 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.entity;
+package com.github.phantompowered.proxy.api.network;
 
-import com.github.phantompowered.proxy.api.network.PacketSerializable;
-import com.github.phantompowered.proxy.api.player.GameMode;
-import com.mojang.authlib.GameProfile;
+import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
+public interface PacketSerializable {
 
-public interface PlayerInfo extends PacketSerializable {
+    void write(@NotNull ProtoBuf buf);
 
-    GameProfile getProfile();
-
-    UUID getUniqueId();
-
-    String getUsername();
-
-    GameMode getGamemode();
-
-    int getPing();
-
-    String getDisplayName();
+    void read(@NotNull ProtoBuf buf);
 
 }

@@ -27,6 +27,7 @@ package com.github.phantompowered.proxy.api.network.wrapper;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
+import com.github.phantompowered.proxy.api.network.PacketSerializable;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,6 +87,14 @@ public abstract class ProtoBuf extends ByteBuf implements Cloneable {
     public abstract UUID readUniqueId();
 
     public abstract void writeUniqueId(@NotNull UUID uniqueId);
+
+    public abstract void writeObject(@NotNull PacketSerializable serializable);
+
+    @NotNull
+    public abstract <T extends PacketSerializable> T readObject(@NotNull Class<T> objectClass);
+
+    @NotNull
+    public abstract <T extends PacketSerializable> T readObject(@NotNull T object);
 
     @Override
     @NotNull

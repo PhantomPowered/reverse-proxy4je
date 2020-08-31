@@ -27,6 +27,7 @@ package com.github.phantompowered.proxy.network.pipeline.minecraft;
 import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.network.wrapper.DefaultProtoBuf;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,15 +35,17 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public final class MinecraftEncoder extends MessageToByteEncoder<Packet> {
 
+    private final ServiceRegistry registry;
     private final ProtocolDirection direction;
 
-    public MinecraftEncoder(ProtocolDirection direction) {
+    public MinecraftEncoder(ServiceRegistry registry, ProtocolDirection direction) {
+        this.registry = registry;
         this.direction = direction;
     }
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
-        ProtoBuf protoBuf = new DefaultProtoBuf(47, byteBuf);
+        ProtoBuf protoBuf = new DefaultProtoBuf(this.registry, 47, byteBuf);
         protoBuf.writeVarInt(packet.getId());
         packet.write(protoBuf, this.direction, protoBuf.getProtocolVersion());
     }

@@ -24,8 +24,10 @@
  */
 package com.github.phantompowered.proxy.launcher;
 
+import com.github.phantompowered.proxy.DefaultImplementationMapper;
 import com.github.phantompowered.proxy.account.BasicProvidedSessionService;
 import com.github.phantompowered.proxy.api.APIUtil;
+import com.github.phantompowered.proxy.api.ImplementationMapper;
 import com.github.phantompowered.proxy.api.block.BlockStateRegistry;
 import com.github.phantompowered.proxy.api.command.CommandMap;
 import com.github.phantompowered.proxy.api.configuration.Configuration;
@@ -105,6 +107,7 @@ public class PhantomProxy {
         this.serviceRegistry.setProvider(null, ServiceConnector.class, new DefaultServiceConnector(this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, ServerPingProvider.class, new DefaultServerPingProvider(this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, TickHandlerProvider.class, new DefaultTickHandlerProvider(), true);
+        this.serviceRegistry.setProvider(null, ImplementationMapper.class, new DefaultImplementationMapper(), true);
 
         System.out.println("Registering packet handlers...");
         this.serviceRegistry.getProviderUnchecked(PacketHandlerRegistry.class).registerPacketHandlerClass(null, new PingPacketHandler());

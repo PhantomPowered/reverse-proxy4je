@@ -59,19 +59,19 @@ public final class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) {
         ByteBuf copy = byteBuf.copy();
 
-        DefaultProtoBuf protoBuf = new DefaultProtoBuf(47, byteBuf);
+        DefaultProtoBuf protoBuf = new DefaultProtoBuf(this.registry, 47, byteBuf);
         int packetId = protoBuf.readVarInt();
         Packet packet = this.registry.getProviderUnchecked(PacketRegistry.class).getPacket(this.direction, this.protocolState, packetId);
         if (packet == null) {
             this.logger.finer("Received unhandled packet (id: " + packetId + ")");
-            list.add(new DecodedPacket(new DefaultProtoBuf(47, copy), null));
+            list.add(new DecodedPacket(new DefaultProtoBuf(this.registry, 47, copy), null));
             return;
         }
 
         packet.read(protoBuf, this.direction, protoBuf.getProtocolVersion());
         this.logger.finer("Receiving packet (class: " + packet.getClass().getName() + "; id: " + packetId + ") length: "
                 + protoBuf.readableBytes() + "; data: " + packet.toString());
-        list.add(new DecodedPacket(new DefaultProtoBuf(47, copy), packet));
+        list.add(new DecodedPacket(new DefaultProtoBuf(this.registry, 47, copy), packet));
     }
 
     @NotNull

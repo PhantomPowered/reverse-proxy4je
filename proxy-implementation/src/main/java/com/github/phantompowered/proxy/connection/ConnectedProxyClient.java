@@ -169,7 +169,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
                 channel.pipeline().addAfter(NetworkUtils.LENGTH_DECODER, NetworkUtils.PACKET_DECODER,
                         new MinecraftDecoder(ConnectedProxyClient.this.serviceRegistry, ProtocolDirection.TO_CLIENT, ProtocolState.HANDSHAKING));
-                channel.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(ProtocolDirection.TO_SERVER));
+                channel.pipeline().addAfter(NetworkUtils.LENGTH_ENCODER, NetworkUtils.PACKET_ENCODER, new MinecraftEncoder(connection.getServiceRegistry(), ProtocolDirection.TO_SERVER));
                 channel.pipeline().get(HandlerEndpoint.class).setNetworkChannel(ConnectedProxyClient.this);
                 channel.pipeline().get(HandlerEndpoint.class).setChannelListener(new ProxyClientLoginListener(ConnectedProxyClient.this));
             }
