@@ -79,7 +79,6 @@ import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.api.paste.PasteServer;
 import com.github.phantompowered.proxy.api.paste.PasteServerProvider;
 import com.github.phantompowered.proxy.api.paste.PasteServerUploadResult;
-import com.github.phantompowered.proxy.api.permission.PermissionHolder;
 import com.github.phantompowered.proxy.api.ping.ServerPingProvider;
 import com.github.phantompowered.proxy.api.player.OfflinePlayer;
 import com.github.phantompowered.proxy.api.player.Player;
@@ -160,6 +159,7 @@ import com.github.phantompowered.proxy.plugin.DefaultPluginContainer;
 import com.github.phantompowered.proxy.plugin.DefaultPluginManager;
 import com.github.phantompowered.proxy.potion.ProxyPotionEffect;
 import com.github.phantompowered.proxy.service.BasicServiceRegistry;
+import com.github.phantompowered.proxy.service.BasicServiceRegistryEntry;
 import com.github.phantompowered.proxy.storage.DefaultPlayerIdStorage;
 import com.github.phantompowered.proxy.tick.DefaultTickHandlerProvider;
 import com.google.common.collect.BiMap;
@@ -205,7 +205,6 @@ public class DefaultImplementationMapper implements ImplementationMapper {
         this.registerNetworking();
         this.registerPaste();
 
-        this.registerMapping(PermissionHolder.class, DefaultOfflinePlayer.class);
         this.registerMapping(ServerPingProvider.class, DefaultServerPingProvider.class);
 
         this.registerPlayer();
@@ -216,7 +215,7 @@ public class DefaultImplementationMapper implements ImplementationMapper {
         this.registerScoreboard();
 
         this.registerMapping(ServiceRegistry.class, BasicServiceRegistry.class);
-        this.registerMapping(ServiceRegistryEntry.class, BasicServiceRegistry.class);
+        this.registerMapping(ServiceRegistryEntry.class, BasicServiceRegistryEntry.class);
 
         this.registerMapping(ProvidedSessionService.class, BasicProvidedSessionService.class);
 
