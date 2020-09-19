@@ -298,7 +298,7 @@ public final class DefaultPluginManager implements PluginManager {
                 Class<?> clazz;
                 try {
                     clazz = classLoader.loadClass(className);
-                } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+                } catch (Throwable ignored) {
                     continue;
                 }
                 Plugin annotation = clazz.getAnnotation(Plugin.class);
