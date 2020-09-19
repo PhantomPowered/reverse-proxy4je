@@ -52,7 +52,7 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
         }
 
         NBTTagCompound compound = JsonNbtUtils.getTagFromJson(((TextComponent) input).content());
-        return new HoverEvent.ShowItem(Key.of(compound.getString("id")), compound.getByte("Count"), this.showItemFromNBTTagHolder(compound));
+        return HoverEvent.ShowItem.of(Key.of(compound.getString("id")), compound.getByte("Count"), this.showItemFromNBTTagHolder(compound));
     }
 
     @Override
@@ -62,7 +62,7 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
         }
 
         NBTTagCompound compound = JsonNbtUtils.getTagFromJson(((TextComponent) input).content());
-        return new HoverEvent.ShowEntity(
+        return HoverEvent.ShowEntity.of(
                 this.getShowItemKeyFromNbt(compound),
                 UUID.fromString(compound.getString("id")),
                 compound.hasKey("name", 8) ? TextComponent.of(compound.getString("name")) : null
