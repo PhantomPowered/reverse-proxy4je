@@ -37,6 +37,7 @@ import com.github.phantompowered.proxy.api.entity.LivingEntityType;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerKickEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerSendProxyMessageEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerServiceSelectedEvent;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.Packet;
@@ -149,7 +150,9 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendMessage(ChatMessageType position, Component message) {
-        this.sendMessage(position, GsonComponentSerializer.gson().serialize(message));
+        this.registry.getProviderUnchecked(EventManager.class).callEvent(new PlayerSendProxyMessageEvent(this, position, message));
+
+        this.sendPacket(new PacketPlayServerChatMessage(GsonComponentSerializer.gson().serialize(message), (byte) position.ordinal()));
     }
 
     @Override
@@ -483,10 +486,6 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public float getHeadHeight() {
         return 1.8F;
-    }
-
-    private void sendMessage(@NotNull ChatMessageType position, @NotNull String message) {
-        this.sendPacket(new PacketPlayServerChatMessage(message, (byte) position.ordinal()));
     }
 
     public void disconnect0(Component reason) {
