@@ -66,7 +66,7 @@ public class JsonConfiguration implements Configuration {
             this.jsonObject.addProperty("webPort", 80);
             this.jsonObject.addProperty("compression", -1);
             this.motd = new ServerPing(
-                    new ServerPing.Protocol("§cProxy by §bderrop §cand §bderklaro", -1),
+                    new ServerPing.Protocol("§6P§7hantom§6P§7roxy §7by §ederklaro§7, §ederrop", -1),
                     new ServerPing.Players(0, 0, null),
                     TextComponent.of("\n§7Available/Online Accounts: §e$free§7/§e$online"),
                     null
@@ -93,6 +93,16 @@ public class JsonConfiguration implements Configuration {
                 this.motd.setFavicon(Favicon.create(image));
             } catch (IOException exception) {
                 exception.printStackTrace();
+            }
+        }
+
+        if (this.motd.getFavicon() == null) {
+            try (InputStream inputStream = JsonConfiguration.class.getClassLoader().getResourceAsStream("server-icon.png")) {
+                if (inputStream != null) {
+                    this.motd.setFavicon(Favicon.create(ImageIO.read(inputStream)));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
