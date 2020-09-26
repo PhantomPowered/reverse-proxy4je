@@ -26,6 +26,7 @@ package com.github.phantompowered.proxy.api.connection;
 
 import com.github.phantompowered.proxy.api.network.PacketSender;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
+import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,5 +38,9 @@ public interface Connection extends PacketSender, NetworkChannel {
     InetSocketAddress getSocketAddress();
 
     void disconnect(@NotNull Component reason);
+
+    void sendCustomPayload(@NotNull String tag, @NotNull byte[] data);
+
+    void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data);
 
 }

@@ -36,6 +36,7 @@ import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
+import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.PlayerAbilities;
 import com.github.phantompowered.proxy.api.player.id.PlayerId;
@@ -50,6 +51,7 @@ import com.github.phantompowered.proxy.api.task.Task;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.phantompowered.proxy.network.channel.WrappedNetworkChannel;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientChatMessage;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.phantompowered.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
@@ -424,6 +426,16 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     @Override
     public void disconnect(@NotNull Component reason) {
         this.close();
+    }
+
+    @Override
+    public void sendCustomPayload(@NotNull String tag, @NotNull byte[] data) {
+        this.sendPacket(new PacketPlayClientCustomPayload(tag, data));
+    }
+
+    @Override
+    public void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data) {
+        this.sendCustomPayload(tag, data.toArray());
     }
 
     @Override

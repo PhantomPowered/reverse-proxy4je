@@ -18,6 +18,7 @@ import com.github.phantompowered.proxy.api.events.connection.service.entity.Enti
 import com.github.phantompowered.proxy.api.events.connection.service.entity.status.EntityStatusEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.status.SelfEntityStatusEvent;
 import com.github.phantompowered.proxy.api.location.Location;
+import com.github.phantompowered.proxy.api.network.ByteBufUtils;
 import com.github.phantompowered.proxy.api.network.PacketHandler;
 import com.github.phantompowered.proxy.api.network.exception.CancelProceedException;
 import com.github.phantompowered.proxy.api.player.Player;
@@ -39,6 +40,8 @@ import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketP
 import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.phantompowered.proxy.text.ProxyLegacyHoverEventSerializer;
 import com.google.gson.JsonParseException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -203,6 +206,11 @@ public class ServerPacketHandler {
     public void handleLogin(ConnectedProxyClient client, PacketPlayServerLogin login) {
         client.setEntityId(login.getEntityId());
         client.connectionSuccess();
+        client.setDimension(login.getDimension());
+
+        ByteBuf buf = Unpooled.buffer();
+        ByteBufUtils.writeString("vanilla", buf);
+        client.getConnection().sendCustomPayload("MC|Brand", ByteBufUtils.toArray(buf));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_CLIENT)
@@ -271,11 +279,6 @@ public class ServerPacketHandler {
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.RESPAWN, directions = ProtocolDirection.TO_CLIENT)
     public void handle(ConnectedProxyClient client, PacketPlayServerRespawn respawn) {
         client.setDimension(respawn.getDimension());
-    }
-
-    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.LOGIN, directions = ProtocolDirection.TO_CLIENT)
-    public void handle(ConnectedProxyClient client, PacketPlayServerLogin login) {
-        client.setDimension(login.getDimension());
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.TITLE, directions = ProtocolDirection.TO_CLIENT)

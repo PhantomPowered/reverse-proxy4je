@@ -43,6 +43,7 @@ import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.PacketSender;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
+import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.api.player.OfflinePlayer;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.inventory.PlayerInventory;
@@ -55,6 +56,7 @@ import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
 import com.github.phantompowered.proxy.entity.ProxyEntity;
 import com.github.phantompowered.proxy.network.channel.WrappedNetworkChannel;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutSetCompression;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
@@ -358,6 +360,16 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public void disconnect(@NotNull Component reason) {
         this.disconnect0(reason);
+    }
+
+    @Override
+    public void sendCustomPayload(@NotNull String tag, @NotNull byte[] data) {
+        this.sendPacket(new PacketPlayClientCustomPayload(tag, data));
+    }
+
+    @Override
+    public void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data) {
+        this.sendCustomPayload(tag, data.toArray());
     }
 
     @Override

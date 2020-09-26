@@ -49,7 +49,6 @@ import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
 import com.github.phantompowered.proxy.api.tick.TickHandlerProvider;
 import com.github.phantompowered.proxy.block.DefaultBlockStateRegistry;
-import com.github.phantompowered.proxy.brand.ProxyBrandChangeListener;
 import com.github.phantompowered.proxy.command.DefaultCommandMap;
 import com.github.phantompowered.proxy.command.defaults.*;
 import com.github.phantompowered.proxy.configuration.JsonConfiguration;
@@ -173,8 +172,6 @@ public class PhantomProxy {
 
         System.out.println("Loading commands...");
         this.handleCommands();
-
-        this.serviceRegistry.getProviderUnchecked(EventManager.class).registerListener(null, new ProxyBrandChangeListener());
 
         if (!Boolean.getBoolean("proxy.do-not-read.accounts")) {
             System.out.println("Reading accounts...");
