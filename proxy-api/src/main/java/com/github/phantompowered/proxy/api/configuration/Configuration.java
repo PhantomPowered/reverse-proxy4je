@@ -45,6 +45,10 @@ public interface Configuration {
 
     void setMotd(ServerPing motd);
 
+    boolean isPrivateMode();
+
+    void setPrivateMode(boolean privateMode);
+
     // -1 = disabled
     @Range(from = 0, to = 256)
     int getCompressionThreshold();

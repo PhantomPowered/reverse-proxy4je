@@ -65,6 +65,7 @@ public class JsonConfiguration implements Configuration {
             this.jsonObject.addProperty("proxyPort", 25565);
             this.jsonObject.addProperty("webPort", 80);
             this.jsonObject.addProperty("compression", -1);
+            this.jsonObject.addProperty("privateMode", false);
             this.motd = new ServerPing(
                     new ServerPing.Protocol("§6P§7hantom§6P§7roxy §7by §ederklaro§7, §ederrop", -1),
                     new ServerPing.Players(0, 0, null),
@@ -151,6 +152,16 @@ public class JsonConfiguration implements Configuration {
     @Override
     public void setMotd(ServerPing motd) {
         this.motd = motd;
+    }
+
+    @Override
+    public boolean isPrivateMode() {
+        return this.jsonObject != null && this.jsonObject.get("privateMode").getAsBoolean();
+    }
+
+    @Override
+    public void setPrivateMode(boolean privateMode) {
+        this.jsonObject.addProperty("privateMode", privateMode);
     }
 
     @Override

@@ -24,6 +24,9 @@
  */
 package com.github.phantompowered.proxy.logging;
 
+import com.github.phantompowered.proxy.api.configuration.Configuration;
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -35,6 +38,14 @@ public class LogFormatter extends Formatter {
 
     private static final DateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy kk:mm:ss");
 
+    private final ServiceRegistry registry;
+    private final boolean raw;
+
+    public LogFormatter(ServiceRegistry registry, boolean raw) {
+        this.registry = registry;
+        this.raw = raw;
+    }
+
     @Override
     public String format(LogRecord record) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -44,7 +55,33 @@ public class LogFormatter extends Formatter {
         this.appendThread(stringBuilder, record.getThreadID());
         stringBuilder.append(record.getLevel().getLocalizedName());
         stringBuilder.append("] ");
-        stringBuilder.append(super.formatMessage(record));
+
+        boolean privateMode = !this.raw && this.registry.getProvider(Configuration.class).map(Configuration::isPrivateMode).orElse(false);
+        String message = super.formatMessage(record);
+        if (privateMode) {
+            String[] words = message.split(" ");
+            for (String word : words) {
+                int at = word.indexOf('@');
+                int dot = word.indexOf('.');
+                if (at > 1 && dot > at && dot < word.length() - 1) {
+
+                    stringBuilder.append("*".repeat(at));
+                    stringBuilder.append('@');
+                    stringBuilder.append("*".repeat(dot - at - 1));
+                    stringBuilder.append('.');
+                    stringBuilder.append("*".repeat(word.length() - dot - 1));
+
+                } else {
+                    stringBuilder.append(word);
+                }
+
+                stringBuilder.append(' ');
+            }
+
+        } else {
+            stringBuilder.append(message);
+        }
+
         stringBuilder.append('\n');
 
         if (record.getThrown() != null) {

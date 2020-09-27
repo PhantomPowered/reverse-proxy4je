@@ -71,7 +71,6 @@ import com.github.phantompowered.proxy.paste.DefaultPasteServerProvider;
 import com.github.phantompowered.proxy.ping.DefaultServerPingProvider;
 import com.github.phantompowered.proxy.plugin.DefaultPluginManager;
 import com.github.phantompowered.proxy.protocol.PacketRegistrar;
-import com.github.phantompowered.proxy.service.BasicServiceRegistry;
 import com.github.phantompowered.proxy.storage.DefaultPlayerIdStorage;
 import com.github.phantompowered.proxy.storage.MCServiceCredentialsStorage;
 import com.github.phantompowered.proxy.storage.database.H2DatabaseConfig;
@@ -90,11 +89,15 @@ import java.util.concurrent.TimeoutException;
 
 public class PhantomProxy {
 
-    private final ServiceRegistry serviceRegistry = new BasicServiceRegistry();
-    private final ProxyServer proxyServer = new ProxyServer(this.serviceRegistry);
-    private final SimpleChannelInitializer baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
+    private final ServiceRegistry serviceRegistry;
+    private final ProxyServer proxyServer;
+    private final SimpleChannelInitializer baseChannelInitializer;
 
-    protected PhantomProxy() {
+    protected PhantomProxy(ServiceRegistry registry) {
+        this.serviceRegistry = registry;
+        this.proxyServer = new ProxyServer(this.serviceRegistry);
+        this.baseChannelInitializer = new SimpleChannelInitializer(this.serviceRegistry);
+
         System.out.println("Registering default services...");
         this.serviceRegistry.setProvider(null, SimpleChannelInitializer.class, this.baseChannelInitializer, false, true);
         this.serviceRegistry.setProvider(null, PasteServerProvider.class, new DefaultPasteServerProvider(), false, true);

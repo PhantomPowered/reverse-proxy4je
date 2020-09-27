@@ -30,10 +30,12 @@ import com.github.phantompowered.proxy.api.command.exception.PermissionDeniedExc
 import com.github.phantompowered.proxy.api.command.result.CommandResult;
 import com.github.phantompowered.proxy.api.command.sender.CommandSender;
 import com.github.phantompowered.proxy.api.configuration.Configuration;
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.command.console.ConsoleCommandSender;
 import com.github.phantompowered.proxy.console.ProxyConsole;
 import com.github.phantompowered.proxy.logging.ProxyLogLevels;
 import com.github.phantompowered.proxy.logging.ProxyLogger;
+import com.github.phantompowered.proxy.service.BasicServiceRegistry;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,13 +44,15 @@ import java.nio.charset.StandardCharsets;
 public final class ProxyLauncher {
 
     public static synchronized void main(String[] args) {
+        ServiceRegistry registry = new BasicServiceRegistry();
+
         ProxyConsole proxyConsole = new ProxyConsole();
-        ProxyLogger proxyLogger = new ProxyLogger(proxyConsole.getLineReader());
+        ProxyLogger proxyLogger = new ProxyLogger(proxyConsole.getLineReader(), registry);
 
         sendWelcomeScreen();
 
         long start = System.currentTimeMillis();
-        PhantomProxy proxy = new PhantomProxy();
+        PhantomProxy proxy = new PhantomProxy(registry);
         proxy.getServiceRegistry().setProvider(null, ProxyLogger.class, proxyLogger, true);
         proxy.getServiceRegistry().setProvider(null, ProxyConsole.class, proxyConsole, true);
         proxy.bootstrap(proxy.getServiceRegistry().getProviderUnchecked(Configuration.class).getProxyPort(), start);

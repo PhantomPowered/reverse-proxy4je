@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.logging;
 
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jline.reader.LineReader;
 
@@ -41,7 +42,7 @@ public class ProxyLogger extends Logger implements AutoCloseable {
 
     private final RecordDispatcher recordDispatcher = new RecordDispatcher(this);
 
-    public ProxyLogger(@NotNull LineReader lineReader) {
+    public ProxyLogger(@NotNull LineReader lineReader, @NotNull ServiceRegistry registry) {
         super("com.github.phantompowered.proxy", null);
         super.setLevel(Level.INFO);
 
@@ -51,14 +52,14 @@ public class ProxyLogger extends Logger implements AutoCloseable {
             }
 
             FileHandler fileHandler = new FileHandler("logs/proxy.log", 1 << 24, 8, true);
-            fileHandler.setFormatter(new LogFormatter());
+            fileHandler.setFormatter(new LogFormatter(registry, true));
             fileHandler.setLevel(Level.ALL);
             fileHandler.setEncoding(StandardCharsets.UTF_8.name());
             super.addHandler(fileHandler);
 
             LogHandler logHandler = new LogHandler(lineReader);
             logHandler.setLevel(Level.ALL);
-            logHandler.setFormatter(new LogFormatter());
+            logHandler.setFormatter(new LogFormatter(registry, false));
             logHandler.setEncoding(StandardCharsets.UTF_8.name());
             super.addHandler(logHandler);
         } catch (IOException exception) {
