@@ -56,7 +56,6 @@ import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
 import com.github.phantompowered.proxy.entity.ProxyEntity;
 import com.github.phantompowered.proxy.network.channel.WrappedNetworkChannel;
 import com.github.phantompowered.proxy.protocol.login.server.PacketLoginOutSetCompression;
-import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
@@ -364,7 +363,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendCustomPayload(@NotNull String tag, @NotNull byte[] data) {
-        this.sendPacket(new PacketPlayClientCustomPayload(tag, data));
+        this.sendPacket(new PacketPlayServerPluginMessage(tag, data));
     }
 
     @Override
