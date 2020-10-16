@@ -64,7 +64,6 @@ import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlaySe
 import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import io.netty.buffer.ByteBuf;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -398,7 +397,7 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
         ServiceConnection nextClient = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).findBestConnection(this.getUniqueId());
         if (nextClient == null || nextClient.equals(connection)) {
-            this.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
+            this.disconnect(Component.text(APIUtil.MESSAGE_PREFIX + "Disconnected from " + this.connectedClient.getServerAddress()
                     + ", no fallback client found. Reason:\n§r" + LegacyComponentSerializer.legacySection().serialize(reason)));
             return;
         }
@@ -407,9 +406,9 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         this.sendMessage(ChatMessageType.CHAT, reason);
         this.sendActionBar(200, actionBar);
 
-        Title title = Title.of(
-                TextComponent.of("§cDisconnected"),
-                TextComponent.empty(),
+        Title title = Title.title(
+                Component.text("§cDisconnected"),
+                Component.empty(),
                 Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(5), Duration.ofSeconds(1))
         );
         this.sendTitle(title);

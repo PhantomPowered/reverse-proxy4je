@@ -39,6 +39,7 @@ import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.storage.MCServiceCredentialsStorage;
 import com.mojang.authlib.exceptions.AuthenticationException;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -344,9 +345,9 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
 
             sender.sendMessage(result.isSuccess() ? ("§aSuccessfully connected as §e" + (credentials.getEmail() != null ? credentials.getEmail() : credentials.getUsername()) + " §7(§e" + client.getName() + "#" + client.getName() + "§7) §ato §e" + address) : "§cFailed to connect to §e" + address);
             if (sender instanceof Player) {
-                TextComponent component = TextComponent.of(APIUtil.MESSAGE_PREFIX + "§aClick to connect");
+                TextComponent component = Component.text(APIUtil.MESSAGE_PREFIX + "§aClick to connect");
                 component.clickEvent(ClickEvent.runCommand(CommandMap.INGAME_PREFIX + "switch " + client.getName()));
-                component.hoverEvent(HoverEvent.showText(TextComponent.of("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
+                component.hoverEvent(HoverEvent.showText(Component.text("§7Switch to §e" + client.getName() + "#" + client.getUniqueId())));
                 sender.sendMessage(component);
             }
         } catch (ExecutionException | InterruptedException | TimeoutException exception) {

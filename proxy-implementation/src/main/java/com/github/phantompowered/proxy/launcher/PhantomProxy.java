@@ -77,7 +77,7 @@ import com.github.phantompowered.proxy.storage.database.H2DatabaseConfig;
 import com.github.phantompowered.proxy.storage.database.H2DatabaseDriver;
 import com.github.phantompowered.proxy.tick.DefaultTickHandlerProvider;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -135,7 +135,7 @@ public class PhantomProxy {
 
             for (ServiceConnection onlineClient : this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).getOnlineClients()) {
                 if (onlineClient.getPlayer() != null) {
-                    onlineClient.getPlayer().disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Shutting down the proxy..."));
+                    onlineClient.getPlayer().disconnect(Component.text(APIUtil.MESSAGE_PREFIX + "Shutting down the proxy..."));
                 }
 
                 try {

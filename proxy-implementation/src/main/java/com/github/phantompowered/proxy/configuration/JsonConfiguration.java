@@ -33,7 +33,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.Range;
 
 import javax.imageio.ImageIO;
@@ -69,7 +68,7 @@ public class JsonConfiguration implements Configuration {
             this.motd = new ServerPing(
                     new ServerPing.Protocol("§6P§7hantom§6P§7roxy §7by §ederklaro§7, §ederrop", -1),
                     new ServerPing.Players(0, 0, null),
-                    TextComponent.of("\n§7Available/Online Accounts: §e$free§7/§e$online"),
+                    Component.text("\n§7Available/Online Accounts: §e$free§7/§e$online"),
                     null
             );
 

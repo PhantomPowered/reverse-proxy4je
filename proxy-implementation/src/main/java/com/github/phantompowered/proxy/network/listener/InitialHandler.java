@@ -66,7 +66,6 @@ import com.github.phantompowered.proxy.protocol.status.server.PacketStatusInRequ
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -96,7 +95,7 @@ public class InitialHandler {
 
     static void disconnect(NetworkChannel channel, @NotNull String reason) {
         if (canSendKickMessage(channel)) {
-            disconnect(channel, TextComponent.of(APIUtil.MESSAGE_PREFIX + reason));
+            disconnect(channel, Component.text(APIUtil.MESSAGE_PREFIX + reason));
         } else {
             channel.close();
         }
@@ -121,7 +120,7 @@ public class InitialHandler {
         ServerPing response = this.serviceRegistry.getProviderUnchecked(Configuration.class).getMotd();
         ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
 
-        response.setDescription(TextComponent.of(LegacyComponentSerializer.legacySection().serialize(response.getDescription())
+        response.setDescription(Component.text(LegacyComponentSerializer.legacySection().serialize(response.getDescription())
                 .replace("$free", String.valueOf(connector.getFreeClients().size()))
                 .replace("$online", String.valueOf(connector.getOnlineClients().size()))
         ));
@@ -183,7 +182,7 @@ public class InitialHandler {
 
                 if (packet.getProtocolVersion() != ProtocolIds.Versions.MINECRAFT_1_8) {
                     event.cancel(true);
-                    event.setCancelReason(TextComponent.of("We only support 1.8"));
+                    event.setCancelReason(Component.text("We only support 1.8"));
                 }
 
                 channel.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event);
@@ -294,7 +293,7 @@ public class InitialHandler {
                 ServiceConnectorChooseClientEvent clientEvent = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectorChooseClientEvent(uniqueId, client));
                 client = clientEvent.getConnection();
                 if (client == null || clientEvent.isCancelled()) {
-                    disconnect(channel, TextComponent.of("§7No client found"));
+                    disconnect(channel, Component.text("§7No client found"));
                     return;
                 }
 
@@ -314,7 +313,7 @@ public class InitialHandler {
                 }
 
                 if (event.isCancelled()) {
-                    disconnect(channel, event.getCancelReason() == null ? TextComponent.of("§cNo reason given") : event.getCancelReason());
+                    disconnect(channel, event.getCancelReason() == null ? Component.text("§cNo reason given") : event.getCancelReason());
                     return;
                 }
 

@@ -70,7 +70,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.proxy.Socks5ProxyHandler;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -184,7 +183,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
                 super.write(new PacketLoginClientLoginRequest(this.getAccountName()));
             } else {
                 future.channel().close();
-                task.complete(ServiceConnectResult.failure(future.cause() == null ? null : TextComponent.of(ImplementationUtil.stringifyException(future.cause()))));
+                task.complete(ServiceConnectResult.failure(future.cause() == null ? null : Component.text(ImplementationUtil.stringifyException(future.cause()))));
             }
         };
 

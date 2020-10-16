@@ -62,7 +62,6 @@ import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import io.netty.buffer.ByteBuf;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -88,8 +87,8 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     private boolean sneaking;
     private boolean sprinting;
     private Location location = new Location(0, 0, 0, 0, 0);
-    private Component tabHeader = TextComponent.empty();
-    private Component tabFooter = TextComponent.empty();
+    private Component tabHeader = Component.empty();
+    private Component tabFooter = Component.empty();
 
     private long lastConnectionTryTimestamp = -1;
 
@@ -359,8 +358,8 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
             return true;
         }
 
-        this.tabHeader = event.getHeader() == null ? TextComponent.empty() : event.getHeader();
-        this.tabFooter = event.getFooter() == null ? TextComponent.empty() : event.getFooter();
+        this.tabHeader = event.getHeader() == null ? Component.empty() : event.getHeader();
+        this.tabFooter = event.getFooter() == null ? Component.empty() : event.getFooter();
 
         Player player = this.getPlayer();
         if (player != null) {
@@ -450,7 +449,6 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
 
     @Override
     public void unregister() {
-        ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
         this.close();
     }
 

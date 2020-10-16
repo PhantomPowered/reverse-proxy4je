@@ -27,7 +27,6 @@ package com.github.phantompowered.proxy.api.command.basic;
 import com.github.phantompowered.proxy.api.command.CommandCallback;
 import com.github.phantompowered.proxy.api.command.sender.CommandSender;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +37,7 @@ public abstract class BasicCommandCallback implements CommandCallback {
 
     public BasicCommandCallback(@NotNull String permission, @Nullable Component help) {
         this.permission = permission;
-        this.help = help == null ? TextComponent.of("§cNo help provided") : help;
+        this.help = help == null ? Component.text("§cNo help provided") : help;
     }
 
     @Override

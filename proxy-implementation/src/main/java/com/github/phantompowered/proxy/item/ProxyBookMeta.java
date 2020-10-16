@@ -28,6 +28,7 @@ import com.github.phantompowered.proxy.api.item.BookMeta;
 import com.github.phantompowered.proxy.api.nbt.NBTTagCompound;
 import com.github.phantompowered.proxy.api.nbt.NBTTagList;
 import com.github.phantompowered.proxy.api.nbt.NBTTagString;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +87,7 @@ public class ProxyBookMeta extends ProxyItemMeta implements BookMeta {
                     } catch (Throwable ignored) {
                     }
                 } else {
-                    this.pages.add(TextComponent.of(limit(page, 2048)));
+                    this.pages.add(Component.text(limit(page, 2048)));
                 }
             }
         }

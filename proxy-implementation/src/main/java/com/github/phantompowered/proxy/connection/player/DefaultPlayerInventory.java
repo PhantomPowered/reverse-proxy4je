@@ -11,7 +11,6 @@ import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlay
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerWindowItems;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: https://github.com/Exceptionflug/protocolize/
@@ -50,7 +49,7 @@ public class DefaultPlayerInventory implements PlayerInventory {
     public void open() {
         if (this.type != null) {
             // TODO support other types than chests and custom sizes
-            this.player.sendPacket(new PacketPlayServerOpenWindow(this.windowId, "minecraft:container", this.title != null ? this.title : TextComponent.of(this.type.getDefaultTitle()), this.type.getDefaultSize(), -1));
+            this.player.sendPacket(new PacketPlayServerOpenWindow(this.windowId, "minecraft:container", this.title != null ? this.title : Component.text(this.type.getDefaultTitle()), this.type.getDefaultSize(), -1));
             for (int i = 0; i < this.content.length; i++) {
                 if (this.content[i] != null && this.content[i].getMaterial() != Material.AIR) {
                     this.player.sendPacket(new PacketPlayServerSetSlot(this.windowId, i, this.content[i]));

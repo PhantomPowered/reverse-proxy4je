@@ -52,7 +52,7 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
         }
 
         NBTTagCompound compound = JsonNbtUtils.getTagFromJson(((TextComponent) input).content());
-        return HoverEvent.ShowItem.of(Key.of(compound.getString("id")), compound.getByte("Count"), this.showItemFromNBTTagHolder(compound));
+        return HoverEvent.ShowItem.of(Key.key(compound.getString("id")), compound.getByte("Count"), this.showItemFromNBTTagHolder(compound));
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
         return HoverEvent.ShowEntity.of(
                 this.getShowItemKeyFromNbt(compound),
                 UUID.fromString(compound.getString("id")),
-                compound.hasKey("name", 8) ? TextComponent.of(compound.getString("name")) : null
+                compound.hasKey("name", 8) ? Component.text(compound.getString("name")) : null
         );
     }
 
@@ -75,7 +75,7 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
         compound.setString("id", input.item().value());
         compound.setByte("Count", (byte) input.count());
 
-        return TextComponent.of(compound.toString());
+        return Component.text(compound.toString());
     }
 
     @Override
@@ -91,7 +91,7 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
             compound.setString("name", ((TextComponent) input.name()).content());
         }
 
-        return TextComponent.of(compound.toString());
+        return Component.text(compound.toString());
     }
 
     private BinaryTagHolder showItemFromNBTTagHolder(NBTTagCompound compound) {
@@ -102,9 +102,9 @@ public final class ProxyLegacyHoverEventSerializer implements LegacyHoverEventSe
 
     private Key getShowItemKeyFromNbt(NBTTagCompound compound) {
         if (compound.hasKey("type", 8)) {
-            return Key.of(compound.getString("type"));
+            return Key.key(compound.getString("type"));
         }
 
-        return Key.of("player");
+        return Key.key("player");
     }
 }

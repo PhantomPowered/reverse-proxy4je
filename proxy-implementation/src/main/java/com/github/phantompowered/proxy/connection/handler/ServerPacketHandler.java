@@ -43,7 +43,6 @@ import com.google.gson.JsonParseException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
@@ -112,7 +111,7 @@ public class ServerPacketHandler {
             original = side == HorizontalHalf.LEFT ? message + original : original + message;
         }
 
-        packet.setMessage(GsonComponentSerializer.gson().serialize(TextComponent.of(original)));
+        packet.setMessage(GsonComponentSerializer.gson().serialize(Component.text(original)));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_STATUS, directions = ProtocolDirection.TO_CLIENT)
