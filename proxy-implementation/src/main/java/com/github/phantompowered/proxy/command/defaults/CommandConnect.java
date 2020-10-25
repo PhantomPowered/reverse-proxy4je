@@ -37,7 +37,6 @@ import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,9 +64,9 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             player.disableAutoReconnect();
             player.useClient(null);
 
-            Title title = Title.of(
-                    TextComponent.of("§7Connecting to"),
-                    TextComponent.of("§e" + address + "§7..."),
+            Title title = Title.title(
+                    Component.text("§7Connecting to"),
+                    Component.text("§e" + address + "§7..."),
                     Title.Times.of(Duration.ZERO, Duration.ofSeconds(20), Duration.ZERO)
             );
             player.sendTitle(title);
@@ -95,7 +94,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             }).exceptionally(throwable -> {
                 if (player != null) {
                     player.resetTitle();
-                    Component reason = TextComponent.of(throwable.getMessage().replace('\n', ' '));
+                    Component reason = Component.text(throwable.getMessage().replace('\n', ' '));
                     player.sendActionBar(200, reason);
                     this.fallback(player, connection, reason);
                 }
@@ -111,13 +110,13 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
     private void fallback(Player player, ServiceConnection oldClient, Component reason) {
         ServiceConnection nextClient = this.registry.getProviderUnchecked(ServiceConnector.class).findBestConnection(player.getUniqueId());
         if (nextClient == null || nextClient.equals(oldClient)) {
-            player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n").append(reason == null ? TextComponent.of("§cUnknown reason") : reason));
+            player.disconnect(Component.text(APIUtil.MESSAGE_PREFIX + "Failed to connect, no fallback client found. Reason: \n").append(reason == null ? Component.text("§cUnknown reason") : reason));
             return;
         }
 
-        Title title = Title.of(
-                TextComponent.of("§cFailed to connect"),
-                TextComponent.of("§7see the actionbar for the reason")
+        Title title = Title.title(
+                Component.text("§cFailed to connect"),
+                Component.text("§7see the actionbar for the reason")
         );
         player.sendTitle(title);
         player.useClient(nextClient);

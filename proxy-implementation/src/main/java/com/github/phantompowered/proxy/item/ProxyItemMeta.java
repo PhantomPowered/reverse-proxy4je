@@ -37,6 +37,7 @@ import com.google.common.base.Enums;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -79,14 +80,14 @@ public class ProxyItemMeta implements ItemMeta {
             NBTTagCompound display = source.getCompoundTag(ProxyItemMeta.ItemMetaKeys.DISPLAY);
             if (display.hasKey(ProxyItemMeta.ItemMetaKeys.NAME)) {
                 try {
-                    this.displayName = TranslatableComponent.of(limit(display.getString(ProxyItemMeta.ItemMetaKeys.NAME), 1024)); // vanilla limit
+                    this.displayName = Component.translatable(limit(display.getString(ProxyItemMeta.ItemMetaKeys.NAME), 1024)); // vanilla limit
                 } catch (Throwable ignored) {
                 }
             }
 
             if (display.hasKey(ProxyItemMeta.ItemMetaKeys.LOC_NAME)) {
                 try {
-                    this.locName = TranslatableComponent.of(limit(display.getString(ProxyItemMeta.ItemMetaKeys.LOC_NAME), 1024)); // vanilla limit
+                    this.locName = Component.translatable(limit(display.getString(ProxyItemMeta.ItemMetaKeys.LOC_NAME), 1024)); // vanilla limit
                 } catch (Throwable ignored) {
                 }
             }
@@ -96,7 +97,7 @@ public class ProxyItemMeta implements ItemMeta {
                 for (int index = 0; index < lore.tagCount(); index++) {
                     String line = limit(lore.getStringTagAt(index), 8192); // vanilla limit
                     try {
-                        this.lore.add(TranslatableComponent.of(line));
+                        this.lore.add(Component.translatable(line));
                     } catch (Throwable ignored) {
                     }
                 }

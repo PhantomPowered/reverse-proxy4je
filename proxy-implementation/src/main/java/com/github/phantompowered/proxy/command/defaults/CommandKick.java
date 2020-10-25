@@ -32,7 +32,7 @@ import com.github.phantompowered.proxy.api.command.sender.CommandSender;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.PlayerRepository;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -65,7 +65,7 @@ public class CommandKick extends NonTabCompleteableCommandCallback {
         }
 
         message = "§7Kicked by §e" + commandSender.getName() + "§7. Reason: " + ChatColor.translateAlternateColorCodes('&', message);
-        player.disconnect(TextComponent.of(message));
+        player.disconnect(Component.text(message));
         return CommandResult.END;
     }
 }

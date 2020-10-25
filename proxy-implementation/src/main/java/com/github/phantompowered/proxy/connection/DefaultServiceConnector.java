@@ -10,7 +10,7 @@ import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.connection.reconnect.ReconnectProfile;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +100,7 @@ public class DefaultServiceConnector implements ServiceConnector {
     }
 
     public void switchClientSafe(Player player, ServiceConnection proxyClient) {
-        player.disconnect(TextComponent.of(APIUtil.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
+        player.disconnect(Component.text(APIUtil.MESSAGE_PREFIX + "Reconnect within the next 60 seconds to be connected with " + proxyClient.getName()));
         this.setReconnectTarget(player.getUniqueId(), proxyClient.getUniqueId());
     }
 
