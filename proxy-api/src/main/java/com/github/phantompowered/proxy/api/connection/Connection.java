@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.api.connection;
 
+import com.github.phantompowered.proxy.api.chat.HistoricalMessage;
 import com.github.phantompowered.proxy.api.network.PacketSender;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
@@ -31,6 +32,7 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 
 public interface Connection extends PacketSender, NetworkChannel {
 
@@ -42,5 +44,8 @@ public interface Connection extends PacketSender, NetworkChannel {
     void sendCustomPayload(@NotNull String tag, @NotNull byte[] data);
 
     void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data);
+
+    // TODO max size?
+    List<HistoricalMessage> getReceivedMessages();
 
 }

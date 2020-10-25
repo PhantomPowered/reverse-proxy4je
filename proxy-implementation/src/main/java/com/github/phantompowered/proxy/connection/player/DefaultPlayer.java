@@ -29,6 +29,7 @@ import com.github.phantompowered.proxy.api.block.BlockStateRegistry;
 import com.github.phantompowered.proxy.api.block.half.HorizontalHalf;
 import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
+import com.github.phantompowered.proxy.api.chat.HistoricalMessage;
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.connection.ServiceConnector;
 import com.github.phantompowered.proxy.api.entity.EntityStatusType;
@@ -40,6 +41,7 @@ import com.github.phantompowered.proxy.api.events.connection.player.PlayerKickEv
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerSendProxyMessageEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerServiceSelectedEvent;
 import com.github.phantompowered.proxy.api.location.Location;
+import com.github.phantompowered.proxy.api.network.ByteBufUtils;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.PacketSender;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
@@ -49,6 +51,7 @@ import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.inventory.PlayerInventory;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.tick.TickHandler;
+import com.github.phantompowered.proxy.api.util.LimitedCopyOnWriteArrayList;
 import com.github.phantompowered.proxy.connection.AppendedActionBar;
 import com.github.phantompowered.proxy.connection.BasicServiceConnection;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
@@ -63,6 +66,7 @@ import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlaySe
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -74,6 +78,7 @@ import org.jetbrains.annotations.Nullable;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -97,6 +102,8 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     private boolean connected = false;
     private boolean autoReconnect = true;
     private String lastCommandCompleteRequest;
+
+    private final List<HistoricalMessage> receivedMessages = new LimitedCopyOnWriteArrayList<>(1000); // TODO configurable
 
     public DefaultPlayer(ServiceRegistry serviceRegistry, ConnectedProxyClient client, OfflinePlayer offlinePlayer, NetworkChannel channel, int version, int compressionThreshold) {
         super(serviceRegistry, client, client.getConnection().getLocation(), client.getEntityId(), LivingEntityType.PLAYER);
@@ -152,6 +159,8 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public void sendMessage(ChatMessageType position, Component message) {
         this.registry.getProviderUnchecked(EventManager.class).callEvent(new PlayerSendProxyMessageEvent(this, position, message));
+
+        this.getReceivedMessages().add(HistoricalMessage.now(message));
 
         this.sendPacket(new PacketPlayServerChatMessage(GsonComponentSerializer.gson().serialize(message), (byte) position.ordinal()));
     }
@@ -242,6 +251,10 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         this.connectingClient = null;
 
         this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PlayerServiceSelectedEvent(this, connection));
+
+        ByteBuf buf = Unpooled.buffer();
+        ByteBufUtils.writeString("vanilla", buf);
+        this.sendCustomPayload("MC|Brand", ByteBufUtils.toArray(buf));
 
         //this.sendMessage("§7Your name: §e" + connection.getName());
     }
@@ -369,6 +382,11 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data) {
         this.sendCustomPayload(tag, data.toArray());
+    }
+
+    @Override
+    public List<HistoricalMessage> getReceivedMessages() {
+        return this.receivedMessages;
     }
 
     @Override

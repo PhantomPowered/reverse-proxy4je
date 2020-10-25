@@ -2,6 +2,7 @@ package com.github.phantompowered.proxy.connection.handler;
 
 import com.github.phantompowered.proxy.api.block.half.HorizontalHalf;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
+import com.github.phantompowered.proxy.api.chat.HistoricalMessage;
 import com.github.phantompowered.proxy.api.connection.Connection;
 import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.connection.ProtocolState;
@@ -245,11 +246,7 @@ public class ServerPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.CHAT, directions = ProtocolDirection.TO_CLIENT)
-    public void handle(ConnectedProxyClient client, PacketPlayServerChatMessage chat) throws Exception {
-        this.handleChatToClient(client, chat);
-    }
-
-    private void handleChatToClient(ConnectedProxyClient client, PacketPlayServerChatMessage chat) {
+    public void handle(ConnectedProxyClient client, PacketPlayServerChatMessage chat) {
         try {
             ChatEvent event = new ChatEvent(client.getConnection(), ProtocolDirection.TO_CLIENT, ChatMessageType.values()[chat.getPosition()], SERIALIZER.deserialize(chat.getMessage()));
             if (client.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
@@ -257,6 +254,10 @@ public class ServerPacketHandler {
             }
 
             chat.setMessage(SERIALIZER.serialize(event.getMessage()));
+
+            if (event.getType() == ChatMessageType.CHAT || event.getType() == ChatMessageType.SYSTEM) {
+                client.getConnection().getReceivedMessages().add(HistoricalMessage.now(event.getMessage()));
+            }
         } catch (JsonParseException ignored) {
             // hack
         }

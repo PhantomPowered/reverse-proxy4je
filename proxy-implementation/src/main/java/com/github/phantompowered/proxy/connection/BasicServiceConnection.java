@@ -28,6 +28,7 @@ import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
+import com.github.phantompowered.proxy.api.chat.HistoricalMessage;
 import com.github.phantompowered.proxy.api.connection.*;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.event.EventManager;
@@ -48,6 +49,7 @@ import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
 import com.github.phantompowered.proxy.api.task.DefaultTask;
 import com.github.phantompowered.proxy.api.task.Task;
+import com.github.phantompowered.proxy.api.util.LimitedCopyOnWriteArrayList;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.phantompowered.proxy.network.channel.WrappedNetworkChannel;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientChatMessage;
@@ -69,10 +71,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class BasicServiceConnection extends BasicInteractiveServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
 
@@ -92,6 +91,8 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     private Component tabFooter = TextComponent.empty();
 
     private long lastConnectionTryTimestamp = -1;
+
+    private final List<HistoricalMessage> receivedMessages = new LimitedCopyOnWriteArrayList<>(1000); // TODO configurable
 
     public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version) throws AuthenticationException {
         this.serviceRegistry = serviceRegistry;
@@ -436,6 +437,11 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     @Override
     public void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data) {
         this.sendCustomPayload(tag, data.toArray());
+    }
+
+    @Override
+    public List<HistoricalMessage> getReceivedMessages() {
+        return this.receivedMessages;
     }
 
     @Override

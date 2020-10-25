@@ -114,7 +114,7 @@ public class PacketPlayServerTitle implements Packet {
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        int index = this.action.ordinal();
+        int index = this.action.ordinal(); // TODO: somehow got an NPE here on the connect command
         if (index >= 2) {
             index--;
         }
