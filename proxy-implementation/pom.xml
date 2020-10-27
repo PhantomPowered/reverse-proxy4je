@@ -31,7 +31,7 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline-terminal</artifactId>
-            <version>3.16.0</version>
+            <version>3.17.0</version>
             <scope>compile</scope>
         </dependency>
 
