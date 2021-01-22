@@ -42,7 +42,7 @@ public class CommandList extends NonTabCompleteableCommandCallback {
     private final ServiceRegistry registry;
 
     public CommandList(ServiceRegistry registry) {
-        super("command.list", null);
+        super("proxy.command.list", null);
         this.registry = registry;
     }
 
