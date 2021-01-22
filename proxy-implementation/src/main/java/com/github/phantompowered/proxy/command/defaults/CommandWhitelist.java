@@ -20,7 +20,7 @@ public class CommandWhitelist extends NonTabCompleteableCommandCallback {
     private final ServiceRegistry registry;
 
     public CommandWhitelist(ServiceRegistry registry) {
-        super("command.whitelist", null);
+        super("proxy.command.whitelist", null);
         this.registry = registry;
     }
 
