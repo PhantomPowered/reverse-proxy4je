@@ -15,6 +15,7 @@ import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.ChatEvent;
 import com.github.phantompowered.proxy.api.events.connection.PluginMessageEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.TitleReceiveEvent;
+import com.github.phantompowered.proxy.api.events.connection.service.entity.EntityAnimationEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.EntityMoveEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.status.EntityStatusEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.status.SelfEntityStatusEvent;
@@ -25,6 +26,7 @@ import com.github.phantompowered.proxy.api.network.exception.CancelProceedExcept
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.connection.AppendedActionBar;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
+import com.github.phantompowered.proxy.connection.cache.handler.EntityCache;
 import com.github.phantompowered.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.network.wrapper.DecodedPacket;
@@ -33,10 +35,15 @@ import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerLogi
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerTabCompleteResponse;
+import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityAnimation;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.phantompowered.proxy.protocol.play.server.message.*;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.phantompowered.proxy.text.ProxyLegacyHoverEventSerializer;
@@ -61,6 +68,18 @@ public class ServerPacketHandler {
         if (client.getConnection().setTabHeaderAndFooter(header, footer)) {
             throw CancelProceedException.INSTANCE;
         }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ANIMATION, directions = ProtocolDirection.TO_CLIENT)
+    public void handleEntityAnimation(ConnectedProxyClient client, PacketPlayServerEntityAnimation packet) {
+        Entity entity = client.getPacketCache().getHandler(EntityCache.class).getEntities().get(packet.getEntityId());
+        if (entity == null) {
+            return;
+        }
+        EntityAnimationEvent.AnimationType type = EntityAnimationEvent.AnimationType.values()[packet.getType()];
+
+        EventManager eventManager = client.getServiceRegistry().getProviderUnchecked(EventManager.class);
+        eventManager.callEvent(new EntityAnimationEvent(entity, type));
     }
 
     @PacketHandler(directions = ProtocolDirection.TO_CLIENT)
