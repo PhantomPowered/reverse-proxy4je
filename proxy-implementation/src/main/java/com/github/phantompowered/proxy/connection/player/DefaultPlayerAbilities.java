@@ -53,7 +53,7 @@ public class DefaultPlayerAbilities implements PlayerAbilities {
                 .ifPresent(abilities -> {
                     this.connection.sendPacket(abilities);
                     if (this.connection.getPlayer() != null) {
-                        this.connection.getPlayer().sendPacket(new PacketPlayServerPlayerAbilities(abilities.isInvulnerable(), abilities.isFlying(), abilities.isAllowFlying(), abilities.isCreativeMode(), abilities.getFlySpeed(), abilities.getWalkSpeed()));
+                        this.connection.getPlayer().sendPacket(abilities.mapToServerside());
                     }
                 });
     }

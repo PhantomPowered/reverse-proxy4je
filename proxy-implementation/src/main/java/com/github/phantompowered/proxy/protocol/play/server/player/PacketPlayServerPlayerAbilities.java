@@ -28,6 +28,7 @@ import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientPlayerAbilities;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerPlayerAbilities implements Packet {
@@ -78,6 +79,10 @@ public class PacketPlayServerPlayerAbilities implements Packet {
 
     public float getWalkSpeed() {
         return this.walkSpeed;
+    }
+
+    public PacketPlayClientPlayerAbilities toClient() {
+        return new PacketPlayClientPlayerAbilities(this.invulnerable, this.flying, this.allowFlying, this.creativeMode, this.flySpeed, this.walkSpeed);
     }
 
     @Override
