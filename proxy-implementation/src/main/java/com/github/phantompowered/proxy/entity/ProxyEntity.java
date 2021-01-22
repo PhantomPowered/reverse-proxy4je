@@ -21,11 +21,30 @@ import com.github.phantompowered.proxy.data.DataWatcher;
 import com.github.phantompowered.proxy.entity.types.block.ProxyEnderCrystal;
 import com.github.phantompowered.proxy.entity.types.block.ProxyFallingBlock;
 import com.github.phantompowered.proxy.entity.types.block.ProxyTNTPrimed;
-import com.github.phantompowered.proxy.entity.types.item.*;
+import com.github.phantompowered.proxy.entity.types.item.ProxyArrow;
+import com.github.phantompowered.proxy.entity.types.item.ProxyEgg;
+import com.github.phantompowered.proxy.entity.types.item.ProxyEnderPearl;
+import com.github.phantompowered.proxy.entity.types.item.ProxyEnderSignal;
+import com.github.phantompowered.proxy.entity.types.item.ProxyFireball;
+import com.github.phantompowered.proxy.entity.types.item.ProxyFishingHook;
+import com.github.phantompowered.proxy.entity.types.item.ProxyItem;
+import com.github.phantompowered.proxy.entity.types.item.ProxyItemFrame;
+import com.github.phantompowered.proxy.entity.types.item.ProxyLeash;
+import com.github.phantompowered.proxy.entity.types.item.ProxyPotion;
+import com.github.phantompowered.proxy.entity.types.item.ProxySmallFireball;
+import com.github.phantompowered.proxy.entity.types.item.ProxySnowball;
+import com.github.phantompowered.proxy.entity.types.item.ProxyThrownExpBottle;
+import com.github.phantompowered.proxy.entity.types.item.ProxyWitherSkull;
 import com.github.phantompowered.proxy.entity.types.living.ProxyEntityLiving;
 import com.github.phantompowered.proxy.entity.types.living.animal.ProxyBat;
 import com.github.phantompowered.proxy.entity.types.living.animal.ProxySquid;
-import com.github.phantompowered.proxy.entity.types.living.animal.ageable.*;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxyChicken;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxyCow;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxyHorse;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxyMushroomCow;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxyPig;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxyRabbit;
+import com.github.phantompowered.proxy.entity.types.living.animal.ageable.ProxySheep;
 import com.github.phantompowered.proxy.entity.types.living.animal.npc.ProxyVillager;
 import com.github.phantompowered.proxy.entity.types.living.animal.tamable.ProxyOcelot;
 import com.github.phantompowered.proxy.entity.types.living.animal.tamable.ProxyWolf;
@@ -33,7 +52,21 @@ import com.github.phantompowered.proxy.entity.types.living.boss.ProxyEnderDragon
 import com.github.phantompowered.proxy.entity.types.living.boss.ProxyWither;
 import com.github.phantompowered.proxy.entity.types.living.creature.ProxyIronGolem;
 import com.github.phantompowered.proxy.entity.types.living.creature.ProxySnowman;
-import com.github.phantompowered.proxy.entity.types.living.monster.*;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyBlaze;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyCaveSpider;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyCreeper;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyEnderman;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyEndermite;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyGhast;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyGiantZombie;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyLavaSlime;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyPigZombie;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxySilverfish;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxySkeleton;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxySlime;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxySpider;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyWitch;
+import com.github.phantompowered.proxy.entity.types.living.monster.ProxyZombie;
 import com.github.phantompowered.proxy.entity.types.minecart.ProxyCommandBlockMinecart;
 import com.github.phantompowered.proxy.entity.types.minecart.ProxyFurnaceMinecart;
 import com.github.phantompowered.proxy.entity.types.minecart.ProxyMinecart;
@@ -47,6 +80,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,6 +95,8 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     protected Location location;
     protected @Nullable PositionedPacket packet;
     private boolean onGround;
+
+    private final Map<String, Object> properties = new HashMap<>();
     private final Unsafe unsafe = this::teleport;
 
     public ProxyEntity(ServiceRegistry registry, ConnectedProxyClient client, PositionedPacket spawnPacket, Object type) {
@@ -249,6 +285,21 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     @Override
     public float getHeadHeight() {
         return this.length * 0.85F;
+    }
+
+    @Override
+    public Object getProperty(String key) {
+        return this.properties.get(key);
+    }
+
+    @Override
+    public void removeProperty(String key) {
+        this.properties.remove(key);
+    }
+
+    @Override
+    public void setProperty(String key, Object value) {
+        this.properties.put(key, value);
     }
 
     @Override

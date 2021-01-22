@@ -98,6 +98,12 @@ public interface Entity extends Scaleable {
 
     float getHeadHeight();
 
+    Object getProperty(String key);
+
+    void removeProperty(String key);
+
+    void setProperty(String key, Object value);
+
     interface Unsafe {
 
         void setLocationUnchecked(@NotNull Location locationUnchecked);
