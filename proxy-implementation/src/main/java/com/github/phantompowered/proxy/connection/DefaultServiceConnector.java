@@ -33,6 +33,11 @@ public class DefaultServiceConnector implements ServiceConnector {
     }
 
     @Override
+    public boolean hasReconnectProfile(UUID playerUniqueId) {
+        return this.reconnectProfiles.containsKey(playerUniqueId);
+    }
+
+    @Override
     public @Nullable BasicServiceConnection findBestConnection(UUID player) {
         if (player != null && this.reconnectProfiles.containsKey(player)) {
             ReconnectProfile profile = this.reconnectProfiles.get(player);

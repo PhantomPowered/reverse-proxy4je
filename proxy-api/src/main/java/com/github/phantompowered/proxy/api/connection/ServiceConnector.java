@@ -13,6 +13,8 @@ import java.util.UUID;
 
 public interface ServiceConnector extends TickHandler {
 
+    boolean hasReconnectProfile(UUID playerUniqueId);
+
     @NotNull
     ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException;
 

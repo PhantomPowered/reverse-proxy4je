@@ -307,10 +307,18 @@ public class InitialHandler {
                     repository.insertOfflinePlayer(offlinePlayer);
                 }
 
-                ServiceConnection client = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class).findBestConnection(offlinePlayer.getUniqueId());
-                ServiceConnectorChooseClientEvent clientEvent = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectorChooseClientEvent(uniqueId, client));
-                client = clientEvent.getConnection();
-                if (client == null || clientEvent.isCancelled()) {
+                ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
+
+                boolean forceClient = connector.hasReconnectProfile(offlinePlayer.getUniqueId());
+                ServiceConnection client = connector.findBestConnection(offlinePlayer.getUniqueId());
+
+                ServiceConnectorChooseClientEvent clientEvent = null;
+                if (!forceClient) {
+                    clientEvent = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new ServiceConnectorChooseClientEvent(uniqueId, client));
+                    client = clientEvent.getConnection();
+                }
+
+                if (client == null || (clientEvent != null && clientEvent.isCancelled())) {
                     disconnect(channel, Component.text("§7No client found"));
                     return;
                 }
