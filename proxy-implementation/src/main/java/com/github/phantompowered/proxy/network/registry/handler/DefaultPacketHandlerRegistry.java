@@ -40,7 +40,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
@@ -78,7 +84,7 @@ public class DefaultPacketHandlerRegistry implements PacketHandlerRegistry {
                         continue;
                     }
 
-                    if (!packet.getClass().isAssignableFrom(entryEntry.getMethod().getParameterTypes()[1])) {
+                    if (!entryEntry.getMethod().getParameterTypes()[1].isAssignableFrom(packet.getClass())) {
                         continue;
                     }
 
