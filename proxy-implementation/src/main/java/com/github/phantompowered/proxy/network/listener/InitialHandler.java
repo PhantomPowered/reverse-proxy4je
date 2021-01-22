@@ -28,15 +28,22 @@ import com.github.phantompowered.proxy.ImplementationUtil;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.concurrent.Callback;
 import com.github.phantompowered.proxy.api.configuration.Configuration;
-import com.github.phantompowered.proxy.api.connection.*;
+import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
+import com.github.phantompowered.proxy.api.connection.ProtocolState;
+import com.github.phantompowered.proxy.api.connection.ServiceConnectResult;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
+import com.github.phantompowered.proxy.api.connection.ServiceConnector;
+import com.github.phantompowered.proxy.api.connection.Whitelist;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.PingEvent;
 import com.github.phantompowered.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerLoginEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.PlayerPreLoginEvent;
+import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.network.PacketHandler;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
 import com.github.phantompowered.proxy.api.ping.ServerPing;
+import com.github.phantompowered.proxy.api.ping.ServerPingProvider;
 import com.github.phantompowered.proxy.api.player.OfflinePlayer;
 import com.github.phantompowered.proxy.api.player.PlayerRepository;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
@@ -117,14 +124,26 @@ public class InitialHandler {
     public void handle(NetworkChannel channel, PacketStatusInRequest statusRequest) {
         Preconditions.checkState(channel.getProperty(INIT_STATE) == State.STATUS, "Not expecting STATUS");
 
-        ServerPing response = this.serviceRegistry.getProviderUnchecked(Configuration.class).getMotd();
-        ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
+        Configuration configuration = this.serviceRegistry.getProviderUnchecked(Configuration.class);
+        NetworkAddress targetAddress = configuration.getMotdTargetAddress();
 
-        response.setDescription(Component.text(LegacyComponentSerializer.legacySection().serialize(response.getDescription())
-                .replace("$free", String.valueOf(connector.getFreeClients().size()))
-                .replace("$online", String.valueOf(connector.getOnlineClients().size()))
-        ));
+        if (targetAddress != null) {
+            this.serviceRegistry.getProviderUnchecked(ServerPingProvider.class).pingServer(targetAddress).thenAccept(response -> this.respondPing(channel, response));
+        } else {
+            ServerPing response = configuration.getMotd();
+            ServiceConnector connector = this.serviceRegistry.getProviderUnchecked(ServiceConnector.class);
 
+            response.setDescription(Component.text(LegacyComponentSerializer.legacySection().serialize(response.getDescription())
+                    .replace("$free", String.valueOf(connector.getFreeClients().size()))
+                    .replace("$online", String.valueOf(connector.getOnlineClients().size()))
+            ));
+            this.respondPing(channel, response);
+        }
+
+
+    }
+
+    private void respondPing(NetworkChannel channel, ServerPing response) {
         PingEvent event = this.serviceRegistry.getProviderUnchecked(EventManager.class).callEvent(new PingEvent(channel, response));
         if (event.getResponse() == null) {
             channel.close();
@@ -132,7 +151,6 @@ public class InitialHandler {
         }
 
         channel.write(new PacketStatusOutResponse(ImplementationUtil.GSON.toJson(event.getResponse())));
-
         channel.setProperty(INIT_STATE, State.PING);
     }
 

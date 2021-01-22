@@ -26,10 +26,13 @@ package com.github.phantompowered.proxy.configuration;
 
 import com.github.phantompowered.proxy.ImplementationUtil;
 import com.github.phantompowered.proxy.api.configuration.Configuration;
+import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.ping.Favicon;
 import com.github.phantompowered.proxy.api.ping.ServerPing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
@@ -37,7 +40,12 @@ import org.jetbrains.annotations.Range;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,6 +64,7 @@ public class JsonConfiguration implements Configuration {
 
     private JsonObject jsonObject;
     private ServerPing motd;
+    private NetworkAddress targetPingAddress;
 
     @Override
     public void load() {
@@ -65,6 +74,7 @@ public class JsonConfiguration implements Configuration {
             this.jsonObject.addProperty("webPort", 80);
             this.jsonObject.addProperty("compression", -1);
             this.jsonObject.addProperty("privateMode", false);
+            this.jsonObject.add("targetPingAddress", JsonNull.INSTANCE);
             this.motd = new ServerPing(
                     new ServerPing.Protocol("§6P§7hantom§6P§7roxy §7by §ederklaro§7, §ederrop", -1),
                     new ServerPing.Players(0, 0, null),
@@ -81,6 +91,9 @@ public class JsonConfiguration implements Configuration {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+
+        JsonElement rawAddress = this.jsonObject.get("targetPingAddress");
+        this.targetPingAddress = rawAddress == null || rawAddress == JsonNull.INSTANCE ? null : NetworkAddress.parse(rawAddress.getAsString());
 
         this.motd = ImplementationUtil.GSON.fromJson(this.jsonObject.get("motd"), ServerPing.class);
         if (Files.exists(SERVER_ICON)) {
@@ -141,6 +154,17 @@ public class JsonConfiguration implements Configuration {
     @Override
     public void setWebPort(int webPort) {
         this.jsonObject.addProperty("webPort", webPort);
+    }
+
+    @Override
+    public NetworkAddress getMotdTargetAddress() {
+        return this.targetPingAddress;
+    }
+
+    @Override
+    public void setMotdTargetAddress(NetworkAddress address) {
+        this.jsonObject.addProperty("targetPingAddress", address.getRawHost() + "@" + address.getPort());
+        this.targetPingAddress = address;
     }
 
     @Override

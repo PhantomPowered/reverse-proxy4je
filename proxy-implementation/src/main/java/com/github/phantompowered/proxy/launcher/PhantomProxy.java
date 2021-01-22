@@ -50,7 +50,24 @@ import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
 import com.github.phantompowered.proxy.api.tick.TickHandlerProvider;
 import com.github.phantompowered.proxy.block.DefaultBlockStateRegistry;
 import com.github.phantompowered.proxy.command.DefaultCommandMap;
-import com.github.phantompowered.proxy.command.defaults.*;
+import com.github.phantompowered.proxy.command.defaults.CommandAccount;
+import com.github.phantompowered.proxy.command.defaults.CommandAlert;
+import com.github.phantompowered.proxy.command.defaults.CommandChat;
+import com.github.phantompowered.proxy.command.defaults.CommandClear;
+import com.github.phantompowered.proxy.command.defaults.CommandConnect;
+import com.github.phantompowered.proxy.command.defaults.CommandDebug;
+import com.github.phantompowered.proxy.command.defaults.CommandFind;
+import com.github.phantompowered.proxy.command.defaults.CommandForEach;
+import com.github.phantompowered.proxy.command.defaults.CommandHelp;
+import com.github.phantompowered.proxy.command.defaults.CommandInfo;
+import com.github.phantompowered.proxy.command.defaults.CommandKick;
+import com.github.phantompowered.proxy.command.defaults.CommandList;
+import com.github.phantompowered.proxy.command.defaults.CommandPermissions;
+import com.github.phantompowered.proxy.command.defaults.CommandPlugins;
+import com.github.phantompowered.proxy.command.defaults.CommandReplace;
+import com.github.phantompowered.proxy.command.defaults.CommandStop;
+import com.github.phantompowered.proxy.command.defaults.CommandSwitch;
+import com.github.phantompowered.proxy.command.defaults.CommandWhitelist;
 import com.github.phantompowered.proxy.configuration.JsonConfiguration;
 import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
 import com.github.phantompowered.proxy.connection.ProxyServer;
@@ -243,8 +260,6 @@ public class PhantomProxy {
         commandMap.registerCommand(null, new CommandDebug(this.serviceRegistry), "debug");
         commandMap.registerCommand(null, new CommandWhitelist(this.serviceRegistry), "whitelist");
         commandMap.registerCommand(null, new CommandClear(this.serviceRegistry), "clear", "cls");
-
-        commandMap.registerCommand(null, new CommandAdf(), "adf");
 
         this.serviceRegistry.setProvider(null, CommandMap.class, commandMap, false, true);
     }

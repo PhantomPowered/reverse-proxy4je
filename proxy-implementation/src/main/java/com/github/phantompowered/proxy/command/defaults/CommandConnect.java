@@ -42,7 +42,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public class CommandConnect extends NonTabCompleteableCommandCallback {
@@ -185,6 +189,7 @@ public class CommandConnect extends NonTabCompleteableCommandCallback {
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
+            // TODO this should be async because when executed ingame this stops everything
 
             commandSender.sendMessage("§aDone");
         }

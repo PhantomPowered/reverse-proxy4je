@@ -24,6 +24,7 @@
  */
 package com.github.phantompowered.proxy.api.configuration;
 
+import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.ping.ServerPing;
 import org.jetbrains.annotations.Range;
 
@@ -40,6 +41,10 @@ public interface Configuration {
     int getWebPort();
 
     void setWebPort(int webPort);
+
+    NetworkAddress getMotdTargetAddress();
+
+    void setMotdTargetAddress(NetworkAddress address);
 
     ServerPing getMotd();
 
