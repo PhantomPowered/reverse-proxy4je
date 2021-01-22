@@ -22,39 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.events.connection.service.entity;
+package com.github.phantompowered.proxy.api.util;
 
-import com.github.phantompowered.proxy.api.entity.types.Entity;
-import com.github.phantompowered.proxy.api.event.Event;
-import org.jetbrains.annotations.NotNull;
+public interface Propertyable {
 
-public class EntityAnimationEvent extends Event {
+    <T> T getProperty(String key);
 
-    private final Entity entity;
-    private final AnimationType type;
+    <T> void setProperty(String key, T value);
 
-    public EntityAnimationEvent(@NotNull Entity entity, @NotNull AnimationType type) {
-        this.entity = entity;
-        this.type = type;
-    }
-
-    @NotNull
-    public Entity getEntity() {
-        return this.entity;
-    }
-
-    @NotNull
-    public AnimationType getType() {
-        return this.type;
-    }
-
-    public enum AnimationType {
-        SWING_ITEM,
-        HURT_ANIMATION,
-        BED_LEAVE,
-        ITEM_USE,
-        CRIT_PARTICLE,
-        CRIT_MAGIC
-    }
+    void removeProperty(String key);
 
 }

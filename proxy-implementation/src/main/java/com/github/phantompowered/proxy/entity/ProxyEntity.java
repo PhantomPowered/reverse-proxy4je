@@ -288,18 +288,19 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     }
 
     @Override
-    public Object getProperty(String key) {
-        return this.properties.get(key);
+    @SuppressWarnings("unchecked")
+    public <T> T getProperty(String key) {
+        return (T) this.properties.get(key);
+    }
+
+    @Override
+    public <T> void setProperty(String key, T value) {
+        this.properties.put(key, value);
     }
 
     @Override
     public void removeProperty(String key) {
         this.properties.remove(key);
-    }
-
-    @Override
-    public void setProperty(String key, Object value) {
-        this.properties.put(key, value);
     }
 
     @Override

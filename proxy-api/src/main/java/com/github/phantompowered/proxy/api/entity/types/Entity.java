@@ -28,10 +28,11 @@ import com.github.phantompowered.proxy.api.entity.EntityType;
 import com.github.phantompowered.proxy.api.entity.LivingEntityType;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.Packet;
+import com.github.phantompowered.proxy.api.util.Propertyable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface Entity extends Scaleable {
+public interface Entity extends Scaleable, Propertyable {
 
     boolean isBurning();
 
@@ -97,12 +98,6 @@ public interface Entity extends Scaleable {
     Callable getCallable();
 
     float getHeadHeight();
-
-    Object getProperty(String key);
-
-    void removeProperty(String key);
-
-    void setProperty(String key, Object value);
 
     interface Unsafe {
 

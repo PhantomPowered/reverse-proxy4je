@@ -28,6 +28,7 @@ import com.github.phantompowered.proxy.api.connection.ProtocolState;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.task.Task;
+import com.github.phantompowered.proxy.api.util.Propertyable;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,7 @@ import java.net.InetSocketAddress;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public interface NetworkChannel extends AutoCloseable {
+public interface NetworkChannel extends AutoCloseable, Propertyable {
 
     default void write(@NotNull Packet packet) {
         this.write((Object) packet);
@@ -70,12 +71,6 @@ public interface NetworkChannel extends AutoCloseable {
     }
 
     Channel getWrappedChannel();
-
-    <T> T getProperty(String key);
-
-    <T> void setProperty(String key, T value);
-
-    void removeProperty(String key);
 
     void addOutgoingPacketListener(UUID key, Consumer<Packet> consumer);
 
