@@ -5,16 +5,17 @@ import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayServerBlockBreakAnimation implements Packet {
+public class PacketPlayServerBlockBreakAnimation implements Packet, EntityPacket {
 
-    private int breakerId;
+    private int entityId;
     private Location location;
     private int progress;
 
-    public PacketPlayServerBlockBreakAnimation(int breakerId, Location location, int progress) {
-        this.breakerId = breakerId;
+    public PacketPlayServerBlockBreakAnimation(int entityId, Location location, int progress) {
+        this.entityId = entityId;
         this.location = location;
         this.progress = progress;
     }
@@ -22,12 +23,14 @@ public class PacketPlayServerBlockBreakAnimation implements Packet {
     public PacketPlayServerBlockBreakAnimation() {
     }
 
-    public int getBreakerId() {
-        return breakerId;
+    @Override
+    public int getEntityId() {
+        return entityId;
     }
 
-    public void setBreakerId(int breakerId) {
-        this.breakerId = breakerId;
+    @Override
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
     }
 
     public Location getLocation() {
@@ -48,14 +51,14 @@ public class PacketPlayServerBlockBreakAnimation implements Packet {
 
     @Override
     public void read(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        this.breakerId = protoBuf.readVarInt();
+        this.entityId = protoBuf.readVarInt();
         this.location = protoBuf.readLocation();
         this.progress = protoBuf.readUnsignedByte();
     }
 
     @Override
     public void write(@NotNull ProtoBuf protoBuf, @NotNull ProtocolDirection direction, int protocolVersion) {
-        protoBuf.writeVarInt(this.breakerId);
+        protoBuf.writeVarInt(this.entityId);
         protoBuf.writeLocation(this.location);
         protoBuf.writeByte(this.progress);
     }

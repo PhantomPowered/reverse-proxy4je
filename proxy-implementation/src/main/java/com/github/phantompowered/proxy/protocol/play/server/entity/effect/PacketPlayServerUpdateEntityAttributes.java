@@ -4,13 +4,14 @@ import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.server.entity.EntityPacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-public class PacketPlayServerUpdateEntityAttributes implements Packet {
+public class PacketPlayServerUpdateEntityAttributes implements Packet, EntityPacket {
 
     private int entityId;
     private Collection<Attribute> attributes;
@@ -67,10 +68,12 @@ public class PacketPlayServerUpdateEntityAttributes implements Packet {
         return ProtocolIds.ToClient.Play.UPDATE_ATTRIBUTES;
     }
 
+    @Override
     public int getEntityId() {
         return entityId;
     }
 
+    @Override
     public void setEntityId(int entityId) {
         this.entityId = entityId;
     }
