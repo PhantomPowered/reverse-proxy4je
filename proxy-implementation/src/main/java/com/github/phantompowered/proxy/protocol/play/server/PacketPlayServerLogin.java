@@ -136,6 +136,7 @@ public class PacketPlayServerLogin implements Packet {
         protoBuf.writeBoolean(this.reducedDebugInfo);
     }
 
+    @Override
     public String toString() {
         return "PacketPlayServerLogin{" + "entityId=" + entityId + ", gameMode=" + gameMode + ", dimension=" + dimension + ", difficulty=" + difficulty + ", maxPlayers=" + maxPlayers + ", levelType='" + levelType + '\'' + ", reducedDebugInfo=" + reducedDebugInfo + '}';
     }

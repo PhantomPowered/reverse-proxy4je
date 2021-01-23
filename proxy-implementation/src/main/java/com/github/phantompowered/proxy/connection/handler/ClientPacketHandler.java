@@ -18,7 +18,12 @@ import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.event.EventPriority;
 import com.github.phantompowered.proxy.api.events.connection.ChatEvent;
 import com.github.phantompowered.proxy.api.events.connection.PluginMessageEvent;
-import com.github.phantompowered.proxy.api.events.connection.player.*;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerBlockBreakEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerBlockPlaceEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerInteractEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerInventoryClickEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerInventoryCloseEvent;
+import com.github.phantompowered.proxy.api.events.connection.player.PlayerMoveEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.interact.PlayerAttackEntityEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.interact.PlayerInteractAtEntityEvent;
 import com.github.phantompowered.proxy.api.events.connection.player.interact.PlayerInteractEntityEvent;
@@ -35,7 +40,12 @@ import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.item.ProxyItemStack;
 import com.github.phantompowered.proxy.network.wrapper.DecodedPacket;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
-import com.github.phantompowered.proxy.protocol.play.client.*;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientArmAnimation;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientBlockPlace;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientChatMessage;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientCustomPayload;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientPlayerDigging;
+import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientTabCompleteRequest;
 import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
 import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientUseEntity;
 import com.github.phantompowered.proxy.protocol.play.client.inventory.PacketPlayClientClickWindow;
@@ -263,7 +273,7 @@ public class ClientPacketHandler {
         PlayerMoveEvent event = player.getServiceRegistry().getProviderUnchecked(EventManager.class)
                 .callEvent(new PlayerMoveEvent(player, connection.getLocation(), newLocation));
         if (event.isCancelled()) {
-            player.sendPacket(new PacketPlayServerPosition(event.getTo()));
+            player.sendPacket(new PacketPlayServerPosition(event.getFrom()));
             throw CancelProceedException.INSTANCE;
         }
 
@@ -284,7 +294,7 @@ public class ClientPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CHAT, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY, priority = EventPriority.FIRST)
-    private void handleChat(DefaultPlayer player, PacketPlayClientChatMessage chat) throws Exception {
+    private void handleChat(DefaultPlayer player, PacketPlayClientChatMessage chat) {
         int maxLength = (player.getVersion() >= ProtocolIds.Versions.MINECRAFT_1_11) ? 256 : 100;
         if (chat.getMessage().length() >= maxLength) {
             throw CancelProceedException.INSTANCE;
@@ -313,7 +323,7 @@ public class ClientPacketHandler {
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD, directions = ProtocolDirection.TO_SERVER, protocolState = ProtocolState.PLAY)
-    private void handlePluginMessage(DefaultPlayer player, PacketPlayClientCustomPayload pluginMessage) throws Exception {
+    private void handlePluginMessage(DefaultPlayer player, PacketPlayClientCustomPayload pluginMessage) {
         if (pluginMessage.getTag().equalsIgnoreCase("MC|Brand")) {
             throw CancelProceedException.INSTANCE;
         }

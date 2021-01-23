@@ -291,40 +291,27 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendTitle(Title title) {
-        PacketPlayServerTitle titlePacket = new PacketPlayServerTitle();
-        titlePacket.setAction(PacketPlayServerTitle.Action.TITLE);
-        titlePacket.setText(GsonComponentSerializer.gson().serialize(title.title()));
-        this.sendPacket(titlePacket);
+        this.sendPacket(PacketPlayServerTitle.title(title.title()));
+        this.sendPacket(PacketPlayServerTitle.subTitle(title.subtitle()));
 
-        PacketPlayServerTitle subTitlePacket = new PacketPlayServerTitle();
-        titlePacket.setAction(PacketPlayServerTitle.Action.SUBTITLE);
-        titlePacket.setText(GsonComponentSerializer.gson().serialize(title.subtitle()));
-        this.sendPacket(subTitlePacket);
-
-        PacketPlayServerTitle timesPacket = new PacketPlayServerTitle();
-        timesPacket.setAction(PacketPlayServerTitle.Action.TIMES);
         Title.Times times = title.times();
         if (times != null) {
-            timesPacket.setFadeIn((int) (times.fadeIn().toMillis() / ONE_TICK_IN_MILLISECONDS));
-            timesPacket.setStay((int) (times.stay().toMillis() / ONE_TICK_IN_MILLISECONDS));
-            timesPacket.setFadeOut((int) (times.fadeOut().toMillis() / ONE_TICK_IN_MILLISECONDS));
+            this.sendPacket(PacketPlayServerTitle.times(
+                    (int) (times.fadeIn().toMillis() / ONE_TICK_IN_MILLISECONDS),
+                    (int) (times.stay().toMillis() / ONE_TICK_IN_MILLISECONDS),
+                    (int) (times.fadeOut().toMillis() / ONE_TICK_IN_MILLISECONDS)
+            ));
         }
-
-        this.sendPacket(timesPacket);
     }
 
     @Override
     public void clearTitle() {
-        PacketPlayServerTitle packetPlayServerTitle = new PacketPlayServerTitle();
-        packetPlayServerTitle.setAction(PacketPlayServerTitle.Action.CLEAR);
-        this.sendPacket(packetPlayServerTitle);
+        this.sendPacket(PacketPlayServerTitle.clear());
     }
 
     @Override
     public void resetTitle() {
-        PacketPlayServerTitle packetPlayServerTitle = new PacketPlayServerTitle();
-        packetPlayServerTitle.setAction(PacketPlayServerTitle.Action.RESET);
-        this.sendPacket(packetPlayServerTitle);
+        this.sendPacket(PacketPlayServerTitle.reset());
     }
 
     @Override

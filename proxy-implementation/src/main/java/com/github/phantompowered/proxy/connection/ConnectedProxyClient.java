@@ -98,7 +98,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     private int entityId;
     private int dimension;
     private Runnable disconnectionHandler;
-    private boolean globalAccount = true;
     private Component lastKickReason;
     private PlayerVelocityHandler velocityHandler = new PlayerVelocityHandler(this);
 
@@ -209,10 +208,6 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
 
     public PlayerId getLastConnectedPlayer() {
         return this.lastConnectedPlayer;
-    }
-
-    public void disableGlobal() {
-        this.globalAccount = false;
     }
 
     public BasicServiceConnection getConnection() {

@@ -28,6 +28,8 @@ import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketPlayServerTitle implements Packet {
@@ -38,7 +40,35 @@ public class PacketPlayServerTitle implements Packet {
     private int stay;
     private int fadeOut;
 
+    private PacketPlayServerTitle(Action action, String text, int fadeIn, int stay, int fadeOut) {
+        this.action = action;
+        this.text = text;
+        this.fadeIn = fadeIn;
+        this.stay = stay;
+        this.fadeOut = fadeOut;
+    }
+
     public PacketPlayServerTitle() {
+    }
+
+    public static PacketPlayServerTitle title(Component title) {
+        return new PacketPlayServerTitle(Action.TITLE, GsonComponentSerializer.gson().serialize(title), 0, 0, 0);
+    }
+
+    public static PacketPlayServerTitle subTitle(Component subTitle) {
+        return new PacketPlayServerTitle(Action.SUBTITLE, GsonComponentSerializer.gson().serialize(subTitle), 0, 0, 0);
+    }
+
+    public static PacketPlayServerTitle reset() {
+        return new PacketPlayServerTitle(Action.RESET, null, 0, 0, 0);
+    }
+
+    public static PacketPlayServerTitle clear() {
+        return new PacketPlayServerTitle(Action.CLEAR, null, 0, 0, 0);
+    }
+
+    public static PacketPlayServerTitle times(int fadeIn, int stay, int fadeOut) {
+        return new PacketPlayServerTitle(Action.TIMES, null, fadeIn, stay, fadeOut);
     }
 
     @Override
