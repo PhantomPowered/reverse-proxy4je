@@ -161,7 +161,13 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
         this.getReceivedMessages().add(HistoricalMessage.now(message));
 
-        this.sendPacket(new PacketPlayServerChatMessage(GsonComponentSerializer.gson().serialize(message), (byte) position.ordinal()));
+        if (position == ChatMessageType.ACTION_BAR) {
+            // the action bar needs to be sent as a legacy text (e.g. "§atest") instead of the new format (e.g. {color:green,text:test} because the client is stupid
+            String legacyMessage = LegacyComponentSerializer.legacySection().serialize(message);
+            this.sendPacket(new PacketPlayServerChatMessage(GsonComponentSerializer.gson().serialize(Component.text(legacyMessage)), (byte) position.ordinal()));
+        } else {
+            this.sendPacket(new PacketPlayServerChatMessage(GsonComponentSerializer.gson().serialize(message), (byte) position.ordinal()));
+        }
     }
 
     @Override
