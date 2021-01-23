@@ -354,7 +354,8 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
 
     @Override
     public void sendMessage(@NotNull Component component) {
-        this.sendMessage(ChatMessageType.CHAT, component);
+        Component prefix = LegacyComponentSerializer.legacySection().deserialize(APIUtil.MESSAGE_PREFIX);
+        this.sendMessage(ChatMessageType.CHAT, prefix.append(component));
     }
 
     @Override

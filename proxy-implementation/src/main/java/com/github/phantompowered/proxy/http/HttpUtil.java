@@ -113,6 +113,6 @@ public final class HttpUtil {
     }
 
     private static @Nullable InputStream getCorrectInputStream(@NotNull HttpURLConnection connection) throws IOException {
-        return connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
+        return connection.getResponseCode() >= 200 || connection.getResponseCode() < 300 ? connection.getInputStream() : connection.getErrorStream();
     }
 }

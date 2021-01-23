@@ -104,7 +104,7 @@ public class DefaultPasteServer implements PasteServer {
                 result.getRight().printStackTrace();
             } else {
                 JsonObject jsonObject = JsonParser.parseString(result.getLeft()).getAsJsonObject();
-                output.add(new DefaultPasteServerUploadResult(jsonObject, url, document));
+                output.add(new DefaultPasteServerUploadResult(jsonObject, this.apiUrl, document));
             }
         }
 

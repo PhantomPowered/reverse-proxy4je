@@ -69,7 +69,7 @@ public class CommandPlugins extends NonTabCompleteableCommandCallback {
 
         if (plugins.isEmpty()) {
             sender.sendMessage("No plugins matching the given word found");
-            return CommandResult.NOT_FOUND;
+            return CommandResult.BREAK;
         }
         String message = "Plugins matching the given text found: \n" + plugins;
         for (String s : message.split("\n")) {
