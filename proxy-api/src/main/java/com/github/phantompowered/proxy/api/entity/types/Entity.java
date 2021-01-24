@@ -27,12 +27,16 @@ package com.github.phantompowered.proxy.api.entity.types;
 import com.github.phantompowered.proxy.api.entity.EntityType;
 import com.github.phantompowered.proxy.api.entity.LivingEntityType;
 import com.github.phantompowered.proxy.api.location.Location;
+import com.github.phantompowered.proxy.api.location.object.MathObject;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.util.Propertyable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface Entity extends Scaleable, Propertyable {
+
+    @NotNull
+    MathObject getBoundingBox();
 
     boolean isBurning();
 
@@ -82,6 +86,9 @@ public interface Entity extends Scaleable, Propertyable {
 
     @NotNull
     Location getLocation();
+
+    @NotNull
+    Location getHeadLocation();
 
     void teleport(@NotNull Location location);
 

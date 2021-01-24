@@ -22,25 +22,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.raytrace;
+package com.github.phantompowered.proxy.api.location;
 
 import com.github.phantompowered.proxy.api.entity.types.Entity;
-import com.github.phantompowered.proxy.api.location.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockingObject {
 
-    public static final BlockingObject MISS = new BlockingObject(null, null, Type.MISS);
+    private static final BlockingObject MISS = new BlockingObject(null, null, Type.MISS);
 
     private final Entity entity;
     private final Location location;
     private final Type type;
 
-    public BlockingObject(@Nullable Entity entity, @Nullable Location location, @NotNull Type type) {
+    private BlockingObject(@Nullable Entity entity, @Nullable Location location, @NotNull Type type) {
         this.entity = entity;
         this.location = location;
         this.type = type;
+    }
+
+    @NotNull
+    public static BlockingObject miss() {
+        return MISS;
+    }
+
+    @NotNull
+    public static BlockingObject entity(@NotNull Entity entity, @NotNull Location location) {
+        return new BlockingObject(entity, location, Type.ENTITY);
+    }
+
+    @NotNull
+    public static BlockingObject block(@NotNull Location location) {
+        return new BlockingObject(null, location, Type.BLOCK);
     }
 
     @Nullable

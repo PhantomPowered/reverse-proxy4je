@@ -27,12 +27,12 @@ package com.github.phantompowered.proxy.api.connection;
 import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
+import com.github.phantompowered.proxy.api.location.BlockingObject;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.PlayerAbilities;
 import com.github.phantompowered.proxy.api.player.id.PlayerId;
-import com.github.phantompowered.proxy.api.raytrace.BlockingObject;
 import com.github.phantompowered.proxy.api.scoreboard.Scoreboard;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
@@ -55,8 +55,11 @@ public interface ServiceConnection extends InteractiveServiceConnection, Connect
     @Nullable
     Player getPlayer();
 
-    @ApiStatus.Experimental
+    @NotNull
     Location getLocation();
+
+    @NotNull
+    Location getHeadLocation();
 
     int getDimension();
 

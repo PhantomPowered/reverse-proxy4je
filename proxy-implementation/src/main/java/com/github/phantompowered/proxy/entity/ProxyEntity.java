@@ -9,6 +9,7 @@ import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.service.EquipmentSlotChangeEvent;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.location.Location;
+import com.github.phantompowered.proxy.api.location.object.MathObject;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.PacketSender;
 import com.github.phantompowered.proxy.api.network.util.PositionedPacket;
@@ -303,6 +304,12 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
         this.properties.remove(key);
     }
 
+    @NotNull
+    @Override
+    public MathObject getBoundingBox() {
+        return MathObject.cuboidFromBottomCenter(this.getLocation(), this.getWidth(), this.getLength());
+    }
+
     @Override
     public boolean isBurning() {
         return this.getFlag(0);
@@ -393,6 +400,11 @@ public class ProxyEntity extends ProxyScaleable implements SpawnedEntity, Entity
     @Override
     public Location getLocation() {
         return this.location;
+    }
+
+    @Override
+    public @NotNull Location getHeadLocation() {
+        return this.location.clone().add(0, this.getHeadHeight(), 0);
     }
 
     @Override

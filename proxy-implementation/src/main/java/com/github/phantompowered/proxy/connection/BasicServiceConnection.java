@@ -29,11 +29,18 @@ import com.github.phantompowered.proxy.api.block.BlockAccess;
 import com.github.phantompowered.proxy.api.block.material.Material;
 import com.github.phantompowered.proxy.api.chat.ChatMessageType;
 import com.github.phantompowered.proxy.api.chat.HistoricalMessage;
-import com.github.phantompowered.proxy.api.connection.*;
+import com.github.phantompowered.proxy.api.connection.DefaultConnectionHandler;
+import com.github.phantompowered.proxy.api.connection.ServiceConnectResult;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
+import com.github.phantompowered.proxy.api.connection.ServiceConnector;
+import com.github.phantompowered.proxy.api.connection.ServiceInventory;
+import com.github.phantompowered.proxy.api.connection.ServiceWorldDataProvider;
 import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.service.TabListUpdateEvent;
+import com.github.phantompowered.proxy.api.location.BlockingObject;
 import com.github.phantompowered.proxy.api.location.Location;
+import com.github.phantompowered.proxy.api.location.Vector;
 import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.channel.NetworkChannel;
@@ -41,8 +48,6 @@ import com.github.phantompowered.proxy.api.network.wrapper.ProtoBuf;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.player.PlayerAbilities;
 import com.github.phantompowered.proxy.api.player.id.PlayerId;
-import com.github.phantompowered.proxy.api.raytrace.BlockIterator;
-import com.github.phantompowered.proxy.api.raytrace.BlockingObject;
 import com.github.phantompowered.proxy.api.scoreboard.Scoreboard;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
@@ -70,7 +75,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
 
 public class BasicServiceConnection extends BasicInteractiveServiceConnection implements ServiceConnection, WrappedNetworkChannel, Entity.Callable {
 
@@ -138,8 +148,13 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     }
 
     @Override
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return this.location;
+    }
+
+    @Override
+    public @NotNull Location getHeadLocation() {
+        return this.location.clone().add(0, this.isSneaking() ? 1.54F : 1.62F, 0);
     }
 
     @ApiStatus.Internal
@@ -255,40 +270,53 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
 
     @Override
     public Location getTargetBlock(Set<Material> transparent, int range) {
-        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this.location, 1.8, range);
-        while (iterator.hasNext()) {
-            Location location = iterator.next();
+        return this.getTargetObject(range, location -> {
             Material material = this.getBlockAccess().getMaterial(location);
+
             if ((transparent == null && material != Material.AIR) || (transparent != null && !transparent.contains(material))) {
-                return location;
+                return BlockingObject.block(location);
             }
-        }
-        return null;
+
+            return null;
+        }).getLocation();
     }
 
     @Override
     public @NotNull BlockingObject getTargetObject(int range) {
-        BlockIterator iterator = new BlockIterator(this.getBlockAccess(), this.location, 1.8, range);
-
-        while (iterator.hasNext()) {
-            Location location = iterator.next();
+        return this.getTargetObject(range, location -> {
+            Material material = this.getBlockAccess().getMaterial(location);
+            if (material != Material.AIR) {
+                return BlockingObject.block(location);
+            }
 
             for (Entity entity : this.worldDataProvider.getEntitiesInWorld()) {
-                double deltaX = Math.abs(entity.getLocation().getX() - location.getX());
-                double deltaY = Math.abs(entity.getLocation().getY() - location.getY());
-                double deltaZ = Math.abs(entity.getLocation().getZ() - location.getZ());
-
-                if (deltaX <= entity.getWidth() && deltaZ <= entity.getWidth() && deltaY <= entity.getHeadHeight()) {
-                    return new BlockingObject(entity, location, BlockingObject.Type.ENTITY);
+                if (entity.getBoundingBox().contains(location)) {
+                    return BlockingObject.entity(entity, location);
                 }
             }
 
-            Material material = this.getBlockAccess().getMaterial(location);
-            if (material != Material.AIR) {
-                return new BlockingObject(null, location, BlockingObject.Type.BLOCK);
+            return null;
+        });
+    }
+
+    private BlockingObject getTargetObject(int range, Function<Location, BlockingObject> function) {
+        Location startLocation = this.getHeadLocation();
+        Vector direction = startLocation.getDirection().divide(new Vector(10, 10, 10));
+
+        int rangeSq = range * range;
+
+        Location currentLocation = startLocation.clone();
+
+        while (startLocation.distanceSquared(currentLocation) <= rangeSq) {
+            currentLocation.add(direction.getX(), direction.getY(), direction.getZ());
+
+            BlockingObject object = function.apply(currentLocation);
+            if (object != null) {
+                return object;
             }
         }
-        return BlockingObject.MISS;
+
+        return BlockingObject.miss();
     }
 
     @Override
