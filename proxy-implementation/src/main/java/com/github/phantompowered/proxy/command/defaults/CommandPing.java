@@ -79,7 +79,7 @@ public class CommandPing extends NonTabCompleteableCommandCallback {
                 builder.append(player.getName()).append(" <- ").append(player.getPing()).append(" ms -> ");
             }
 
-            builder.append("PhantomProxy(").append(client.getName()).append(") <- ").append(client.getPing()).append(" -> ").append(client.getServerAddress().getRawHost());
+            builder.append("PhantomProxy(").append(client.getName()).append(") <- ").append(client.getPing()).append(" ms -> ").append(client.getServerAddress().getRawHost());
         }
 
         sender.sendMessage(builder.toString());
