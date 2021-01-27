@@ -22,19 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.session;
+package com.github.phantompowered.proxy.account;
 
-import com.mojang.authlib.UserAuthentication;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import org.jetbrains.annotations.NotNull;
+import com.github.phantompowered.proxy.api.database.DatabaseProvidedStorage;
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 
-public interface ProvidedSessionService {
+// TODO Finish session cache
+public class SessionCache extends DatabaseProvidedStorage<CachedUserAuthentication> {
 
-    @NotNull
-    UserAuthentication login(@NotNull String userName, @NotNull String password) throws AuthenticationException;
+    public SessionCache(ServiceRegistry registry) {
+        super(registry, "internal_minecraft_session_cache", CachedUserAuthentication.class);
+    }
 
-    boolean isValid(@NotNull UserAuthentication authentication);
+    public void cache(String email, String password, CachedUserAuthentication authentication) {
+        //super.insertOrUpdate(email + ":" + password, authentication);
+    }
 
-    @NotNull MinecraftSessionService createSessionService();
+    public CachedUserAuthentication getCachedAuthentication(String email, String password) {
+        return null;
+        //return super.get(email + ":" + password);
+    }
+
+    public void remove(String email, String password) {
+        //super.delete(email + ":" + password);
+    }
+
 }

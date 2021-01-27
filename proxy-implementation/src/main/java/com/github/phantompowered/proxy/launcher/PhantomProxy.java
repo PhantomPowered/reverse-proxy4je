@@ -178,7 +178,7 @@ public class PhantomProxy {
 
         System.out.println("Connecting to database...");
         this.serviceRegistry.getProviderUnchecked(DatabaseDriver.class).connect(new H2DatabaseConfig());
-        this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(), false, true);
+        this.serviceRegistry.setProvider(null, ProvidedSessionService.class, new BasicProvidedSessionService(this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, EventManager.class, new DefaultEventManager(serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, PluginManager.class, new DefaultPluginManager(Paths.get("plugins"), this.serviceRegistry), false, true);
         this.serviceRegistry.setProvider(null, MCServiceCredentialsStorage.class, new MCServiceCredentialsStorage(this.serviceRegistry));

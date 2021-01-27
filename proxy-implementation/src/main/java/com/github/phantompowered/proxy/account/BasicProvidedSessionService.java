@@ -24,7 +24,9 @@
  */
 package com.github.phantompowered.proxy.account;
 
+import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.UserAuthentication;
@@ -33,22 +35,63 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-// TODO cache the sessions for 10 minutes or so after the proxy has been stopped
 public class BasicProvidedSessionService implements ProvidedSessionService {
 
     private static final AuthenticationService SERVICE = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
 
+    private final SessionCache cache;
+
+    public BasicProvidedSessionService(ServiceRegistry registry) {
+        this.cache = new SessionCache(registry);
+    }
+
     @Override
     public @NotNull UserAuthentication login(@NotNull String userName, @NotNull String password) throws AuthenticationException {
+        CachedUserAuthentication cached = this.cache.getCachedAuthentication(userName, password);
+        if (cached != null) {
+            if (this.isValid(cached)) {
+                return cached;
+            }
+            this.cache.remove(userName, password);
+        }
+
         UserAuthentication userAuthentication = SERVICE.createUserAuthentication(Agent.MINECRAFT);
         userAuthentication.setUsername(userName);
         userAuthentication.setPassword(password);
 
         userAuthentication.logIn();
+
+        this.cache.cache(userName, password, CachedUserAuthentication.fromAuthentication(userAuthentication));
+
         return userAuthentication;
+    }
+
+    @Override
+    public boolean isValid(@NotNull UserAuthentication authentication) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://authserver.mojang.com/validate").openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                JsonObject object = new JsonObject();
+                object.addProperty("accessToken", authentication.getAuthenticatedToken());
+                outputStream.write(object.toString().getBytes(StandardCharsets.UTF_8));
+            }
+
+            return connection.getResponseCode() == 204;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return false;
+        }
     }
 
     @Override

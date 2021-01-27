@@ -51,6 +51,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -290,6 +291,12 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 sender.sendMessage(" -> " + credentials.getEmail() + " / " + credentials.getDefaultServer()
                         + " (" + (credentials.isExportable() ? "exportable" : "not exportable") + ")");
             }
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
+            Collection<MCServiceCredentials> all = storage.getAll();
+            for (MCServiceCredentials credentials : all) {
+                storage.delete(credentials.getEmail());
+            }
+            sender.sendMessage("Cleared " + all.size() + " credentials");
         } else {
             this.sendHelp(sender);
         }
@@ -326,6 +333,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         sender.sendMessage("acc closeAll <address>");
         sender.sendMessage("acc export");
         sender.sendMessage("acc import <file-path>");
+        sender.sendMessage("acc clear");
         sender.sendMessage("acc list");
     }
 
@@ -353,7 +361,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
         } catch (ExecutionException | InterruptedException | TimeoutException exception) {
             exception.printStackTrace();
         } catch (AuthenticationException exception) {
-            sender.sendMessage("§cInvalid credentials");
+            sender.sendMessage("§cInvalid credentials: " + exception.getMessage());
             System.out.println("Invalid credentials for " + credentials.getEmail());
         }
     }
