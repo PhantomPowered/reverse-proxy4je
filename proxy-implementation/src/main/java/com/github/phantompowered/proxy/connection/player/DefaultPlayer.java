@@ -102,6 +102,10 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     private boolean autoReconnect = true;
     private String lastCommandCompleteRequest;
 
+    private long lastPingSent;
+    private int currentPingId = 0;
+    private int ping = 0;
+
     private final List<HistoricalMessage> receivedMessages = new LimitedCopyOnWriteArrayList<>(1000); // TODO configurable
 
     public DefaultPlayer(ServiceRegistry serviceRegistry, ConnectedProxyClient client, OfflinePlayer offlinePlayer, NetworkChannel channel, int version, int compressionThreshold) {
@@ -375,6 +379,28 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
     @Override
     public void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data) {
         this.sendCustomPayload(tag, data.toArray());
+    }
+
+    @Override
+    public int getPing() {
+        return this.ping;
+    }
+
+    public int recalculatePingKeepAliveId() {
+        this.lastPingSent = System.currentTimeMillis();
+        if (this.currentPingId == Integer.MAX_VALUE) {
+            this.currentPingId = 0;
+        }
+        return ++this.currentPingId;
+    }
+
+    public void recalculatePing(int keepAliveId) {
+        if (this.currentPingId != keepAliveId || this.lastPingSent == -1) {
+            return;
+        }
+
+        this.ping = (int) (System.currentTimeMillis() - this.lastPingSent);
+        this.lastPingSent = -1;
     }
 
     @Override

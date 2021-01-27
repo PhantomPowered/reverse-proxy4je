@@ -58,6 +58,7 @@ import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerTabC
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerSetSlot;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
+import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
@@ -79,6 +80,11 @@ public class ClientPacketHandler {
             // rewrite to allow modifications by the packet handlers
             player.getConnectedClient().networkUnsafe().sendPacket(packet.getPacket() != null ? packet.getPacket() : packet);
         }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.FromClient.Play.KEEP_ALIVE, directions = ProtocolDirection.TO_SERVER)
+    public void handleKeepAlive(DefaultPlayer player, PacketPlayKeepAlive packet) {
+        player.recalculatePing(packet.getRandomId());
     }
 
     @PacketHandler(packetIds = ProtocolIds.FromClient.Play.ENTITY_ACTION, directions = ProtocolDirection.TO_SERVER)

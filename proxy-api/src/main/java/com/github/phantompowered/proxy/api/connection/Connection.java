@@ -45,6 +45,8 @@ public interface Connection extends PacketSender, NetworkChannel {
 
     void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data);
 
+    int getPing();
+
     // TODO max size?
     List<HistoricalMessage> getReceivedMessages();
 

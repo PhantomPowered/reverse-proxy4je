@@ -55,11 +55,13 @@ import com.github.phantompowered.proxy.api.session.ProvidedSessionService;
 import com.github.phantompowered.proxy.api.task.DefaultTask;
 import com.github.phantompowered.proxy.api.task.Task;
 import com.github.phantompowered.proxy.api.util.LimitedCopyOnWriteArrayList;
+import com.github.phantompowered.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayerAbilities;
 import com.github.phantompowered.proxy.network.channel.WrappedNetworkChannel;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientChatMessage;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientCustomPayload;
 import com.github.phantompowered.proxy.protocol.play.client.position.PacketPlayClientPlayerPosition;
+import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
 import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
@@ -464,6 +466,17 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     @Override
     public void sendCustomPayload(@NotNull String tag, @NotNull ProtoBuf data) {
         this.sendCustomPayload(tag, data.toArray());
+    }
+
+    @Override
+    public int getPing() {
+        UUID uniqueId = this.getUniqueId();
+        for (PacketPlayServerPlayerInfo.Item item : this.getClient().getPacketCache().getHandler(PlayerInfoCache.class).getItems()) {
+            if (item.getUniqueId().equals(uniqueId)) {
+                return item.getPing();
+            }
+        }
+        return -1;
     }
 
     @Override

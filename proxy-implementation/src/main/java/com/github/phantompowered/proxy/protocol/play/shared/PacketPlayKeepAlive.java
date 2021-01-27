@@ -56,7 +56,7 @@ public class PacketPlayKeepAlive implements Packet {
         protoBuf.writeVarInt(this.randomId);
     }
 
-    public long getRandomId() {
+    public int getRandomId() {
         return this.randomId;
     }
 

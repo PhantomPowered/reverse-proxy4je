@@ -63,6 +63,7 @@ import com.github.phantompowered.proxy.command.defaults.CommandInfo;
 import com.github.phantompowered.proxy.command.defaults.CommandKick;
 import com.github.phantompowered.proxy.command.defaults.CommandList;
 import com.github.phantompowered.proxy.command.defaults.CommandPermissions;
+import com.github.phantompowered.proxy.command.defaults.CommandPing;
 import com.github.phantompowered.proxy.command.defaults.CommandPlugins;
 import com.github.phantompowered.proxy.command.defaults.CommandReplace;
 import com.github.phantompowered.proxy.command.defaults.CommandStop;
@@ -242,6 +243,7 @@ public class PhantomProxy {
     private void handleCommands() {
         CommandMap commandMap = new DefaultCommandMap();
 
+        commandMap.registerCommand(null, new CommandPing(this.serviceRegistry), "ping");
         commandMap.registerCommand(null, new CommandAccount(this.serviceRegistry), "acc", "account");
         commandMap.registerCommand(null, new CommandAlert(this.serviceRegistry), "alert");
         commandMap.registerCommand(null, new CommandChat(this.serviceRegistry), "chat");

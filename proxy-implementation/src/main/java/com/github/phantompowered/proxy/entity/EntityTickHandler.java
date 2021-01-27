@@ -27,8 +27,10 @@ package com.github.phantompowered.proxy.entity;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import com.github.phantompowered.proxy.api.connection.ServiceConnector;
+import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.connection.DefaultServiceConnector;
+import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.connection.reconnect.ReconnectProfile;
 import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 
@@ -44,8 +46,10 @@ public final class EntityTickHandler {
         APIUtil.SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
             ServiceConnector connector = registry.getProviderUnchecked(ServiceConnector.class);
             for (ServiceConnection onlineClient : connector.getOnlineClients()) {
-                if (onlineClient.getPlayer() != null) {
-                    onlineClient.getPlayer().sendPacket(new PacketPlayKeepAlive(Math.toIntExact(System.nanoTime() / 1000000L)));
+                Player player = onlineClient.getPlayer();
+                if (player != null) {
+                    int id = ((DefaultPlayer) player).recalculatePingKeepAliveId();
+                    player.sendPacket(new PacketPlayKeepAlive(id));
                 }
             }
 
