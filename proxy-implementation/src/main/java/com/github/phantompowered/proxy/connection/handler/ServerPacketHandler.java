@@ -33,6 +33,7 @@ import com.github.phantompowered.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
 import com.github.phantompowered.proxy.network.wrapper.DecodedPacket;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.github.phantompowered.proxy.protocol.play.client.inventory.PacketPlayClientConfirmTransaction;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerLogin;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerPlayerInfo;
 import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerRespawn;
@@ -343,6 +344,10 @@ public class ServerPacketHandler {
     public void handle(ConnectedProxyClient client, PacketPlayServerConfirmTransaction packet) {
         if (client.getConnection().getInventory().completeTransaction(packet.getActionNumber())) {
             throw CancelProceedException.INSTANCE;
+        }
+
+        if (!packet.isNoResponse() && client.getConnection().getPlayer() == null) {
+            client.write(new PacketPlayClientConfirmTransaction(packet.getWindowId(), (short) packet.getId(), true));
         }
     }
 }
