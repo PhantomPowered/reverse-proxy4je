@@ -78,7 +78,7 @@ public class DefaultServiceInventory implements ServiceInventory {
 
     @Override
     public @Nullable ItemStack getHotBarItem(@Range(from = 0, to = 8) int slot) {
-        return this.getItem(slot + HOTBAR_OFFSET);
+        return this.getPlayerItem(slot + HOTBAR_OFFSET);
     }
 
     @Override
@@ -92,6 +92,11 @@ public class DefaultServiceInventory implements ServiceInventory {
     }
 
     @Override
+    public @Nullable ItemStack getPlayerItem(int slot) {
+        return this.cache().getPlayerItemsBySlot().get(slot);
+    }
+
+    @Override
     public CompletableFuture<Void> performClick(int windowId, ClickType type, int slot) {
         int action = this.transactionCounter.incrementAndGet();
         if (action == Short.MAX_VALUE - 100) {
@@ -102,7 +107,7 @@ public class DefaultServiceInventory implements ServiceInventory {
         this.pendingTransactions.put((short) action, future);
 
         ItemStack item = this.getItem(slot);
-        this.connection.sendPacket(new PacketPlayClientClickWindow(0, slot, (short) action, item, type));
+        this.connection.sendPacket(new PacketPlayClientClickWindow(windowId, slot, (short) action, item, type));
 
         return future;
     }

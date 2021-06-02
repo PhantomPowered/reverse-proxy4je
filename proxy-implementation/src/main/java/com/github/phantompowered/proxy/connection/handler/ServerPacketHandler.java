@@ -14,6 +14,7 @@ import com.github.phantompowered.proxy.api.event.Event;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.ChatEvent;
 import com.github.phantompowered.proxy.api.events.connection.PluginMessageEvent;
+import com.github.phantompowered.proxy.api.events.connection.service.ServiceExperienceChangeEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.TitleReceiveEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.EntityAnimationEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.EntityMoveEvent;
@@ -43,6 +44,7 @@ import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlaySer
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerConfirmTransaction;
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
 import com.github.phantompowered.proxy.protocol.play.server.message.*;
+import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerSetExperience;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.phantompowered.proxy.text.ProxyLegacyHoverEventSerializer;
@@ -67,6 +69,12 @@ public class ServerPacketHandler {
         if (client.getConnection().setTabHeaderAndFooter(header, footer)) {
             throw CancelProceedException.INSTANCE;
         }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SET_EXPERIENCE, directions = ProtocolDirection.TO_CLIENT)
+    public void handleSetExperience(ConnectedProxyClient client, PacketPlayServerSetExperience packet) {
+        client.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ServiceExperienceChangeEvent(client.getConnection(), packet.getCurrentXP(), packet.getMaxXP(), packet.getLevel()));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ANIMATION, directions = ProtocolDirection.TO_CLIENT)
