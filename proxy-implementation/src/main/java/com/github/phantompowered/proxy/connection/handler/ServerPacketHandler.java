@@ -46,6 +46,7 @@ import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlay
 import com.github.phantompowered.proxy.protocol.play.server.message.*;
 import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerSetExperience;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
+import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerSpawnPosition;
 import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.phantompowered.proxy.text.ProxyLegacyHoverEventSerializer;
 import com.google.gson.JsonParseException;
@@ -181,6 +182,11 @@ public class ServerPacketHandler {
     public void handleRespawn(ConnectedProxyClient client, PacketPlayServerRespawn packet) {
         client.getConnection().setSneaking(false);
         client.getConnection().setSprinting(false);
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SPAWN_POSITION, directions = ProtocolDirection.TO_CLIENT)
+    public void handleSpawnPosition(ConnectedProxyClient client, PacketPlayServerSpawnPosition packet) {
+        client.getConnection().updateLocation(packet.getSpawnLocation());
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_TELEPORT, directions = ProtocolDirection.TO_CLIENT)
