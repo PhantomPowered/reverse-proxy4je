@@ -26,19 +26,28 @@ package com.github.phantompowered.proxy.connection;
 
 import com.github.phantompowered.proxy.api.connection.ServiceInventory;
 import com.github.phantompowered.proxy.api.item.ItemStack;
+import com.github.phantompowered.proxy.api.player.inventory.ClickType;
 import com.github.phantompowered.proxy.connection.cache.handler.HeldItemSlotCache;
 import com.github.phantompowered.proxy.connection.cache.handler.PlayerInventoryCache;
+import com.github.phantompowered.proxy.protocol.play.client.inventory.PacketPlayClientClickWindow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DefaultServiceInventory implements ServiceInventory {
 
     public static final int HOTBAR_OFFSET = 36;
 
     private final BasicServiceConnection connection;
+
+    private final Map<Short, CompletableFuture<Void>> pendingTransactions = new HashMap<>();
+    private final AtomicInteger transactionCounter = new AtomicInteger(5000);
+    private int openWindowId;
 
     public DefaultServiceInventory(BasicServiceConnection connection) {
         this.connection = connection;
@@ -59,8 +68,17 @@ public class DefaultServiceInventory implements ServiceInventory {
     }
 
     @Override
+    public int getOpenWindowId() {
+        return this.openWindowId;
+    }
+
+    public void setOpenWindowId(int openWindowId) {
+        this.openWindowId = openWindowId;
+    }
+
+    @Override
     public @Nullable ItemStack getHotBarItem(@Range(from = 0, to = 8) int slot) {
-        return this.getItem(slot + HOTBAR_OFFSET);
+        return this.getPlayerItem(slot + HOTBAR_OFFSET);
     }
 
     @Override
@@ -71,5 +89,36 @@ public class DefaultServiceInventory implements ServiceInventory {
     @Override
     public @Nullable ItemStack getItem(int slot) {
         return this.getContent().get(slot);
+    }
+
+    @Override
+    public @Nullable ItemStack getPlayerItem(int slot) {
+        return this.cache().getPlayerItemsBySlot().get(slot);
+    }
+
+    @Override
+    public CompletableFuture<Void> performClick(int windowId, ClickType type, int slot) {
+        int action = this.transactionCounter.incrementAndGet();
+        if (action == Short.MAX_VALUE - 100) {
+            this.transactionCounter.set(5000);
+        }
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        this.pendingTransactions.put((short) action, future);
+
+        ItemStack item = this.getItem(slot);
+        this.connection.sendPacket(new PacketPlayClientClickWindow(windowId, slot, (short) action, item, type));
+
+        return future;
+    }
+
+    @Override
+    public boolean completeTransaction(short actionNumber) {
+        if (!this.pendingTransactions.containsKey(actionNumber)) {
+            return false;
+        }
+
+        this.pendingTransactions.remove(actionNumber).complete(null);
+        return true;
     }
 }

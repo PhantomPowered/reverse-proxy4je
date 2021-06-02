@@ -69,4 +69,8 @@ public class SignCache implements PacketCacheHandler {
             con.sendPacket(entry.getValue());
         }
     }
+
+    public Map<Location, PacketPlayServerUpdateSign> getSignUpdates() {
+        return this.signUpdates;
+    }
 }

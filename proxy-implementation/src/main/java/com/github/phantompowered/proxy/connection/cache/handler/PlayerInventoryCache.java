@@ -51,6 +51,7 @@ public class PlayerInventoryCache implements PacketCacheHandler {
     }
 
     private final Map<Integer, ItemStack> itemsBySlot = new HashMap<>();
+    private final Map<Integer, ItemStack> playerItemsBySlot = new HashMap<>();
 
     @Override
     public int[] getPacketIDs() {
@@ -62,30 +63,26 @@ public class PlayerInventoryCache implements PacketCacheHandler {
         if (newPacket instanceof PacketPlayServerWindowItems) {
             PacketPlayServerWindowItems items = (PacketPlayServerWindowItems) newPacket;
 
-            if (items.getWindowId() != WINDOW_ID) {
-                return;
-            }
+            Map<Integer, ItemStack> map = items.getWindowId() == WINDOW_ID ? this.playerItemsBySlot : this.itemsBySlot;
 
             for (int slot = 0; slot < items.getItems().length; slot++) {
                 ItemStack item = items.getItems()[slot];
                 if (item.getMaterial() != Material.AIR) {
-                    this.itemsBySlot.put(slot, item);
+                    map.put(slot, item);
                 } else {
-                    this.itemsBySlot.remove(slot);
+                    map.remove(slot);
                 }
             }
         } else if (newPacket instanceof PacketPlayServerSetSlot) {
             PacketPlayServerSetSlot setSlot = (PacketPlayServerSetSlot) newPacket;
             ItemStack item = setSlot.getItem();
 
-            if (setSlot.getWindowId() != WINDOW_ID) {
-                return;
-            }
+            Map<Integer, ItemStack> map = setSlot.getWindowId() == WINDOW_ID ? this.playerItemsBySlot : this.itemsBySlot;
 
             if (item.getMaterial() != Material.AIR) {
-                this.itemsBySlot.put(setSlot.getSlot(), item);
+                map.put(setSlot.getSlot(), item);
             } else {
-                this.itemsBySlot.remove(setSlot.getSlot());
+                map.remove(setSlot.getSlot());
             }
         }
     }
@@ -94,12 +91,16 @@ public class PlayerInventoryCache implements PacketCacheHandler {
         return this.itemsBySlot;
     }
 
+    public Map<Integer, ItemStack> getPlayerItemsBySlot() {
+        return this.playerItemsBySlot;
+    }
+
     @Override
     public void sendCached(PacketSender con, ConnectedProxyClient targetProxyClient) {
-        this.itemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
+        this.playerItemsBySlot.keySet().stream().mapToInt(Integer::intValue).max().ifPresent(count -> {
             ItemStack[] items = new ItemStack[count + 1];
             for (int slot = 0; slot < items.length; slot++) {
-                items[slot] = this.itemsBySlot.getOrDefault(slot, ProxyItemStack.AIR);
+                items[slot] = this.playerItemsBySlot.getOrDefault(slot, ProxyItemStack.AIR);
             }
             con.sendPacket(new PacketPlayServerWindowItems(WINDOW_ID, items));
         });

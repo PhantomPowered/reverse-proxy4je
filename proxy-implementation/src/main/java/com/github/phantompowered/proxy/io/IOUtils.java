@@ -26,7 +26,9 @@ package com.github.phantompowered.proxy.io;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -57,5 +59,17 @@ public final class IOUtils {
             Files.createDirectory(path);
         } catch (final IOException ignored) {
         }
+    }
+
+    public static byte[] readAllBytes(InputStream stream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        int len;
+        byte[] buffer = new byte[4096];
+        while ((len = stream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, len);
+        }
+
+        return outputStream.toByteArray();
     }
 }

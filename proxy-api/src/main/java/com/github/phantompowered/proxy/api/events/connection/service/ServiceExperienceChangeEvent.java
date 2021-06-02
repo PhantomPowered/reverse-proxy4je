@@ -22,40 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.api.connection;
+package com.github.phantompowered.proxy.api.events.connection.service;
 
-import com.github.phantompowered.proxy.api.item.ItemStack;
-import com.github.phantompowered.proxy.api.player.inventory.ClickType;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+public class ServiceExperienceChangeEvent extends ServiceConnectionEvent {
 
-public interface ServiceInventory {
+    private final float currentXP;
+    private final int maxXP;
+    private final int level;
 
-    @NotNull
-    Map<Integer, ItemStack> getContent();
+    public ServiceExperienceChangeEvent(@NotNull ServiceConnection connection, float currentXP, int maxXP, int level) {
+        super(connection);
+        this.currentXP = currentXP;
+        this.maxXP = maxXP;
+        this.level = level;
+    }
 
-    int getHeldItemSlot();
+    public float getCurrentXP() {
+        return this.currentXP;
+    }
 
-    int getOpenWindowId();
+    public int getMaxXP() {
+        return this.maxXP;
+    }
 
-    @Nullable
-    ItemStack getHotBarItem(@Range(from = 0, to = 8) int slot);
-
-    @Nullable
-    ItemStack getItemInHand();
-
-    @Nullable
-    ItemStack getItem(int slot);
-
-    @Nullable
-    ItemStack getPlayerItem(int slot);
-
-    CompletableFuture<Void> performClick(int windowId, ClickType type, int slot);
-
-    boolean completeTransaction(short actionNumber);
-
+    public int getLevel() {
+        return this.level;
+    }
 }

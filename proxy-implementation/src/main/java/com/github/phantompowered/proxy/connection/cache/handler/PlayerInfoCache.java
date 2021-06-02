@@ -36,6 +36,7 @@ import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.api.network.PacketSender;
 import com.github.phantompowered.proxy.api.player.GameMode;
 import com.github.phantompowered.proxy.api.player.Player;
+import com.github.phantompowered.proxy.api.player.id.PlayerIdStorage;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
 import com.github.phantompowered.proxy.connection.cache.PacketCache;
 import com.github.phantompowered.proxy.connection.cache.PacketCacheHandler;
@@ -49,12 +50,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PlayerInfoCache implements PacketCacheHandler {
 
     private final Collection<PacketPlayServerPlayerInfo.Item> items = new CopyOnWriteArrayList<>();
     private final Collection<PacketPlayServerPlayerInfo.Item> lastRemovedItems = new CopyOnWriteArrayList<>();
     private PacketCache packetCache;
+
+    private static final ExecutorService SERVICE = Executors.newFixedThreadPool(4);
 
     @Override
     public int[] getPacketIDs() {
@@ -97,7 +102,15 @@ public class PlayerInfoCache implements PacketCacheHandler {
             }
         } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.ADD_PLAYER) {
             this.items.addAll(Arrays.asList(playerListItem.getItems()));
+            SERVICE.execute(() -> {
+                for (PacketPlayServerPlayerInfo.Item item : playerListItem.getItems()) {
+                    if (connection.getPlayer() != null && !item.getUsername().contains("§") && !item.getUniqueId().equals(connection.getServiceRegistry().getProviderUnchecked(PlayerIdStorage.class).getPlayerId(item.getUsername()).getUniqueId())) {
+                        connection.getPlayer().sendMessage("§cNICK: §e" + item.getUsername() + " §f-> §e" + connection.getServiceRegistry().getProviderUnchecked(PlayerIdStorage.class).getPlayerId(item.getUniqueId()).getName());
+                    }
+                }
+            });
             for (PacketPlayServerPlayerInfo.Item item : playerListItem.getItems()) {
+
                 connection.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerInfoAddEvent(connection, this.toPlayerInfo(item)));
             }
         } else if (playerListItem.getAction() == PacketPlayServerPlayerInfo.Action.UPDATE_DISPLAY_NAME) {

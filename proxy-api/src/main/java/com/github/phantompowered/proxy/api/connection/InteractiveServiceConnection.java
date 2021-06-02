@@ -36,6 +36,8 @@ public interface InteractiveServiceConnection {
     @ApiStatus.Experimental
     void teleport(@NotNull Location location);
 
+    void lookAt(@NotNull Location target);
+
     void breakBlock(Location blockLocation, Facing facing);
 
     void performAirLeftClick();
@@ -56,5 +58,7 @@ public interface InteractiveServiceConnection {
     void toggleSprinting(boolean sprinting);
 
     void openInventory();
+
+    void selectHeldItemSlot(int slot);
 
 }

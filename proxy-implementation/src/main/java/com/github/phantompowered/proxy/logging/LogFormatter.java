@@ -65,11 +65,17 @@ public class LogFormatter extends Formatter {
                 int dot = word.indexOf('.');
                 if (at > 1 && dot > at && dot < word.length() - 1) {
 
-                    stringBuilder.append("*".repeat(at));
+                    for (int i = 0; i < at; i++) {
+                        stringBuilder.append('*');
+                    }
                     stringBuilder.append('@');
-                    stringBuilder.append("*".repeat(dot - at - 1));
+                    for (int i = 0; i < dot - at - 1; i++) {
+                        stringBuilder.append('*');
+                    }
                     stringBuilder.append('.');
-                    stringBuilder.append("*".repeat(word.length() - dot - 1));
+                    for (int i = 0; i < word.length() - dot - 1; i++) {
+                        stringBuilder.append('*');
+                    }
 
                 } else {
                     stringBuilder.append(word);

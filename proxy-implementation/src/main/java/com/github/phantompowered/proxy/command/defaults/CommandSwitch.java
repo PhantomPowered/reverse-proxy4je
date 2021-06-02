@@ -68,7 +68,7 @@ public class CommandSwitch extends NonTabCompleteableCommandCallback {
                 .stream()
                 .filter(proxyClient -> arguments[0].equalsIgnoreCase(proxyClient.getName()))
                 .findFirst();
-        if (optionalClient.isEmpty()) {
+        if (!optionalClient.isPresent()) {
             commandSender.sendMessage("§cThat account does not exist, available:");
             for (ServiceConnection freeClient : this.registry.getProviderUnchecked(ServiceConnector.class).getFreeClients()) {
                 commandSender.sendMessage("- " + freeClient.getName());

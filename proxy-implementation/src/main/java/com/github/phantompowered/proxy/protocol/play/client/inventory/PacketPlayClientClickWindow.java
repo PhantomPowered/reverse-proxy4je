@@ -17,6 +17,23 @@ public class PacketPlayClientClickWindow implements Packet {
     private ItemStack clickedItem;
     private int mode;
 
+    public PacketPlayClientClickWindow(int windowId, int slot, short actionNumber, ItemStack clickedItem, ClickType type) {
+        this(windowId, type == ClickType.WINDOW_BORDER_LEFT || type == ClickType.WINDOW_BORDER_RIGHT ? -1 : slot,
+                type.isLeftClick() || type == ClickType.WINDOW_BORDER_LEFT ? 0
+                        : type.isRightClick() || type == ClickType.WINDOW_BORDER_RIGHT ? 1
+                        : type == ClickType.MIDDLE ? 2 : 0,
+                actionNumber,
+                clickedItem,
+                type == ClickType.LEFT || type == ClickType.RIGHT ? 0
+                        : type == ClickType.SHIFT_LEFT || type == ClickType.SHIFT_RIGHT ? 1
+                        : type == ClickType.NUMBER_KEY ? 2
+                        : type == ClickType.MIDDLE || type == ClickType.UNKNOWN ? 3
+                        : type == ClickType.DROP || type == ClickType.CONTROL_DROP ? 4
+                        : type == ClickType.DOUBLE_CLICK ? 6
+                        : -1
+        );
+    }
+
     public PacketPlayClientClickWindow(int windowId, int slot, int usedButton, short actionNumber, ItemStack clickedItem, int mode) {
         this.windowId = windowId;
         this.slot = slot;

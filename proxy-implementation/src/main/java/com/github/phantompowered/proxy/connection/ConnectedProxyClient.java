@@ -156,7 +156,7 @@ public class ConnectedProxyClient extends DefaultNetworkChannel implements TickH
     public void connect(NetworkAddress address, NetworkAddress proxy, Task<ServiceConnectResult> task) {
         this.disconnect();
 
-        ChannelInitializer<Channel> initializer = new ChannelInitializer<>() {
+        ChannelInitializer<Channel> initializer = new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(@NotNull Channel channel) {
                 ConnectedProxyClient.this.serviceRegistry.getProviderUnchecked(SimpleChannelInitializer.class).initChannel(channel);
