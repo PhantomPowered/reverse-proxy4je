@@ -26,6 +26,7 @@ package com.github.phantompowered.proxy.http;
 
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.concurrent.Callback;
+import com.github.phantompowered.proxy.io.IOUtils;
 import com.github.phantompowered.proxy.util.LeftRightHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,7 +107,7 @@ public final class HttpUtil {
                 return null;
             }
 
-            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            return new String(IOUtils.readAllBytes(inputStream), StandardCharsets.UTF_8);
         } finally {
             connection.disconnect();
         }

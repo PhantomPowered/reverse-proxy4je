@@ -25,11 +25,13 @@
 package com.github.phantompowered.proxy.api.connection;
 
 import com.github.phantompowered.proxy.api.item.ItemStack;
+import com.github.phantompowered.proxy.api.player.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface ServiceInventory {
 
@@ -37,6 +39,8 @@ public interface ServiceInventory {
     Map<Integer, ItemStack> getContent();
 
     int getHeldItemSlot();
+
+    int getOpenWindowId();
 
     @Nullable
     ItemStack getHotBarItem(@Range(from = 0, to = 8) int slot);
@@ -46,5 +50,9 @@ public interface ServiceInventory {
 
     @Nullable
     ItemStack getItem(int slot);
+
+    CompletableFuture<Void> performClick(int windowId, ClickType type, int slot);
+
+    boolean completeTransaction(short actionNumber);
 
 }

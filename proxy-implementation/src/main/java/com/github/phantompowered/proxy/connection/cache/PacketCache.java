@@ -144,6 +144,7 @@ public class PacketCache {
         this.handlers.clear();
 
         ChunkCache chunkCache = new ChunkCache();
+        SignCache signCache = new SignCache();
 
         this.handlers.addAll(Arrays.asList(
                 // THE ORDER IS IMPORTANT
@@ -161,11 +162,11 @@ public class PacketCache {
                 new EntityCache(),
                 new EntityEffectCache(),
                 new MiniMapCache(),
-                new SignCache(),
+                signCache,
                 new ScoreboardCache(),
                 new GameStateCache()
         ));
 
-        this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getServiceRegistry(), chunkCache);
+        this.blockAccess = new DefaultBlockAccess(this.targetProxyClient.getServiceRegistry(), chunkCache, signCache);
     }
 }

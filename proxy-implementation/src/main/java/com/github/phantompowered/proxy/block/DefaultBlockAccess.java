@@ -36,6 +36,9 @@ import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.block.chunk.Chunk;
 import com.github.phantompowered.proxy.connection.cache.handler.ChunkCache;
+import com.github.phantompowered.proxy.connection.cache.handler.SignCache;
+import com.github.phantompowered.proxy.protocol.play.server.world.PacketPlayServerUpdateSign;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,13 +50,15 @@ public class DefaultBlockAccess implements BlockAccess {
     private final ServiceRegistry serviceRegistry;
     private final BlockStateRegistry registry;
     private final ChunkCache chunkCache;
+    private final SignCache signCache;
 
     private final Map<UUID, BlockConsumer> blockTrackers = new ConcurrentHashMap<>();
 
-    public DefaultBlockAccess(ServiceRegistry serviceRegistry, ChunkCache chunkCache) {
+    public DefaultBlockAccess(ServiceRegistry serviceRegistry, ChunkCache chunkCache, SignCache signCache) {
         this.serviceRegistry = serviceRegistry;
         this.registry = serviceRegistry.getProviderUnchecked(BlockStateRegistry.class);
         this.chunkCache = chunkCache;
+        this.signCache = signCache;
         chunkCache.setBlockAccess(this);
     }
 
@@ -217,5 +222,11 @@ public class DefaultBlockAccess implements BlockAccess {
     @Override
     public int getDimension() {
         return this.chunkCache.getDimension();
+    }
+
+    @Override
+    public Component[] getSignLines(@NotNull Location pos) {
+        PacketPlayServerUpdateSign packet = this.signCache.getSignUpdates().get(pos);
+        return packet != null ? packet.getLines() : null;
     }
 }

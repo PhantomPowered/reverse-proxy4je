@@ -26,6 +26,7 @@ import com.github.phantompowered.proxy.api.network.exception.CancelProceedExcept
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.connection.AppendedActionBar;
 import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
+import com.github.phantompowered.proxy.connection.DefaultServiceInventory;
 import com.github.phantompowered.proxy.connection.cache.handler.EntityCache;
 import com.github.phantompowered.proxy.connection.cache.handler.PlayerInfoCache;
 import com.github.phantompowered.proxy.connection.player.DefaultPlayer;
@@ -39,11 +40,9 @@ import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlaySer
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityMetadata;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityStatus;
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
-import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
-import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
-import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
-import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
-import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerTitle;
+import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerConfirmTransaction;
+import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
+import com.github.phantompowered.proxy.protocol.play.server.message.*;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.phantompowered.proxy.protocol.play.shared.PacketPlayKeepAlive;
 import com.github.phantompowered.proxy.text.ProxyLegacyHoverEventSerializer;
@@ -317,6 +316,18 @@ public class ServerPacketHandler {
         }
 
         if (connection.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(event).isCancelled()) {
+            throw CancelProceedException.INSTANCE;
+        }
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.OPEN_WINDOW, directions = ProtocolDirection.TO_CLIENT)
+    public void handle(ConnectedProxyClient client, PacketPlayServerOpenWindow packet) {
+        ((DefaultServiceInventory) client.getConnection().getInventory()).setOpenWindowId(packet.getWindowId());
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.TRANSACTION, directions = ProtocolDirection.TO_CLIENT)
+    public void handle(ConnectedProxyClient client, PacketPlayServerConfirmTransaction packet) {
+        if (client.getConnection().getInventory().completeTransaction(packet.getActionNumber())) {
             throw CancelProceedException.INSTANCE;
         }
     }

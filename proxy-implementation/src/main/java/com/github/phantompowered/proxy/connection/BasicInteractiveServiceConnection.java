@@ -30,12 +30,15 @@ import com.github.phantompowered.proxy.api.entity.types.Entity;
 import com.github.phantompowered.proxy.api.item.ItemStack;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.location.Vector;
+import com.github.phantompowered.proxy.api.network.Packet;
 import com.github.phantompowered.proxy.item.ProxyItemStack;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientArmAnimation;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientBlockPlace;
 import com.github.phantompowered.proxy.protocol.play.client.PacketPlayClientPlayerDigging;
 import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientEntityAction;
 import com.github.phantompowered.proxy.protocol.play.client.entity.PacketPlayClientUseEntity;
+import com.github.phantompowered.proxy.protocol.play.client.inventory.PacketPlayClientHeldItemSlot;
+import com.github.phantompowered.proxy.protocol.play.client.position.PacketPlayClientLook;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BasicInteractiveServiceConnection implements InteractiveServiceConnection {
@@ -47,6 +50,32 @@ public abstract class BasicInteractiveServiceConnection implements InteractiveSe
     @Override
     public void teleport(@NotNull Location location) {
         this.getConnection().setLocation(location);
+    }
+
+    @Override
+    public void lookAt(@NotNull Location target) {
+        // peepoHug https://github.com/juliarn/NPC-Lib/blob/development/src/main/java/com/github/juliarn/npc/modifier/RotationModifier.java#L71-L81
+
+        Location location = this.getConnection().getLocation().clone();
+
+        double xDifference = location.getX() - (target.getX() + 0.5);
+        double yDifference = location.getY() - (target.getY() - 0.5);
+        double zDifference = location.getZ() - (target.getZ() + 0.5);
+
+        double r = Math
+                .sqrt(Math.pow(xDifference, 2) + Math.pow(yDifference, 2) + Math.pow(zDifference, 2));
+
+        float yaw = (float) (-Math.atan2(xDifference, zDifference) / Math.PI * 180D);
+        yaw = yaw < 0 ? yaw + 360 : yaw;
+        yaw -= 180;
+
+        float pitch = (float) (Math.asin(yDifference / r) / Math.PI * 180D);
+
+        location.setYaw(yaw);
+        location.setPitch(pitch);
+
+        this.getConnection().sendPacket(new PacketPlayClientLook(location));
+        this.getConnection().updateLocation(location);
     }
 
     @Override
@@ -120,5 +149,17 @@ public abstract class BasicInteractiveServiceConnection implements InteractiveSe
     @Override
     public void openInventory() {
         this.getConnection().sendPacket(new PacketPlayClientEntityAction(this.getConnection().getEntityId(), PacketPlayClientEntityAction.Action.OPEN_INVENTORY));
+    }
+
+    @Override
+    public void selectHeldItemSlot(int slot) {
+        if (slot < 0 || slot > 8) {
+            throw new IllegalArgumentException("Illegal held item slot: " + slot);
+        }
+        Packet packet = new PacketPlayClientHeldItemSlot(slot);
+        this.getConnection().sendPacket(packet);
+        if (this.getConnection().getPlayer() != null) {
+            this.getConnection().getPlayer().sendPacket(packet.mapToServerside());
+        }
     }
 }

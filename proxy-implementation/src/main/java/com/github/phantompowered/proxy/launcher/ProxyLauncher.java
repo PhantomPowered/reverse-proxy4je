@@ -33,6 +33,7 @@ import com.github.phantompowered.proxy.api.configuration.Configuration;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.command.console.ConsoleCommandSender;
 import com.github.phantompowered.proxy.console.ProxyConsole;
+import com.github.phantompowered.proxy.io.IOUtils;
 import com.github.phantompowered.proxy.logging.ProxyLogLevels;
 import com.github.phantompowered.proxy.logging.ProxyLogger;
 import com.github.phantompowered.proxy.service.BasicServiceRegistry;
@@ -75,7 +76,7 @@ public final class ProxyLauncher {
     private static void sendWelcomeScreen() {
         try (InputStream inputStream = ProxyLauncher.class.getClassLoader().getResourceAsStream("header.txt")) {
             if (inputStream != null) {
-                System.out.println(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
+                System.out.println(new String(IOUtils.readAllBytes(inputStream), StandardCharsets.UTF_8));
             }
         } catch (IOException e) {
             e.printStackTrace();

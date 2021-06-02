@@ -28,12 +28,7 @@ import com.github.phantompowered.proxy.ImplementationUtil;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.concurrent.Callback;
 import com.github.phantompowered.proxy.api.configuration.Configuration;
-import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
-import com.github.phantompowered.proxy.api.connection.ProtocolState;
-import com.github.phantompowered.proxy.api.connection.ServiceConnectResult;
-import com.github.phantompowered.proxy.api.connection.ServiceConnection;
-import com.github.phantompowered.proxy.api.connection.ServiceConnector;
-import com.github.phantompowered.proxy.api.connection.Whitelist;
+import com.github.phantompowered.proxy.api.connection.*;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.PingEvent;
 import com.github.phantompowered.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
@@ -81,7 +76,6 @@ import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Optional;
 import java.util.UUID;
@@ -252,7 +246,7 @@ public class InitialHandler {
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_DECODER, NetworkUtils.DECRYPT, new PacketCipherDecoder(sharedKey));
         channel.getWrappedChannel().pipeline().addBefore(NetworkUtils.LENGTH_ENCODER, NetworkUtils.ENCRYPT, new PacketCipherEncoder(sharedKey));
 
-        String encName = URLEncoder.encode(channel.getProperty("requestedName"), StandardCharsets.UTF_8);
+        String encName = URLEncoder.encode(channel.getProperty("requestedName"));
 
         MessageDigest sha = MessageDigest.getInstance("SHA-1");
         for (byte[] bit : new byte[][]{
@@ -263,7 +257,7 @@ public class InitialHandler {
             sha.update(bit);
         }
 
-        String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16), StandardCharsets.UTF_8);
+        String encodedHash = URLEncoder.encode(new BigInteger(sha.digest()).toString(16));
         String authURL = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + encName + "&serverId=" + encodedHash;
 
         Callback<String> handler = (result, exception) -> {
