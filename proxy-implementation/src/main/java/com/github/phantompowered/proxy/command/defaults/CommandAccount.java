@@ -37,6 +37,8 @@ import com.github.phantompowered.proxy.api.network.NetworkAddress;
 import com.github.phantompowered.proxy.api.player.Player;
 import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
+import com.github.phantompowered.proxy.auth.TheAlteningAuthentication;
+import com.github.phantompowered.proxy.auth.service.AlteningServiceType;
 import com.github.phantompowered.proxy.storage.MCServiceCredentialsStorage;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.Component;
@@ -61,6 +63,7 @@ import java.util.function.Predicate;
 public class CommandAccount extends NonTabCompleteableCommandCallback {
 
     private final ServiceRegistry registry;
+    private final TheAlteningAuthentication authentication = TheAlteningAuthentication.mojang();
 
     public CommandAccount(ServiceRegistry registry) {
         super("proxy.command.help", null);
@@ -297,6 +300,12 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
                 storage.delete(credentials.getEmail());
             }
             sender.sendMessage("Cleared " + all.size() + " credentials");
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("mojang")) {
+            this.authentication.updateService(AlteningServiceType.MOJANG);
+            sender.sendMessage("Switched the login servers to mojang.");
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("thealtening")) {
+            this.authentication.updateService(AlteningServiceType.THEALTENING);
+            sender.sendMessage("Switched the login servers to TheAltening.");
         } else {
             this.sendHelp(sender);
         }
@@ -323,6 +332,7 @@ public class CommandAccount extends NonTabCompleteableCommandCallback {
     }
 
     private void sendHelp(CommandSender sender) {
+        sender.sendMessage("acc mojang/thealtening");
         sender.sendMessage("acc add <default-address> <E-Mail|OfflineUsername> [Password] <exportable>");
         sender.sendMessage("acc <email> setEmail <new-email>");
         sender.sendMessage("acc <email> setPassword <password>");

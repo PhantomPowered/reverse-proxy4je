@@ -34,11 +34,8 @@ import com.github.phantompowered.proxy.connection.ConnectedProxyClient;
 import com.github.phantompowered.proxy.connection.cache.PacketCache;
 import com.github.phantompowered.proxy.connection.cache.PacketCacheHandler;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
-import com.github.phantompowered.proxy.protocol.play.server.PacketPlayServerRespawn;
 import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerBlockChange;
 import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerMapChunk;
-import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerMapChunkBulk;
-import com.github.phantompowered.proxy.protocol.play.server.world.material.PacketPlayServerMultiBlockChange;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -69,52 +66,7 @@ public class ChunkCache implements PacketCacheHandler {
 
     @Override
     public void cachePacket(PacketCache packetCache, Packet newPacket) {
-        Packet packet = newPacket;
-
         this.dimension = packetCache.getTargetProxyClient().getDimension();
-
-        if (packet instanceof PacketPlayServerRespawn) {
-
-            this.chunks.clear();
-
-        } else if (packet instanceof PacketPlayServerMapChunk) {
-
-            PacketPlayServerMapChunk chunkData = (PacketPlayServerMapChunk) packet;
-
-            Chunk chunk = this.load(packetCache, chunkData);
-            if (chunk != null) {
-                chunkData.setExtracted(chunk.getBytes(this.dimension));
-            }
-
-        } else if (packet instanceof PacketPlayServerMapChunkBulk) {
-
-            PacketPlayServerMapChunkBulk chunkBulk = (PacketPlayServerMapChunkBulk) packet;
-
-            for (int i = 0; i < chunkBulk.getX().length; i++) {
-                PacketPlayServerMapChunk chunkData = new PacketPlayServerMapChunk(chunkBulk.getX()[i], chunkBulk.getZ()[i], chunkBulk.isB(), chunkBulk.getExtracted()[i]);
-
-                Chunk chunk = this.load(packetCache, chunkData);
-                if (chunk != null) {
-                    chunkBulk.getExtracted()[i] = chunk.getBytes(this.dimension);
-                }
-            }
-
-        } else if (packet instanceof PacketPlayServerBlockChange) {
-
-            PacketPlayServerBlockChange blockUpdate = (PacketPlayServerBlockChange) packet;
-
-            this.handleBlockUpdate(blockUpdate.getPos(), blockUpdate.getBlockState());
-
-        } else if (packet instanceof PacketPlayServerMultiBlockChange) {
-
-            PacketPlayServerMultiBlockChange multiBlockUpdate = (PacketPlayServerMultiBlockChange) packet;
-
-            for (PacketPlayServerMultiBlockChange.BlockUpdateData updateData : multiBlockUpdate.getUpdateData()) {
-                this.handleBlockUpdate(updateData.getPos(), updateData.getBlockState());
-            }
-
-        }
-
     }
 
     private void handleBlockUpdate(Location pos, int newBlockState) {
