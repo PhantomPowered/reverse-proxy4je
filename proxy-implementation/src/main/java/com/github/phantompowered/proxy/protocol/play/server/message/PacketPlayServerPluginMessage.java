@@ -93,6 +93,6 @@ public class PacketPlayServerPluginMessage implements Packet {
     }
 
     public String toString() {
-        return "PacketPlayServerPluginMessage(tag=" + this.getTag() + ", data=" + java.util.Arrays.toString(this.getData()) + ")";
+        return "PacketPlayServerPluginMessage(tag=" + this.getTag() + ", data=" + new String(this.getData()) + ")";
     }
 }

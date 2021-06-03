@@ -20,6 +20,7 @@ import com.github.phantompowered.proxy.api.events.connection.service.entity.Enti
 import com.github.phantompowered.proxy.api.events.connection.service.entity.EntityMoveEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.status.EntityStatusEvent;
 import com.github.phantompowered.proxy.api.events.connection.service.entity.status.SelfEntityStatusEvent;
+import com.github.phantompowered.proxy.api.events.connection.service.inventory.ServiceInventoryOpenEvent;
 import com.github.phantompowered.proxy.api.location.Location;
 import com.github.phantompowered.proxy.api.network.ByteBufUtils;
 import com.github.phantompowered.proxy.api.network.PacketHandler;
@@ -188,6 +189,12 @@ public class ServerPacketHandler {
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.SPAWN_POSITION, directions = ProtocolDirection.TO_CLIENT)
     public void handleSpawnPosition(ConnectedProxyClient client, PacketPlayServerSpawnPosition packet) {
         client.getConnection().updateLocation(packet.getSpawnLocation());
+    }
+
+    @PacketHandler(packetIds = ProtocolIds.ToClient.Play.OPEN_WINDOW, directions = ProtocolDirection.TO_CLIENT)
+    public void handleWindowOpen(ConnectedProxyClient client, PacketPlayServerOpenWindow packet) {
+        client.getServiceRegistry().getProviderUnchecked(EventManager.class)
+                .callEvent(new ServiceInventoryOpenEvent(client.getConnection(), packet.getWindowTitle(), packet.getInventoryType(), packet.getSlotCount()));
     }
 
     @PacketHandler(packetIds = ProtocolIds.ToClient.Play.ENTITY_TELEPORT, directions = ProtocolDirection.TO_CLIENT)

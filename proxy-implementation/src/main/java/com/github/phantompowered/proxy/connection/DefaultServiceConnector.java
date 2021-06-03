@@ -112,6 +112,10 @@ public class DefaultServiceConnector implements ServiceConnector {
     @Override
     public void handleTick() {
         for (BasicServiceConnection onlineClient : this.onlineClients) {
+            if (onlineClient.getClient() == null) {
+                continue;
+            }
+
             onlineClient.getClient().handleTick();
         }
     }

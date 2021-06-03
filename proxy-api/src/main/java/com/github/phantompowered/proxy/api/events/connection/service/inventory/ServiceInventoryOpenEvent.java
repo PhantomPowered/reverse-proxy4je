@@ -22,26 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.phantompowered.proxy.protocol.play.client;
+package com.github.phantompowered.proxy.api.events.connection.service.inventory;
 
-import com.github.phantompowered.proxy.protocol.ProtocolIds;
-import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
+import com.github.phantompowered.proxy.api.events.connection.service.ServiceConnectionEvent;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketPlayClientCustomPayload extends PacketPlayServerPluginMessage {
+public class ServiceInventoryOpenEvent extends ServiceConnectionEvent {
 
-    public PacketPlayClientCustomPayload(String tag, byte[] data) {
-        super(tag, data);
+    private final Component title;
+    private final String inventoryType;
+    private final int slotCount;
+
+    public ServiceInventoryOpenEvent(@NotNull ServiceConnection connection, Component title, String inventoryType, int slotCount) {
+        super(connection);
+        this.title = title;
+        this.inventoryType = inventoryType;
+        this.slotCount = slotCount;
     }
 
-    public PacketPlayClientCustomPayload() {
+    public Component getTitle() {
+        return this.title;
     }
 
-    @Override
-    public int getId() {
-        return ProtocolIds.FromClient.Play.CUSTOM_PAYLOAD;
+    public String getInventoryType() {
+        return this.inventoryType;
     }
 
-    public String toString() {
-        return "PacketPlayClientCustomPayload() " + super.toString();
+    public int getSlotCount() {
+        return this.slotCount;
     }
 }
