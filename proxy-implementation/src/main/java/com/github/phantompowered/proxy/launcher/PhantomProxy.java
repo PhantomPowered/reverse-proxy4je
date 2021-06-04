@@ -228,6 +228,7 @@ public class PhantomProxy {
         commandMap.registerCommand(null, new CommandPing(this.serviceRegistry), "ping");
         commandMap.registerCommand(null, new CommandAccount(this.serviceRegistry), "acc", "account");
         commandMap.registerCommand(null, new CommandAlert(this.serviceRegistry), "alert");
+        commandMap.registerCommand(null, new CommandSleep(), "sleep");
         commandMap.registerCommand(null, new CommandChat(this.serviceRegistry), "chat");
         commandMap.registerCommand(null, new CommandConnect(this.serviceRegistry), "connect");
         commandMap.registerCommand(null, new CommandForEach(this.serviceRegistry), "foreach");

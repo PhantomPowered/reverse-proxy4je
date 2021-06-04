@@ -279,7 +279,7 @@ public class ServerPacketHandler {
         client.handleDisconnect(reason);
         client.setLastKickReason(reason);
 
-        client.getConnection().close();
+        // This disables auto reconnect for this client: client.getConnection().close();
 
         throw CancelProceedException.INSTANCE;
     }
