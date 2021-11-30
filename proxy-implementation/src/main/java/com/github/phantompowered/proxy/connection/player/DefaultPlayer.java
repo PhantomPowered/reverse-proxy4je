@@ -265,6 +265,8 @@ public class DefaultPlayer extends ProxyEntity implements Player, WrappedNetwork
         ByteBufUtils.writeString("vanilla", buf);
         this.sendCustomPayload("MC|Brand", ByteBufUtils.toArray(buf));
 
+        System.out.println("Player [" + this.getName() + "/" + this.getUniqueId() + "] switched account to [" + connection.getName() + "/" + connection.getUniqueId() + "]");
+
         //this.sendMessage("§7Your name: §e" + connection.getName());
     }
 

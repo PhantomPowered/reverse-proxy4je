@@ -29,6 +29,8 @@ public class ClientChannelListener implements ChannelListener {
 
     @Override
     public void handleChannelInactive(@NotNull NetworkChannel channel) {
+        System.out.println("Player [" + player.getName() + "/" + player.getUniqueId() + "] disconnected");
+
         this.player.getServiceRegistry().getProviderUnchecked(EventManager.class).callEvent(new PlayerLogoutEvent(player));
         this.player.setConnected(false);
         if (this.player.getConnectedClient() != null && this.player.getConnectedClient() instanceof BasicServiceConnection) {

@@ -28,7 +28,12 @@ import com.github.phantompowered.proxy.ImplementationUtil;
 import com.github.phantompowered.proxy.api.APIUtil;
 import com.github.phantompowered.proxy.api.concurrent.Callback;
 import com.github.phantompowered.proxy.api.configuration.Configuration;
-import com.github.phantompowered.proxy.api.connection.*;
+import com.github.phantompowered.proxy.api.connection.ProtocolDirection;
+import com.github.phantompowered.proxy.api.connection.ProtocolState;
+import com.github.phantompowered.proxy.api.connection.ServiceConnectResult;
+import com.github.phantompowered.proxy.api.connection.ServiceConnection;
+import com.github.phantompowered.proxy.api.connection.ServiceConnector;
+import com.github.phantompowered.proxy.api.connection.Whitelist;
 import com.github.phantompowered.proxy.api.event.EventManager;
 import com.github.phantompowered.proxy.api.events.connection.PingEvent;
 import com.github.phantompowered.proxy.api.events.connection.ServiceConnectorChooseClientEvent;
@@ -344,6 +349,8 @@ public class InitialHandler {
 
                 player.useClient(client);
                 channel.setProperty(INIT_STATE, State.FINISHED);
+
+                System.out.println("Player [" + player.getName() + "/" + player.getUniqueId() + "] logged in on [" + client.getName() + "/" + client.getUniqueId() + "]");
             }
         });
     }

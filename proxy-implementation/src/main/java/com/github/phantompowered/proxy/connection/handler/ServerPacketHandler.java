@@ -45,7 +45,11 @@ import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlaySer
 import com.github.phantompowered.proxy.protocol.play.server.entity.PacketPlayServerEntityTeleport;
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerConfirmTransaction;
 import com.github.phantompowered.proxy.protocol.play.server.inventory.PacketPlayServerOpenWindow;
-import com.github.phantompowered.proxy.protocol.play.server.message.*;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerChatMessage;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerKickPlayer;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPlayerListHeaderFooter;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerPluginMessage;
+import com.github.phantompowered.proxy.protocol.play.server.message.PacketPlayServerTitle;
 import com.github.phantompowered.proxy.protocol.play.server.player.PacketPlayServerSetExperience;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerPosition;
 import com.github.phantompowered.proxy.protocol.play.server.player.spawn.PacketPlayServerSpawnPosition;
