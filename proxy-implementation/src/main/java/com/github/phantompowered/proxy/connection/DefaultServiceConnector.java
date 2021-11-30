@@ -9,6 +9,7 @@ import com.github.phantompowered.proxy.api.service.ServiceRegistry;
 import com.github.phantompowered.proxy.api.session.MCServiceCredentials;
 import com.github.phantompowered.proxy.connection.reconnect.ReconnectProfile;
 import com.github.phantompowered.proxy.protocol.ProtocolIds;
+import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +63,13 @@ public class DefaultServiceConnector implements ServiceConnector {
     @Override
     public @NotNull ServiceConnection createConnection(MCServiceCredentials credentials, NetworkAddress serverAddress) throws AuthenticationException {
         BasicServiceConnection connection = new BasicServiceConnection(this.serviceRegistry, credentials, serverAddress, ProtocolIds.Versions.MINECRAFT_1_8);
+        this.onlineClients.add(connection);
+        return connection;
+    }
+
+    @Override
+    public ServiceConnection createConnection(MCServiceCredentials credentials, UserAuthentication authentication, NetworkAddress serverAddress) throws AuthenticationException {
+        BasicServiceConnection connection = new BasicServiceConnection(this.serviceRegistry, credentials, authentication, serverAddress, ProtocolIds.Versions.MINECRAFT_1_8);
         this.onlineClients.add(connection);
         return connection;
     }

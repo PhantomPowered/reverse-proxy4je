@@ -106,6 +106,10 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
     private final List<HistoricalMessage> receivedMessages = new LimitedCopyOnWriteArrayList<>(1000); // TODO configurable
 
     public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, NetworkAddress networkAddress, int version) throws AuthenticationException {
+        this(serviceRegistry, credentials, null, networkAddress, version);
+    }
+
+    public BasicServiceConnection(ServiceRegistry serviceRegistry, MCServiceCredentials credentials, UserAuthentication authentication, NetworkAddress networkAddress, int version) throws AuthenticationException {
         this.serviceRegistry = serviceRegistry;
         this.credentials = credentials;
         this.networkAddress = networkAddress;
@@ -116,14 +120,13 @@ public class BasicServiceConnection extends BasicInteractiveServiceConnection im
         }
         this.entityRewrite = entityRewrite;
 
-        if (credentials.isOffline()) {
-            this.authentication = null;
-            return;
+        if (authentication == null && !credentials.isOffline()) {
+            System.out.println("Logging in " + credentials.getEmail() + "...");
+            authentication = this.serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
+            System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
         }
 
-        System.out.println("Logging in " + credentials.getEmail() + "...");
-        this.authentication = this.serviceRegistry.getProviderUnchecked(ProvidedSessionService.class).login(credentials.getEmail(), credentials.getPassword());
-        System.out.println("Successfully logged in with " + credentials.getEmail() + "!");
+        this.authentication = authentication;
     }
 
     private void handleLocationUpdate(Location newLocation) {
