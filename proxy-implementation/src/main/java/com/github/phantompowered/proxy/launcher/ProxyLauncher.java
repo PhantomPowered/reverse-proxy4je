@@ -62,7 +62,11 @@ public final class ProxyLauncher {
         CommandSender sender = new ConsoleCommandSender(proxy.getServiceRegistry());
 
         String line;
-        while (!((line = proxyConsole.readString()).isEmpty())) {
+        while ((line = proxyConsole.readString()) != null) {
+            if (line.isEmpty()) {
+                continue;
+            }
+
             try {
                 if (commandMap.process(sender, line) == CommandResult.NOT_FOUND) {
                     proxyLogger.logp(ProxyLogLevels.COMMAND, "", "", "Unable to find command by this name. Use \"help\" to get a list of all commands");

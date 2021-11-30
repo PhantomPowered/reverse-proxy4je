@@ -25,6 +25,7 @@
 package com.github.phantompowered.proxy.console;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -57,7 +58,8 @@ public class ProxyConsole implements AutoCloseable {
         }
     }
 
-    public @NotNull String readString() {
+    @Nullable
+    public String readString() {
         try {
             return this.lineReader.readLine(PROMPT);
         } catch (EndOfFileException ignored) {
@@ -65,7 +67,7 @@ public class ProxyConsole implements AutoCloseable {
             System.exit(-2);
         }
 
-        return "";
+        return null;
     }
 
     public void clearScreen() {
