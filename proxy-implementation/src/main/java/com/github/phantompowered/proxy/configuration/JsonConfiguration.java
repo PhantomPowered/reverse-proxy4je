@@ -72,7 +72,7 @@ public class JsonConfiguration implements Configuration {
             this.jsonObject = new JsonObject();
             this.jsonObject.addProperty("proxyPort", 25565);
             this.jsonObject.addProperty("webPort", 80);
-            this.jsonObject.addProperty("compression", -1);
+            this.jsonObject.addProperty("compression", 255);
             this.jsonObject.addProperty("privateMode", false);
             this.jsonObject.add("targetPingAddress", JsonNull.INSTANCE);
             this.motd = new ServerPing(
